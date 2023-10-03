@@ -1,8 +1,6 @@
-import { component$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
+import { component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { useNavigate } from 'qwik-router';
-import { AppContext } from '../app';
 import { t } from '../locale/labels';
-import { getConfiguration } from '../utils/api';
 import { AUTH_ROUTE, COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie } from '../utils/cookie';
 import { UserMe } from '../utils/types';
@@ -10,17 +8,13 @@ import { UserMe } from '../utils/types';
 export const Profile = component$(() => {
 	const navigate = useNavigate();
 	const userSig = useSignal<UserMe>();
-	const appStore = useContext(AppContext);
 
 	useTask$(async () => {
 		const token = getCookie(COOKIE_TOKEN_KEY);
 		if (!token) {
 			navigate(AUTH_ROUTE);
 		}
-		if (!appStore.configuration) {
-			appStore.configuration = await getConfiguration();
-		}
-		// userSig.value = await getUserMe();
+
 		userSig.value = {
 			email: 'g.b@it.clara.net',
 			name: 'gioboa',
@@ -44,7 +38,7 @@ export const Profile = component$(() => {
 								{userSig.value.name}
 							</h2>
 							<p class='px-5 text-xs sm:text-base dark:text-gray-400'>
-								{userSig.value.email}
+								{t('email')}: {userSig.value.email}
 							</p>
 							<p class='px-5 text-xs sm:text-base dark:text-gray-400'>
 								{t('crew')}: {userSig.value.crew}

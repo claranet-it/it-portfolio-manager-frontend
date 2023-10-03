@@ -1,10 +1,15 @@
 import { Auth0Client } from '@auth0/auth0-spa-js';
-import { component$ } from '@builder.io/qwik';
+import {
+	component$,
+	createContextId,
+	useContextProvider,
+	useStore,
+} from '@builder.io/qwik';
 import { Router, RouterConfig, initRouter } from 'qwik-router';
-import { Auth } from './components/Auth';
 import { Home } from './components/Home';
-import { Login } from './components/Login';
 import { Profile } from './components/Profile';
+import { AUTH_ROUTE, PROFILE_ROUTE } from './utils/constants';
+import { AppStore } from './utils/types';
 
 const {
 	VITE_AUTH_DOMAIN: domain,
@@ -19,14 +24,13 @@ export const auth0 = new Auth0Client({
 });
 
 const routes: RouterConfig = [
-	{ path: '/', component: Home },
-	{ path: '/auth', component: Auth },
-	{ path: '/login', component: Login },
-	{ path: '/profile', component: Profile },
+	{ path: AUTH_ROUTE, component: Home },
+	{ path: PROFILE_ROUTE, component: Profile },
 ];
+export const AppContext = createContextId<AppStore>('AppStore');
 
 export const App = component$(() => {
 	initRouter(window.location.href);
-
+	useContextProvider(AppContext, useStore<AppStore>({}));
 	return <Router routes={routes} />;
 });
