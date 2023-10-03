@@ -1,4 +1,5 @@
 export type AppStore = {
+	isLogged: boolean;
 	configuration?: Configuration;
 };
 

@@ -3,7 +3,11 @@ import { useNavigate } from 'qwik-router';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
 import { getConfiguration } from '../utils/api';
-import { AUTH_ROUTE, COOKIE_TOKEN_KEY } from '../utils/constants';
+import {
+	AUTH_ROUTE,
+	COOKIE_TOKEN_KEY,
+	SKILL_MATRIX_ROUTE,
+} from '../utils/constants';
 import { getCookie } from '../utils/cookie';
 import { UserMe } from '../utils/types';
 
@@ -13,6 +17,10 @@ export const Profile = component$(() => {
 	const appStore = useContext(AppContext);
 
 	useTask$(async () => {
+		if (!appStore.isLogged) {
+			navigate(AUTH_ROUTE);
+		}
+
 		const token = getCookie(COOKIE_TOKEN_KEY);
 		if (!token) {
 			navigate(AUTH_ROUTE);
@@ -109,7 +117,10 @@ export const Profile = component$(() => {
 							</a>
 						</div>
 					</div>
-					<button class='bg-transparent text-gray-400 font-semibold py-2 px-4 hover:bg-blue-500 hover:text-white rounded border-0'>
+					<button
+						class='bg-transparent text-gray-400 font-semibold py-2 px-4 hover:bg-blue-500 hover:text-white rounded border-0'
+						onClick$={() => navigate(SKILL_MATRIX_ROUTE)}
+					>
 						{t('my_skills')}
 					</button>
 				</div>

@@ -8,7 +8,12 @@ import {
 import { Router, RouterConfig, initRouter } from 'qwik-router';
 import { Home } from './components/Home';
 import { Profile } from './components/Profile';
-import { AUTH_ROUTE, PROFILE_ROUTE } from './utils/constants';
+import { SkillMatrix } from './components/SkillMatrix';
+import {
+	AUTH_ROUTE,
+	PROFILE_ROUTE,
+	SKILL_MATRIX_ROUTE,
+} from './utils/constants';
 import { AppStore } from './utils/types';
 
 const {
@@ -26,11 +31,12 @@ export const auth0 = new Auth0Client({
 const routes: RouterConfig = [
 	{ path: AUTH_ROUTE, component: Home },
 	{ path: PROFILE_ROUTE, component: Profile },
+	{ path: SKILL_MATRIX_ROUTE, component: SkillMatrix },
 ];
 export const AppContext = createContextId<AppStore>('AppStore');
 
 export const App = component$(() => {
 	initRouter(window.location.href);
-	useContextProvider(AppContext, useStore<AppStore>({}));
+	useContextProvider(AppContext, useStore<AppStore>({ isLogged: false }));
 	return <Router routes={routes} />;
 });
