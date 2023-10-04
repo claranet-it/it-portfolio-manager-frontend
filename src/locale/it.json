@@ -1,7 +1,7 @@
 {
 	"crew": "Crew",
-	"my_skills": "My Skills",
 	"profile_picture": "Profile picture",
 	"skill": "Skill",
-	"score": "Score"
+	"score": "Score",
+	"change_team": "change_team"
 }

@@ -7,7 +7,13 @@ export type UserMe = {
 	email: string;
 	name: string;
 	picture: string;
+	crew?: string;
+	company?: string;
+};
+
+export type SetUserProfile = {
 	crew: string;
+	company: string;
 };
 
 export type Configuration = {
