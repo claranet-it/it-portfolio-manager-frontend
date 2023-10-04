@@ -1,6 +1,6 @@
 export type AppStore = {
 	isLogged: boolean;
-	configuration?: Configuration;
+	configuration: Configuration;
 };
 
 export type UserMe = {

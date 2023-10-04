@@ -9,7 +9,7 @@ const getHeaders = () => {
 export const getUserMe = async (): Promise<UserMe> => {
 	const headers = getHeaders();
 	const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/user/me/`,
+		`${import.meta.env.VITE_BACKEND_URL}/api/user/me`,
 		{ method: 'GET', headers }
 	);
 	return await response.json();
@@ -18,7 +18,7 @@ export const getUserMe = async (): Promise<UserMe> => {
 export const getConfiguration = async (): Promise<Configuration> => {
 	const headers = getHeaders();
 	const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/configuration/`,
+		`${import.meta.env.VITE_BACKEND_URL}/api/configuration`,
 		{ method: 'GET', headers }
 	);
 	return await response.json();

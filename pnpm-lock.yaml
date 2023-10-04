@@ -11,9 +11,6 @@ dependencies:
   '@builder.io/qwik':
     specifier: ^1.2.6
     version: 1.2.12(undici@5.25.2)
-  qwik-router:
-    specifier: ^1.0.2
-    version: 1.0.2(@builder.io/qwik@1.2.12)
 
 devDependencies:
   autoprefixer:
@@ -761,15 +758,6 @@ packages:
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
     dev: true
-
-  /qwik-router@1.0.2(@builder.io/qwik@1.2.12):
-    resolution: {integrity: sha512-kHGSZuXNG0kalv/6QWr+QZR1MLe7BEQu2NWNeyEl1TI3/N7I6ia4ZWr0e2HQi7AsucC/X/rjeP/Y4us8N4fpKA==}
-    engines: {node: '>=15.0.0'}
-    peerDependencies:
-      '@builder.io/qwik': '>=1.0.0'
-    dependencies:
-      '@builder.io/qwik': 1.2.12(undici@5.25.2)
-    dev: false
 
   /read-cache@1.0.0:
     resolution: {integrity: sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA==}

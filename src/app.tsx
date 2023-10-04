@@ -5,15 +5,8 @@ import {
 	useContextProvider,
 	useStore,
 } from '@builder.io/qwik';
-import { Router, RouterConfig, initRouter } from 'qwik-router';
 import { Home } from './components/Home';
 import { Profile } from './components/Profile';
-import { SkillMatrix } from './components/SkillMatrix';
-import {
-	AUTH_ROUTE,
-	PROFILE_ROUTE,
-	SKILL_MATRIX_ROUTE,
-} from './utils/constants';
 import { AppStore } from './utils/types';
 
 const {
@@ -28,15 +21,22 @@ export const auth0 = new Auth0Client({
 	authorizationParams: { redirect_uri, audience },
 });
 
-const routes: RouterConfig = [
-	{ path: AUTH_ROUTE, component: Home },
-	{ path: PROFILE_ROUTE, component: Profile },
-	{ path: SKILL_MATRIX_ROUTE, component: SkillMatrix },
-];
 export const AppContext = createContextId<AppStore>('AppStore');
 
+const initialState: AppStore = {
+	isLogged: false,
+	configuration: {
+		crews: [],
+		skills: [],
+		scoreRange: {
+			min: 0,
+			max: 0,
+		},
+	},
+};
+
 export const App = component$(() => {
-	initRouter(window.location.href);
-	useContextProvider(AppContext, useStore<AppStore>({ isLogged: false }));
-	return <Router routes={routes} />;
+	const appStore = useStore<AppStore>(initialState);
+	useContextProvider(AppContext, appStore);
+	return appStore.isLogged ? <Profile /> : <Home />;
 });
