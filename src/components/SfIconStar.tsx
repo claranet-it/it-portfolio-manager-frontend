@@ -10,6 +10,7 @@ export const SfIconStar = component$<{ onClick$: PropFunction }>(
 				data-testid='star-filled'
 				viewBox='0 0 24 24'
 				class='inline-block fill-current w-6 h-6 w-[1.5em] h-[1.5em]'
+				preventdefault:click
 				onClick$={onClick$}
 			>
 				<path

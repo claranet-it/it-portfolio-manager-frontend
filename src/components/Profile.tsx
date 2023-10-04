@@ -20,7 +20,7 @@ export const Profile = component$(() => {
 		{ deep: true }
 	);
 	const appStore = useContext(AppContext);
-	let skillsSig = useSignal<Record<string, string>>({});
+	let skillsSig = useSignal<Record<string, number>>({});
 
 	const updateUserMe = $(async () => {
 		const user = await getUserMe();
@@ -40,9 +40,11 @@ export const Profile = component$(() => {
 			appStore.configuration = await getConfiguration();
 		}
 
-		// skillsSig.value = appStore.configuration.skills.map((skill) => ({}));
-
-		updateUserMe();
+		skillsSig.value = appStore.configuration.skills.reduce((result, skill) => {
+			// @ts-ignore
+			result[skill] = 1;
+			return result;
+		}, {});
 	});
 	return (
 		<>
@@ -101,6 +103,7 @@ export const Profile = component$(() => {
 					</div>
 				)}
 			</div>
+			{JSON.stringify(skillsSig.value)}
 			<div class='flex items-center justify-center py-8'>
 				<table class='table-auto'>
 					<thead>
@@ -110,15 +113,18 @@ export const Profile = component$(() => {
 						</tr>
 					</thead>
 					<tbody>
-						{appStore.configuration.skills.map((row) => (
+						{Object.entries(skillsSig.value).map(([skill, value]) => (
 							<tr>
-								<td>{row}</td>
+								<td>{skill}</td>
 								<td>
 									<SfRating
 										max={appStore.configuration.scoreRange.max}
-										value={0}
+										value={value}
 										onClick$={(value) => {
-											console.log('adasd', value);
+											const obj = {};
+											// @ts-ignore
+											obj[skill] = value;
+											skillsSig.value = { ...skillsSig.value, ...obj };
 										}}
 									/>
 								</td>

@@ -11,18 +11,24 @@ export const SfRating = component$<{
 
 	return (
 		<div class='inline-flex items-center text-warning-500 text-base'>
-			{[...Array(value).keys()].map((value, i) => (
-				<SfIconStarFilled
-					key={`${uniqueId}-filled-${i}`}
-					onClick$={() => onClick$(value + 1)}
-				/>
-			))}
-			{[...Array(max - value).keys()].map((value, i) => (
-				<SfIconStar
-					key={`${uniqueId}-${i}`}
-					onClick$={() => onClick$(value + 1)}
-				/>
-			))}
+			{[...Array(max).keys()].map((num, i) => {
+				const currentValue = num + 1;
+				return (
+					<div>
+						{currentValue > value ? (
+							<SfIconStar
+								key={`${uniqueId}-${i}`}
+								onClick$={() => onClick$(currentValue)}
+							/>
+						) : (
+							<SfIconStarFilled
+								key={`${uniqueId}-filled-${i}`}
+								onClick$={() => onClick$(0)}
+							/>
+						)}
+					</div>
+				);
+			})}
 		</div>
 	);
 });
