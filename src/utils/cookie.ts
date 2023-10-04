@@ -6,7 +6,6 @@ export const setCookie = (name: string, value: string) => {
 	expires = '; expires=' + date.toUTCString();
 	document.cookie =
 		name + '=' + (value || '') + expires + '; path=/; secure; SameSite=Strict;';
-	console.log('asd');
 };
 
 export const getCookie = (name: string) => {
