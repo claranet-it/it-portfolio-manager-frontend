@@ -8,7 +8,6 @@ import { Dynamo } from './Dynamo';
 import { Elixir } from './Elixir';
 import { Flutter } from './Flutter';
 import { Grafana } from './Grafana';
-import { IoT } from './Iot';
 import { JavaScript } from './JavaScript';
 import { Kafka } from './Kafka';
 import { Kotlin } from './Kotlin';
@@ -18,6 +17,7 @@ import { Linux } from './Linux';
 import { PHP } from './PHP';
 import { Python } from './Python';
 import { QuickSight } from './QuickSight';
+import { Raspberry } from './Raspberry';
 import { Redshift } from './Redshift';
 import { Ruby } from './Ruby';
 import { Rust } from './Rust';
@@ -81,7 +81,7 @@ export const getIcon = (skill: string) => {
 		case 'Servizi Data Visualization (QuickSight, ...)':
 			return <QuickSight />;
 		case 'Servizi IoT':
-			return <IoT />;
+			return <Raspberry />;
 		case 'Servizi Migration (CloudEndure, SMS)':
 			return <AWS />;
 		case 'Servizi Networking (VPN, Transit Gateway, VPC Advanced)':

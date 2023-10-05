@@ -1,6 +1,6 @@
 import { component$ } from '@builder.io/qwik';
 
-export const IoT = component$(() => {
+export const Raspberry = component$(() => {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
