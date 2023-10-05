@@ -24,3 +24,17 @@ export type Configuration = {
 		max: number;
 	};
 };
+
+export type GetSkill = {
+	uid: string;
+	company: string;
+	crew: string;
+	skill: string;
+	score: number;
+	updatedAt: string;
+};
+
+export type PatchSkill = {
+	skill: string;
+	score: number;
+};

@@ -14,16 +14,20 @@ export const SfRating = component$<{
 			{[...Array(max).keys()].map((num, i) => {
 				const currentValue = num + 1;
 				return (
-					<div>
+					<div key={i}>
 						{currentValue > value ? (
 							<SfIconStar
 								key={`${uniqueId}-${i}`}
-								onClick$={() => onClick$(currentValue)}
+								onClick$={() =>
+									onClick$(value !== currentValue ? currentValue : 0)
+								}
 							/>
 						) : (
 							<SfIconStarFilled
 								key={`${uniqueId}-filled-${i}`}
-								onClick$={() => onClick$(0)}
+								onClick$={() =>
+									onClick$(value !== currentValue ? currentValue : 0)
+								}
 							/>
 						)}
 					</div>

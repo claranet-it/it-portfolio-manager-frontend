@@ -12,7 +12,7 @@ import { getConfiguration, getUserMe, setUserProfile } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie } from '../utils/cookie';
 import { UserMe } from '../utils/types';
-import { Skills } from './Skills';
+import { SkillMatrix } from './SkillMatrix';
 
 export const Profile = component$(() => {
 	let userStore = useStore<UserMe>(
@@ -26,7 +26,9 @@ export const Profile = component$(() => {
 		const user = await getUserMe();
 		userStore.name = user.name;
 		userStore.email = user.email;
-		userStore.picture = user.picture;
+		userStore.picture =
+			'https://ca.slack-edge.com/TA3KE68QY-U03RC0685SP-599320447881-72' ||
+			user.picture;
 		userStore.crew = user.crew;
 		userStore.company = user.company;
 	});
@@ -52,7 +54,7 @@ export const Profile = component$(() => {
 		<div class='flex justify-center'>
 			{!!userStore.name && (
 				<div class='flex flex-col items-center justify-center'>
-					<div class='flex flex-col items-center justify-center p-6 m-4 rounded-lg border border-red-200 w-[600px]'>
+					<div class='flex flex-col items-center justify-center p-6 mt-6 mb-4 rounded-lg border border-red-200 w-[600px]'>
 						<img
 							src={userStore.picture}
 							alt={t('profile_picture')}
@@ -101,7 +103,7 @@ export const Profile = component$(() => {
 							</div>
 						</div>
 					</div>
-					<Skills />
+					<SkillMatrix />
 				</div>
 			)}
 		</div>
