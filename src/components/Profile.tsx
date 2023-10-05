@@ -26,9 +26,7 @@ export const Profile = component$(() => {
 		const user = await getUserMe();
 		userStore.name = user.name;
 		userStore.email = user.email;
-		userStore.picture =
-			'https://ca.slack-edge.com/TA3KE68QY-U03RC0685SP-599320447881-72' ||
-			user.picture;
+		userStore.picture = user.picture;
 		userStore.crew = user.crew;
 		userStore.company = user.company;
 	});
