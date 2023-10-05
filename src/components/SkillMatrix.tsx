@@ -14,7 +14,7 @@ import {
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie } from '../utils/cookie';
 import { SfRating } from './SfRating';
-import { Android, PHP } from './icons';
+import { getIcon } from './icons';
 
 export const SkillMatrix = component$(() => {
 	const appStore = useContext(AppContext);
@@ -40,14 +40,8 @@ export const SkillMatrix = component$(() => {
 			appStore.configuration = await getConfiguration();
 		}
 		skillsSig.value = await loadSkillsMatrixMine();
+		console.log(skillsSig.value);
 	});
-
-	const getIcon = (skill: string) => {
-		if (skill.indexOf('PHP') >= 0) {
-			return <PHP />;
-		}
-		return <Android />;
-	};
 
 	return (
 		<div class='flex flex-wrap justify-content place-content-evenly pb-8'>
@@ -56,7 +50,7 @@ export const SkillMatrix = component$(() => {
 					key={key}
 					class='flex items-start p-4 m-2 rounded-lg border border-red-200'
 				>
-					<div class='flex items-center justify-center bg-red-100 h-12 w-12 rounded-full border border-red-200'>
+					<div class='flex items-center justify-center bg-red-200 h-12 w-12 rounded-full border border-red-600'>
 						{getIcon(skill)}
 					</div>
 					<div class='ml-4 text-center'>
