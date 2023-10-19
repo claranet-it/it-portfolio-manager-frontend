@@ -8,6 +8,7 @@ import {
 import { Auth } from './components/Auth';
 import { Layout } from './components/Layout';
 import { Profile } from './components/Profile';
+import { Search } from './components/Search';
 import { AppStore } from './utils/types';
 
 const {
@@ -39,11 +40,9 @@ const initialState: AppStore = {
 export const App = component$(() => {
 	const appStore = useStore<AppStore>(initialState);
 	useContextProvider(AppContext, appStore);
-	return appStore.route === 'PROFILE' ? (
-		<Layout>
-			<Profile />
-		</Layout>
-	) : (
+	return appStore.route === 'AUTH' ? (
 		<Auth />
+	) : (
+		<Layout>{appStore.route === 'PROFILE' ? <Profile /> : <Search />}</Layout>
 	);
 });

@@ -47,7 +47,7 @@ export const SkillMatrix = component$(() => {
 	});
 
 	return (
-		<div class='flex flex-wrap justify-content place-content-evenly pb-8'>
+		<div>
 			{Object.entries(skillsMineSig.value).map(([category, skills], key) => (
 				<div key={key}>
 					<div key={key} class='inline-flex items-center justify-center w-full'>
@@ -56,38 +56,40 @@ export const SkillMatrix = component$(() => {
 							{category}
 						</span>
 					</div>
-					{skills.map(({ skill, score, skillCategory }, key) => (
-						<div
-							key={key}
-							class='flex items-start p-4 m-2 rounded-lg border border-red-200'
-						>
-							<div class='flex items-center justify-center bg-red-200 h-12 w-12 rounded-full border border-red-600'>
-								{getIcon(skill)}
+					<div class='flex flex-wrap justify-content place-content-evenly pb-8'>
+						{skills.map(({ skill, score, skillCategory }, key) => (
+							<div
+								key={key}
+								class='flex items-start p-4 m-2 rounded-lg border border-red-200'
+							>
+								<div class='flex items-center justify-center bg-red-200 h-12 w-12 rounded-full border border-red-600'>
+									{getIcon(skill)}
+								</div>
+								<div class='ml-4 text-center'>
+									<h2 class='font-semibold'>{skill}</h2>
+									<SfRating
+										max={appStore.configuration.scoreRange.max}
+										value={score}
+										onClick$={async (newScore) => {
+											await pathSkillMatrixMine({
+												skill,
+												skillCategory,
+												score: newScore,
+											});
+											const newSkills = skillsMineSig.value;
+											newSkills[category] = skillsMineSig.value[category].map(
+												(s) => ({
+													...s,
+													score: s.skill === skill ? newScore : s.score,
+												})
+											);
+											skillsMineSig.value = { ...newSkills };
+										}}
+									/>
+								</div>
 							</div>
-							<div class='ml-4 text-center'>
-								<h2 class='font-semibold'>{skill}</h2>
-								<SfRating
-									max={appStore.configuration.scoreRange.max}
-									value={score}
-									onClick$={async (newScore) => {
-										await pathSkillMatrixMine({
-											skill,
-											skillCategory,
-											score: newScore,
-										});
-										const newSkills = skillsMineSig.value;
-										newSkills[category] = skillsMineSig.value[category].map(
-											(s) => ({
-												...s,
-												score: s.skill === skill ? newScore : s.score,
-											})
-										);
-										skillsMineSig.value = { ...newSkills };
-									}}
-								/>
-							</div>
-						</div>
-					))}
+						))}
+					</div>
 				</div>
 			))}
 		</div>

@@ -18,12 +18,13 @@ export const Header = component$(() => {
 				</div>
 				<div class='pr-6'>
 					<button
-						class='bg-transparent text-gray-400 font-semibold p-2 m-2 hover:bg-red-600 hover:text-white rounded border-0'
+						class='bg-transparent text-gray-400 font-semibold p-2 m-2 hover:bg-red-600 hover:text-white rounded border-0 min-w-[100px]'
 						onClick$={() => {
-							appStore.route = 'SEARCH';
+							appStore.route =
+								appStore.route === 'SEARCH' ? 'PROFILE' : 'SEARCH';
 						}}
 					>
-						{t('change_team')}
+						{appStore.route === 'SEARCH' ? t('profile') : t('search')}
 					</button>
 				</div>
 			</div>
