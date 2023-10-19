@@ -2,7 +2,6 @@ import {
 	$,
 	component$,
 	useContext,
-	useSignal,
 	useStore,
 	useTask$,
 } from '@builder.io/qwik';
@@ -20,7 +19,6 @@ export const Profile = component$(() => {
 		{ deep: true }
 	);
 	const appStore = useContext(AppContext);
-	let skillsSig = useSignal<Record<string, number>>({});
 
 	const updateUserMe = $(async () => {
 		const user = await getUserMe();
@@ -33,7 +31,7 @@ export const Profile = component$(() => {
 
 	useTask$(async () => {
 		if (!getCookie(COOKIE_TOKEN_KEY)) {
-			appStore.isLogged = false;
+			appStore.route = 'AUTH';
 		}
 
 		if (!appStore.configuration.skills.length) {
@@ -41,12 +39,6 @@ export const Profile = component$(() => {
 		}
 
 		updateUserMe();
-
-		skillsSig.value = appStore.configuration.skills.reduce((result, skill) => {
-			// @ts-ignore
-			result[skill] = 1;
-			return result;
-		}, {});
 	});
 	return (
 		<div class='flex justify-center'>

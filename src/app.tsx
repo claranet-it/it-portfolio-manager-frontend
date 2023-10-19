@@ -5,7 +5,8 @@ import {
 	useContextProvider,
 	useStore,
 } from '@builder.io/qwik';
-import { Home } from './components/Home';
+import { Auth } from './components/Auth';
+import { Layout } from './components/Layout';
 import { Profile } from './components/Profile';
 import { AppStore } from './utils/types';
 
@@ -24,10 +25,10 @@ export const auth0 = new Auth0Client({
 export const AppContext = createContextId<AppStore>('AppStore');
 
 const initialState: AppStore = {
-	isLogged: false,
+	route: 'AUTH',
 	configuration: {
 		crews: [],
-		skills: [],
+		skills: {},
 		scoreRange: {
 			min: 0,
 			max: 0,
@@ -38,5 +39,11 @@ const initialState: AppStore = {
 export const App = component$(() => {
 	const appStore = useStore<AppStore>(initialState);
 	useContextProvider(AppContext, appStore);
-	return appStore.isLogged ? <Profile /> : <Home />;
+	return appStore.route === 'PROFILE' ? (
+		<Layout>
+			<Profile />
+		</Layout>
+	) : (
+		<Auth />
+	);
 });

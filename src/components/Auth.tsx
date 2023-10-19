@@ -3,11 +3,11 @@ import { AppContext, auth0 } from '../app';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, setCookie } from '../utils/cookie';
 
-export const Home = component$(() => {
+export const Auth = component$(() => {
 	const appStore = useContext(AppContext);
 
 	const goToProfile = $(() => {
-		appStore.isLogged = true;
+		appStore.route = 'PROFILE';
 	});
 
 	useTask$(async () => {

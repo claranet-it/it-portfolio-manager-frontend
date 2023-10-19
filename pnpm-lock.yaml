@@ -9,8 +9,8 @@ dependencies:
     specifier: ^2.1.2
     version: 2.1.2
   '@builder.io/qwik':
-    specifier: ^1.2.6
-    version: 1.2.12(undici@5.25.2)
+    specifier: ^1.2.13
+    version: 1.2.13(undici@5.25.2)
 
 devDependencies:
   autoprefixer:
@@ -40,8 +40,8 @@ packages:
     resolution: {integrity: sha512-xdA65Z/U7++Y7L9Uwh8Q8OVOs6qgFz+fb7GAzHFjpr1icO37B//xdzLXm7ZRgA19RWrsNe1nme3h896igJSvvw==}
     dev: false
 
-  /@builder.io/qwik@1.2.12(undici@5.25.2):
-    resolution: {integrity: sha512-17dwM9BR0NJtrWLPlDygdYMlRkBAMEp8nkPIhhApSH5c/ESQMlbVg7Rm665WkBTf87+Epd+b7cC7Ky+8iYGjmA==}
+  /@builder.io/qwik@1.2.13(undici@5.25.2):
+    resolution: {integrity: sha512-JVBBfkoFNGDd6BZzuk8k2rS+Td9SLngZWk0j6lJCQNPj548vA4DdERlUM+iHe3BYq2q7A3oMo63vUF74h42gDw==}
     engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
     hasBin: true
     peerDependencies:

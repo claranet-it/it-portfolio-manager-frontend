@@ -1,5 +1,5 @@
 export type AppStore = {
-	isLogged: boolean;
+	route: 'AUTH' | 'PROFILE' | 'SEARCH';
 	configuration: Configuration;
 };
 
@@ -18,23 +18,15 @@ export type SetUserProfile = {
 
 export type Configuration = {
 	crews: string[];
-	skills: string[];
+	skills: Record<string, string[]>;
 	scoreRange: {
 		min: number;
 		max: number;
 	};
 };
 
-export type GetSkill = {
-	uid: string;
-	company: string;
-	crew: string;
+export type Skill = {
 	skill: string;
 	score: number;
-	updatedAt: string;
-};
-
-export type PatchSkill = {
-	skill: string;
-	score: number;
+	skillCategory: string;
 };
