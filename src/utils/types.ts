@@ -31,3 +31,9 @@ export type Skill = {
 	score: number;
 	skillCategory: string;
 };
+
+export type SkillFull = Skill & {
+	uid: string;
+	company: string;
+	crew: string;
+};

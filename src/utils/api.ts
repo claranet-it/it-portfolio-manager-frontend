@@ -1,6 +1,12 @@
 import { COOKIE_TOKEN_KEY } from './constants';
 import { getCookie } from './cookie';
-import { Configuration, SetUserProfile, Skill, UserMe } from './types';
+import {
+	Configuration,
+	SetUserProfile,
+	Skill,
+	SkillFull,
+	UserMe,
+} from './types';
 
 const getHeaders = () => {
 	const token = getCookie(COOKIE_TOKEN_KEY);
@@ -54,4 +60,14 @@ export const pathSkillMatrixMine = async (skill: Skill): Promise<boolean> => {
 		{ method: 'PATCH', headers, body: JSON.stringify(skill) }
 	);
 	return response.status === 204;
+};
+
+export const getSkills = async (): Promise<SkillFull[]> => {
+	const company = 'it';
+	const headers = getHeaders();
+	const response = await fetch(
+		`${import.meta.env.VITE_BACKEND_URL}/api/skill-matrix?company=${company}`,
+		{ method: 'GET', headers }
+	);
+	return response.status === 200 ? await response.json() : null;
 };
