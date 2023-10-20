@@ -108,7 +108,7 @@ export const Search = component$(() => {
 												>
 													<td>{name}</td>
 													{skills.map((skill) => (
-														<td>
+														<td class='text-center'>
 															{sailorSkills.find((sk) => sk.skill === skill)
 																?.score || ''}
 														</td>
