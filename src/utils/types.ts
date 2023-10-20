@@ -23,6 +23,7 @@ export type Configuration = {
 		min: number;
 		max: number;
 	};
+	scoreRangeLabels: Record<number, string>;
 };
 
 export type Skill = {

@@ -5,7 +5,7 @@ import { SfIconStarFilled } from './SfIconStarFilled';
 export const SfRating = component$<{
 	max: number;
 	value: number;
-	onClick$: PropFunction<(value: number) => void>;
+	onClick$?: PropFunction<(value: number) => void>;
 }>(({ max = 5, value = 0, onClick$ }) => {
 	const uniqueId = useId();
 
@@ -19,6 +19,7 @@ export const SfRating = component$<{
 							<SfIconStar
 								key={`${uniqueId}-${i}`}
 								onClick$={() =>
+									onClick$ &&
 									onClick$(value !== currentValue ? currentValue : 0)
 								}
 							/>
@@ -26,6 +27,7 @@ export const SfRating = component$<{
 							<SfIconStarFilled
 								key={`${uniqueId}-filled-${i}`}
 								onClick$={() =>
+									onClick$ &&
 									onClick$(value !== currentValue ? currentValue : 0)
 								}
 							/>
