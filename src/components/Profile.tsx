@@ -9,7 +9,7 @@ import { AppContext } from '../app';
 import { t } from '../locale/labels';
 import { getConfiguration, getUserMe, setUserProfile } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
-import { getCookie } from '../utils/cookie';
+import { getCookie, removeCookie } from '../utils/cookie';
 import { UserMe } from '../utils/types';
 import { SkillMatrix } from './SkillMatrix';
 
@@ -35,6 +35,11 @@ export const Profile = component$(() => {
 		}
 
 		if (!appStore.configuration.skills.length) {
+			const configuration = await getConfiguration();
+			if (!configuration) {
+				removeCookie(COOKIE_TOKEN_KEY);
+				appStore.route = 'AUTH';
+			}
 			appStore.configuration = await getConfiguration();
 		}
 

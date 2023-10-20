@@ -35,7 +35,7 @@ export const getConfiguration = async (): Promise<Configuration> => {
 		`${import.meta.env.VITE_BACKEND_URL}/api/configuration`,
 		{ method: 'GET', headers }
 	);
-	return await response.json();
+	return response.status === 200 ? await response.json() : null;
 };
 
 export const getSkillMatrixMine = async (): Promise<Skill[]> => {
