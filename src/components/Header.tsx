@@ -9,12 +9,7 @@ export const Header = component$(() => {
 		<header>
 			<div class='flex justify-between items-center bg-white border-b-2 border-red-600 '>
 				<div class='py-4 pl-6'>
-					<img
-						alt='Claranet logo'
-						height='33'
-						src='/public/logo.webp'
-						width='160'
-					/>
+					<img alt='Claranet logo' height='33' src='/logo.webp' width='160' />
 				</div>
 				<div class='pr-6'>
 					<button
