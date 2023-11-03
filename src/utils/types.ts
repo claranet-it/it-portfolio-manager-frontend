@@ -17,7 +17,7 @@ export type SetUserProfile = {
 };
 
 export type Configuration = {
-	crews: string[];
+	crews: { name: string; service_line: string }[];
 	skills: Record<string, string[]>;
 	scoreRange: {
 		min: number;
@@ -32,8 +32,11 @@ export type Skill = {
 	skillCategory: string;
 };
 
-export type SkillFull = Skill & {
-	uid: string;
-	company: string;
-	crew: string;
-};
+export type SkillMatrix = Record<
+	string,
+	{
+		company: string;
+		crew: string;
+		skills: Record<string, number>;
+	}
+>[];

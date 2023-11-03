@@ -83,15 +83,15 @@ export const Profile = component$(() => {
 												class='bg-transparent text-gray-400 font-semibold p-2 m-2 hover:bg-red-600 hover:text-white rounded border-0'
 												onClick$={async () => {
 													const response = await setUserProfile({
-														crew,
+														crew: crew.name,
 														company: 'it',
 													});
 													if (response) {
-														userStore.crew = crew;
+														userStore.crew = crew.name;
 													}
 												}}
 											>
-												{crew}
+												{crew.name}
 											</button>
 										))
 									)}

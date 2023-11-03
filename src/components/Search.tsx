@@ -10,42 +10,35 @@ import { t } from '../locale/labels';
 import { getConfiguration, getSkills } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
-import { SkillFull } from '../utils/types';
+import { SkillMatrix } from '../utils/types';
 
 export const Search = component$(() => {
 	const appStore = useContext(AppContext);
 	const crewSig = useSignal('');
 	const skillSig = useSignal('');
-	const uidSig = useSignal('');
-	const originalSkillsSig = useSignal<SkillFull[]>([]);
-	const sailorsSkillsSig = useComputed$<Record<string, SkillFull[]>>(() => {
-		let skills = originalSkillsSig.value;
-		const result: Record<string, SkillFull[]> = {};
+	const nameSig = useSignal('');
+	const originalSkillMatrixSig = useSignal<SkillMatrix>([]);
+	const filteredSkillMatrixSig = useComputed$<SkillMatrix>(() => {
+		let originalSkillMatrix = originalSkillMatrixSig.value;
+		if (nameSig.value) {
+			originalSkillMatrix = originalSkillMatrix.filter((sk) => {
+				const name = Object.keys(sk)[0];
+				return name.toLowerCase().indexOf(nameSig.value.toLowerCase()) >= 0;
+			});
+		}
 		if (crewSig.value) {
-			skills = skills.filter(
-				(sk) =>
-					crewSig.value &&
-					sk.crew.toLowerCase().indexOf(crewSig.value.toLowerCase()) >= 0
-			);
+			originalSkillMatrix = originalSkillMatrix.filter((sk) => {
+				const crew = Object.values(sk)[0].crew;
+				return crew.toLowerCase().indexOf(crewSig.value.toLowerCase()) >= 0;
+			});
 		}
 		if (skillSig.value) {
-			skills = skills.filter(
-				(sk) =>
-					sk.skill.toLowerCase().indexOf(skillSig.value.toLowerCase()) >= 0 &&
-					sk.score > 0
-			);
-		}
-		if (uidSig.value) {
-			skills = skills.filter(
-				(sk) => sk.uid.toLowerCase().indexOf(uidSig.value.toLowerCase()) >= 0
-			);
-		}
-		skills
-			.sort((a: SkillFull, b: SkillFull) => (a.uid > b.uid ? 1 : -1))
-			.map((skill) => {
-				result[skill.uid] = [...(result[skill.uid] || []), skill];
+			originalSkillMatrix = originalSkillMatrix.filter((sk) => {
+				const skills = Object.values(sk)[0].skills;
+				return skills[skillSig.value] > 0;
 			});
-		return result;
+		}
+		return originalSkillMatrix;
 	});
 
 	useTask$(async () => {
@@ -68,7 +61,7 @@ export const Search = component$(() => {
 			appStore.route = 'AUTH';
 		}
 
-		originalSkillsSig.value = skills;
+		originalSkillMatrixSig.value = skills;
 	});
 
 	return (
@@ -77,14 +70,19 @@ export const Search = component$(() => {
 			<input class='border-2' type='text' bind:value={crewSig} />
 			<br />
 			Skill
-			<input class='border-2' type='text' bind:value={skillSig} />
+			<select bind:value={skillSig}>
+				{Object.entries(appStore.configuration.skills).map(
+					([_, configurationSkills]) =>
+						configurationSkills.map((sk) => <option value={sk}>{sk}</option>)
+				)}
+			</select>
 			<br />
 			Name
-			<input class='border-2' type='text' bind:value={uidSig} />
+			<input class='border-2' type='text' bind:value={nameSig} />
 			<br />
 			<div class='flex flex-col'>
 				{Object.entries(appStore.configuration.skills).map(
-					([category, skills]) => {
+					([category, configurationSkills]) => {
 						return (
 							<div class='pt-4'>
 								{category}
@@ -94,46 +92,35 @@ export const Search = component$(() => {
 											<th class='border-2 border-red-200 w-[300px]'>
 												{t('name')}
 											</th>
-											{skills.map((sk) => (
+											{configurationSkills.map((sk) => (
 												<th class='border-2 border-red-200 w-[300px]'>{sk}</th>
 											))}
 										</tr>
 									</thead>
 									<tbody>
-										{Object.entries(sailorsSkillsSig.value).map(
-											([name, sailorSkills], key) => (
+										{filteredSkillMatrixSig.value.map((skillMatrix, key) => {
+											const [name, { skills: sailorSkills }] =
+												Object.entries(skillMatrix)[0];
+											return (
 												<tr
 													class={`${key % 2 === 0 ? 'bg-gray-300' : ''}`}
 													key={key}
 												>
 													<td>{name}</td>
-													{skills.map((skill) => (
+													{configurationSkills.map((skill) => (
 														<td class='text-center'>
-															{sailorSkills.find((sk) => sk.skill === skill)
-																?.score || ''}
+															{sailorSkills[skill] || ''}
 														</td>
 													))}
 												</tr>
-											)
-										)}
+											);
+										})}
 									</tbody>
 								</table>
 							</div>
 						);
 					}
 				)}
-
-				{/* </div>
-			{Object.entries(sailorsSkillsSig.value).map(([uid, skills], key) => (
-				<div class='flex flex-col border border-red-200 w-[300px]'>
-					<div class='text-center py-2 border-b-2 border-red-200'>{uid}</div>
-					{skills.map((skill: SkillFull) => (
-						<div key={key}>
-							{skill.skill} - {skill.score}
-						</div>
-					))}
-				</div>
-			))} */}
 			</div>
 		</div>
 	);

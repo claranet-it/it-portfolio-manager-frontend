@@ -4,7 +4,7 @@ import {
 	Configuration,
 	SetUserProfile,
 	Skill,
-	SkillFull,
+	SkillMatrix,
 	UserMe,
 } from './types';
 
@@ -62,7 +62,7 @@ export const pathSkillMatrixMine = async (skill: Skill): Promise<boolean> => {
 	return response.status === 204;
 };
 
-export const getSkills = async (): Promise<SkillFull[]> => {
+export const getSkills = async (): Promise<SkillMatrix> => {
 	const company = 'it';
 	const headers = getHeaders();
 	const response = await fetch(
