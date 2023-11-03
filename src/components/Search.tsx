@@ -66,19 +66,20 @@ export const Search = component$(() => {
 
 	return (
 		<div class='p-8'>
-			Crew
-			<input class='border-2' type='text' bind:value={crewSig} />
+			<span class='w-[300px] block'>Crew</span>
+			<input class='border-2 border-black' type='text' bind:value={crewSig} />
 			<br />
-			Skill
-			<select bind:value={skillSig}>
+			<span class='w-[300px] block'>Skill</span>
+			<select bind:value={skillSig} class='border-2 border-black'>
+				<option value='' selected></option>
 				{Object.entries(appStore.configuration.skills).map(
 					([_, configurationSkills]) =>
 						configurationSkills.map((sk) => <option value={sk}>{sk}</option>)
 				)}
 			</select>
 			<br />
-			Name
-			<input class='border-2' type='text' bind:value={nameSig} />
+			<span class='w-[300px] block'>Name</span>
+			<input class='border-2 border-black' type='text' bind:value={nameSig} />
 			<br />
 			<div class='flex flex-col'>
 				{Object.entries(appStore.configuration.skills).map(
