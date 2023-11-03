@@ -18,6 +18,6 @@
 	},
 	"dependencies": {
 		"@auth0/auth0-spa-js": "^2.1.2",
-		"@builder.io/qwik": "^1.2.13"
+		"@builder.io/qwik": "^1.2.16"
 	}
 }
