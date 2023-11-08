@@ -1,4 +1,5 @@
 import {
+	$,
 	component$,
 	useComputed$,
 	useContext,
@@ -8,7 +9,12 @@ import {
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
 import { getConfiguration, getSkills } from '../utils/api';
-import { COOKIE_TOKEN_KEY } from '../utils/constants';
+import {
+	COOKIE_TOKEN_KEY,
+	COVERAGE_BAD_LIMIT,
+	COVERAGE_GOOD_LIMIT,
+	SKILL_LEVEL_SCORE_LIMIT,
+} from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
 import { SkillMatrix } from '../utils/types';
 
@@ -23,17 +29,27 @@ export const Search = component$(() => {
 	const serviceLinesSig = useComputed$(() =>
 		Object.keys(appStore.configuration.skills)
 	);
-	const crewsSig = useComputed$(() =>
-		appStore.configuration.crews.filter(
+
+	const crewsSig = useComputed$(() => {
+		const result = appStore.configuration.crews.filter(
 			(crew) =>
 				!selectedServiceLineSig.value ||
 				crew.service_line === selectedServiceLineSig.value
-		)
-	);
+		);
+		return result;
+	});
+	const skillsSig = useComputed$(() => {
+		const skills: string[] = selectedServiceLineSig.value
+			? appStore.configuration.skills[selectedServiceLineSig.value]
+			: Object.values(appStore.configuration.skills).reduce((result, value) => {
+					result.push(...value);
+					return result;
+			  }, []);
+		return skills;
+	});
 
 	const originalSkillMatrixSig = useSignal<SkillMatrix>([]);
 	const filteredSkillMatrixSig = useComputed$<SkillMatrix>(() => {
-		console.log('result', originalSkillMatrixSig.value);
 		let result = originalSkillMatrixSig.value;
 		if (selectedNameSig.value) {
 			result = result.filter((sk) => {
@@ -92,40 +108,89 @@ export const Search = component$(() => {
 		originalSkillMatrixSig.value = skills;
 	});
 
+	const calcutateCoverage = $(
+		(skill: string): { value: string; status: 'BAD' | 'GOOD' | '' } => {
+			const total = filteredSkillMatrixSig.value.reduce((result, sailor) => {
+				const key = Object.keys(sailor)[0];
+				return result + sailor[key].skills[skill];
+			}, 0);
+			const result =
+				(total * 100) /
+				(filteredSkillMatrixSig.value.length *
+					appStore.configuration.scoreRange.max);
+			return {
+				value: result.toFixed(2),
+				status:
+					result < COVERAGE_BAD_LIMIT
+						? 'BAD'
+						: result > COVERAGE_GOOD_LIMIT
+						? 'GOOD'
+						: '',
+			};
+		}
+	);
+
+	const calcutateSkillLevel = $((skill: string) => {
+		const total = filteredSkillMatrixSig.value.reduce((result, sailor) => {
+			const key = Object.keys(sailor)[0];
+			return (
+				result + (sailor[key].skills[skill] > SKILL_LEVEL_SCORE_LIMIT ? 1 : 0)
+			);
+		}, 0);
+		return total;
+	});
 	return (
 		<div class='p-8'>
-			<span class='w-[300px] block'>Service Line</span>
-			<select bind:value={selectedServiceLineSig} class='border-2 border-black'>
-				<option value='' selected></option>
-				{serviceLinesSig.value.map((sl) => (
-					<option value={sl}>{sl}</option>
-				))}
-			</select>
-			<br />
-			<span class='w-[300px] block'>Crew</span>
-			<select bind:value={selectedCrewSig} class='border-2 border-black'>
-				<option value='' selected></option>
-				{crewsSig.value.map(({ name }) => (
-					<option value={name}>{name}</option>
-				))}
-			</select>
-			<br />
-			<span class='w-[300px] block'>Skill</span>
-			<select bind:value={selectedSkillSig} class='border-2 border-black'>
-				<option value='' selected></option>
-				{Object.entries(appStore.configuration.skills).map(
-					([_, configurationSkills]) =>
-						configurationSkills.map((sk) => <option value={sk}>{sk}</option>)
-				)}
-			</select>
-			<br />
-			<span class='w-[300px] block'>Name</span>
-			<input
-				class='border-2 border-black'
-				type='text'
-				bind:value={selectedNameSig}
-			/>
-			<br />
+			<div class='w-full flex justify-around mb-4'>
+				<div class='max-w-[200px]'>
+					<span class='block'>Service Line</span>
+					<select
+						value={selectedServiceLineSig.value}
+						onChange$={(e) => {
+							selectedServiceLineSig.value = e.target.value;
+							selectedCrewSig.value = '';
+						}}
+						class='border-2 border-black w-full h-8 mt-2'
+					>
+						<option value='' selected></option>
+						{serviceLinesSig.value.map((sl) => (
+							<option value={sl}>{sl}</option>
+						))}
+					</select>
+				</div>
+				<div class='max-w-[200px]'>
+					<span class='block'>Crew</span>
+					<select
+						bind:value={selectedCrewSig}
+						class='border-2 border-black w-full h-8 mt-2'
+					>
+						<option value='' selected></option>
+						{crewsSig.value.map(({ name }) => (
+							<option value={name}>{name}</option>
+						))}
+					</select>
+				</div>
+				<div class='max-w-[200px]'>
+					<span class='block'>Skill</span>
+					<select
+						bind:value={selectedSkillSig}
+						class='border-2 border-black w-full h-8 mt-2'
+					>
+						<option value='' selected></option>
+						{skillsSig.value.map((sk) => (
+							<option value={sk}>{sk}</option>
+						))}
+					</select>
+				</div>
+				<div class='max-w-[200px]'>
+					<span class='block'>Name</span>
+					<input
+						class='border-2 border-black w-full h-8 mt-2'
+						type='text'
+						bind:value={selectedNameSig}
+					/>
+				</div>
+			</div>
 			<div class='flex flex-col'>
 				{Object.entries(appStore.configuration.skills).map(
 					([serviceLine, configurationSkills]) => {
@@ -162,6 +227,54 @@ export const Search = component$(() => {
 												</tr>
 											);
 										})}
+										{filteredSkillMatrixSig.value.length > 0 && (
+											<>
+												<tr class='bg-slate-600 text-white'>
+													<td class='flex align-middle'>
+														Coverage (
+														<div class='text-green-500 font-bold'>
+															&nbsp;{COVERAGE_GOOD_LIMIT}&nbsp;
+														</div>
+														/
+														<div class='text-red-500 font-bold pt-[1px]'>
+															&nbsp;{COVERAGE_BAD_LIMIT}&nbsp;
+														</div>
+														)
+													</td>
+													{configurationSkills.map(async (skill) => {
+														const coverage = await calcutateCoverage(skill);
+														return (
+															<td
+																class={{
+																	'text-center': true,
+																	'text-red-500 font-bold':
+																		coverage.status === 'BAD',
+																	'text-green-500 font-bold':
+																		coverage.status === 'GOOD',
+																}}
+															>
+																{coverage.value}
+															</td>
+														);
+													})}
+												</tr>
+												<tr class='bg-slate-600 text-white'>
+													<td>Skill Level ( {SKILL_LEVEL_SCORE_LIMIT}+ )</td>
+													{configurationSkills.map(async (skill) => {
+														const skillLevel = await calcutateSkillLevel(skill);
+														return (
+															<td
+																class={{
+																	'text-center': true,
+																}}
+															>
+																{skillLevel}
+															</td>
+														);
+													})}
+												</tr>
+											</>
+										)}
 									</tbody>
 								</table>
 							</div>
