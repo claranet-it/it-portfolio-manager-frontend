@@ -14,31 +14,59 @@ import { SkillMatrix } from '../utils/types';
 
 export const Search = component$(() => {
 	const appStore = useContext(AppContext);
-	const crewSig = useSignal('');
-	const skillSig = useSignal('');
-	const nameSig = useSignal('');
+
+	const selectedServiceLineSig = useSignal('');
+	const selectedCrewSig = useSignal('');
+	const selectedSkillSig = useSignal('');
+	const selectedNameSig = useSignal('');
+
+	const serviceLinesSig = useComputed$(() =>
+		Object.keys(appStore.configuration.skills)
+	);
+	const crewsSig = useComputed$(() =>
+		appStore.configuration.crews.filter(
+			(crew) =>
+				!selectedServiceLineSig.value ||
+				crew.service_line === selectedServiceLineSig.value
+		)
+	);
+
 	const originalSkillMatrixSig = useSignal<SkillMatrix>([]);
 	const filteredSkillMatrixSig = useComputed$<SkillMatrix>(() => {
-		let originalSkillMatrix = originalSkillMatrixSig.value;
-		if (nameSig.value) {
-			originalSkillMatrix = originalSkillMatrix.filter((sk) => {
+		console.log('result', originalSkillMatrixSig.value);
+		let result = originalSkillMatrixSig.value;
+		if (selectedNameSig.value) {
+			result = result.filter((sk) => {
 				const name = Object.keys(sk)[0];
-				return name.toLowerCase().indexOf(nameSig.value.toLowerCase()) >= 0;
+				return (
+					name.toLowerCase().indexOf(selectedNameSig.value.toLowerCase()) >= 0
+				);
 			});
 		}
-		if (crewSig.value) {
-			originalSkillMatrix = originalSkillMatrix.filter((sk) => {
+		if (selectedCrewSig.value) {
+			result = result.filter((sk) => {
 				const crew = Object.values(sk)[0].crew;
-				return crew.toLowerCase().indexOf(crewSig.value.toLowerCase()) >= 0;
+				return (
+					crew.toLowerCase().indexOf(selectedCrewSig.value.toLowerCase()) >= 0
+				);
 			});
 		}
-		if (skillSig.value) {
-			originalSkillMatrix = originalSkillMatrix.filter((sk) => {
+		if (selectedSkillSig.value) {
+			result = result.filter((sk) => {
 				const skills = Object.values(sk)[0].skills;
-				return skills[skillSig.value] > 0;
+				return skills[selectedSkillSig.value] > 0;
 			});
 		}
-		return originalSkillMatrix;
+
+		if (selectedServiceLineSig.value) {
+			result = result.filter((sk) => {
+				const name = Object.keys(sk)[0];
+				return (
+					name.toLowerCase().indexOf(selectedNameSig.value.toLowerCase()) >= 0
+				);
+			});
+		}
+		return result;
 	});
 
 	useTask$(async () => {
@@ -66,11 +94,24 @@ export const Search = component$(() => {
 
 	return (
 		<div class='p-8'>
+			<span class='w-[300px] block'>Service Line</span>
+			<select bind:value={selectedServiceLineSig} class='border-2 border-black'>
+				<option value='' selected></option>
+				{serviceLinesSig.value.map((sl) => (
+					<option value={sl}>{sl}</option>
+				))}
+			</select>
+			<br />
 			<span class='w-[300px] block'>Crew</span>
-			<input class='border-2 border-black' type='text' bind:value={crewSig} />
+			<select bind:value={selectedCrewSig} class='border-2 border-black'>
+				<option value='' selected></option>
+				{crewsSig.value.map(({ name }) => (
+					<option value={name}>{name}</option>
+				))}
+			</select>
 			<br />
 			<span class='w-[300px] block'>Skill</span>
-			<select bind:value={skillSig} class='border-2 border-black'>
+			<select bind:value={selectedSkillSig} class='border-2 border-black'>
 				<option value='' selected></option>
 				{Object.entries(appStore.configuration.skills).map(
 					([_, configurationSkills]) =>
@@ -79,14 +120,19 @@ export const Search = component$(() => {
 			</select>
 			<br />
 			<span class='w-[300px] block'>Name</span>
-			<input class='border-2 border-black' type='text' bind:value={nameSig} />
+			<input
+				class='border-2 border-black'
+				type='text'
+				bind:value={selectedNameSig}
+			/>
 			<br />
 			<div class='flex flex-col'>
 				{Object.entries(appStore.configuration.skills).map(
-					([category, configurationSkills]) => {
-						return (
+					([serviceLine, configurationSkills]) => {
+						return !selectedServiceLineSig.value ||
+							selectedServiceLineSig.value === serviceLine ? (
 							<div class='pt-4'>
-								{category}
+								{serviceLine}
 								<table class=''>
 									<thead>
 										<tr>
@@ -119,6 +165,8 @@ export const Search = component$(() => {
 									</tbody>
 								</table>
 							</div>
+						) : (
+							<></>
 						);
 					}
 				)}
