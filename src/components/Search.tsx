@@ -42,9 +42,9 @@ export const Search = component$(() => {
 		const skills: string[] = selectedServiceLineSig.value
 			? appStore.configuration.skills[selectedServiceLineSig.value]
 			: Object.values(appStore.configuration.skills).reduce((result, value) => {
-					result.push(...value);
-					return result;
-			  }, []);
+				result.push(...value);
+				return result;
+			}, []);
 		return skills;
 	});
 
@@ -83,6 +83,33 @@ export const Search = component$(() => {
 			});
 		}
 		return result;
+	});
+
+	const tableStructure = useComputed$<Record<string, string[]>>(() => {
+		const rawData = appStore.configuration.skills
+
+		if (!selectedSkillSig.value) {
+			return rawData;
+		}
+
+		return Object.entries(rawData)
+			.map(([serviceLine, configurationSkills]) => {
+				return {
+					serviceLine,
+					skills: configurationSkills.filter((skill) => skill === selectedSkillSig.value)
+				}
+			})
+			.filter(({ skills }) => skills.length > 0)
+			.reduce((result, row) => {
+
+				const {
+					serviceLine,
+					skills
+				} = row;
+
+				result[serviceLine] = skills;
+				return result;
+			}, {} as Record<string, string[]>);
 	});
 
 	useTask$(async () => {
@@ -124,8 +151,8 @@ export const Search = component$(() => {
 					result < COVERAGE_BAD_LIMIT
 						? 'BAD'
 						: result > COVERAGE_GOOD_LIMIT
-						? 'GOOD'
-						: '',
+							? 'GOOD'
+							: '',
 			};
 		}
 	);
@@ -192,7 +219,7 @@ export const Search = component$(() => {
 				</div>
 			</div>
 			<div class='flex flex-col'>
-				{Object.entries(appStore.configuration.skills).map(
+				{Object.entries(tableStructure.value).map(
 					([serviceLine, configurationSkills]) => {
 						return !selectedServiceLineSig.value ||
 							selectedServiceLineSig.value === serviceLine ? (
