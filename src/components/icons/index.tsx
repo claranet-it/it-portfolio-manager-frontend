@@ -26,27 +26,27 @@ import { IOS } from './iOS';
 
 export const getIcon = (skill: string) => {
 	switch (skill) {
-		case 'C# - Backend':
+		case 'C#':
 			return <CSharp />;
 		case 'Cloud Finance (Billing e Cost explorer)':
 			return <Billing />;
 		case 'Cloud Governance (Control Tower)':
 			return <AWS />;
-		case 'Elixir - Backend':
+		case 'Elixir':
 			return <Elixir />;
 		case 'IAC (Terraform, Cloudformation, CDK, Ansible)':
 			return <Ansible />;
-		case 'Java/Kotlin - Backend':
+		case 'Java/Kotlin':
 			return <Kotlin />;
-		case 'JavaScript/TypeScript - Backend':
+		case 'NodeJS (JS/TS)':
 			return <TypeScript />;
-		case 'JavaScript/TypeScript - Frontend':
+		case 'Frontend (JS/TS)':
 			return <JavaScript />;
 		case 'Machine Learning (Amazon Sagemaker, Rekognition, Lex..)':
 			return <AWS />;
 		case 'Monitoring (Cloudwatch, New Relic, Prometheus, Grafana)':
 			return <Grafana />;
-		case 'Multiplatform Mobile (ionic, react-native, flutter, etc etc)':
+		case 'Multiplatform Mobile (ionic, react-native, flutter)':
 			return <Flutter />;
 		case 'Native Android':
 			return <Android />;
@@ -54,15 +54,15 @@ export const getIcon = (skill: string) => {
 			return <IOS />;
 		case 'OS Server (Linux, Windows)':
 			return <Linux />;
-		case 'PHP - Backend':
+		case 'PHP':
 			return <PHP />;
 		case 'Programmazione (Bash, Python)':
 			return <TypeScript />;
-		case 'Python - Backend':
+		case 'Python':
 			return <Python />;
 		case 'Ruby (Rails)':
 			return <Ruby />;
-		case 'Rust - Backend':
+		case 'Rust':
 			return <Rust />;
 		case 'Serverless (AWS Lambda, DynamoDB, Step Function...)':
 			return <Dynamo />;
@@ -92,7 +92,7 @@ export const getIcon = (skill: string) => {
 			return <Lambda />;
 		case 'Servizi core (IAM, EC2,VPC,RDS,S3, Elasticache)':
 			return <TypeScript />;
-		case 'UI Development (HTML/CSS/SCSS, etc etc)':
+		case 'UI Development (HTML/CSS/SCSS)':
 			return <Design />;
 		default:
 			return <AWS />;
