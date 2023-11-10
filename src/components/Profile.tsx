@@ -74,7 +74,7 @@ export const Profile = component$(() => {
 												userStore.crew = '';
 											}}
 										>
-											{t('change_team')}
+											{t('change_crew')}
 										</button>
 									) : (
 										appStore.configuration.crews.map((crew, key) => (
