@@ -54,7 +54,7 @@ export const SearchSkillCard = component$<Props>(({ skill, skillMatrix }) => {
 				<div class='flex items-center justify-center bg-red-200 h-12 w-12 rounded-full border border-red-600'>
 					{getIcon(skill)}
 				</div>
-				<span class='text-lg mt-2 mb-4'>{skill}</span>
+				<span class='text-lg mt-2 mb-4'>{skill.slice(0, 20)}</span>
 			</div>
 			<div class='flex flex-col w-full'>
 				{skillMatrix.value
