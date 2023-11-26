@@ -1,5 +1,4 @@
 import {
-	$,
 	component$,
 	useComputed$,
 	useContext,
@@ -7,16 +6,11 @@ import {
 	useTask$,
 } from '@builder.io/qwik';
 import { AppContext } from '../app';
-import { t } from '../locale/labels';
 import { getConfiguration, getSkills } from '../utils/api';
-import {
-	COOKIE_TOKEN_KEY,
-	COVERAGE_BAD_LIMIT,
-	COVERAGE_GOOD_LIMIT,
-	SKILL_LEVEL_SCORE_LIMIT,
-} from '../utils/constants';
+import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
 import { SkillMatrix } from '../utils/types';
+import { SearchSkillCard } from './SearchSkillCard';
 
 export const Search = component$(() => {
 	const appStore = useContext(AppContext);
@@ -42,9 +36,9 @@ export const Search = component$(() => {
 		const skills: string[] = selectedServiceLineSig.value
 			? appStore.configuration.skills[selectedServiceLineSig.value]
 			: Object.values(appStore.configuration.skills).reduce((result, value) => {
-				result.push(...value);
-				return result;
-			}, []);
+					result.push(...value);
+					return result;
+			  }, []);
 		return skills;
 	});
 
@@ -86,7 +80,7 @@ export const Search = component$(() => {
 	});
 
 	const tableStructure = useComputed$<Record<string, string[]>>(() => {
-		const rawData = appStore.configuration.skills
+		const rawData = appStore.configuration.skills;
 
 		if (!selectedSkillSig.value) {
 			return rawData;
@@ -96,16 +90,14 @@ export const Search = component$(() => {
 			.map(([serviceLine, configurationSkills]) => {
 				return {
 					serviceLine,
-					skills: configurationSkills.filter((skill) => skill === selectedSkillSig.value)
-				}
+					skills: configurationSkills.filter(
+						(skill) => skill === selectedSkillSig.value
+					),
+				};
 			})
 			.filter(({ skills }) => skills.length > 0)
 			.reduce((result, row) => {
-
-				const {
-					serviceLine,
-					skills
-				} = row;
+				const { serviceLine, skills } = row;
 
 				result[serviceLine] = skills;
 				return result;
@@ -135,37 +127,6 @@ export const Search = component$(() => {
 		originalSkillMatrixSig.value = skills;
 	});
 
-	const calcutateCoverage = $(
-		(skill: string): { value: string; status: 'BAD' | 'GOOD' | '' } => {
-			const total = filteredSkillMatrixSig.value.reduce((result, sailor) => {
-				const key = Object.keys(sailor)[0];
-				return result + sailor[key].skills[skill];
-			}, 0);
-			const result =
-				(total * 100) /
-				(filteredSkillMatrixSig.value.length *
-					appStore.configuration.scoreRange.max);
-			return {
-				value: result.toFixed(2),
-				status:
-					result < COVERAGE_BAD_LIMIT
-						? 'BAD'
-						: result > COVERAGE_GOOD_LIMIT
-							? 'GOOD'
-							: '',
-			};
-		}
-	);
-
-	const calcutateSkillLevel = $((skill: string) => {
-		const total = filteredSkillMatrixSig.value.reduce((result, sailor) => {
-			const key = Object.keys(sailor)[0];
-			return (
-				result + (sailor[key].skills[skill] > SKILL_LEVEL_SCORE_LIMIT ? 1 : 0)
-			);
-		}, 0);
-		return total;
-	});
 	return (
 		<div class='p-8'>
 			<div class='w-full flex justify-around mb-4'>
@@ -224,86 +185,18 @@ export const Search = component$(() => {
 						return !selectedServiceLineSig.value ||
 							selectedServiceLineSig.value === serviceLine ? (
 							<div class='pt-4'>
-								{serviceLine}
-								<table class=''>
-									<thead>
-										<tr>
-											<th class='border-2 border-red-200 w-[300px]'>
-												{t('name')}
-											</th>
-											{configurationSkills.map((sk) => (
-												<th class='border-2 border-red-200 w-[300px]'>{sk}</th>
-											))}
-										</tr>
-									</thead>
-									<tbody>
-										{filteredSkillMatrixSig.value.map((skillMatrix, key) => {
-											const [name, { skills: sailorSkills }] =
-												Object.entries(skillMatrix)[0];
-											return (
-												<tr
-													class={`${key % 2 === 0 ? 'bg-gray-300' : ''}`}
-													key={key}
-												>
-													<td>{name}</td>
-													{configurationSkills.map((skill) => (
-														<td class='text-center'>
-															{sailorSkills[skill] || ''}
-														</td>
-													))}
-												</tr>
-											);
-										})}
-										{filteredSkillMatrixSig.value.length > 0 && (
-											<>
-												<tr class='bg-slate-600 text-white'>
-													<td class='flex align-middle'>
-														Coverage (
-														<div class='text-green-500 font-bold'>
-															&nbsp;{COVERAGE_GOOD_LIMIT}&nbsp;
-														</div>
-														/
-														<div class='text-red-500 font-bold pt-[1px]'>
-															&nbsp;{COVERAGE_BAD_LIMIT}&nbsp;
-														</div>
-														)
-													</td>
-													{configurationSkills.map(async (skill) => {
-														const coverage = await calcutateCoverage(skill);
-														return (
-															<td
-																class={{
-																	'text-center': true,
-																	'text-red-500 font-bold':
-																		coverage.status === 'BAD',
-																	'text-green-500 font-bold':
-																		coverage.status === 'GOOD',
-																}}
-															>
-																{coverage.value}
-															</td>
-														);
-													})}
-												</tr>
-												<tr class='bg-slate-600 text-white'>
-													<td>Skill Level ( {SKILL_LEVEL_SCORE_LIMIT}+ )</td>
-													{configurationSkills.map(async (skill) => {
-														const skillLevel = await calcutateSkillLevel(skill);
-														return (
-															<td
-																class={{
-																	'text-center': true,
-																}}
-															>
-																{skillLevel}
-															</td>
-														);
-													})}
-												</tr>
-											</>
-										)}
-									</tbody>
-								</table>
+								<div class='w-full text-center text-3xl font-bold my-4'>
+									{serviceLine}
+								</div>
+								<div class='flex flex-wrap justify-between'>
+									{configurationSkills.map((skill, key) => (
+										<SearchSkillCard
+											key={key}
+											skill={skill}
+											skillMatrix={filteredSkillMatrixSig}
+										/>
+									))}
+								</div>
 							</div>
 						) : (
 							<></>
