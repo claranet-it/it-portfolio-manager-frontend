@@ -131,14 +131,14 @@ export const Search = component$(() => {
 		<div class='p-8'>
 			<div class='w-full flex justify-around mb-4'>
 				<div class='max-w-[200px]'>
-					<span class='block'>Service Line</span>
+					<span class='block text-xl font-bold'>Service Line</span>
 					<select
 						value={selectedServiceLineSig.value}
 						onChange$={(e) => {
 							selectedServiceLineSig.value = e.target.value;
 							selectedCrewSig.value = '';
 						}}
-						class='border-2 border-black w-full h-8 mt-2'
+						class='border-2 border-red-500 w-full h-8 mt-2'
 					>
 						<option value='' selected></option>
 						{serviceLinesSig.value.map((sl) => (
@@ -147,10 +147,10 @@ export const Search = component$(() => {
 					</select>
 				</div>
 				<div class='max-w-[200px]'>
-					<span class='block'>Crew</span>
+					<span class='block text-xl font-bold'>Crew</span>
 					<select
 						bind:value={selectedCrewSig}
-						class='border-2 border-black w-full h-8 mt-2'
+						class='border-2 border-red-500 w-full h-8 mt-2'
 					>
 						<option value='' selected></option>
 						{crewsSig.value.map(({ name }) => (
@@ -159,10 +159,10 @@ export const Search = component$(() => {
 					</select>
 				</div>
 				<div class='max-w-[200px]'>
-					<span class='block'>Skill</span>
+					<span class='block text-xl font-bold'>Skill</span>
 					<select
 						bind:value={selectedSkillSig}
-						class='border-2 border-black w-full h-8 mt-2'
+						class='border-2 border-red-500 w-full h-8 mt-2'
 					>
 						<option value='' selected></option>
 						{skillsSig.value.map((sk) => (
@@ -171,9 +171,9 @@ export const Search = component$(() => {
 					</select>
 				</div>
 				<div class='max-w-[200px]'>
-					<span class='block'>Name</span>
+					<span class='block text-xl font-bold'>Name</span>
 					<input
-						class='border-2 border-black w-full h-8 mt-2'
+						class='border-2 border-red-500 w-full h-8 mt-2'
 						type='text'
 						bind:value={selectedNameSig}
 					/>
