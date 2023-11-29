@@ -89,7 +89,6 @@ export const putEffort = async (
 ): Promise<boolean> => {
 	const headers = getHeaders();
 	const body = { uid, ...month };
-	console.log('body', body);
 	const response = await fetch(
 		`${import.meta.env.VITE_BACKEND_URL}/api/effort`,
 		{ method: 'PUT', headers, body: JSON.stringify(body) }
