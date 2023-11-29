@@ -7,5 +7,8 @@
 	"search": "Ricerca",
 	"profile": "Profilo",
 	"name": "Name",
-	"effort": "Effort"
+	"effort": "Effort",
+	"confirmedEffort": "Confirmed",
+	"tentativeEffort": "Tentative",
+	"note": "Note"
 }

@@ -41,12 +41,11 @@ export type SkillMatrix = Record<
 	}
 >[];
 
-export type Effort = Record<
-	string,
-	{
-		month_year: string;
-		confirmedEffort: number;
-		tentativeEffort: number;
-		notes: string;
-	}[]
->[];
+export type Effort = Record<string, Month[]>[];
+
+export type Month = {
+	month_year: string;
+	confirmedEffort: number;
+	tentativeEffort: number;
+	notes: string;
+};
