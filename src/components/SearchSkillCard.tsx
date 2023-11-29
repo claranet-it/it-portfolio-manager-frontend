@@ -27,7 +27,6 @@ export const SearchSkillCard = component$<Props>(({ skill, skillMatrix }) => {
 		const result =
 			(total * 100) /
 			(skillMatrix.value.length * appStore.configuration.scoreRange.max);
-		console.log(result, 'result');
 		return {
 			value: result.toFixed(2),
 			status:
