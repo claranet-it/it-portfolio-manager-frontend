@@ -2,6 +2,7 @@ import { COOKIE_TOKEN_KEY } from './constants';
 import { getCookie } from './cookie';
 import {
 	Configuration,
+	Effort,
 	SetUserProfile,
 	Skill,
 	SkillMatrix,
@@ -67,6 +68,15 @@ export const getSkills = async (): Promise<SkillMatrix> => {
 	const headers = getHeaders();
 	const response = await fetch(
 		`${import.meta.env.VITE_BACKEND_URL}/api/skill-matrix?company=${company}`,
+		{ method: 'GET', headers }
+	);
+	return response.status === 200 ? await response.json() : null;
+};
+
+export const getEffort = async (): Promise<Effort> => {
+	const headers = getHeaders();
+	const response = await fetch(
+		`${import.meta.env.VITE_BACKEND_URL}/api/effort`,
 		{ method: 'GET', headers }
 	);
 	return response.status === 200 ? await response.json() : null;

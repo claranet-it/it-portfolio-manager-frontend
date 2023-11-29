@@ -1,5 +1,5 @@
 export type AppStore = {
-	route: 'AUTH' | 'PROFILE' | 'SEARCH';
+	route: 'AUTH' | 'PROFILE' | 'SEARCH' | 'EFFORT';
 	configuration: Configuration;
 };
 
@@ -39,4 +39,14 @@ export type SkillMatrix = Record<
 		crew: string;
 		skills: Record<string, number>;
 	}
+>[];
+
+export type Effort = Record<
+	string,
+	{
+		month_year: string;
+		confirmedEffort: number;
+		tentativeEffort: number;
+		notes: string;
+	}[]
 >[];

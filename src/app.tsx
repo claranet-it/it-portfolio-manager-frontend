@@ -6,6 +6,7 @@ import {
 	useStore,
 } from '@builder.io/qwik';
 import { Auth } from './components/Auth';
+import { Effort } from './components/Effort';
 import { Layout } from './components/Layout';
 import { Profile } from './components/Profile';
 import { Search } from './components/Search';
@@ -44,6 +45,14 @@ export const App = component$(() => {
 	return appStore.route === 'AUTH' ? (
 		<Auth />
 	) : (
-		<Layout>{appStore.route === 'PROFILE' ? <Profile /> : <Search />}</Layout>
+		<Layout>
+			{appStore.route === 'PROFILE' ? (
+				<Profile />
+			) : appStore.route === 'SEARCH' ? (
+				<Search />
+			) : (
+				<Effort />
+			)}
+		</Layout>
 	);
 });
