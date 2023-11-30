@@ -10,5 +10,6 @@
 	"effort": "Effort",
 	"confirmedEffort": "Confirmed",
 	"tentativeEffort": "Tentative",
-	"note": "Note"
+	"note": "Note",
+	"empty": "Empty"
 }
