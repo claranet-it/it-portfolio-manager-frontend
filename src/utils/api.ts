@@ -77,7 +77,7 @@ export const getSkills = async (): Promise<SkillMatrix> => {
 export const getEffort = async (): Promise<Effort> => {
 	const headers = getHeaders();
 	const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/effort`,
+		`${import.meta.env.VITE_BACKEND_URL}/api/effort/next`,
 		{ method: 'GET', headers }
 	);
 	return response.status === 200 ? await response.json() : null;
@@ -90,7 +90,7 @@ export const putEffort = async (
 	const headers = getHeaders();
 	const body = { uid, ...month };
 	const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/effort`,
+		`${import.meta.env.VITE_BACKEND_URL}/api/effort/next`,
 		{ method: 'PUT', headers, body: JSON.stringify(body) }
 	);
 	return response.status === 204;
