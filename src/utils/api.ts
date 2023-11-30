@@ -90,7 +90,7 @@ export const putEffort = async (
 	const headers = getHeaders();
 	const body = { uid, ...month };
 	const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/effort/next`,
+		`${import.meta.env.VITE_BACKEND_URL}/api/effort`,
 		{ method: 'PUT', headers, body: JSON.stringify(body) }
 	);
 	return response.status === 204;
