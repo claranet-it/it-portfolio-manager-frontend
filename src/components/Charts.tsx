@@ -62,13 +62,13 @@ export const Charts = component$<{ monthYear: string; effort: Signal<Effort> }>(
 									label: t('confirmedEffort'),
 									data: confirmedDataSig.value,
 									borderWidth: 1,
-									backgroundColor: 'blue',
+									backgroundColor: '#ef4444',
 								},
 								{
 									label: t('tentativeEffort'),
 									data: tentativeDataSig.value,
 									borderWidth: 1,
-									backgroundColor: 'orange',
+									backgroundColor: '#fcc82b',
 								},
 								{
 									label: t('empty'),
