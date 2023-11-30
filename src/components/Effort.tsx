@@ -33,12 +33,20 @@ export const Effort = component$(() => {
 					<div key={key} class='flex'>
 						<div class='w-[300px] flex items-center'>{name}</div>
 						{value.map((month, key) => (
-							<Month key={key} month={month} name={name} />
+							<Month
+								key={key}
+								month={month}
+								name={name}
+								onChange$={async () => {
+									effortSig.value = await getEffort();
+								}}
+							/>
 						))}
 					</div>
 				);
 			})}
-			<Charts />
+
+			<Charts effort={effortSig} />
 		</div>
 	);
 });
