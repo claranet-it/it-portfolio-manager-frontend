@@ -50,11 +50,16 @@ export const Profile = component$(() => {
 			{!!userStore.name && (
 				<div class='flex flex-col items-center justify-center'>
 					<div class='flex flex-col items-center justify-center p-6 mt-6 mb-4 rounded-lg border border-red-200 w-[600px]'>
-						<img
-							src={userStore.picture}
-							alt={t('profile_picture')}
-							class='w-32 h-32 mx-auto rounded-full aspect-square'
-						/>
+						<div class='group flex'>
+							<img
+								src={userStore.picture}
+								alt={t('profile_picture')}
+								class='w-32 h-32 mx-auto rounded-full aspect-square'
+							/>
+							<span class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2 -translate-x-1 translate-y-20 opacity-0 m-4 mx-auto">
+								Picture from Gravatar
+							</span>
+						</div>
 						<div class='space-y-4 text-center divide-y divide-gray-700'>
 							<div class='my-2 space-y-1'>
 								<h2 class='text-xl font-semibold sm:text-2xl'>
