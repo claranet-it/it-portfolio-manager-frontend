@@ -2,8 +2,8 @@ import {
 	$,
 	Signal,
 	component$,
+	noSerialize,
 	useSignal,
-	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
 import { Chart, registerables } from 'chart.js';
@@ -11,7 +11,8 @@ import { t } from '../locale/labels';
 import { Effort } from '../utils/types';
 
 export const Charts = component$<{ effort: Signal<Effort> }>(({ effort }) => {
-	const myChart = useSignal<HTMLCanvasElement>();
+	const chartElSig = useSignal<HTMLCanvasElement>();
+	const chartSig = useSignal<Chart<'bar', string[], string>>();
 
 	const extractNames = $(() => {
 		const names: string[] = [];
@@ -70,51 +71,68 @@ export const Charts = component$<{ effort: Signal<Effort> }>(({ effort }) => {
 		const confirmedData = await getConfirmedData();
 		const tentativeData = await getTentativeData();
 		const emptyData = await getEmptyData();
-		if (myChart?.value) {
+		if (chartElSig?.value) {
 			Chart.register(...registerables);
-			new Chart(myChart.value, {
-				type: 'bar',
-				data: {
-					labels: labels,
-					datasets: [
-						{
-							label: t('confirmedEffort'),
-							data: confirmedData,
-							borderWidth: 1,
-							backgroundColor: 'blue',
-						},
-						{
-							label: t('tentativeEffort'),
-							data: tentativeData,
-							borderWidth: 1,
-							backgroundColor: 'orange',
-						},
-						{
-							label: t('empty'),
-							data: emptyData,
-							borderWidth: 1,
-							backgroundColor: 'transparent',
-						},
-					],
-				},
-				options: {
-					scales: {
-						y: { beginAtZero: true, stacked: true },
-						x: { beginAtZero: true, stacked: true },
+			chartSig.value = noSerialize(
+				new Chart(chartElSig.value, {
+					type: 'bar',
+					data: {
+						labels: labels,
+						datasets: [
+							{
+								label: t('confirmedEffort'),
+								data: confirmedData,
+								borderWidth: 1,
+								backgroundColor: 'blue',
+							},
+							{
+								label: t('tentativeEffort'),
+								data: tentativeData,
+								borderWidth: 1,
+								backgroundColor: 'orange',
+							},
+							{
+								label: t('empty'),
+								data: emptyData,
+								borderWidth: 1,
+								backgroundColor: 'transparent',
+							},
+						],
 					},
-				},
-			});
+					options: {
+						scales: {
+							y: { beginAtZero: true, stacked: true },
+							x: { beginAtZero: true, stacked: true },
+						},
+					},
+				})
+			);
 		}
 	});
 
-	useTask$(({ track }) => {
+	useVisibleTask$(async ({ track }) => {
 		track(() => effort.value);
-		console.log('change', effort.value);
+		const confirmedData = await getConfirmedData();
+		const tentativeData = await getTentativeData();
+		const emptyData = await getEmptyData();
+		if (chartSig.value) {
+			chartSig.value.data.datasets.forEach((dataset, i) => {
+				switch (dataset.label) {
+					case t('confirmedEffort'):
+						return (dataset.data = confirmedData);
+					case t('tentativeEffort'):
+						return (dataset.data = tentativeData);
+					case t('empty'):
+						return (dataset.data = emptyData);
+				}
+			});
+			chartSig.value.update();
+		}
 	});
 
 	return (
 		<div class='h-[300px]'>
-			<canvas ref={myChart} id='myChart'></canvas>
+			<canvas ref={chartElSig} id='myChart'></canvas>
 		</div>
 	);
 });

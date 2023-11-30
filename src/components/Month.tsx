@@ -12,9 +12,9 @@ export const Month = component$<{
 	const tentativeEffortSig = useSignal(month.tentativeEffort);
 	const notesSig = useSignal(month.notes.toString());
 
-	const updateMonth = $((month: TMonth) => {
-		putEffort(name, month);
-		onChange$();
+	const updateMonth = $(async (month: TMonth) => {
+		await putEffort(name, month);
+		await onChange$();
 	});
 
 	return (
