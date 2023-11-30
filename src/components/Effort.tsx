@@ -1,4 +1,10 @@
-import { component$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
+import {
+	component$,
+	useComputed$,
+	useContext,
+	useSignal,
+	useTask$,
+} from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { getEffort } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
@@ -10,6 +16,13 @@ import { Month } from './Month';
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
 	const effortSig = useSignal<TEffort>([]);
+	const monthYearListSig = useComputed$<string[]>(() => {
+		if (effortSig.value.length > 0) {
+			const [[_, value]] = Object.entries(effortSig.value[0]);
+			return value.map((m) => m.month_year);
+		}
+		return [];
+	});
 
 	useTask$(async () => {
 		if (!getCookie(COOKIE_TOKEN_KEY)) {
@@ -45,8 +58,14 @@ export const Effort = component$(() => {
 					</div>
 				);
 			})}
-
-			<Charts effort={effortSig} />
+			{monthYearListSig.value.map((monthYear, key) => {
+				return (
+					<div key={key} class='m-4'>
+						<div class='text-lg font-bold'>{monthYear}</div>
+						<Charts monthYear={monthYear} effort={effortSig} />
+					</div>
+				);
+			})}
 		</div>
 	);
 });
