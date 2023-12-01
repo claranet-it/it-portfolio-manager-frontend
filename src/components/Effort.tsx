@@ -45,7 +45,7 @@ export const Effort = component$(() => {
 				const [[name, value]] = Object.entries(item);
 				return (
 					<div key={key} class='flex'>
-						<div class='w-[300px] flex items-center'>{purgeName(name)}</div>
+						<div class='min-w-[200px] flex items-center'>{purgeName(name)}</div>
 						{value.map((month, key) => (
 							<Month
 								key={key}

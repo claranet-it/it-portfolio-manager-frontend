@@ -108,7 +108,7 @@ export const Charts = component$<{ monthYear: string; effort: Signal<Effort> }>(
 		});
 
 		return (
-			<div class='h-[300px]'>
+			<div class='h-[300px] w-full'>
 				<canvas ref={chartElSig} id='myChart'></canvas>
 			</div>
 		);
