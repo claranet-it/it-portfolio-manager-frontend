@@ -40,25 +40,29 @@ export const Effort = component$(() => {
 	});
 
 	return (
-		<div class='p-8'>
-			{effortSig.value.map((item, key) => {
-				const [[name, value]] = Object.entries(item);
-				return (
-					<div key={key} class='flex'>
-						<div class='min-w-[200px] flex items-center'>{purgeName(name)}</div>
-						{value.map((month, key) => (
-							<Month
-								key={key}
-								month={month}
-								name={name}
-								onChange$={async () => {
-									effortSig.value = await getEffort();
-								}}
-							/>
-						))}
-					</div>
-				);
-			})}
+		<div class='p-8 w-max'>
+			<div class='border-red-600 border-b-2'>
+				{effortSig.value.map((item, key) => {
+					const [[name, value]] = Object.entries(item);
+					return (
+						<div key={key} class='flex'>
+							<div class='min-w-[200px] flex items-center justify-center border-t-2 border-x-2 border-red-600'>
+								{purgeName(name)}
+							</div>
+							{value.map((month, key) => (
+								<Month
+									key={key}
+									month={month}
+									name={name}
+									onChange$={async () => {
+										effortSig.value = await getEffort();
+									}}
+								/>
+							))}
+						</div>
+					);
+				})}
+			</div>
 			{monthYearListSig.value.map((monthYear, key) => {
 				return (
 					<div key={key} class='m-4'>
