@@ -20,7 +20,7 @@ export const Charts = component$<{ monthYear: string; effort: Signal<Effort> }>(
 			const names: string[] = [];
 			effort.value.map((item) => {
 				const [[name]] = Object.entries(item);
-				names.push(name.replace('@claranet.com', '').toLowerCase());
+				names.push(purgeName(name));
 			});
 			return names;
 		});

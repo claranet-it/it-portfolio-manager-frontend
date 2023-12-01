@@ -67,7 +67,7 @@ export const SearchSkillCard = component$<Props>(({ skill, skillMatrix }) => {
 						const [name, { skills }] = Object.entries(skillMatrix)[0];
 						return (
 							<div key={key} class='flex w-full justify-between'>
-								<span>{name.replace('@claranet.com', '').toLowerCase()}</span>
+								<span>{purgeName(name)}</span>
 								<SfRating
 									max={appStore.configuration.scoreRange.max}
 									value={skills[skill] || 0}
