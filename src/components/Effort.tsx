@@ -6,6 +6,7 @@ import {
 	useTask$,
 } from '@builder.io/qwik';
 import { AppContext } from '../app';
+import { purgeName } from '../utils';
 import { getEffort } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';

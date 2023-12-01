@@ -9,6 +9,7 @@ import {
 } from '@builder.io/qwik';
 import { Chart, registerables } from 'chart.js';
 import { t } from '../locale/labels';
+import { purgeName } from '../utils';
 import { Effort, Month } from '../utils/types';
 
 export const Charts = component$<{ monthYear: string; effort: Signal<Effort> }>(
@@ -92,7 +93,7 @@ export const Charts = component$<{ monthYear: string; effort: Signal<Effort> }>(
 		useVisibleTask$(async ({ track }) => {
 			track(() => effort.value);
 			if (chartSig.value) {
-				chartSig.value.data.datasets.forEach((dataset, i) => {
+				chartSig.value.data.datasets.forEach((dataset) => {
 					switch (dataset.label) {
 						case t('confirmedEffort'):
 							return (dataset.data = confirmedDataSig.value);

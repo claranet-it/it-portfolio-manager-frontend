@@ -1,5 +1,6 @@
 import { Signal, component$, useComputed$, useContext } from '@builder.io/qwik';
 import { AppContext } from '../app';
+import { purgeName } from '../utils';
 import {
 	COVERAGE_BAD_LIMIT,
 	COVERAGE_GOOD_LIMIT,
