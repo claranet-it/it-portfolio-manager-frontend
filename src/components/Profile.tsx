@@ -6,9 +6,9 @@ import {
 	useTask$,
 } from '@builder.io/qwik';
 import { AppContext } from '../app';
-import { t } from '../locale/labels';
+import { t, tt } from '../locale/labels';
 import { getConfiguration, getUserMe, setUserProfile } from '../utils/api';
-import { COOKIE_TOKEN_KEY } from '../utils/constants';
+import { COOKIE_TOKEN_KEY, GRAVATAR_ACCOUNT_URL, GRAVATAR_URL } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
 import { UserMe } from '../utils/types';
 import { SkillMatrix } from './SkillMatrix';
@@ -19,6 +19,13 @@ export const Profile = component$(() => {
 		{ deep: true }
 	);
 	const appStore = useContext(AppContext);
+
+	const htmlStringProfileImage = tt('noteProfileImage',
+		{
+			linkGravatar: '<a href=\"' + GRAVATAR_URL + '\" class=\"underline\">' + t('gravatar') + '</a>',
+			accountGravatar: '<a href=\"' + GRAVATAR_ACCOUNT_URL + '\" class=\"underline\">' + t('gravatarAccount') + '</a>'
+		})
+
 
 	const updateUserMe = $(async () => {
 		const user = await getUserMe();
@@ -53,11 +60,11 @@ export const Profile = component$(() => {
 						<div class='group flex'>
 							<img
 								src={userStore.picture}
-								alt={t('profile_picture')}
+								alt={t('profile_picture',)}
 								class='w-32 h-32 mx-auto rounded-full aspect-square'
 							/>
 							<span class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2 -translate-x-1 translate-y-20 opacity-0 m-4 mx-auto">
-								Picture from Gravatar
+								<div dangerouslySetInnerHTML={htmlStringProfileImage}></div>
 							</span>
 						</div>
 						<div class='space-y-4 text-center divide-y divide-gray-700'>

@@ -11,5 +11,8 @@
 	"confirmedEffort": "Confirmed",
 	"tentativeEffort": "Tentative",
 	"note": "Note",
-	"empty": "Empty"
+	"empty": "Empty",
+	"gravatar": "Gravatar.com",
+	"gravatarAccount": "create a Gravatar account",
+	"noteProfileImage": "We use #linkGravatar for our profile images.<div> To set or change yours, #accountGravatar.</div>"
 }
