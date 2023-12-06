@@ -9,6 +9,7 @@ import {
 } from '@builder.io/qwik';
 import { Chart, registerables } from 'chart.js';
 import { t } from '../locale/labels';
+import { purgeName } from '../utils';
 import { Effort, Month } from '../utils/types';
 
 export const Charts = component$<{ monthYear: string; effort: Signal<Effort> }>(
@@ -20,7 +21,7 @@ export const Charts = component$<{ monthYear: string; effort: Signal<Effort> }>(
 			const names: string[] = [];
 			effort.value.map((item) => {
 				const [[name]] = Object.entries(item);
-				names.push(name.replace('@claranet.com', '').toLowerCase());
+				names.push(purgeName(name));
 			});
 			return names;
 		});
@@ -62,13 +63,13 @@ export const Charts = component$<{ monthYear: string; effort: Signal<Effort> }>(
 									label: t('confirmedEffort'),
 									data: confirmedDataSig.value,
 									borderWidth: 1,
-									backgroundColor: 'blue',
+									backgroundColor: '#ef4444',
 								},
 								{
 									label: t('tentativeEffort'),
 									data: tentativeDataSig.value,
 									borderWidth: 1,
-									backgroundColor: 'orange',
+									backgroundColor: '#fcc82b',
 								},
 								{
 									label: t('empty'),
@@ -92,7 +93,7 @@ export const Charts = component$<{ monthYear: string; effort: Signal<Effort> }>(
 		useVisibleTask$(async ({ track }) => {
 			track(() => effort.value);
 			if (chartSig.value) {
-				chartSig.value.data.datasets.forEach((dataset, i) => {
+				chartSig.value.data.datasets.forEach((dataset) => {
 					switch (dataset.label) {
 						case t('confirmedEffort'):
 							return (dataset.data = confirmedDataSig.value);
@@ -107,7 +108,7 @@ export const Charts = component$<{ monthYear: string; effort: Signal<Effort> }>(
 		});
 
 		return (
-			<div class='h-[300px]'>
+			<div class='h-[300px] w-full'>
 				<canvas ref={chartElSig} id='myChart'></canvas>
 			</div>
 		);
