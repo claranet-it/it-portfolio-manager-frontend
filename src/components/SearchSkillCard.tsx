@@ -34,15 +34,15 @@ export const SearchSkillCard = component$<Props>(({ skill, skillMatrix }) => {
 				result < COVERAGE_BAD_LIMIT
 					? 'BAD'
 					: result > COVERAGE_GOOD_LIMIT
-					? 'GOOD'
-					: '',
+						? 'GOOD'
+						: '',
 		};
 	});
 	const skillLevelSig = useComputed$(() => {
 		const total = skillMatrix.value.reduce((result, sailor) => {
 			const key = Object.keys(sailor)[0];
 			return (
-				result + (sailor[key].skills[skill] > SKILL_LEVEL_SCORE_LIMIT ? 1 : 0)
+				result + (sailor[key].skills[skill] >= SKILL_LEVEL_SCORE_LIMIT ? 1 : 0)
 			);
 		}, 0);
 		return total;
@@ -60,7 +60,7 @@ export const SearchSkillCard = component$<Props>(({ skill, skillMatrix }) => {
 				{skillMatrix.value
 					.sort((a, b) =>
 						Object.values(a)[0].skills[skill] <
-						Object.values(b)[0].skills[skill]
+							Object.values(b)[0].skills[skill]
 							? 1
 							: -1
 					)
