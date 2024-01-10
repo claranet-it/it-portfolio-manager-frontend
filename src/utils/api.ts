@@ -1,5 +1,4 @@
-import { COOKIE_TOKEN_KEY } from './constants';
-import { getCookie } from './cookie';
+import { checkHttpResponseStatus, getHttpResponse } from './http-requests';
 import {
 	Configuration,
 	Effort,
@@ -10,88 +9,26 @@ import {
 	UserMe,
 } from './types';
 
-const getHeaders = () => {
-	const token = getCookie(COOKIE_TOKEN_KEY);
-	return new Headers({
-		Authorization: `Bearer ${token}`,
-		'Content-Type': 'application/json',
-	});
-};
-export const getUserMe = async (): Promise<UserMe> => {
-	const headers = getHeaders();
-	const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/user/me`,
-		{ method: 'GET', headers }
-	);
-	return await response.json();
-};
+export const getUserMe = async (): Promise<UserMe> =>
+	getHttpResponse<UserMe>('user/me');
 
-export const setUserProfile = async (
-	body: SetUserProfile
-): Promise<boolean> => {
-	const headers = getHeaders();
-	const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/user/profile`,
-		{ method: 'POST', headers, body: JSON.stringify(body) }
-	);
-	return response.status === 201;
-};
+export const setUserProfile = async (body: SetUserProfile): Promise<boolean> =>
+	checkHttpResponseStatus('user/profile', 201, 'POST', body);
 
-export const getConfiguration = async (): Promise<Configuration> => {
-	const headers = getHeaders();
-	const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/configuration`,
-		{ method: 'GET', headers }
-	);
-	return response.status === 200 ? await response.json() : null;
-};
+export const getConfiguration = async (): Promise<Configuration> =>
+	getHttpResponse<Configuration>('configuration');
 
-export const getSkillMatrixMine = async (): Promise<Skill[]> => {
-	const headers = getHeaders();
-	const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/skill-matrix/mine`,
-		{ method: 'GET', headers }
-	);
-	return await response.json();
-};
+export const getSkillMatrixMine = async (): Promise<Skill[]> =>
+	getHttpResponse<Skill[]>('skill-matrix/mine');
 
-export const pathSkillMatrixMine = async (skill: Skill): Promise<boolean> => {
-	const headers = getHeaders();
-	const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/skill-matrix/mine`,
-		{ method: 'PATCH', headers, body: JSON.stringify(skill) }
-	);
-	return response.status === 204;
-};
+export const pathSkillMatrixMine = async (skill: Skill): Promise<boolean> =>
+	checkHttpResponseStatus('skill-matrix/mine', 204, 'PATCH', skill);
 
-export const getSkills = async (): Promise<SkillMatrix> => {
-	const company = 'it';
-	const headers = getHeaders();
-	const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/skill-matrix?company=${company}`,
-		{ method: 'GET', headers }
-	);
-	return response.status === 200 ? await response.json() : null;
-};
+export const getSkills = async (company: string = 'it'): Promise<SkillMatrix> =>
+	getHttpResponse<SkillMatrix>(`skill-matrix?company=${company}`);
 
-export const getEffort = async (): Promise<Effort> => {
-	const headers = getHeaders();
-	const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/effort/next`,
-		{ method: 'GET', headers }
-	);
-	return response.status === 200 ? await response.json() : null;
-};
+export const getEffort = async (): Promise<Effort> =>
+	getHttpResponse<Effort>('effort');
 
-export const putEffort = async (
-	uid: string,
-	month: Month
-): Promise<boolean> => {
-	const headers = getHeaders();
-	const body = { uid, ...month };
-	const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/effort`,
-		{ method: 'PUT', headers, body: JSON.stringify(body) }
-	);
-	return response.status === 204;
-};
+export const putEffort = async (uid: string, month: Month): Promise<boolean> =>
+	checkHttpResponseStatus('effort', 204, 'PUT', { uid, ...month });
