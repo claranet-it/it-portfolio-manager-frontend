@@ -1,6 +1,7 @@
 import { $, PropFunction, component$, useSignal } from '@builder.io/qwik';
 import { t } from '../locale/labels';
 import { putEffort } from '../utils/api';
+import { getDateLabelFromMonthYear } from '../utils/dates';
 import { Month as TMonth } from '../utils/types';
 
 export const Month = component$<{
@@ -19,7 +20,9 @@ export const Month = component$<{
 
 	return (
 		<div class='flex-col border-r-2 border-t-2 border-red-600'>
-			<div class='w-full text-center'>{month.month_year}</div>
+			<div class='w-full text-center'>
+				{getDateLabelFromMonthYear(month.month_year)}
+			</div>
 			<div class='flex'>
 				<div class='flex-col m-2'>
 					<div>{t('confirmedEffort')}</div>
