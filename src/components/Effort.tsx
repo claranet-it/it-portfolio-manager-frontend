@@ -10,6 +10,7 @@ import { purgeName } from '../utils';
 import { getEffort } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
+import { getDateLabelFromMonthYear } from '../utils/dates';
 import { Effort as TEffort } from '../utils/types';
 import { Charts } from './Charts';
 import { Month } from './Month';
@@ -66,7 +67,9 @@ export const Effort = component$(() => {
 			{monthYearListSig.value.map((monthYear, key) => {
 				return (
 					<div key={key} class='m-4'>
-						<div class='text-lg font-bold'>{monthYear}</div>
+						<div class='text-lg font-bold'>
+							{getDateLabelFromMonthYear(monthYear)}
+						</div>
 						<Charts monthYear={monthYear} effort={effortSig} />
 					</div>
 				);
