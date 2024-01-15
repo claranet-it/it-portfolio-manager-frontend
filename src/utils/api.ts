@@ -28,7 +28,7 @@ export const getSkills = async (company: string = 'it'): Promise<SkillMatrix> =>
 	getHttpResponse<SkillMatrix>(`skill-matrix?company=${company}`);
 
 export const getEffort = async (): Promise<Effort> =>
-	getHttpResponse<Effort>('effort');
+	getHttpResponse<Effort>('effort/next');
 
 export const putEffort = async (uid: string, month: Month): Promise<boolean> =>
 	checkHttpResponseStatus('effort', 204, 'PUT', { uid, ...month });
