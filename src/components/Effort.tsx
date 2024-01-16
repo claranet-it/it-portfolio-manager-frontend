@@ -18,13 +18,28 @@ import { Month } from './Month';
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
 	const effortSig = useSignal<TEffort>([]);
-	const crewSig = useSignal<{ user: string; crew: string }[]>();
+	const usersCrewSig = useSignal<{ user: string; crew: string }[]>();
 	const monthYearListSig = useComputed$<string[]>(() => {
 		if (effortSig.value.length > 0) {
 			const [[_, value]] = Object.entries(effortSig.value[0]);
 			return value.map((m) => m.month_year);
 		}
 		return [];
+	});
+	const selectedCrewSig = useSignal('');
+	const filteredEffortSig = useComputed$<TEffort>(() => {
+		let result = effortSig.value;
+		if (selectedCrewSig.value) {
+			result = result.filter((el) => {
+				const name = Object.keys(el)[0];
+				const crew =
+					usersCrewSig.value
+						?.find(({ user }) => purgeName(name) === user)
+						?.crew.toLowerCase() || '';
+				return crew.includes(selectedCrewSig.value.toLowerCase());
+			});
+		}
+		return result;
 	});
 
 	useTask$(async () => {
@@ -40,7 +55,7 @@ export const Effort = component$(() => {
 		}
 
 		effortSig.value = effort;
-		crewSig.value = skillMatrix.map((el) => {
+		usersCrewSig.value = skillMatrix.map((el) => {
 			const [name, { crew }] = Object.entries(el)[0];
 			const user = name.toLowerCase().replace(' ', '.');
 			return { user, crew };
@@ -49,8 +64,20 @@ export const Effort = component$(() => {
 
 	return (
 		<div class='p-8 w-max'>
+			<div class='max-w-[200px] flex items-center gap-4 mb-4'>
+				<span class='block text-xl font-bold'>Crew</span>
+				<select
+					bind:value={selectedCrewSig}
+					class='border-2 border-red-500 w-full h-8'
+				>
+					<option value='' selected></option>
+					{appStore.configuration.crews.map(({ name }) => (
+						<option value={name}>{name}</option>
+					))}
+				</select>
+			</div>
 			<div class='border-red-600 border-b-2'>
-				{effortSig.value.map((item, key) => {
+				{filteredEffortSig.value.map((item, key) => {
 					const [[name, value]] = Object.entries(item);
 					return (
 						<div key={key} class='flex'>
@@ -58,7 +85,7 @@ export const Effort = component$(() => {
 								<span>{purgeName(name)}</span>
 								<span>
 									{
-										crewSig.value?.find(
+										usersCrewSig.value?.find(
 											({ user }) =>
 												purgeName(name) === user
 										)?.crew
@@ -85,7 +112,10 @@ export const Effort = component$(() => {
 						<div class='text-lg font-bold'>
 							{getDateLabelFromMonthYear(monthYear)}
 						</div>
-						<Charts monthYear={monthYear} effort={effortSig} />
+						<Charts
+							monthYear={monthYear}
+							effort={filteredEffortSig}
+						/>
 					</div>
 				);
 			})}

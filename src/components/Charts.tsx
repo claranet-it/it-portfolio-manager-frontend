@@ -50,9 +50,11 @@ export const Charts = component$<{ monthYear: string; effort: Signal<Effort> }>(
 				)
 		);
 
-		useVisibleTask$(async () => {
+		useVisibleTask$(async ({ track }) => {
+			track(() => effort.value);
 			if (chartElSig?.value) {
 				Chart.register(...registerables);
+				if (chartSig.value) chartSig.value.destroy();
 				chartSig.value = noSerialize(
 					new Chart(chartElSig.value, {
 						type: 'bar',
