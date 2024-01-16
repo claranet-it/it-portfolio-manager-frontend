@@ -7,7 +7,7 @@ import {
 } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { purgeName } from '../utils';
-import { getEffort } from '../utils/api';
+import { getEffort, getSkills } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
 import { getDateLabelFromMonthYear } from '../utils/dates';
@@ -18,6 +18,7 @@ import { Month } from './Month';
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
 	const effortSig = useSignal<TEffort>([]);
+	const crewSig = useSignal<{ user: string; crew: string }[]>();
 	const monthYearListSig = useComputed$<string[]>(() => {
 		if (effortSig.value.length > 0) {
 			const [[_, value]] = Object.entries(effortSig.value[0]);
@@ -32,12 +33,18 @@ export const Effort = component$(() => {
 		}
 
 		const effort = await getEffort();
-		if (!effort) {
+		const skillMatrix = await getSkills();
+		if (!effort || !skillMatrix) {
 			removeCookie(COOKIE_TOKEN_KEY);
 			appStore.route = 'AUTH';
 		}
 
 		effortSig.value = effort;
+		crewSig.value = skillMatrix.map((el) => {
+			const [name, { crew }] = Object.entries(el)[0];
+			const user = name.toLowerCase().replace(' ', '.');
+			return { user, crew };
+		});
 	});
 
 	return (
@@ -47,8 +54,16 @@ export const Effort = component$(() => {
 					const [[name, value]] = Object.entries(item);
 					return (
 						<div key={key} class='flex'>
-							<div class='min-w-[200px] flex items-center justify-center border-t-2 border-x-2 border-red-600'>
-								{purgeName(name)}
+							<div class='min-w-[200px] flex flex-col items-center justify-center border-t-2 border-x-2 border-red-600'>
+								<span>{purgeName(name)}</span>
+								<span>
+									{
+										crewSig.value?.find(
+											({ user }) =>
+												purgeName(name) === user
+										)?.crew
+									}
+								</span>
 							</div>
 							{value.map((month, key) => (
 								<Month
