@@ -1,15 +1,16 @@
 import { $, PropFunction, component$ } from '@builder.io/qwik';
 import { t } from '../locale/labels';
 import { putEffort } from '../utils/api';
-import { Month as TMonth } from '../utils/types';
+import { Effort, Month as TMonth } from '../utils/types';
 
 export const Month = component$<{
-	name: string;
+	uid: string;
+	effort: Omit<Effort, 'effort'>;
 	month: TMonth;
 	onChange$: PropFunction<() => void>;
-}>(({ name, month, onChange$ }) => {
+}>(({ uid, effort, month, onChange$ }) => {
 	const updateMonth = $(async (month: TMonth) => {
-		await putEffort(name, month);
+		await putEffort(uid, effort, month);
 		await onChange$();
 	});
 

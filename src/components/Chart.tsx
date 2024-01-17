@@ -10,13 +10,13 @@ import {
 } from '@builder.io/qwik';
 import { Chart as TChart, registerables } from 'chart.js';
 import { t } from '../locale/labels';
-import { Effort, Month } from '../utils/types';
+import { EffortMatrix, Month } from '../utils/types';
 
 export const Chart = component$<{
-	effort: Signal<Effort>;
+	effortSig: Signal<EffortMatrix>;
 	labels: Signal<string[]>;
 	extractData: QRL<(fn: (month: Month) => number) => number[]>;
-}>(({ effort, labels, extractData }) => {
+}>(({ effortSig, labels, extractData }) => {
 	const chartElSig = useSignal<HTMLCanvasElement>();
 	const chartSig = useSignal<NoSerialize<TChart<'bar', number[], string>>>();
 
@@ -36,7 +36,7 @@ export const Chart = component$<{
 	);
 
 	useVisibleTask$(async ({ track }) => {
-		track(() => effort.value);
+		track(() => effortSig.value);
 		if (chartElSig?.value) {
 			TChart.register(...registerables);
 			if (chartSig.value) chartSig.value.destroy();
@@ -78,7 +78,7 @@ export const Chart = component$<{
 	});
 
 	useVisibleTask$(async ({ track }) => {
-		track(() => effort.value);
+		track(() => effortSig.value);
 		if (chartSig.value) {
 			chartSig.value.data.datasets.forEach((dataset) => {
 				switch (dataset.label) {
