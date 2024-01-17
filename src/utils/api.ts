@@ -1,5 +1,5 @@
 import { checkHttpResponseStatus, getHttpResponse } from './http-requests';
-import {
+import type {
 	Configuration,
 	Effort,
 	Month,

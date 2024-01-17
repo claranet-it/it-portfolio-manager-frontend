@@ -1,7 +1,7 @@
 import it from './it.json';
 
 type Locales = 'it';
-type Labels = keyof typeof it;
+export type Labels = keyof typeof it;
 const allLabels: Record<Locales, Record<Labels, string>> = { it };
 
 export const t = (label: Labels) => {

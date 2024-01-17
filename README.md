@@ -1,38 +1,71 @@
-# Qwik + Vite
+# Qwik City App ⚡️
 
-## Qwik in CSR mode
+-   [Qwik Docs](https://qwik.builder.io/)
+-   [Discord](https://qwik.builder.io/chat)
+-   [Qwik GitHub](https://github.com/BuilderIO/qwik)
+-   [@QwikDev](https://twitter.com/QwikDev)
+-   [Vite](https://vitejs.dev/)
 
-This starter is using a pure CSR (Client Side Rendering) mode. This means, that the application is fully bootstrapped in the browser. Most of Qwik innovations however take advantage of SSR (Server Side Rendering) mode.
+---
 
-```ts
-export default defineConfig({
-  plugins: [
-    qwikVite({
-      csr: true,
-    }),
-  ],
-})
+## Project Structure
+
+This project is using Qwik with [QwikCity](https://qwik.builder.io/qwikcity/overview/). QwikCity is just an extra set of tools on top of Qwik to make it easier to build a full site, including directory-based routing, layouts, and more.
+
+Inside your project, you'll see the following directory structure:
+
+```
+├── public/
+│   └── ...
+└── src/
+    ├── components/
+    │   └── ...
+    └── routes/
+        └── ...
 ```
 
-Use `npm create qwik@latest` to create a full production ready Qwik application, using SSR and [QwikCity](https://qwik.builder.io/docs/qwikcity/), our server-side metaframwork.
+-   `src/routes`: Provides the directory-based routing, which can include a hierarchy of `layout.tsx` layout files, and an `index.tsx` file as the page. Additionally, `index.ts` files are endpoints. Please see the [routing docs](https://qwik.builder.io/qwikcity/routing/overview/) for more info.
 
-## Usage
+-   `src/components`: Recommended directory for components.
 
-```bash
-$ npm install # or pnpm install or yarn install
+-   `public`: Any static assets, like images, can be placed in the public directory. Please see the [Vite public directory](https://vitejs.dev/guide/assets.html#the-public-directory) for more info.
+
+## Add Integrations and deployment
+
+Use the `pnpm qwik add` command to add additional integrations. Some examples of integrations includes: Cloudflare, Netlify or Express Server, and the [Static Site Generator (SSG)](https://qwik.builder.io/qwikcity/guides/static-site-generation/).
+
+```shell
+pnpm qwik add # or `pnpm qwik add`
 ```
 
-Learn more on the [Qwik Website](https://qwik.builder.io) and join our community on our [Discord](https://qwik.builder.io/chat)
+## Development
 
-## Available Scripts
+Development mode uses [Vite's development server](https://vitejs.dev/). The `dev` command will server-side render (SSR) the output during development.
 
-In the project directory, you can run:
+```shell
+npm start # or `pnpm start`
+```
 
-### `npm run dev`
+> Note: during dev mode, Vite may request a significant number of `.js` files. This does not represent a Qwik production build.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+## Preview
 
-### `npm run build`
+The preview command will create a production build of the client modules, a production build of `src/entry.preview.tsx`, and run a local server. The preview server is only for convenience to preview a production build locally and should not be used as a production server.
 
-Builds the app for production to the `dist` folder.<br>
+```shell
+pnpm preview # or `pnpm preview`
+```
+
+## Production
+
+The production build will generate client and server modules by running both client and server build commands. The build command will use Typescript to run a type check on the source code.
+
+```shell
+pnpm build # or `pnpm build`
+```
+
+## Static Site Generator (Node.js)
+
+```shell
+pnpm build.server
+```

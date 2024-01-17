@@ -1,5 +1,6 @@
-import { Signal, component$, useComputed$, useContext } from '@builder.io/qwik';
-import { AppContext } from '../app';
+import type { Signal } from '@builder.io/qwik';
+import { component$, useComputed$, useContext } from '@builder.io/qwik';
+import { AppContext } from '~/routes/layout';
 
 export const Filters = component$<{
 	selectedServiceLine: Signal<string>;
@@ -30,7 +31,7 @@ export const Filters = component$<{
 						return result;
 					},
 					[]
-			  );
+				);
 		return skills;
 	});
 
@@ -40,15 +41,17 @@ export const Filters = component$<{
 				<span class='block text-xl font-bold'>Service Line</span>
 				<select
 					value={selectedServiceLine.value}
-					onChange$={(e) => {
-						selectedServiceLine.value = e.target.value;
+					onChange$={(_, el) => {
+						selectedServiceLine.value = el.value;
 						selectedCrew.value = '';
 					}}
 					class='border-2 border-red-500 w-full h-8 mt-2'
 				>
 					<option value='' selected></option>
-					{serviceLinesSig.value.map((sl) => (
-						<option value={sl}>{sl}</option>
+					{serviceLinesSig.value.map((sl, key) => (
+						<option key={key} value={sl}>
+							{sl}
+						</option>
 					))}
 				</select>
 			</div>
@@ -59,8 +62,10 @@ export const Filters = component$<{
 					class='border-2 border-red-500 w-full h-8 mt-2'
 				>
 					<option value='' selected></option>
-					{crewsSig.value.map(({ name }) => (
-						<option value={name}>{name}</option>
+					{crewsSig.value.map(({ name }, key) => (
+						<option key={key} value={name}>
+							{name}
+						</option>
 					))}
 				</select>
 			</div>
@@ -72,8 +77,10 @@ export const Filters = component$<{
 						class='border-2 border-red-500 w-full h-8 mt-2'
 					>
 						<option value='' selected></option>
-						{skillsSig.value.map((sk) => (
-							<option value={sk}>{sk}</option>
+						{skillsSig.value.map((sk, key) => (
+							<option key={key} value={sk}>
+								{sk}
+							</option>
 						))}
 					</select>
 				</div>

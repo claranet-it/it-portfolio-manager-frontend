@@ -3,28 +3,30 @@ import {
 	useComputed$,
 	useContext,
 	useSignal,
-	useTask$,
+	useVisibleTask$,
 } from '@builder.io/qwik';
-import { AppContext } from '../app';
-import { purgeName } from '../utils';
-import { getEffort, getSkills } from '../utils/api';
-import { COOKIE_TOKEN_KEY } from '../utils/constants';
-import { getCookie, removeCookie } from '../utils/cookie';
-import { getDateLabelFromMonthYear } from '../utils/dates';
-import { Effort as TEffort } from '../utils/types';
-import { Month } from './Month';
-import { MonthChart } from './MonthChart';
-import { TotalChart } from './TotalChart';
-import { t } from '../locale/labels';
-import { Filters } from './Filters';
+import { useNavigate } from '@builder.io/qwik-city';
+import { Filters } from '~/components/Filters';
+import { Month } from '~/components/Month';
+import { MonthChart } from '~/components/MonthChart';
+import { TotalChart } from '~/components/TotalChart';
+import { t } from '~/locale/labels';
+import { purgeName } from '~/utils';
+import { getEffort, getSkills } from '~/utils/api';
+import { COOKIE_TOKEN_KEY } from '~/utils/constants';
+import { getCookie, removeCookie } from '~/utils/cookie';
+import { getDateLabelFromMonthYear } from '~/utils/dates';
+import type { Effort as TEffort } from '../../utils/types';
+import { AppContext } from '../layout';
 
-export const Effort = component$(() => {
+export default component$(() => {
+	const navigate = useNavigate();
 	const appStore = useContext(AppContext);
 	const effortSig = useSignal<TEffort>([]);
 	const usersCrewSig = useSignal<{ user: string; crew: string }[]>();
 	const monthYearListSig = useComputed$<string[]>(() => {
 		if (effortSig.value.length > 0) {
-			const [[_, value]] = Object.entries(effortSig.value[0]);
+			const [[, value]] = Object.entries(effortSig.value[0]);
 			return value.map((m) => m.month_year);
 		}
 		return [];
@@ -74,16 +76,16 @@ export const Effort = component$(() => {
 		return result;
 	});
 
-	useTask$(async () => {
+	useVisibleTask$(async () => {
 		if (!getCookie(COOKIE_TOKEN_KEY)) {
-			appStore.route = 'AUTH';
+			navigate('/');
 		}
 
 		const effort = await getEffort();
 		const skillMatrix = await getSkills();
 		if (!effort || !skillMatrix) {
 			removeCookie(COOKIE_TOKEN_KEY);
-			appStore.route = 'AUTH';
+			navigate('/');
 		}
 
 		effortSig.value = effort;
@@ -125,7 +127,8 @@ export const Effort = component$(() => {
 											month={month}
 											name={name}
 											onChange$={async () => {
-												effortSig.value = await getEffort();
+												effortSig.value =
+													await getEffort();
 											}}
 										/>
 									))}

@@ -1,6 +1,7 @@
-import { $, Signal, component$, useComputed$ } from '@builder.io/qwik';
+import type { Signal } from '@builder.io/qwik';
+import { $, component$, useComputed$ } from '@builder.io/qwik';
 import { purgeName } from '../utils';
-import { Effort, Month } from '../utils/types';
+import type { Effort, Month } from '../utils/types';
 import { Chart } from './Chart';
 
 export const MonthChart = component$<{
@@ -19,7 +20,7 @@ export const MonthChart = component$<{
 	const extractData = $((fn: (month: Month) => number) => {
 		const data: number[] = [];
 		effort.value.map((item) => {
-			const [[_, value]] = Object.entries(item);
+			const [[, value]] = Object.entries(item);
 			data.push(
 				...value.filter((m) => m.month_year === monthYear).map(fn)
 			);
@@ -28,10 +29,6 @@ export const MonthChart = component$<{
 	});
 
 	return (
-		<Chart
-			effort={effort}
-			extractData={extractData}
-			labels={labelsSig}
-		/>
+		<Chart effort={effort} extractData={extractData} labels={labelsSig} />
 	);
 });

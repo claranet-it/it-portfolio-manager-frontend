@@ -1,5 +1,5 @@
+import type { NoSerialize, QRL, Signal } from '@builder.io/qwik';
 import {
-	Signal,
 	component$,
 	noSerialize,
 	useComputed$,
@@ -8,15 +8,15 @@ import {
 } from '@builder.io/qwik';
 import { Chart as TChart, registerables } from 'chart.js';
 import { t } from '../locale/labels';
-import { Effort, Month } from '../utils/types';
+import type { Effort, Month } from '../utils/types';
 
 export const Chart = component$<{
 	effort: Signal<Effort>;
 	labels: Signal<string[]>;
-	extractData: (fn: (month: Month) => number) => number[];
+	extractData: QRL<(fn: (month: Month) => number) => number[]>;
 }>(({ effort, labels, extractData }) => {
 	const chartElSig = useSignal<HTMLCanvasElement>();
-	const chartSig = useSignal<TChart<'bar', number[], string>>();
+	const chartSig = useSignal<NoSerialize<TChart<'bar', number[], string>>>();
 
 	const confirmedDataSig = useComputed$(
 		async () => await extractData(({ confirmedEffort }) => confirmedEffort)
@@ -36,7 +36,7 @@ export const Chart = component$<{
 
 	useVisibleTask$(async ({ track }) => {
 		track(() => effort.value);
-		if (chartElSig?.value) {
+		if (chartElSig.value) {
 			TChart.register(...registerables);
 			if (chartSig.value) chartSig.value.destroy();
 			chartSig.value = noSerialize(

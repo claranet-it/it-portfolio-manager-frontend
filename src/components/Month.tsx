@@ -1,8 +1,9 @@
-import { $, PropFunction, component$ } from '@builder.io/qwik';
+import type { PropFunction } from '@builder.io/qwik';
+import { $, component$ } from '@builder.io/qwik';
 import { t } from '../locale/labels';
 import { putEffort } from '../utils/api';
 import { getDateLabelFromMonthYear } from '../utils/dates';
-import { Month as TMonth } from '../utils/types';
+import type { Month as TMonth } from '../utils/types';
 
 export const Month = component$<{
 	name: string;
@@ -28,10 +29,10 @@ export const Month = component$<{
 						value={month.confirmedEffort}
 						min={0}
 						max={100}
-						onChange$={({ target: { value } }) =>
+						onInput$={(_, el) =>
 							updateMonth({
 								...month,
-								confirmedEffort: parseInt(value, 10),
+								confirmedEffort: parseInt(el.value, 10),
 							})
 						}
 					/>
@@ -44,10 +45,10 @@ export const Month = component$<{
 						value={month.tentativeEffort}
 						min={0}
 						max={100}
-						onChange$={({ target: { value } }) =>
+						onInput$={(_, el) =>
 							updateMonth({
 								...month,
-								tentativeEffort: parseInt(value, 10),
+								tentativeEffort: parseInt(el.value, 10),
 							})
 						}
 					/>
@@ -58,10 +59,10 @@ export const Month = component$<{
 						type='text'
 						class='border-2 border-black w-[200px] h-8 mt-2'
 						value={month.notes}
-						onChange$={({ target: { value } }) =>
+						onInput$={(_, el) =>
 							updateMonth({
 								...month,
-								notes: value,
+								notes: el.value,
 							})
 						}
 					/>
