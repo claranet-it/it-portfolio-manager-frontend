@@ -23,7 +23,7 @@ export const TotalChart = component$<{
 		const data: number[] = [];
 		for (const monthYear of monthYearList.value) {
 			data.push(
-				effort.value.reduce((acc, item) => {
+				Math.round(effort.value.reduce((acc, item) => {
 					const [[_, value]] = Object.entries(item);
 					acc += fn(
 						value.find(
@@ -31,7 +31,7 @@ export const TotalChart = component$<{
 						)!
 					);
 					return acc;
-				}, 0) / effort.value.length
+				}, 0) / effort.value.length)
 			);
 		}
 		return data;

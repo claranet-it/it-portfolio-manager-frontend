@@ -3,13 +3,14 @@ import {
 	useComputed$,
 	useContext,
 	useSignal,
-	useTask$,
+	useTask$
 } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { getConfiguration, getSkills } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
 import { SkillMatrix } from '../utils/types';
+import { Filters } from './Filters';
 import { SearchSkillCard } from './SearchSkillCard';
 
 export const Search = component$(() => {
@@ -19,28 +20,6 @@ export const Search = component$(() => {
 	const selectedCrewSig = useSignal('');
 	const selectedSkillSig = useSignal('');
 	const selectedNameSig = useSignal('');
-
-	const serviceLinesSig = useComputed$(() =>
-		Object.keys(appStore.configuration.skills)
-	);
-
-	const crewsSig = useComputed$(() => {
-		const result = appStore.configuration.crews.filter(
-			(crew) =>
-				!selectedServiceLineSig.value ||
-				crew.service_line === selectedServiceLineSig.value
-		);
-		return result;
-	});
-	const skillsSig = useComputed$(() => {
-		const skills: string[] = selectedServiceLineSig.value
-			? appStore.configuration.skills[selectedServiceLineSig.value]
-			: Object.values(appStore.configuration.skills).reduce((result, value) => {
-					result.push(...value);
-					return result;
-			  }, []);
-		return skills;
-	});
 
 	const originalSkillMatrixSig = useSignal<SkillMatrix>([]);
 	const filteredSkillMatrixSig = useComputed$<SkillMatrix>(() => {
@@ -129,56 +108,12 @@ export const Search = component$(() => {
 
 	return (
 		<div class='p-8'>
-			<div class='w-full flex justify-around mb-4'>
-				<div class='max-w-[200px]'>
-					<span class='block text-xl font-bold'>Service Line</span>
-					<select
-						value={selectedServiceLineSig.value}
-						onChange$={(e) => {
-							selectedServiceLineSig.value = e.target.value;
-							selectedCrewSig.value = '';
-						}}
-						class='border-2 border-red-500 w-full h-8 mt-2'
-					>
-						<option value='' selected></option>
-						{serviceLinesSig.value.map((sl) => (
-							<option value={sl}>{sl}</option>
-						))}
-					</select>
-				</div>
-				<div class='max-w-[200px]'>
-					<span class='block text-xl font-bold'>Crew</span>
-					<select
-						bind:value={selectedCrewSig}
-						class='border-2 border-red-500 w-full h-8 mt-2'
-					>
-						<option value='' selected></option>
-						{crewsSig.value.map(({ name }) => (
-							<option value={name}>{name}</option>
-						))}
-					</select>
-				</div>
-				<div class='max-w-[200px]'>
-					<span class='block text-xl font-bold'>Skill</span>
-					<select
-						bind:value={selectedSkillSig}
-						class='border-2 border-red-500 w-full h-8 mt-2'
-					>
-						<option value='' selected></option>
-						{skillsSig.value.map((sk) => (
-							<option value={sk}>{sk}</option>
-						))}
-					</select>
-				</div>
-				<div class='max-w-[200px]'>
-					<span class='block text-xl font-bold'>Name</span>
-					<input
-						class='border-2 border-red-500 w-full h-8 mt-2'
-						type='text'
-						bind:value={selectedNameSig}
-					/>
-				</div>
-			</div>
+			<Filters
+				selectedCrew={selectedCrewSig}
+				selectedName={selectedNameSig}
+				selectedServiceLine={selectedServiceLineSig}
+				selectedSkill={selectedSkillSig}
+			/>
 			<div class='flex flex-col'>
 				{Object.entries(tableStructure.value).map(
 					([serviceLine, configurationSkills]) => {
