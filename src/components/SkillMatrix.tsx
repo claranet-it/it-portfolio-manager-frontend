@@ -13,6 +13,7 @@ import {
 } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie } from '../utils/cookie';
+import { navigateTo } from '../utils/router';
 import { Skill } from '../utils/types';
 import { SfIconStar } from './SfIconStar';
 import { SfRating } from './SfRating';
@@ -39,7 +40,7 @@ export const SkillMatrix = component$(() => {
 
 	useTask$(async () => {
 		if (!getCookie(COOKIE_TOKEN_KEY)) {
-			appStore.route = 'AUTH';
+			navigateTo('auth');
 		}
 		if (!appStore.configuration.skills.length) {
 			appStore.configuration = await getConfiguration();

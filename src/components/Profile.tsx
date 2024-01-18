@@ -10,6 +10,7 @@ import { t, tt } from '../locale/labels';
 import { getConfiguration, getUserMe, setUserProfile } from '../utils/api';
 import { COOKIE_TOKEN_KEY, GRAVATAR_ACCOUNT_URL, GRAVATAR_URL } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
+import { navigateTo } from '../utils/router';
 import { UserMe } from '../utils/types';
 import { SkillMatrix } from './SkillMatrix';
 
@@ -38,14 +39,14 @@ export const Profile = component$(() => {
 
 	useTask$(async () => {
 		if (!getCookie(COOKIE_TOKEN_KEY)) {
-			appStore.route = 'AUTH';
+			navigateTo('auth');
 		}
 
 		if (!appStore.configuration.skills.length) {
 			const configuration = await getConfiguration();
 			if (!configuration) {
 				removeCookie(COOKIE_TOKEN_KEY);
-				appStore.route = 'AUTH';
+				navigateTo('auth');
 			}
 			appStore.configuration = await getConfiguration();
 		}

@@ -9,6 +9,7 @@ import { AppContext } from '../app';
 import { getConfiguration, getSkills } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
+import { navigateTo } from '../utils/router';
 import { SkillMatrix } from '../utils/types';
 import { Filters } from './Filters';
 import { SearchSkillCard } from './SearchSkillCard';
@@ -85,14 +86,14 @@ export const Search = component$(() => {
 
 	useTask$(async () => {
 		if (!getCookie(COOKIE_TOKEN_KEY)) {
-			appStore.route = 'AUTH';
+			navigateTo('auth');
 		}
 
 		if (!appStore.configuration.skills.length) {
 			const configuration = await getConfiguration();
 			if (!configuration) {
 				removeCookie(COOKIE_TOKEN_KEY);
-				appStore.route = 'AUTH';
+				navigateTo('auth');
 			}
 			appStore.configuration = await getConfiguration();
 		}
@@ -100,7 +101,7 @@ export const Search = component$(() => {
 		const skills = await getSkills();
 		if (!skills) {
 			removeCookie(COOKIE_TOKEN_KEY);
-			appStore.route = 'AUTH';
+			navigateTo('auth');
 		}
 
 		originalSkillMatrixSig.value = skills;

@@ -5,11 +5,8 @@ import {
 	useContextProvider,
 	useStore,
 } from '@builder.io/qwik';
-import { Auth } from './components/Auth';
-import { Effort } from './components/Effort';
 import { Layout } from './components/Layout';
-import { Profile } from './components/Profile';
-import { Search } from './components/Search';
+import { routes, useRouter } from './utils/router';
 import { AppStore } from './utils/types';
 
 const {
@@ -27,7 +24,6 @@ export const auth0 = new Auth0Client({
 export const AppContext = createContextId<AppStore>('AppStore');
 
 const initialState: AppStore = {
-	route: 'AUTH',
 	configuration: {
 		crews: [],
 		skills: {},
@@ -42,17 +38,11 @@ const initialState: AppStore = {
 export const App = component$(() => {
 	const appStore = useStore<AppStore>(initialState);
 	useContextProvider(AppContext, appStore);
-	return appStore.route === 'AUTH' ? (
-		<Auth />
-	) : (
-		<Layout>
-			{appStore.route === 'PROFILE' ? (
-				<Profile />
-			) : appStore.route === 'SEARCH' ? (
-				<Search />
-			) : (
-				<Effort />
-			)}
+	const currentRouteSignal = useRouter();
+
+	return (
+		<Layout currentRoute={currentRouteSignal.value}>
+			{routes[currentRouteSignal.value]}
 		</Layout>
 	);
 });

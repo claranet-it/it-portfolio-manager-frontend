@@ -6,17 +6,18 @@ import {
 	useTask$,
 } from '@builder.io/qwik';
 import { AppContext } from '../app';
+import { t } from '../locale/labels';
 import { purgeName } from '../utils';
 import { getEffort, getSkills } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
 import { getDateLabelFromMonthYear } from '../utils/dates';
+import { navigateTo } from '../utils/router';
 import { Effort as TEffort } from '../utils/types';
+import { Filters } from './Filters';
 import { Month } from './Month';
 import { MonthChart } from './MonthChart';
 import { TotalChart } from './TotalChart';
-import { t } from '../locale/labels';
-import { Filters } from './Filters';
 
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
@@ -76,14 +77,14 @@ export const Effort = component$(() => {
 
 	useTask$(async () => {
 		if (!getCookie(COOKIE_TOKEN_KEY)) {
-			appStore.route = 'AUTH';
+			navigateTo('auth');
 		}
 
 		const effort = await getEffort();
 		const skillMatrix = await getSkills();
 		if (!effort || !skillMatrix) {
 			removeCookie(COOKIE_TOKEN_KEY);
-			appStore.route = 'AUTH';
+			navigateTo('auth');
 		}
 
 		effortSig.value = effort;
