@@ -1,14 +1,12 @@
-import type { Signal } from '@builder.io/qwik';
-import { component$, useComputed$, useContext } from '@builder.io/qwik';
-
-import { AppContext } from '~/routes/layout';
+import { Signal, component$, useComputed$, useContext } from '@builder.io/qwik';
+import { AppContext } from '../app';
 import { purgeName } from '../utils';
 import {
 	COVERAGE_BAD_LIMIT,
 	COVERAGE_GOOD_LIMIT,
 	SKILL_LEVEL_SCORE_LIMIT,
 } from '../utils/constants';
-import type { SkillMatrix } from '../utils/types';
+import { SkillMatrix } from '../utils/types';
 import { SfRating } from './SfRating';
 import { getIcon } from './icons';
 
@@ -44,8 +42,7 @@ export const SearchSkillCard = component$<Props>(({ skill, skillMatrix }) => {
 		const total = skillMatrix.value.reduce((result, sailor) => {
 			const key = Object.keys(sailor)[0];
 			return (
-				result +
-				(sailor[key].skills[skill] >= SKILL_LEVEL_SCORE_LIMIT ? 1 : 0)
+				result + (sailor[key].skills[skill] >= SKILL_LEVEL_SCORE_LIMIT ? 1 : 0)
 			);
 		}, 0);
 		return total;
@@ -63,13 +60,12 @@ export const SearchSkillCard = component$<Props>(({ skill, skillMatrix }) => {
 				{skillMatrix.value
 					.sort((a, b) =>
 						Object.values(a)[0].skills[skill] <
-						Object.values(b)[0].skills[skill]
+							Object.values(b)[0].skills[skill]
 							? 1
 							: -1
 					)
 					.map((skillMatrix, key) => {
-						const [name, { skills }] =
-							Object.entries(skillMatrix)[0];
+						const [name, { skills }] = Object.entries(skillMatrix)[0];
 						return (
 							<div key={key} class='flex w-full justify-between'>
 								<span>{purgeName(name)}</span>
@@ -90,10 +86,8 @@ export const SearchSkillCard = component$<Props>(({ skill, skillMatrix }) => {
 						<div
 							class={{
 								'h-2.5 rounded-full': true,
-								'bg-red-500':
-									coverageSig.value.status === 'BAD',
-								'bg-green-500':
-									coverageSig.value.status === 'GOOD',
+								'bg-red-500': coverageSig.value.status === 'BAD',
+								'bg-green-500': coverageSig.value.status === 'GOOD',
 								'bg-blue-500': coverageSig.value.status === '',
 							}}
 							style={`width: ${coverageSig.value.value}%`}

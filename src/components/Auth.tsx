@@ -1,18 +1,16 @@
-import { $, component$, useVisibleTask$ } from '@builder.io/qwik';
-
-import { useNavigate } from '@builder.io/qwik-city';
-import { auth0 } from '~/routes/layout';
+import { $, component$, useContext, useTask$ } from '@builder.io/qwik';
+import { AppContext, auth0 } from '../app';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, setCookie } from '../utils/cookie';
 
-export default component$(() => {
-	const navigate = useNavigate();
+export const Auth = component$(() => {
+	const appStore = useContext(AppContext);
 
 	const goToProfile = $(() => {
-		navigate('/profile');
+		appStore.route = 'PROFILE';
 	});
 
-	useVisibleTask$(async () => {
+	useTask$(async () => {
 		const url = new URL(window.location.href);
 		const code = url.searchParams.get('code');
 		if (code) {

@@ -1,4 +1,5 @@
 export type AppStore = {
+	route: 'AUTH' | 'PROFILE' | 'SEARCH' | 'EFFORT';
 	configuration: Configuration;
 };
 
