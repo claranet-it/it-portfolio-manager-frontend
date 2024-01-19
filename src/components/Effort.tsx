@@ -8,7 +8,7 @@ import {
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
 import { purgeName } from '../utils';
-import { getEffort, getSkills } from '../utils/api';
+import { getConfiguration, getEffort, getSkills } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
 import { getDateLabelFromMonthYear } from '../utils/dates';
@@ -78,6 +78,15 @@ export const Effort = component$(() => {
 	useTask$(async () => {
 		if (!getCookie(COOKIE_TOKEN_KEY)) {
 			navigateTo('auth');
+		}
+
+		if (!Object.keys(appStore.configuration.skills).length) {
+			const configuration = await getConfiguration();
+			if (!configuration) {
+				removeCookie(COOKIE_TOKEN_KEY);
+				navigateTo('auth');
+			}
+			appStore.configuration = configuration;
 		}
 
 		const effort = await getEffort();

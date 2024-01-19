@@ -89,13 +89,13 @@ export const Search = component$(() => {
 			navigateTo('auth');
 		}
 
-		if (!appStore.configuration.skills.length) {
+		if (!Object.keys(appStore.configuration.skills).length) {
 			const configuration = await getConfiguration();
 			if (!configuration) {
 				removeCookie(COOKIE_TOKEN_KEY);
 				navigateTo('auth');
 			}
-			appStore.configuration = await getConfiguration();
+			appStore.configuration = configuration;
 		}
 
 		const skills = await getSkills();

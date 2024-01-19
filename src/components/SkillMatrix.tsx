@@ -7,9 +7,8 @@ import {
 } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import {
-	getConfiguration,
 	getSkillMatrixMine,
-	pathSkillMatrixMine,
+	pathSkillMatrixMine
 } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie } from '../utils/cookie';
@@ -41,9 +40,6 @@ export const SkillMatrix = component$(() => {
 	useTask$(async () => {
 		if (!getCookie(COOKIE_TOKEN_KEY)) {
 			navigateTo('auth');
-		}
-		if (!appStore.configuration.skills.length) {
-			appStore.configuration = await getConfiguration();
 		}
 		skillsMineSig.value = await loadSkillsMatrixMine();
 	});
