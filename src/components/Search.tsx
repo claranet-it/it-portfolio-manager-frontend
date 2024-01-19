@@ -1,10 +1,4 @@
-import {
-	component$,
-	useComputed$,
-	useContext,
-	useSignal,
-	useTask$
-} from '@builder.io/qwik';
+import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { getConfiguration, getSkills } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
@@ -28,17 +22,13 @@ export const Search = component$(() => {
 		if (selectedNameSig.value) {
 			result = result.filter((sk) => {
 				const name = Object.keys(sk)[0];
-				return (
-					name.toLowerCase().indexOf(selectedNameSig.value.toLowerCase()) >= 0
-				);
+				return name.toLowerCase().indexOf(selectedNameSig.value.toLowerCase()) >= 0;
 			});
 		}
 		if (selectedCrewSig.value) {
 			result = result.filter((sk) => {
 				const crew = Object.values(sk)[0].crew;
-				return (
-					crew.toLowerCase().indexOf(selectedCrewSig.value.toLowerCase()) >= 0
-				);
+				return crew.toLowerCase().indexOf(selectedCrewSig.value.toLowerCase()) >= 0;
 			});
 		}
 		if (selectedSkillSig.value) {
@@ -51,9 +41,7 @@ export const Search = component$(() => {
 		if (selectedServiceLineSig.value) {
 			result = result.filter((sk) => {
 				const name = Object.keys(sk)[0];
-				return (
-					name.toLowerCase().indexOf(selectedNameSig.value.toLowerCase()) >= 0
-				);
+				return name.toLowerCase().indexOf(selectedNameSig.value.toLowerCase()) >= 0;
 			});
 		}
 		return result;
@@ -70,18 +58,19 @@ export const Search = component$(() => {
 			.map(([serviceLine, configurationSkills]) => {
 				return {
 					serviceLine,
-					skills: configurationSkills.filter(
-						(skill) => skill === selectedSkillSig.value
-					),
+					skills: configurationSkills.filter((skill) => skill === selectedSkillSig.value),
 				};
 			})
 			.filter(({ skills }) => skills.length > 0)
-			.reduce((result, row) => {
-				const { serviceLine, skills } = row;
+			.reduce(
+				(result, row) => {
+					const { serviceLine, skills } = row;
 
-				result[serviceLine] = skills;
-				return result;
-			}, {} as Record<string, string[]>);
+					result[serviceLine] = skills;
+					return result;
+				},
+				{} as Record<string, string[]>
+			);
 	});
 
 	useTask$(async () => {
@@ -116,29 +105,27 @@ export const Search = component$(() => {
 				selectedSkill={selectedSkillSig}
 			/>
 			<div class='flex flex-col'>
-				{Object.entries(tableStructure.value).map(
-					([serviceLine, configurationSkills]) => {
-						return !selectedServiceLineSig.value ||
-							selectedServiceLineSig.value === serviceLine ? (
-							<div class='pt-4'>
-								<div class='w-full text-center text-3xl font-bold my-4'>
-									{serviceLine}
-								</div>
-								<div class='flex flex-wrap justify-between'>
-									{configurationSkills.map((skill, key) => (
-										<SearchSkillCard
-											key={key}
-											skill={skill}
-											skillMatrix={filteredSkillMatrixSig}
-										/>
-									))}
-								</div>
+				{Object.entries(tableStructure.value).map(([serviceLine, configurationSkills]) => {
+					return !selectedServiceLineSig.value ||
+						selectedServiceLineSig.value === serviceLine ? (
+						<div class='pt-4'>
+							<div class='w-full text-center text-3xl font-bold my-4'>
+								{serviceLine}
 							</div>
-						) : (
-							<></>
-						);
-					}
-				)}
+							<div class='flex flex-wrap justify-between'>
+								{configurationSkills.map((skill, key) => (
+									<SearchSkillCard
+										key={key}
+										skill={skill}
+										skillMatrix={filteredSkillMatrixSig}
+									/>
+								))}
+							</div>
+						</div>
+					) : (
+						<></>
+					);
+				})}
 			</div>
 		</div>
 	);

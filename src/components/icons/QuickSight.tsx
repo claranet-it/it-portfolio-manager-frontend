@@ -10,13 +10,7 @@ export const QuickSight = component$(() => {
 			style={{ borderRadius: '10px' }}
 		>
 			<defs>
-				<linearGradient
-					id='logosAwsQuicksight0'
-					x1='0%'
-					x2='100%'
-					y1='100%'
-					y2='0%'
-				>
+				<linearGradient id='logosAwsQuicksight0' x1='0%' x2='100%' y1='100%' y2='0%'>
 					<stop offset='0%' stop-color='#4D27A8' />
 					<stop offset='100%' stop-color='#A166FF' />
 				</linearGradient>

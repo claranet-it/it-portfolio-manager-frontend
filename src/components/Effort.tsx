@@ -1,10 +1,4 @@
-import {
-	component$,
-	useComputed$,
-	useContext,
-	useSignal,
-	useTask$,
-} from '@builder.io/qwik';
+import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
 import { purgeName } from '../utils';
@@ -39,9 +33,7 @@ export const Effort = component$(() => {
 		if (selectedNameSig.value) {
 			result = result.filter((el) => {
 				const [name] = Object.keys(el);
-				return purgeName(name).includes(
-					selectedNameSig.value.toLowerCase()
-				);
+				return purgeName(name).includes(selectedNameSig.value.toLowerCase());
 			});
 		}
 
@@ -58,8 +50,7 @@ export const Effort = component$(() => {
 
 		if (selectedServiceLineSig.value) {
 			const selectedCrews = appStore.configuration.crews.filter(
-				({ service_line }) =>
-					service_line === selectedServiceLineSig.value
+				({ service_line }) => service_line === selectedServiceLineSig.value
 			);
 			result = result.filter((el) => {
 				const [name] = Object.keys(el);
@@ -123,8 +114,7 @@ export const Effort = component$(() => {
 										<span>
 											{
 												usersCrewSig.value?.find(
-													({ user }) =>
-														purgeName(name) === user
+													({ user }) => purgeName(name) === user
 												)?.crew
 											}
 										</span>
@@ -145,10 +135,7 @@ export const Effort = component$(() => {
 					</div>
 					<div class='m-4'>
 						<div class='text-lg font-bold'>{t('total')}</div>
-						<TotalChart
-							monthYearList={monthYearListSig}
-							effort={filteredEffortSig}
-						/>
+						<TotalChart monthYearList={monthYearListSig} effort={filteredEffortSig} />
 					</div>
 					<div class='grid grid-cols-2'>
 						{monthYearListSig.value.map((monthYear, key) => {
@@ -157,10 +144,7 @@ export const Effort = component$(() => {
 									<div class='text-lg font-bold'>
 										{getDateLabelFromMonthYear(monthYear)}
 									</div>
-									<MonthChart
-										monthYear={monthYear}
-										effort={filteredEffortSig}
-									/>
+									<MonthChart monthYear={monthYear} effort={filteredEffortSig} />
 								</div>
 							);
 						})}

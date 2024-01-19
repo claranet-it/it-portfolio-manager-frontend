@@ -19,16 +19,14 @@ export const SfRating = component$<{
 							<SfIconStar
 								key={`${uniqueId}-${i}`}
 								onClick$={() =>
-									onClick$ &&
-									onClick$(value !== currentValue ? currentValue : 0)
+									onClick$ && onClick$(value !== currentValue ? currentValue : 0)
 								}
 							/>
 						) : (
 							<SfIconStarFilled
 								key={`${uniqueId}-filled-${i}`}
 								onClick$={() =>
-									onClick$ &&
-									onClick$(value !== currentValue ? currentValue : 0)
+									onClick$ && onClick$(value !== currentValue ? currentValue : 0)
 								}
 							/>
 						)}

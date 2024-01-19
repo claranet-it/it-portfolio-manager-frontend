@@ -11,21 +11,14 @@ const getHeaders = () => {
 	});
 };
 
-const executeRequest = async (
-	path: string,
-	method: HttpMethods = 'GET',
-	body?: Object
-) => {
+const executeRequest = async (path: string, method: HttpMethods = 'GET', body?: Object) => {
 	const headers = getHeaders();
 	const options: RequestInit = {
 		method,
 		headers,
 		body: JSON.stringify(body),
 	};
-	return await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/${path}`,
-		options
-	);
+	return await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${path}`, options);
 };
 
 export const getHttpResponse = async <Response>(

@@ -26,24 +26,17 @@ export const SearchSkillCard = component$<Props>(({ skill, skillMatrix }) => {
 			return result + sailor[key].skills[skill];
 		}, 0);
 		const result =
-			(total * 100) /
-			(skillMatrix.value.length * appStore.configuration.scoreRange.max);
+			(total * 100) / (skillMatrix.value.length * appStore.configuration.scoreRange.max);
 		return {
 			value: result.toFixed(2),
 			status:
-				result < COVERAGE_BAD_LIMIT
-					? 'BAD'
-					: result > COVERAGE_GOOD_LIMIT
-						? 'GOOD'
-						: '',
+				result < COVERAGE_BAD_LIMIT ? 'BAD' : result > COVERAGE_GOOD_LIMIT ? 'GOOD' : '',
 		};
 	});
 	const skillLevelSig = useComputed$(() => {
 		const total = skillMatrix.value.reduce((result, sailor) => {
 			const key = Object.keys(sailor)[0];
-			return (
-				result + (sailor[key].skills[skill] >= SKILL_LEVEL_SCORE_LIMIT ? 1 : 0)
-			);
+			return result + (sailor[key].skills[skill] >= SKILL_LEVEL_SCORE_LIMIT ? 1 : 0);
 		}, 0);
 		return total;
 	});
@@ -59,8 +52,7 @@ export const SearchSkillCard = component$<Props>(({ skill, skillMatrix }) => {
 			<div class='flex flex-col w-full'>
 				{skillMatrix.value
 					.sort((a, b) =>
-						Object.values(a)[0].skills[skill] <
-							Object.values(b)[0].skills[skill]
+						Object.values(a)[0].skills[skill] < Object.values(b)[0].skills[skill]
 							? 1
 							: -1
 					)
@@ -95,9 +87,7 @@ export const SearchSkillCard = component$<Props>(({ skill, skillMatrix }) => {
 					</div>
 				</div>
 				<div class='flex justify-between w-full'>
-					<span class='font-bold'>
-						Skill Level ({SKILL_LEVEL_SCORE_LIMIT}+)
-					</span>
+					<span class='font-bold'>Skill Level ({SKILL_LEVEL_SCORE_LIMIT}+)</span>
 					<span>{skillLevelSig.value}</span>
 				</div>
 			</div>

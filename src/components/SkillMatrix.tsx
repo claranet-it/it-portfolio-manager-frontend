@@ -1,15 +1,6 @@
-import {
-	$,
-	component$,
-	useContext,
-	useSignal,
-	useTask$,
-} from '@builder.io/qwik';
+import { $, component$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
-import {
-	getSkillMatrixMine,
-	pathSkillMatrixMine
-} from '../utils/api';
+import { getSkillMatrixMine, pathSkillMatrixMine } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie } from '../utils/cookie';
 import { navigateTo } from '../utils/router';
@@ -25,15 +16,13 @@ export const SkillMatrix = component$(() => {
 	const loadSkillsMatrixMine = $(async () => {
 		const skillMine = await getSkillMatrixMine();
 		const result: Record<string, Skill[]> = {};
-		Object.entries(appStore.configuration.skills).forEach(
-			([skillCategory, skills]) => {
-				result[skillCategory] = [];
-				skills.forEach((skill) => {
-					const score = skillMine.find((s) => s.skill === skill)?.score || 0;
-					result[skillCategory].push({ skill, score, skillCategory });
-				});
-			}
-		);
+		Object.entries(appStore.configuration.skills).forEach(([skillCategory, skills]) => {
+			result[skillCategory] = [];
+			skills.forEach((skill) => {
+				const score = skillMine.find((s) => s.skill === skill)?.score || 0;
+				result[skillCategory].push({ skill, score, skillCategory });
+			});
+		});
 		return result;
 	});
 
