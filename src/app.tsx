@@ -40,7 +40,9 @@ export const App = component$(() => {
 	useContextProvider(AppContext, appStore);
 	const currentRouteSignal = useRouter();
 
-	return (
+	return currentRouteSignal.value === 'auth' ? (
+		routes[currentRouteSignal.value]
+	) : (
 		<Layout currentRoute={currentRouteSignal.value}>
 			{routes[currentRouteSignal.value]}
 		</Layout>
