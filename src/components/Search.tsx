@@ -3,19 +3,18 @@ import {
 	useComputed$,
 	useContext,
 	useSignal,
-	useVisibleTask$,
+	useTask$
 } from '@builder.io/qwik';
-import { useNavigate } from '@builder.io/qwik-city';
-import { Filters } from '../../components/Filters';
-import { SearchSkillCard } from '../../components/SearchSkillCard';
-import { getConfiguration, getSkills } from '../../utils/api';
-import { COOKIE_TOKEN_KEY } from '../../utils/constants';
-import { getCookie, removeCookie } from '../../utils/cookie';
-import type { SkillMatrix } from '../../utils/types';
-import { AppContext } from '../layout';
+import { AppContext } from '../app';
+import { getConfiguration, getSkills } from '../utils/api';
+import { COOKIE_TOKEN_KEY } from '../utils/constants';
+import { getCookie, removeCookie } from '../utils/cookie';
+import { navigateTo } from '../utils/router';
+import { SkillMatrix } from '../utils/types';
+import { Filters } from './Filters';
+import { SearchSkillCard } from './SearchSkillCard';
 
-export default component$(() => {
-	const navigate = useNavigate();
+export const Search = component$(() => {
 	const appStore = useContext(AppContext);
 
 	const selectedServiceLineSig = useSignal('');
@@ -30,9 +29,7 @@ export default component$(() => {
 			result = result.filter((sk) => {
 				const name = Object.keys(sk)[0];
 				return (
-					name
-						.toLowerCase()
-						.indexOf(selectedNameSig.value.toLowerCase()) >= 0
+					name.toLowerCase().indexOf(selectedNameSig.value.toLowerCase()) >= 0
 				);
 			});
 		}
@@ -40,9 +37,7 @@ export default component$(() => {
 			result = result.filter((sk) => {
 				const crew = Object.values(sk)[0].crew;
 				return (
-					crew
-						.toLowerCase()
-						.indexOf(selectedCrewSig.value.toLowerCase()) >= 0
+					crew.toLowerCase().indexOf(selectedCrewSig.value.toLowerCase()) >= 0
 				);
 			});
 		}
@@ -57,9 +52,7 @@ export default component$(() => {
 			result = result.filter((sk) => {
 				const name = Object.keys(sk)[0];
 				return (
-					name
-						.toLowerCase()
-						.indexOf(selectedNameSig.value.toLowerCase()) >= 0
+					name.toLowerCase().indexOf(selectedNameSig.value.toLowerCase()) >= 0
 				);
 			});
 		}
@@ -83,35 +76,32 @@ export default component$(() => {
 				};
 			})
 			.filter(({ skills }) => skills.length > 0)
-			.reduce(
-				(result, row) => {
-					const { serviceLine, skills } = row;
+			.reduce((result, row) => {
+				const { serviceLine, skills } = row;
 
-					result[serviceLine] = skills;
-					return result;
-				},
-				{} as Record<string, string[]>
-			);
+				result[serviceLine] = skills;
+				return result;
+			}, {} as Record<string, string[]>);
 	});
 
-	useVisibleTask$(async () => {
+	useTask$(async () => {
 		if (!getCookie(COOKIE_TOKEN_KEY)) {
-			navigate('/');
+			navigateTo('auth');
 		}
 
-		if (!appStore.configuration.skills.length) {
+		if (!Object.keys(appStore.configuration.skills).length) {
 			const configuration = await getConfiguration();
 			if (!configuration) {
 				removeCookie(COOKIE_TOKEN_KEY);
-				navigate('/');
+				navigateTo('auth');
 			}
-			appStore.configuration = await getConfiguration();
+			appStore.configuration = configuration;
 		}
 
 		const skills = await getSkills();
 		if (!skills) {
 			removeCookie(COOKIE_TOKEN_KEY);
-			navigate('/');
+			navigateTo('auth');
 		}
 
 		originalSkillMatrixSig.value = skills;

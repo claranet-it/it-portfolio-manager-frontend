@@ -1,7 +1,6 @@
-import type { Signal } from '@builder.io/qwik';
-import { $, component$, useComputed$ } from '@builder.io/qwik';
+import { $, Signal, component$, useComputed$ } from '@builder.io/qwik';
 import { getDateLabelFromMonthYear } from '../utils/dates';
-import type { Effort, Month } from '../utils/types';
+import { Effort, Month } from '../utils/types';
 import { Chart } from './Chart';
 
 export const TotalChart = component$<{
@@ -20,7 +19,7 @@ export const TotalChart = component$<{
 			data.push(
 				Math.round(
 					effort.value.reduce((acc, item) => {
-						const [[, value]] = Object.entries(item);
+						const [[_, value]] = Object.entries(item);
 						acc += fn(
 							value.find(
 								({ month_year }) => month_year === monthYear
@@ -35,6 +34,10 @@ export const TotalChart = component$<{
 	});
 
 	return (
-		<Chart effort={effort} extractData={extractData} labels={labelsSig} />
+		<Chart
+			effort={effort}
+			extractData={extractData}
+			labels={labelsSig}
+		/>
 	);
 });

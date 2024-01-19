@@ -3,30 +3,29 @@ import {
 	useComputed$,
 	useContext,
 	useSignal,
-	useVisibleTask$,
+	useTask$,
 } from '@builder.io/qwik';
-import { useNavigate } from '@builder.io/qwik-city';
-import { Filters } from '~/components/Filters';
-import { Month } from '~/components/Month';
-import { MonthChart } from '~/components/MonthChart';
-import { TotalChart } from '~/components/TotalChart';
-import { t } from '~/locale/labels';
-import { purgeName } from '~/utils';
-import { getEffort, getSkills } from '~/utils/api';
-import { COOKIE_TOKEN_KEY } from '~/utils/constants';
-import { getCookie, removeCookie } from '~/utils/cookie';
-import { getDateLabelFromMonthYear } from '~/utils/dates';
-import type { Effort as TEffort } from '../../utils/types';
-import { AppContext } from '../layout';
+import { AppContext } from '../app';
+import { t } from '../locale/labels';
+import { purgeName } from '../utils';
+import { getConfiguration, getEffort, getSkills } from '../utils/api';
+import { COOKIE_TOKEN_KEY } from '../utils/constants';
+import { getCookie, removeCookie } from '../utils/cookie';
+import { getDateLabelFromMonthYear } from '../utils/dates';
+import { navigateTo } from '../utils/router';
+import { Effort as TEffort } from '../utils/types';
+import { Filters } from './Filters';
+import { Month } from './Month';
+import { MonthChart } from './MonthChart';
+import { TotalChart } from './TotalChart';
 
-export default component$(() => {
-	const navigate = useNavigate();
+export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
 	const effortSig = useSignal<TEffort>([]);
 	const usersCrewSig = useSignal<{ user: string; crew: string }[]>();
 	const monthYearListSig = useComputed$<string[]>(() => {
 		if (effortSig.value.length > 0) {
-			const [[, value]] = Object.entries(effortSig.value[0]);
+			const [[_, value]] = Object.entries(effortSig.value[0]);
 			return value.map((m) => m.month_year);
 		}
 		return [];
@@ -76,16 +75,25 @@ export default component$(() => {
 		return result;
 	});
 
-	useVisibleTask$(async () => {
+	useTask$(async () => {
 		if (!getCookie(COOKIE_TOKEN_KEY)) {
-			navigate('/');
+			navigateTo('auth');
+		}
+
+		if (!Object.keys(appStore.configuration.skills).length) {
+			const configuration = await getConfiguration();
+			if (!configuration) {
+				removeCookie(COOKIE_TOKEN_KEY);
+				navigateTo('auth');
+			}
+			appStore.configuration = configuration;
 		}
 
 		const effort = await getEffort();
 		const skillMatrix = await getSkills();
 		if (!effort || !skillMatrix) {
 			removeCookie(COOKIE_TOKEN_KEY);
-			navigate('/');
+			navigateTo('auth');
 		}
 
 		effortSig.value = effort;
@@ -127,8 +135,7 @@ export default component$(() => {
 											month={month}
 											name={name}
 											onChange$={async () => {
-												effortSig.value =
-													await getEffort();
+												effortSig.value = await getEffort();
 											}}
 										/>
 									))}

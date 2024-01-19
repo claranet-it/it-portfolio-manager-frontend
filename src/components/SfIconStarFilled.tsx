@@ -1,13 +1,12 @@
-import type { QRL } from '@builder.io/qwik';
-import { component$ } from '@builder.io/qwik';
+import { PropFunction, component$ } from '@builder.io/qwik';
 
-export const SfIconStarFilled = component$<{ onClick$: QRL }>(
+export const SfIconStarFilled = component$<{ onClick$: PropFunction }>(
 	({ onClick$ }) => {
 		return (
 			<svg
 				xmlns='http://www.w3.org/2000/svg'
 				viewBox='0 0 24 24'
-				class='inline-block fill-red-600 w-[1.5em] h-[1.5em]'
+				class='inline-block fill-red-600 w-6 h-6 w-[1.5em] h-[1.5em]'
 				preventdefault:click
 				onClick$={onClick$}
 			>
