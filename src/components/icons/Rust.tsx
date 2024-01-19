@@ -2,12 +2,7 @@ import { component$ } from '@builder.io/qwik';
 
 export const Rust = component$(() => {
 	return (
-		<svg
-			xmlns='http://www.w3.org/2000/svg'
-			width='32'
-			height='32'
-			viewBox='0 0 15 15'
-		>
+		<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 15 15'>
 			<path
 				fill='none'
 				stroke='currentColor'

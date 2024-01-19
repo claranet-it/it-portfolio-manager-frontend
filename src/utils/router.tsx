@@ -18,15 +18,13 @@ export const navigateTo = (route: Route): void => {
 	dispatchEvent(new PopStateEvent('popstate'));
 };
 
-const getCurrentRoute = (): Route =>
-	window.location.pathname.replaceAll('/', '') as Route;
+const getCurrentRoute = (): Route => window.location.pathname.replaceAll('/', '') as Route;
 
 export const useRouter = (defaultRoute: Route = 'auth'): Signal<Route> => {
 	const currentRouteSignal = useSignal<Route>(defaultRoute);
 
 	useTask$(() => {
-		window.onpopstate = () =>
-			(currentRouteSignal.value = getCurrentRoute());
+		window.onpopstate = () => (currentRouteSignal.value = getCurrentRoute());
 		const route = getCurrentRoute();
 		if (route === currentRouteSignal.value) return;
 		if (Object.keys(routes).includes(route)) {

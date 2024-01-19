@@ -1,10 +1,4 @@
-import {
-	$,
-	component$,
-	useContext,
-	useStore,
-	useTask$,
-} from '@builder.io/qwik';
+import { $, component$, useContext, useStore, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { t, tt } from '../locale/labels';
 import { getConfiguration, getUserMe, setUserProfile } from '../utils/api';
@@ -15,18 +9,18 @@ import { UserMe } from '../utils/types';
 import { SkillMatrix } from './SkillMatrix';
 
 export const Profile = component$(() => {
-	let userStore = useStore<UserMe>(
-		{ name: '', email: '', picture: '' },
-		{ deep: true }
-	);
+	let userStore = useStore<UserMe>({ name: '', email: '', picture: '' }, { deep: true });
 	const appStore = useContext(AppContext);
 
-	const htmlStringProfileImage = tt('noteProfileImage',
-		{
-			linkGravatar: '<a href=\"' + GRAVATAR_URL + '\" class=\"underline\">' + t('gravatar') + '</a>',
-			accountGravatar: '<a href=\"' + GRAVATAR_ACCOUNT_URL + '\" class=\"underline\">' + t('gravatarAccount') + '</a>'
-		})
-
+	const htmlStringProfileImage = tt('noteProfileImage', {
+		linkGravatar: '<a href="' + GRAVATAR_URL + '" class="underline">' + t('gravatar') + '</a>',
+		accountGravatar:
+			'<a href="' +
+			GRAVATAR_ACCOUNT_URL +
+			'" class="underline">' +
+			t('gravatarAccount') +
+			'</a>',
+	});
 
 	const updateUserMe = $(async () => {
 		const user = await getUserMe();
@@ -70,9 +64,7 @@ export const Profile = component$(() => {
 						</div>
 						<div class='space-y-4 text-center divide-y divide-gray-700'>
 							<div class='my-2 space-y-1'>
-								<h2 class='text-xl font-semibold sm:text-2xl'>
-									{userStore.name}
-								</h2>
+								<h2 class='text-xl font-semibold sm:text-2xl'>{userStore.name}</h2>
 								<p class='px-5 text-xs sm:text-base'>
 									{userStore.email.toLowerCase()}
 								</p>

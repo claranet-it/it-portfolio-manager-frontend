@@ -9,28 +9,21 @@ export const Filters = component$<{
 }>(({ selectedServiceLine, selectedCrew, selectedSkill, selectedName }) => {
 	const appStore = useContext(AppContext);
 
-	const serviceLinesSig = useComputed$(() =>
-		Object.keys(appStore.configuration.skills)
-	);
+	const serviceLinesSig = useComputed$(() => Object.keys(appStore.configuration.skills));
 
 	const crewsSig = useComputed$(() => {
 		const result = appStore.configuration.crews.filter(
-			(crew) =>
-				!selectedServiceLine.value ||
-				crew.service_line === selectedServiceLine.value
+			(crew) => !selectedServiceLine.value || crew.service_line === selectedServiceLine.value
 		);
 		return result;
 	});
 	const skillsSig = useComputed$(() => {
 		const skills: string[] = selectedServiceLine.value
 			? appStore.configuration.skills[selectedServiceLine.value]
-			: Object.values(appStore.configuration.skills).reduce(
-					(result, value) => {
-						result.push(...value);
-						return result;
-					},
-					[]
-			  );
+			: Object.values(appStore.configuration.skills).reduce((result, value) => {
+					result.push(...value);
+					return result;
+				}, []);
 		return skills;
 	});
 
@@ -54,10 +47,7 @@ export const Filters = component$<{
 			</div>
 			<div class='max-w-[200px]'>
 				<span class='block text-xl font-bold'>Crew</span>
-				<select
-					bind:value={selectedCrew}
-					class='border-2 border-red-500 w-full h-8 mt-2'
-				>
+				<select bind:value={selectedCrew} class='border-2 border-red-500 w-full h-8 mt-2'>
 					<option value='' selected></option>
 					{crewsSig.value.map(({ name }) => (
 						<option value={name}>{name}</option>

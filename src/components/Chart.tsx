@@ -29,8 +29,7 @@ export const Chart = component$<{
 	const emptyDataSig = useComputed$(
 		async () =>
 			await extractData(
-				({ confirmedEffort, tentativeEffort }) =>
-					100 - confirmedEffort - tentativeEffort
+				({ confirmedEffort, tentativeEffort }) => 100 - confirmedEffort - tentativeEffort
 			)
 	);
 

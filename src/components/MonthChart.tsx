@@ -20,18 +20,10 @@ export const MonthChart = component$<{
 		const data: number[] = [];
 		effort.value.map((item) => {
 			const [[_, value]] = Object.entries(item);
-			data.push(
-				...value.filter((m) => m.month_year === monthYear).map(fn)
-			);
+			data.push(...value.filter((m) => m.month_year === monthYear).map(fn));
 		});
 		return data;
 	});
 
-	return (
-		<Chart
-			effort={effort}
-			extractData={extractData}
-			labels={labelsSig}
-		/>
-	);
+	return <Chart effort={effort} extractData={extractData} labels={labelsSig} />;
 });

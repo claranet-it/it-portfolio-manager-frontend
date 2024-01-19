@@ -1,10 +1,5 @@
 import { Auth0Client } from '@auth0/auth0-spa-js';
-import {
-	component$,
-	createContextId,
-	useContextProvider,
-	useStore,
-} from '@builder.io/qwik';
+import { component$, createContextId, useContextProvider, useStore } from '@builder.io/qwik';
 import { Layout } from './components/Layout';
 import { routes, useRouter } from './utils/router';
 import { AppStore } from './utils/types';
@@ -43,8 +38,6 @@ export const App = component$(() => {
 	return currentRouteSignal.value === 'auth' ? (
 		routes[currentRouteSignal.value]
 	) : (
-		<Layout currentRoute={currentRouteSignal.value}>
-			{routes[currentRouteSignal.value]}
-		</Layout>
+		<Layout currentRoute={currentRouteSignal.value}>{routes[currentRouteSignal.value]}</Layout>
 	);
 });
