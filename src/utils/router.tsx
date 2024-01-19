@@ -31,7 +31,7 @@ export const useRouter = (defaultRoute: Route = 'auth'): Signal<Route> => {
 		if (route === currentRouteSignal.value) return;
 		if (Object.keys(routes).includes(route)) {
 			currentRouteSignal.value = route;
-		} else {
+		} else if (route) {
 			window.history.replaceState({}, '', `/${defaultRoute}`);
 		}
 	});
