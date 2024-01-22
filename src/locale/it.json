@@ -15,5 +15,8 @@
 	"gravatar": "Gravatar.com",
 	"gravatarAccount": "create a Gravatar account",
 	"noteProfileImage": "We use #linkGravatar for our profile images.<div> To set or change yours, #accountGravatar.</div>",
-	"total": "Total"
+	"total": "Total",
+	"skills": "Skills",
+	"search_button": "Cerca",
+	"search_placeholder": "Cerca..."
 }

@@ -1,132 +1,31 @@
-import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
-import { AppContext } from '../app';
-import { getConfiguration, getSkills } from '../utils/api';
-import { COOKIE_TOKEN_KEY } from '../utils/constants';
-import { getCookie, removeCookie } from '../utils/cookie';
-import { navigateTo } from '../utils/router';
-import { SkillMatrix } from '../utils/types';
-import { Filters } from './Filters';
-import { SearchSkillCard } from './SearchSkillCard';
+import { component$, useSignal } from '@builder.io/qwik';
+import { t } from '../locale/labels';
 
 export const Search = component$(() => {
-	const appStore = useContext(AppContext);
-
-	const selectedServiceLineSig = useSignal('');
-	const selectedCrewSig = useSignal('');
-	const selectedSkillSig = useSignal('');
-	const selectedNameSig = useSignal('');
-
-	const originalSkillMatrixSig = useSignal<SkillMatrix>([]);
-	const filteredSkillMatrixSig = useComputed$<SkillMatrix>(() => {
-		let result = originalSkillMatrixSig.value;
-		if (selectedNameSig.value) {
-			result = result.filter((sk) => {
-				const name = Object.keys(sk)[0];
-				return name.toLowerCase().indexOf(selectedNameSig.value.toLowerCase()) >= 0;
-			});
-		}
-		if (selectedCrewSig.value) {
-			result = result.filter((sk) => {
-				const crew = Object.values(sk)[0].crew;
-				return crew.toLowerCase().indexOf(selectedCrewSig.value.toLowerCase()) >= 0;
-			});
-		}
-		if (selectedSkillSig.value) {
-			result = result.filter((sk) => {
-				const skills = Object.values(sk)[0].skills;
-				return skills[selectedSkillSig.value] > 0;
-			});
-		}
-
-		if (selectedServiceLineSig.value) {
-			result = result.filter((sk) => {
-				const name = Object.keys(sk)[0];
-				return name.toLowerCase().indexOf(selectedNameSig.value.toLowerCase()) >= 0;
-			});
-		}
-		return result;
-	});
-
-	const tableStructure = useComputed$<Record<string, string[]>>(() => {
-		const rawData = appStore.configuration.skills;
-
-		if (!selectedSkillSig.value) {
-			return rawData;
-		}
-
-		return Object.entries(rawData)
-			.map(([serviceLine, configurationSkills]) => {
-				return {
-					serviceLine,
-					skills: configurationSkills.filter((skill) => skill === selectedSkillSig.value),
-				};
-			})
-			.filter(({ skills }) => skills.length > 0)
-			.reduce(
-				(result, row) => {
-					const { serviceLine, skills } = row;
-
-					result[serviceLine] = skills;
-					return result;
-				},
-				{} as Record<string, string[]>
-			);
-	});
-
-	useTask$(async () => {
-		if (!getCookie(COOKIE_TOKEN_KEY)) {
-			navigateTo('auth');
-		}
-
-		if (!Object.keys(appStore.configuration.skills).length) {
-			const configuration = await getConfiguration();
-			if (!configuration) {
-				removeCookie(COOKIE_TOKEN_KEY);
-				navigateTo('auth');
-			}
-			appStore.configuration = configuration;
-		}
-
-		const skills = await getSkills();
-		if (!skills) {
-			removeCookie(COOKIE_TOKEN_KEY);
-			navigateTo('auth');
-		}
-
-		originalSkillMatrixSig.value = skills;
-	});
+	const searchValueSig = useSignal('');
 
 	return (
-		<div class='p-8'>
-			<Filters
-				selectedCrew={selectedCrewSig}
-				selectedName={selectedNameSig}
-				selectedServiceLine={selectedServiceLineSig}
-				selectedSkill={selectedSkillSig}
-			/>
-			<div class='flex flex-col'>
-				{Object.entries(tableStructure.value).map(([serviceLine, configurationSkills]) => {
-					return !selectedServiceLineSig.value ||
-						selectedServiceLineSig.value === serviceLine ? (
-						<div class='pt-4'>
-							<div class='w-full text-center text-3xl font-bold my-4'>
-								{serviceLine}
-							</div>
-							<div class='flex flex-wrap justify-between'>
-								{configurationSkills.map((skill, key) => (
-									<SearchSkillCard
-										key={key}
-										skill={skill}
-										skillMatrix={filteredSkillMatrixSig}
-									/>
-								))}
-							</div>
-						</div>
-					) : (
-						<></>
-					);
-				})}
-			</div>
-		</div>
+		<form
+			class='text-center'
+			onSubmit$={() => {
+				console.log('search value: ', searchValueSig.value);
+			}}
+			preventdefault:submit
+		>
+			<textarea
+				id='message'
+				class='mx-auto my-8 block p-2.5 w-[800px] text-sm text-gray-900 bg-gray-50 rounded-lg border border-red-300 focus:ring-blue-500 focus:border-blue-500'
+				placeholder={t('search_placeholder')}
+				rows={6}
+				bind:value={searchValueSig}
+			></textarea>
+			<button
+				disabled={!searchValueSig.value}
+				type='submit'
+				class='bg-transparent text-gray-400 font-semibold p-2 m-2 hover:bg-red-600 hover:text-white rounded border-0 min-w-[100px] disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-400 disabled:text-gray-400 disabled:opacity-50'
+			>
+				{t('search_button')}
+			</button>
+		</form>
 	);
 });

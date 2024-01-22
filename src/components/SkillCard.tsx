@@ -15,7 +15,7 @@ type Props = {
 	skillMatrix: Signal<SkillMatrix>;
 };
 
-export const SearchSkillCard = component$<Props>(({ skill, skillMatrix }) => {
+export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 	const appStore = useContext(AppContext);
 	const coverageSig = useComputed$<{
 		value: string;
