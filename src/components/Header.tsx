@@ -4,7 +4,7 @@ import { Route, navigateTo } from '../utils/router';
 
 type MenuRoutes = Exclude<Route, 'auth'>;
 
-const MENU: MenuRoutes[] = ['profile', 'skills', 'effort', 'search'] as const;
+const MENU = ['profile', 'skills', 'effort', 'search'] as const;
 
 export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }) => {
 	return (

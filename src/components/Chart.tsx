@@ -1,4 +1,6 @@
 import {
+	NoSerialize,
+	QRL,
 	Signal,
 	component$,
 	noSerialize,
@@ -13,10 +15,10 @@ import { Effort, Month } from '../utils/types';
 export const Chart = component$<{
 	effort: Signal<Effort>;
 	labels: Signal<string[]>;
-	extractData: (fn: (month: Month) => number) => number[];
+	extractData: QRL<(fn: (month: Month) => number) => number[]>;
 }>(({ effort, labels, extractData }) => {
 	const chartElSig = useSignal<HTMLCanvasElement>();
-	const chartSig = useSignal<TChart<'bar', number[], string>>();
+	const chartSig = useSignal<NoSerialize<TChart<'bar', number[], string>>>();
 
 	const confirmedDataSig = useComputed$(
 		async () => await extractData(({ confirmedEffort }) => confirmedEffort)

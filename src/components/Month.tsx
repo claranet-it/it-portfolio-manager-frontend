@@ -26,12 +26,12 @@ export const Month = component$<{
 						value={month.confirmedEffort}
 						min={0}
 						max={100}
-						onChange$={({ target: { value } }) =>
+						onChange$={(_, { value }) => {
 							updateMonth({
 								...month,
 								confirmedEffort: parseInt(value, 10),
-							})
-						}
+							});
+						}}
 					/>
 				</div>
 				<div class='flex-col m-2'>
@@ -42,12 +42,12 @@ export const Month = component$<{
 						value={month.tentativeEffort}
 						min={0}
 						max={100}
-						onChange$={({ target: { value } }) =>
+						onChange$={(_, { value }) => {
 							updateMonth({
 								...month,
 								tentativeEffort: parseInt(value, 10),
-							})
-						}
+							});
+						}}
 					/>
 				</div>
 				<div class='flex-col m-2'>
@@ -56,12 +56,12 @@ export const Month = component$<{
 						type='text'
 						class='border-2 border-black w-[200px] h-8 mt-2'
 						value={month.notes}
-						onChange$={({ target: { value } }) =>
+						onChange$={(_, { value }) => {
 							updateMonth({
 								...month,
 								notes: value,
-							})
-						}
+							});
+						}}
 					/>
 				</div>
 			</div>

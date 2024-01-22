@@ -1,11 +1,11 @@
-import { PropFunction, component$, useId } from '@builder.io/qwik';
+import { QRL, component$, useId } from '@builder.io/qwik';
 import { SfIconStar } from './SfIconStar';
 import { SfIconStarFilled } from './SfIconStarFilled';
 
 export const SfRating = component$<{
 	max: number;
 	value: number;
-	onClick$?: PropFunction<(value: number) => void>;
+	onClick$?: QRL<(value: number) => void>;
 }>(({ max = 5, value = 0, onClick$ }) => {
 	const uniqueId = useId();
 
