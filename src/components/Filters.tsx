@@ -39,8 +39,10 @@ export const Filters = component$<{
 					class='border-2 border-red-500 w-full h-8 mt-2'
 				>
 					<option value='' selected></option>
-					{serviceLinesSig.value.map((sl) => (
-						<option value={sl}>{sl}</option>
+					{serviceLinesSig.value.map((sl, index) => (
+						<option key={index} value={sl}>
+							{sl}
+						</option>
 					))}
 				</select>
 			</div>
@@ -48,8 +50,10 @@ export const Filters = component$<{
 				<span class='block text-xl font-bold'>Crew</span>
 				<select bind:value={selectedCrew} class='border-2 border-red-500 w-full h-8 mt-2'>
 					<option value='' selected></option>
-					{crewsSig.value.map(({ name }) => (
-						<option value={name}>{name}</option>
+					{crewsSig.value.map(({ name }, index) => (
+						<option key={index} value={name}>
+							{name}
+						</option>
 					))}
 				</select>
 			</div>
@@ -61,8 +65,10 @@ export const Filters = component$<{
 						class='border-2 border-red-500 w-full h-8 mt-2'
 					>
 						<option value='' selected></option>
-						{skillsSig.value.map((sk) => (
-							<option value={sk}>{sk}</option>
+						{skillsSig.value.map((sk, index) => (
+							<option key={index} value={sk}>
+								{sk}
+							</option>
 						))}
 					</select>
 				</div>

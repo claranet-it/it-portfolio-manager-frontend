@@ -1,6 +1,6 @@
-import { PropFunction, component$ } from '@builder.io/qwik';
+import { QRL, component$ } from '@builder.io/qwik';
 
-export const SfIconStar = component$<{ onClick$?: PropFunction }>(({ onClick$ }) => {
+export const SfIconStar = component$<{ onClick$?: QRL }>(({ onClick$ }) => {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
