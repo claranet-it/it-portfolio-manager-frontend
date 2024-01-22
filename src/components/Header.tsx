@@ -2,9 +2,11 @@ import { component$ } from '@builder.io/qwik';
 import { t } from '../locale/labels';
 import { Route, navigateTo } from '../utils/router';
 
-const MENU = ['profile', 'search', 'effort'] as const;
+type MenuRoutes = Exclude<Route, 'auth'>;
 
-export const Header = component$<{ currentRoute: Exclude<Route, 'auth'> }>(({ currentRoute }) => {
+const MENU: MenuRoutes[] = ['profile', 'skills', 'effort', 'search'] as const;
+
+export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }) => {
 	return (
 		<header>
 			<div class='flex justify-between items-center bg-white border-b-2 border-red-600 '>

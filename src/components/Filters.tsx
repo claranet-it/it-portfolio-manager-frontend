@@ -32,9 +32,8 @@ export const Filters = component$<{
 			<div class='max-w-[200px]'>
 				<span class='block text-xl font-bold'>Service Line</span>
 				<select
-					value={selectedServiceLine.value}
-					onChange$={(e) => {
-						selectedServiceLine.value = e.target.value;
+					bind:value={selectedServiceLine}
+					onChange$={() => {
 						selectedCrew.value = '';
 					}}
 					class='border-2 border-red-500 w-full h-8 mt-2'
