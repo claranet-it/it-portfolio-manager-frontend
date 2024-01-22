@@ -9,7 +9,9 @@
 		"preview": "npx serve ./dist",
 		"qwik": "qwik",
 		"prepare": "husky install",
-		"precommit": "lint-staged"
+		"precommit": "lint-staged",
+		"fmt": "prettier --write src",
+		"fmt.check": "prettier --check src"
 	},
 	"devDependencies": {
 		"autoprefixer": "^10.4.17",
