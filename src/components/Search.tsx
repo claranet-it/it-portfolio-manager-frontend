@@ -14,7 +14,7 @@ export const Search = component$(() => {
 		>
 			<textarea
 				id='message'
-				class='mx-auto my-8 block p-2.5 w-[800px] text-sm text-gray-900 bg-gray-50 rounded-lg border border-red-300 focus:ring-blue-500 focus:border-blue-500'
+				class='mx-auto my-8 block p-2.5 w-[800px] text-sm text-gray-900 bg-gray-50 rounded-lg border-2 border-red-500 focus:ring-blue-500 focus:border-blue-500'
 				placeholder={t('search_placeholder')}
 				rows={6}
 				bind:value={searchValueSig}
