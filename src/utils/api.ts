@@ -27,8 +27,11 @@ export const pathSkillMatrixMine = async (skill: Skill): Promise<boolean> =>
 export const getSkills = async (company: string = 'it'): Promise<SkillMatrix> =>
 	getHttpResponse<SkillMatrix>(`skill-matrix?company=${company}`);
 
-export const getEffort = async (): Promise<EffortMatrix> =>
-	getHttpResponse<EffortMatrix>('effort/next');
+export const getEffort = async (
+	months: number = 3,
+	company: string = 'it'
+): Promise<EffortMatrix> =>
+	getHttpResponse<EffortMatrix>(`effort/next?months=${months}&company=${company}`);
 
 export const putEffort = async (
 	uid: string,

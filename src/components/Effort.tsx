@@ -84,8 +84,8 @@ export const Effort = component$(() => {
 	>(() => {
 		const result = filteredEffortSig.value.reduce(
 			(acc, el) => {
-				const [values] = Object.values(el);
-				for (const { month_year, confirmedEffort, tentativeEffort } of values) {
+				const [{ effort }] = Object.values(el);
+				for (const { month_year, confirmedEffort, tentativeEffort } of effort) {
 					acc[month_year] = {
 						confirmed: (acc[month_year]?.confirmed || 0) + confirmedEffort,
 						tentative: (acc[month_year]?.tentative || 0) + tentativeEffort,
@@ -205,7 +205,10 @@ export const Effort = component$(() => {
 					</div>
 					<div class='m-4'>
 						<div class='text-lg font-bold'>{t('total')}</div>
-						<TotalChart monthYearList={monthYearListSig} effortSig={filteredEffortSig} />
+						<TotalChart
+							monthYearList={monthYearListSig}
+							effortSig={filteredEffortSig}
+						/>
 					</div>
 					<div class='xl:grid xl:grid-cols-2'>
 						{monthYearListSig.value.map((monthYear, key) => {
@@ -214,7 +217,10 @@ export const Effort = component$(() => {
 									<div class='text-lg font-bold'>
 										{getDateLabelFromMonthYear(monthYear)}
 									</div>
-									<MonthChart monthYear={monthYear} effortSig={filteredEffortSig} />
+									<MonthChart
+										monthYear={monthYear}
+										effortSig={filteredEffortSig}
+									/>
 								</div>
 							);
 						})}
