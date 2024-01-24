@@ -27,7 +27,7 @@ export const getHttpResponse = async <Response>(
 	body?: Object
 ): Promise<Response> => {
 	const response = await executeRequest(path, method, body);
-	return response.status === 200 ? await response.json() : null;
+	return await response.json();
 };
 
 export const checkHttpResponseStatus = async (
@@ -36,6 +36,10 @@ export const checkHttpResponseStatus = async (
 	method?: HttpMethods,
 	body?: Object
 ): Promise<boolean> => {
-	const { status } = await executeRequest(path, method, body);
-	return status === expectedStatus;
+	const response = await executeRequest(path, method, body);
+	if (response.status === 400 && expectedStatus !== 400) {
+		const { message } = await response.json();
+		throw new Error(message);
+	}
+	return response.status === expectedStatus;
 };

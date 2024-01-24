@@ -1,15 +1,16 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
-import { getConfiguration, getEffort, getSkills } from '../utils/api';
+import { getConfiguration, getEffort, putEffort } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
 import { getDateLabelFromMonthYear } from '../utils/dates';
 import { navigateTo } from '../utils/router';
-import { EffortMatrix } from '../utils/types';
+import { EffortMatrix, Month as TMonth } from '../utils/types';
 import { Filters } from './Filters';
 import { Month } from './Month';
 import { MonthChart } from './MonthChart';
+import { Toast } from './Toast';
 import { TotalChart } from './TotalChart';
 
 export const Effort = component$(() => {
@@ -25,6 +26,7 @@ export const Effort = component$(() => {
 	const selectedCrewSig = useSignal('');
 	const selectedNameSig = useSignal('');
 	const selectedServiceLineSig = useSignal('');
+	const errorMessageSig = useSignal('');
 
 	const filteredEffortSig = useComputed$<EffortMatrix>(() => {
 		let result = effortSig.value;
@@ -111,7 +113,13 @@ export const Effort = component$(() => {
 	});
 
 	return (
-		<div class='p-8 w-full'>
+		<div class='p-8 w-full relative'>
+			{errorMessageSig.value && (
+				<Toast
+					message={errorMessageSig.value}
+					onClose$={() => (errorMessageSig.value = '')}
+				/>
+			)}
 			<Filters
 				selectedCrew={selectedCrewSig}
 				selectedName={selectedNameSig}
@@ -191,10 +199,14 @@ export const Effort = component$(() => {
 									{effort.map((month, key) => (
 										<Month
 											key={key}
-											uid={uid}
 											month={month}
-											effort={data}
-											onChange$={async () => {
+											onChange$={async (month: TMonth) => {
+												try {
+													await putEffort(uid, data, month);
+												} catch (error) {
+													const { message } = error as Error;
+													errorMessageSig.value = message;
+												}
 												effortSig.value = await getEffort();
 											}}
 										/>
