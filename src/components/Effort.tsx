@@ -1,50 +1,46 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
-import { purgeName } from '../utils';
-import { getConfiguration, getEffort, getSkills } from '../utils/api';
+import { getConfiguration, getEffort, putEffort } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
 import { getDateLabelFromMonthYear } from '../utils/dates';
 import { navigateTo } from '../utils/router';
-import { Effort as TEffort } from '../utils/types';
+import { EffortMatrix, Month as TMonth } from '../utils/types';
 import { Filters } from './Filters';
 import { Month } from './Month';
 import { MonthChart } from './MonthChart';
+import { Toast } from './Toast';
 import { TotalChart } from './TotalChart';
 
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
-	const effortSig = useSignal<TEffort>([]);
-	const usersCrewSig = useSignal<{ user: string; crew: string }[]>();
+	const effortSig = useSignal<EffortMatrix>([]);
 	const monthYearListSig = useComputed$<string[]>(() => {
 		if (effortSig.value.length > 0) {
-			const [[_, value]] = Object.entries(effortSig.value[0]);
-			return value.map((m) => m.month_year);
+			const [{ effort }] = Object.values(effortSig.value[0]);
+			return effort.map(({ month_year }) => month_year);
 		}
 		return [];
 	});
 	const selectedCrewSig = useSignal('');
 	const selectedNameSig = useSignal('');
 	const selectedServiceLineSig = useSignal('');
+	const errorMessageSig = useSignal('');
 
-	const filteredEffortSig = useComputed$<TEffort>(() => {
+	const filteredEffortSig = useComputed$<EffortMatrix>(() => {
 		let result = effortSig.value;
 		if (selectedNameSig.value) {
 			result = result.filter((el) => {
-				const [name] = Object.keys(el);
-				return purgeName(name).includes(selectedNameSig.value.toLowerCase());
+				const [{ name }] = Object.values(el);
+				return name.includes(selectedNameSig.value.toLowerCase());
 			});
 		}
 
 		if (selectedCrewSig.value) {
 			result = result.filter((el) => {
-				const [name] = Object.keys(el);
-				const crew =
-					usersCrewSig.value
-						?.find(({ user }) => purgeName(name) === user)
-						?.crew.toLowerCase() || '';
-				return crew.includes(selectedCrewSig.value.toLowerCase());
+				const [{ crew }] = Object.values(el);
+				return crew.toLowerCase().includes(selectedCrewSig.value.toLowerCase());
 			});
 		}
 
@@ -53,11 +49,7 @@ export const Effort = component$(() => {
 				({ service_line }) => service_line === selectedServiceLineSig.value
 			);
 			result = result.filter((el) => {
-				const [name] = Object.keys(el);
-				const crew =
-					usersCrewSig.value
-						?.find(({ user }) => purgeName(name) === user)
-						?.crew.toLowerCase() || '';
+				const [{ crew }] = Object.values(el);
 				return selectedCrews.some(({ name }) =>
 					crew.toLowerCase().includes(name.toLowerCase())
 				);
@@ -81,18 +73,12 @@ export const Effort = component$(() => {
 		}
 
 		const effort = await getEffort();
-		const skillMatrix = await getSkills();
-		if (!effort || !skillMatrix) {
+		if (!effort) {
 			removeCookie(COOKIE_TOKEN_KEY);
 			navigateTo('auth');
 		}
 
 		effortSig.value = effort;
-		usersCrewSig.value = skillMatrix.map((el) => {
-			const [name, { crew }] = Object.entries(el)[0];
-			const user = name.toLowerCase().replace(' ', '.');
-			return { user, crew };
-		});
 	});
 
 	const averageEffortByMonthSig = useComputed$<
@@ -100,8 +86,8 @@ export const Effort = component$(() => {
 	>(() => {
 		const result = filteredEffortSig.value.reduce(
 			(acc, el) => {
-				const [values] = Object.values(el);
-				for (const { month_year, confirmedEffort, tentativeEffort } of values) {
+				const [{ effort }] = Object.values(el);
+				for (const { month_year, confirmedEffort, tentativeEffort } of effort) {
 					acc[month_year] = {
 						confirmed: (acc[month_year]?.confirmed || 0) + confirmedEffort,
 						tentative: (acc[month_year]?.tentative || 0) + tentativeEffort,
@@ -127,7 +113,13 @@ export const Effort = component$(() => {
 	});
 
 	return (
-		<div class='p-8 w-full'>
+		<div class='p-8 w-full relative'>
+			{errorMessageSig.value && (
+				<Toast
+					message={errorMessageSig.value}
+					onClose$={() => (errorMessageSig.value = '')}
+				/>
+			)}
 			<Filters
 				selectedCrew={selectedCrewSig}
 				selectedName={selectedNameSig}
@@ -135,7 +127,7 @@ export const Effort = component$(() => {
 			/>
 			{!!filteredEffortSig.value.length && (
 				<>
-					<div class='border-red-600 border-b-2'>
+					<div class='border-red-600 border-b-2 w-fit'>
 						<div class='flex'>
 							<div class='min-w-[200px] flex flex-col items-center justify-center border-t-2 border-x-2 border-red-600 font-bold'>
 								{t('average')}
@@ -197,25 +189,24 @@ export const Effort = component$(() => {
 						</div>
 
 						{filteredEffortSig.value.map((item, key) => {
-							const [[name, value]] = Object.entries(item);
+							const [[uid, { effort, ...data }]] = Object.entries(item);
 							return (
 								<div key={key} class='flex'>
 									<div class='min-w-[200px] flex flex-col items-center justify-center border-t-2 border-x-2 border-red-600'>
-										<span>{purgeName(name)}</span>
-										<span>
-											{
-												usersCrewSig.value?.find(
-													({ user }) => purgeName(name) === user
-												)?.crew
-											}
-										</span>
+										<span>{data.name}</span>
+										<span>{data.crew}</span>
 									</div>
-									{value.map((month, key) => (
+									{effort.map((month, key) => (
 										<Month
 											key={key}
 											month={month}
-											name={name}
-											onChange$={async () => {
+											onChange$={async (month: TMonth) => {
+												try {
+													await putEffort(uid, data, month);
+												} catch (error) {
+													const { message } = error as Error;
+													errorMessageSig.value = message;
+												}
 												effortSig.value = await getEffort();
 											}}
 										/>
@@ -226,7 +217,10 @@ export const Effort = component$(() => {
 					</div>
 					<div class='m-4'>
 						<div class='text-lg font-bold'>{t('total')}</div>
-						<TotalChart monthYearList={monthYearListSig} effort={filteredEffortSig} />
+						<TotalChart
+							monthYearList={monthYearListSig}
+							effortSig={filteredEffortSig}
+						/>
 					</div>
 					<div class='xl:grid xl:grid-cols-2'>
 						{monthYearListSig.value.map((monthYear, key) => {
@@ -235,7 +229,10 @@ export const Effort = component$(() => {
 									<div class='text-lg font-bold'>
 										{getDateLabelFromMonthYear(monthYear)}
 									</div>
-									<MonthChart monthYear={monthYear} effort={filteredEffortSig} />
+									<MonthChart
+										monthYear={monthYear}
+										effortSig={filteredEffortSig}
+									/>
 								</div>
 							);
 						})}

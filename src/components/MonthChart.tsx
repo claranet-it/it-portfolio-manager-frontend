@@ -1,29 +1,23 @@
 import { $, Signal, component$, useComputed$ } from '@builder.io/qwik';
-import { purgeName } from '../utils';
-import { Effort, Month } from '../utils/types';
+import { EffortMatrix, Month } from '../utils/types';
 import { Chart } from './Chart';
 
 export const MonthChart = component$<{
 	monthYear: string;
-	effort: Signal<Effort>;
-}>(({ monthYear, effort }) => {
-	const labelsSig = useComputed$(() => {
-		const names: string[] = [];
-		effort.value.map((item) => {
-			const [[name]] = Object.entries(item);
-			names.push(purgeName(name));
-		});
-		return names;
-	});
+	effortSig: Signal<EffortMatrix>;
+}>(({ monthYear, effortSig }) => {
+	const labelsSig = useComputed$(() =>
+		effortSig.value.map((item) => Object.values(item)[0].name)
+	);
 
 	const extractData = $((fn: (month: Month) => number) => {
 		const data: number[] = [];
-		effort.value.map((item) => {
-			const [[_, value]] = Object.entries(item);
-			data.push(...value.filter((m) => m.month_year === monthYear).map(fn));
+		effortSig.value.map((item) => {
+			const [{ effort }] = Object.values(item);
+			data.push(...effort.filter(({ month_year }) => month_year === monthYear).map(fn));
 		});
 		return data;
 	});
 
-	return <Chart effort={effort} extractData={extractData} labels={labelsSig} />;
+	return <Chart effortSig={effortSig} extractData={extractData} labels={labelsSig} />;
 });

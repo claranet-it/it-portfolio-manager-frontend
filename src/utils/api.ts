@@ -1,5 +1,14 @@
 import { checkHttpResponseStatus, getHttpResponse } from './http-requests';
-import { Configuration, Effort, Month, SetUserProfile, Skill, SkillMatrix, UserMe } from './types';
+import {
+	Configuration,
+	Effort,
+	EffortMatrix,
+	Month,
+	SetUserProfile,
+	Skill,
+	SkillMatrix,
+	UserMe,
+} from './types';
 
 export const getUserMe = async (): Promise<UserMe> => getHttpResponse<UserMe>('user/me');
 
@@ -18,7 +27,14 @@ export const pathSkillMatrixMine = async (skill: Skill): Promise<boolean> =>
 export const getSkills = async (company: string = 'it'): Promise<SkillMatrix> =>
 	getHttpResponse<SkillMatrix>(`skill-matrix?company=${company}`);
 
-export const getEffort = async (): Promise<Effort> => getHttpResponse<Effort>('effort/next');
+export const getEffort = async (
+	months: number = 3,
+	company: string = 'it'
+): Promise<EffortMatrix> =>
+	getHttpResponse<EffortMatrix>(`effort/next?months=${months}&company=${company}`);
 
-export const putEffort = async (uid: string, month: Month): Promise<boolean> =>
-	checkHttpResponseStatus('effort', 204, 'PUT', { uid, ...month });
+export const putEffort = async (
+	uid: string,
+	effort: Omit<Effort, 'effort'>,
+	month: Month
+): Promise<boolean> => checkHttpResponseStatus('effort', 204, 'PUT', { uid, ...effort, ...month });

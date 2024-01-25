@@ -1,6 +1,5 @@
 import { Signal, component$, useComputed$, useContext } from '@builder.io/qwik';
 import { AppContext } from '../app';
-import { purgeName } from '../utils';
 import {
 	COVERAGE_BAD_LIMIT,
 	COVERAGE_GOOD_LIMIT,
@@ -60,7 +59,7 @@ export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 						const [name, { skills }] = Object.entries(skillMatrix)[0];
 						return (
 							<div key={key} class='flex w-full justify-between'>
-								<span>{purgeName(name)}</span>
+								<span>{name}</span>
 								<SfRating
 									max={appStore.configuration.scoreRange.max}
 									value={skills[skill] || 0}
