@@ -127,7 +127,7 @@ export const Effort = component$(() => {
 			/>
 			{!!filteredEffortSig.value.length && (
 				<>
-					<div class='border-red-600 border-b-2'>
+					<div class='border-red-600 border-b-2 w-fit'>
 						<div class='flex'>
 							<div class='min-w-[200px] flex flex-col items-center justify-center border-t-2 border-x-2 border-red-600 font-bold'>
 								{t('average')}
