@@ -33,7 +33,7 @@ export const Effort = component$(() => {
 		if (selectedNameSig.value) {
 			result = result.filter((el) => {
 				const [{ name }] = Object.values(el);
-				return name.includes(selectedNameSig.value.toLowerCase());
+				return name.toLowerCase().includes(selectedNameSig.value.toLowerCase());
 			});
 		}
 
