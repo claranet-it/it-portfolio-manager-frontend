@@ -55,3 +55,5 @@ export type Month = {
 	tentativeEffort: number;
 	notes: string;
 };
+
+export type OpenAIResponse = { message: string };

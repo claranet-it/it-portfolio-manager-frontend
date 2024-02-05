@@ -4,6 +4,7 @@ import {
 	Effort,
 	EffortMatrix,
 	Month,
+	OpenAIResponse,
 	SetUserProfile,
 	Skill,
 	SkillMatrix,
@@ -38,3 +39,6 @@ export const putEffort = async (
 	effort: Omit<Effort, 'effort'>,
 	month: Month
 ): Promise<boolean> => checkHttpResponseStatus('effort', 204, 'PUT', { uid, ...effort, ...month });
+
+export const openAI = async (prompt: string): Promise<OpenAIResponse> =>
+	getHttpResponse<OpenAIResponse>('openAI', 'POST', { prompt });
