@@ -40,5 +40,5 @@ export const putEffort = async (
 	month: Month
 ): Promise<boolean> => checkHttpResponseStatus('effort', 204, 'PUT', { uid, ...effort, ...month });
 
-export const openAI = async (prompt: string): Promise<OpenAIResponse> =>
-	getHttpResponse<OpenAIResponse>('openAI', 'POST', { prompt });
+export const openAI = async (prompt: string, company: string = 'it'): Promise<OpenAIResponse> =>
+	getHttpResponse<OpenAIResponse>('openAI', 'POST', { prompt, company });
