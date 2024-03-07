@@ -9,6 +9,8 @@ type MenuRoutes = Exclude<Route, 'auth'>;
 
 const MENU = ['profile', 'skills', 'effort', 'search'] as const;
 
+const { VITE_AUTH_REDIRECT_URI: redirect_uri } = import.meta.env;
+
 export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }) => {
 	return (
 		<header>
@@ -35,7 +37,11 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 						class='bg-transparent text-gray-400 font-semibold p-2 m-2 hover:bg-red-600 hover:text-white rounded border-0 min-w-[100px]'
 						onClick$={() => {
 							removeCookie(COOKIE_TOKEN_KEY);
-							auth0.logout();
+							auth0.logout({
+								logoutParams: {
+									returnTo: redirect_uri,
+								},
+							});
 						}}
 					>
 						Esci
