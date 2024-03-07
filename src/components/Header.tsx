@@ -1,5 +1,8 @@
 import { component$ } from '@builder.io/qwik';
+import { auth0 } from '../app';
 import { t } from '../locale/labels';
+import { COOKIE_TOKEN_KEY } from '../utils/constants';
+import { removeCookie } from '../utils/cookie';
 import { Route, navigateTo } from '../utils/router';
 
 type MenuRoutes = Exclude<Route, 'auth'>;
@@ -26,6 +29,17 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 							{t(section)}
 						</button>
 					))}
+				</div>
+				<div>
+					<button
+						class='bg-transparent text-gray-400 font-semibold p-2 m-2 hover:bg-red-600 hover:text-white rounded border-0 min-w-[100px]'
+						onClick$={() => {
+							removeCookie(COOKIE_TOKEN_KEY);
+							auth0.logout();
+						}}
+					>
+						Esci
+					</button>
 				</div>
 			</div>
 		</header>
