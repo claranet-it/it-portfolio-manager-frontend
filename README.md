@@ -19,7 +19,7 @@ Use `npm create qwik@latest` to create a full production ready Qwik application,
 ## Usage
 
 ```bash
-$ npm install # or pnpm install or yarn install
+$ pnpm install
 ```
 
 Learn more on the [Qwik Website](https://qwik.builder.io) and join our community on our [Discord](https://qwik.builder.io/chat)
@@ -28,11 +28,15 @@ Learn more on the [Qwik Website](https://qwik.builder.io) and join our community
 
 In the project directory, you can run:
 
-### `npm run dev`
+```bash
+pnpm run dev
+```
 
 Runs the app in the development mode.<br>
 Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
 
-### `npm run build`
+```bash
+pnpm run build`
+```
 
 Builds the app for production to the `dist` folder.<br>
