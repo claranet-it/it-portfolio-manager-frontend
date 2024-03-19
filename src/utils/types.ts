@@ -8,6 +8,7 @@ export type UserMe = {
 	picture: string;
 	crew?: string;
 	company?: string;
+	city?: string;
 };
 
 export type SetUserProfile = {

@@ -33,7 +33,7 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 						return (
 							<button
 								key={key}
-								class={`bg-transparent ${textColor} font-semibold p-2 m-2 rounded border-0 min-w-[100px]`}
+								class={`bg-transparent ${textColor} hover:text-red-500 font-semibold p-2 m-2 rounded border-0 min-w-[100px]`}
 								onClick$={() => {
 									navigateTo(section);
 								}}

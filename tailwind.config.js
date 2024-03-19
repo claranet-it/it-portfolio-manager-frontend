@@ -4,6 +4,7 @@ module.exports = {
   theme: {
     colors: {
       'clara-red': '#DA0812',
+      'red-500': '#B6070F',
       'dark-grey': '#464650',
       'darkgray-300': '#B9B9C2',
       'darkgray-500': '#9696A3'

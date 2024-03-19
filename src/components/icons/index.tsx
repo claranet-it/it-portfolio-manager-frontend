@@ -3,6 +3,7 @@ import { Android } from './Android';
 import { Ansible } from './Ansible';
 import { CSharp } from './CSharp';
 import { Design } from './Design';
+import { Edit } from './Edit';
 import { Elixir } from './Elixir';
 import { Exit } from './Exit';
 import { Flutter } from './Flutter';
@@ -62,6 +63,8 @@ export const getIcon = (skill: string) => {
 			return <Design />;
 		case 'Exit':
 			return <Exit />;
+		case 'Edit':
+			return <Edit />;
 		default:
 			return <AWS />;
 	}
