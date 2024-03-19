@@ -19,5 +19,6 @@
 	"average": "Average",
 	"skills": "Skills",
 	"search_button": "Send message",
-	"search_placeholder": "Ask me something..."
+	"search_placeholder": "Ask me something...",
+	"logout": "Esci"
 }

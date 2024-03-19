@@ -4,6 +4,7 @@ import { t } from '../locale/labels';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { removeCookie } from '../utils/cookie';
 import { Route, navigateTo } from '../utils/router';
+import { getIcon } from './icons';
 
 type MenuRoutes = Exclude<Route, 'auth'>;
 
@@ -14,27 +15,36 @@ const { VITE_AUTH_REDIRECT_URI: redirect_uri } = import.meta.env;
 export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }) => {
 	return (
 		<header>
-			<div class='flex justify-between items-center bg-white border-b-2 border-red-600 '>
-				<div class='py-4 pl-6 w-[300px]'>
-					<img alt='Claranet logo' height='33' src='/logo.webp' width='160' />
+			<div class='md:flex lg:flex justify-between items-center bg-white border-b border-b-darkgray-300 '>
+				<div class='py-4 px-6 sm:text-center'>
+					<img
+						alt='Claranet logo'
+						height='33'
+						src='/logo.webp'
+						width='160'
+						class='sm:inline'
+					/>
 				</div>
-				<div class='text-3xl font-bold uppercase'>{t(currentRoute)}</div>
-				<div class='pr-6 w-[300px] flex justify-end'>
-					{MENU.filter((section) => currentRoute !== section).map((section, key) => (
-						<button
-							key={key}
-							class='bg-transparent text-gray-400 font-semibold p-2 m-2 hover:bg-red-600 hover:text-white rounded border-0 min-w-[100px]'
-							onClick$={() => {
-								navigateTo(section);
-							}}
-						>
-							{t(section)}
-						</button>
-					))}
-				</div>
-				<div>
+
+				<div class='pr-6 sm:w-[100%] sm:text-center sm:text-center md:flex lg:flex justify-end'>
+					{MENU.map((section, key) => {
+						const textColor =
+							section === currentRoute ? 'text-darkgray-500' : 'text-clara-red';
+						return (
+							<button
+								key={key}
+								class={`bg-transparent ${textColor} font-semibold p-2 m-2 rounded border-0 min-w-[100px]`}
+								onClick$={() => {
+									navigateTo(section);
+								}}
+							>
+								{t(section)}
+							</button>
+						);
+					})}
+
 					<button
-						class='bg-transparent text-gray-400 font-semibold p-2 m-2 hover:bg-red-600 hover:text-white rounded border-0 min-w-[100px]'
+						class='bg-transparent inline-flex items-center gap-2 text-dark-grey font-semibold p-2 m-2 rounded border-0 min-w-[100px]'
 						onClick$={() => {
 							removeCookie(COOKIE_TOKEN_KEY);
 							auth0.logout({
@@ -44,7 +54,7 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 							});
 						}}
 					>
-						Esci
+						{getIcon('Exit')} {t('logout')}
 					</button>
 				</div>
 			</div>

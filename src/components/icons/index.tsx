@@ -4,6 +4,7 @@ import { Ansible } from './Ansible';
 import { CSharp } from './CSharp';
 import { Design } from './Design';
 import { Elixir } from './Elixir';
+import { Exit } from './Exit';
 import { Flutter } from './Flutter';
 import { JavaScript } from './JavaScript';
 import { Kotlin } from './Kotlin';
@@ -59,6 +60,8 @@ export const getIcon = (skill: string) => {
 			return <Lambda />;
 		case 'UI Development (HTML/CSS/SCSS)':
 			return <Design />;
+		case 'Exit':
+			return <Exit />;
 		default:
 			return <AWS />;
 	}
