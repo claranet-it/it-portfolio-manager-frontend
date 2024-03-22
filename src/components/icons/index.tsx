@@ -2,10 +2,12 @@ import { AWS } from './AWS';
 import { Android } from './Android';
 import { Ansible } from './Ansible';
 import { CSharp } from './CSharp';
+import { Close } from './Close';
 import { Design } from './Design';
 import { Edit } from './Edit';
 import { Elixir } from './Elixir';
 import { Exit } from './Exit';
+import { Expand } from './Expand';
 import { Flutter } from './Flutter';
 import { JavaScript } from './JavaScript';
 import { Kotlin } from './Kotlin';
@@ -65,6 +67,10 @@ export const getIcon = (skill: string) => {
 			return <Exit />;
 		case 'Edit':
 			return <Edit />;
+		case 'Close':
+			return <Close />;
+		case 'Expand':
+			return <Expand />;
 		default:
 			return <AWS />;
 	}

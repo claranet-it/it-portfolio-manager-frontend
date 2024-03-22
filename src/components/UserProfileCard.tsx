@@ -48,6 +48,7 @@ export const UserProfileCard = component$(() => {
 	});
 
 	const updateUserCrew = $(async (crewName: string) => {
+		// Close dropdown
 		const $crewDropdownTrigger = document.getElementById('triggerCrewDropdown');
 		$crewDropdownTrigger?.click();
 
@@ -76,40 +77,42 @@ export const UserProfileCard = component$(() => {
 				<p class='text-base font-bold text-dark-grey'>Padova</p>
 			</div>
 			<div class='pt-0 px-4'>
-				<span class='text-xs uppercase mr-1 text-dark-grey'>{t('crew')}</span>
-				<span class='text-lg font-bold text-dark-grey'>{userStore.crew || '-'}</span>
+				<div class='flex items-baseline'>
+					<span class='text-xs uppercase mr-1 text-dark-grey'>{t('crew')}</span>
+					<span class='text-lg font-bold text-dark-grey'>{userStore.crew || '-'}</span>
 
-				<div
-					id='crew-dropdown-states'
-					class='z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700'
-				>
-					<ul
-						class='py-2 text-sm text-gray-700 dark:text-gray-200'
-						aria-labelledby='states-button'
+					<div
+						id='crew-dropdown-states'
+						class='z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700'
 					>
-						{appStore.configuration.crews.map((crew, key) => (
-							<li>
-								<button
-									key={key}
-									data-dropdown-toggle='crew-dropdown-states'
-									type='button'
-									onClick$={() => updateUserCrew(crew.name)}
-									class='inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white'
-								>
-									<div class='inline-flex items-center'>{crew.name}</div>
-								</button>
-							</li>
-						))}
-					</ul>
-				</div>
+						<ul
+							class='py-2 text-sm text-gray-700 dark:text-gray-200'
+							aria-labelledby='states-button'
+						>
+							{appStore.configuration.crews.map((crew, key) => (
+								<li>
+									<button
+										key={key}
+										data-dropdown-toggle='crew-dropdown-states'
+										type='button'
+										onClick$={() => updateUserCrew(crew.name)}
+										class='inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white'
+									>
+										<div class='inline-flex items-center'>{crew.name}</div>
+									</button>
+								</li>
+							))}
+						</ul>
+					</div>
 
-				<button
-					id='triggerCrewDropdown'
-					data-dropdown-toggle='crew-dropdown-states'
-					class='bg-transparent inline-flex text-gray-400 font-semibold p-2 m-2 hover:text-white rounded border-0'
-				>
-					{getIcon('Edit')}
-				</button>
+					<button
+						id='triggerCrewDropdown'
+						data-dropdown-toggle='crew-dropdown-states'
+						class='bg-transparent inline-flex p-0 text-gray-400 font-semibold hover:text-white rounded border-0'
+					>
+						{getIcon('Expand')}
+					</button>
+				</div>
 			</div>
 		</div>
 	);
