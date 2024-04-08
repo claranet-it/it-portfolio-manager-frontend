@@ -20,5 +20,10 @@
 	"skills": "Skills",
 	"search_button": "Send message",
 	"search_placeholder": "Ask me something...",
-	"logout": "Esci"
+	"logout": "Esci",
+	"none": "nessuna",
+	"with_pairing": "con affiancamento",
+	"autonomous": "autonomo",
+	"expert": "esperto",
+	"legend": "leggenda"
 }

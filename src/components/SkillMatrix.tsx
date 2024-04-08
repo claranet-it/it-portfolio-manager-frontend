@@ -5,7 +5,6 @@ import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie } from '../utils/cookie';
 import { navigateTo } from '../utils/router';
 import { Skill } from '../utils/types';
-import { SfIconStar } from './SfIconStar';
 import { SfRating } from './SfRating';
 import { getIcon } from './icons';
 
@@ -35,22 +34,6 @@ export const SkillMatrix = component$(() => {
 
 	return (
 		<div>
-			<div class='inline-flex items-center justify-center w-full my-2'>
-				{Object.entries(appStore.configuration.scoreRangeLabels).map(
-					([value, label], key) => (
-						<div key={key} class='flex items-center mr-4'>
-							{value === '0' ? (
-								<div class='relative top-[0.5px]'>
-									<SfIconStar />
-								</div>
-							) : (
-								<SfRating max={Number(value)} value={Number(value)} />
-							)}
-							<span class='ml-1 relative top-[2px]'>{label}</span>
-						</div>
-					)
-				)}
-			</div>
 			{Object.entries(skillsMineSig.value).map(([category, skills], key) => (
 				<div key={key}>
 					<div key={key} class='inline-flex items-center justify-center w-full'>
