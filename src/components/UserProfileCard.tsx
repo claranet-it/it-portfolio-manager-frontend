@@ -16,7 +16,8 @@ export const UserProfileCard = component$(() => {
 			name: '',
 			email: '',
 			picture: '',
-			city: '',
+			place: '',
+			crewLeader: false,
 		},
 		{ deep: true }
 	);
@@ -28,6 +29,8 @@ export const UserProfileCard = component$(() => {
 		userStore.picture = user.picture;
 		userStore.crew = user.crew;
 		userStore.company = user.company;
+		userStore.place = user.place;
+		userStore.crewLeader = user.crewLeader;
 	});
 
 	useTask$(async () => {
@@ -74,9 +77,10 @@ export const UserProfileCard = component$(() => {
 			<div class='pt-0 px-4'>
 				<h2 class='font-semibold text-4xl text-dark-grey'>{userStore.name}</h2>
 				<p class='text-base text-dark-grey'>{userStore.email.toLowerCase()}</p>
-				<p class='text-base font-bold text-dark-grey'>Padova</p>
+				<p class='text-base font-bold text-dark-grey'>{userStore.place}</p>
 			</div>
 			<div class='pt-0 px-4'>
+				{/* Crew Area */}
 				<div class='flex items-baseline'>
 					<span class='text-xs uppercase mr-1 text-dark-grey'>{t('crew')}</span>
 					<span class='text-lg font-bold text-dark-grey'>{userStore.crew || '-'}</span>
@@ -113,6 +117,9 @@ export const UserProfileCard = component$(() => {
 						{getIcon('Expand')}
 					</button>
 				</div>
+				<p class='text-base font-bold text-dark-grey'>
+					{userStore.crewLeader ? 'Engineering manager' : ''}
+				</p>
 			</div>
 		</div>
 	);
