@@ -8,7 +8,7 @@ import { getIcon } from './icons';
 
 type MenuRoutes = Exclude<Route, 'auth'>;
 
-const MENU = ['profile', 'skills', 'effort', 'search'] as const;
+const MENU = ['effort', 'profile', 'skills', 'search'] as const;
 
 const { VITE_AUTH_REDIRECT_URI: redirect_uri } = import.meta.env;
 

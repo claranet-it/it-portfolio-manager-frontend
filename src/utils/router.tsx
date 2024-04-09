@@ -9,8 +9,8 @@ export type Route = keyof typeof routes;
 
 export const routes = {
 	auth: <Auth />,
-	profile: <Profile />,
 	effort: <Effort />,
+	profile: <Profile />,
 	skills: <Skills />,
 	search: <Search />,
 };

@@ -5,7 +5,7 @@ import { getCookie, setCookie } from '../utils/cookie';
 import { navigateTo } from '../utils/router';
 
 export const Auth = component$(() => {
-	const goToProfile = $(() => navigateTo('profile'));
+	const goToEffort = $(() => navigateTo('effort'));
 
 	useTask$(async () => {
 		const url = new URL(window.location.href);
@@ -15,13 +15,13 @@ export const Auth = component$(() => {
 			const token = await auth0.getIdTokenClaims();
 			if (token) {
 				setCookie(COOKIE_TOKEN_KEY, token.__raw);
-				goToProfile();
+				goToEffort();
 			}
 		} else {
 			if (!getCookie(COOKIE_TOKEN_KEY)) {
 				auth0.loginWithRedirect();
 			} else {
-				goToProfile();
+				goToEffort();
 			}
 		}
 	});
