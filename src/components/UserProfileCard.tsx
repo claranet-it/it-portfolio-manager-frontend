@@ -1,4 +1,4 @@
-import { $, component$, useContext, useStore, useTask$ } from '@builder.io/qwik';
+import { $, component$, useContext, useId, useStore, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
 import { getConfiguration, getUserMe, setUserProfile } from '../utils/api';
@@ -10,6 +10,7 @@ import { getIcon } from './icons';
 
 export const UserProfileCard = component$(() => {
 	const appStore = useContext(AppContext);
+	const uniqueId = useId();
 
 	let userStore = useStore<UserMe>(
 		{
@@ -74,14 +75,14 @@ export const UserProfileCard = component$(() => {
 					class='w-20 h-auto rounded-full aspect-squar sm:m-auto'
 				/>
 			</div>
-			<div class='pt-0 px-4'>
+			<div class='pt-0 md:px-4 lg:px-4'>
 				<h2 class='font-semibold text-4xl text-dark-grey'>{userStore.name}</h2>
 				<p class='text-base text-dark-grey'>{userStore.email.toLowerCase()}</p>
 				<p class='text-base font-bold text-dark-grey'>{userStore.place}</p>
 			</div>
-			<div class='pt-0 px-4'>
+			<div class='pt-0 md:px-4 lg:px-4'>
 				{/* Crew Area */}
-				<div class='flex items-baseline'>
+				<div class='flex items-baseline mb-2'>
 					<span class='text-xs uppercase mr-1 text-dark-grey'>{t('crew')}</span>
 					<span class='text-lg font-bold text-dark-grey'>{userStore.crew || '-'}</span>
 
@@ -94,9 +95,8 @@ export const UserProfileCard = component$(() => {
 							aria-labelledby='states-button'
 						>
 							{appStore.configuration.crews.map((crew, key) => (
-								<li>
+								<li key={`${uniqueId}-${key}`}>
 									<button
-										key={key}
 										data-dropdown-toggle='crew-dropdown-states'
 										type='button'
 										onClick$={() => updateUserCrew(crew.name)}
@@ -118,7 +118,7 @@ export const UserProfileCard = component$(() => {
 					</button>
 				</div>
 				<p class='text-base font-bold text-dark-grey'>
-					{userStore.crewLeader ? 'Engineering manager' : ''}
+					{userStore.crewLeader ? t('engineering_manager') : ''}
 				</p>
 			</div>
 		</div>
