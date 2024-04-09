@@ -1,6 +1,6 @@
 import { $, component$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
-import { t } from '../locale/labels';
+import { tt } from '../locale/labels';
 import { getSkillMatrixMine, pathSkillMatrixMine } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie } from '../utils/cookie';
@@ -39,7 +39,7 @@ export const SkillMatrix = component$(() => {
 					{/* title label area  */}
 					<div key={key} class='items-center justify-center w-full mb-1'>
 						<span class='text-2xl text-dark-grey font-bold sm:mt-2'>
-							{t('my_type_skill').replace('*', category)}
+							{tt('my_type_skill', { skillType: category })}
 						</span>
 					</div>
 					{/* Skill list area  */}
