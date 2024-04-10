@@ -49,6 +49,7 @@ export const SkillMatrix = component$(() => {
 								key={key}
 								skill={skill}
 								onClick$={async (newScore) => {
+									skill.score = newScore;
 									await pathSkillMatrixMine(skill);
 									const newSkills = skillsMineSig.value;
 									newSkills[category] = skillsMineSig.value[category].map(
