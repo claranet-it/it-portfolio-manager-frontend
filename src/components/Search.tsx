@@ -1,6 +1,6 @@
-import { $, component$, useSignal, useStore } from '@builder.io/qwik';
+import { $, component$, noSerialize, useSignal, useStore } from '@builder.io/qwik';
 import { t } from '../locale/labels';
-import { openAI } from '../utils/api';
+import { CheshireCatClient } from '../utils/cheshire-cat';
 
 type ChatItem = { question: string; answer: string };
 
@@ -9,14 +9,19 @@ export const Search = component$(() => {
 	const chatStore = useStore<ChatItem[]>([], { deep: true });
 	const loadingSig = useSignal(false);
 
+	const cheshireCatClient = noSerialize(
+		new CheshireCatClient('user@email.com', (msg) => {
+			chatStore[chatStore.length - 1].answer = msg.content;
+		})
+	);
+
 	const onSubmit = $(async () => {
 		const question = searchValueSig.value;
 		searchValueSig.value = '';
 		loadingSig.value = true;
 		chatStore.push({ question, answer: '...' });
 		try {
-			const { message } = await openAI(question);
-			chatStore[chatStore.length - 1].answer = message;
+			cheshireCatClient?.send(question);
 		} catch (e) {
 			searchValueSig.value = question;
 		}
@@ -35,7 +40,13 @@ export const Search = component$(() => {
 					</div>
 				</section>
 			))}
-			<form onSubmit$={onSubmit} preventdefault:submit class='my-8'>
+			<form
+				onSubmit$={() => {
+					onSubmit();
+				}}
+				preventdefault:submit
+				class='my-8'
+			>
 				<label for='chat' class='sr-only'>
 					{t('search_placeholder')}
 				</label>
