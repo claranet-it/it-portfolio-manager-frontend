@@ -7,7 +7,7 @@ export class CheshireCatClient {
 	constructor(userMail: string, onMessage: (data: SocketResponse) => void) {
 		this.userMail = userMail;
 		this.cat = new CatClient({
-			baseUrl: 'localhost',
+			baseUrl: import.meta.env.VITE_CHESHIRE_CAT_BASE_URL,
 			userId: this.userMail,
 		});
 		this.cat.onMessage(onMessage);

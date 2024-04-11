@@ -10,7 +10,7 @@ export const Search = component$(() => {
 	const loadingSig = useSignal(false);
 
 	const cheshireCatClient = noSerialize(
-		new CheshireCatClient('user@email.com', (msg) => {
+		new CheshireCatClient('Human', (msg) => {
 			chatStore[chatStore.length - 1].answer = msg.content;
 		})
 	);
