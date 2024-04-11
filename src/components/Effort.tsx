@@ -1,17 +1,12 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
-import { t } from '../locale/labels';
-import { getConfiguration, getEffort, putEffort } from '../utils/api';
+import { getConfiguration, getEffort } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
-import { getDateLabelFromMonthYear } from '../utils/dates';
 import { navigateTo } from '../utils/router';
-import { EffortMatrix, Month as TMonth } from '../utils/types';
+import { EffortMatrix } from '../utils/types';
 import { Filters } from './Filters';
-import { Month } from './Month';
-import { MonthChart } from './MonthChart';
 import { Toast } from './Toast';
-import { TotalChart } from './TotalChart';
 
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
@@ -113,22 +108,25 @@ export const Effort = component$(() => {
 	});
 
 	return (
-		<div class='p-8 w-full relative'>
+		<div class='px-6 pt-5 w-full'>
 			{errorMessageSig.value && (
 				<Toast
 					message={errorMessageSig.value}
 					onClose$={() => (errorMessageSig.value = '')}
 				/>
 			)}
+
 			<Filters
 				selectedCrew={selectedCrewSig}
 				selectedName={selectedNameSig}
 				selectedServiceLine={selectedServiceLineSig}
 			/>
+
 			{!!filteredEffortSig.value.length && (
 				<>
 					<div class='border-red-600 border-b-2 w-fit'>
-						<div class='flex'>
+						{/** Table header */}
+						{/* <div class='flex'>
 							<div class='min-w-[200px] flex flex-col items-center justify-center border-t-2 border-x-2 border-red-600 font-bold'>
 								{t('average')}
 							</div>
@@ -186,9 +184,10 @@ export const Effort = component$(() => {
 									</div>
 								</div>
 							))}
-						</div>
+						</div> */}
 
-						{filteredEffortSig.value.map((item, key) => {
+						{/* Table body */}
+						{/* {filteredEffortSig.value.map((item, key) => {
 							const [[uid, { effort, ...data }]] = Object.entries(item);
 							return (
 								<div key={key} class='flex'>
@@ -213,16 +212,20 @@ export const Effort = component$(() => {
 									))}
 								</div>
 							);
-						})}
+						})} */}
 					</div>
-					<div class='m-4'>
+
+					{/* Total chart */}
+					{/* <div class='m-4'>
 						<div class='text-lg font-bold'>{t('total')}</div>
 						<TotalChart
 							monthYearList={monthYearListSig}
 							effortSig={filteredEffortSig}
 						/>
-					</div>
-					<div class='xl:grid xl:grid-cols-2'>
+					</div> */}
+
+					{/* Annuly Charts area */}
+					{/* <div class='xl:grid xl:grid-cols-2'>
 						{monthYearListSig.value.map((monthYear, key) => {
 							return (
 								<div key={key} class='m-4'>
@@ -236,7 +239,7 @@ export const Effort = component$(() => {
 								</div>
 							);
 						})}
-					</div>
+					</div> */}
 				</>
 			)}
 		</div>

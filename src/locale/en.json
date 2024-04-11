@@ -27,5 +27,11 @@
 	"expert": "expert",
 	"legend": "legend",
 	"engineering_manager": "Engineering manager",
-	"my_type_skill": "My #skillType's skills"
+	"my_type_skill": "My #skillType's skills",
+	"select_empty_label": "Select a value",
+	"input_empty_label": "Insert a value",
+	"service_line_label": "Service Line",
+	"skill_label": "Skill",
+	"crew_label": "Crew",
+	"name_label": "Name"
 }
