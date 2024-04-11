@@ -1,7 +1,8 @@
 import { Signal, component$, useComputed$, useContext, useSignal } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
-import { Select } from './Select';
+import { Input } from './form/Input';
+import { Select } from './form/Select';
 
 export const Filters = component$<{
 	selectedServiceLine: Signal<string>;
@@ -58,20 +59,12 @@ export const Filters = component$<{
 				options={crewsSig}
 			/>
 
-			<form class='w-full'>
-				<div class='mb-5'>
-					<label for='base-input' class='block block text-sm font-normal text-dark-gray'>
-						{t('name_label')}
-					</label>
-					<input
-						type='text'
-						id='base-input'
-						placeholder={t('input_empty_label')}
-						class='bg-white border border-darkgray-500 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-						bind:value={selectedName}
-					/>
-				</div>
-			</form>
+			<Input
+				id='name'
+				label={t('name_label')}
+				value={selectedName}
+				placeholder={t('input_empty_label')}
+			/>
 		</div>
 	);
 });
