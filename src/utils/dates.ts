@@ -4,7 +4,7 @@ const getDateFromMonthYear = (monthYear: string): Date => {
 };
 
 export const getDateLabelFromMonthYear = (monthYear: string): string =>
-	getDateFromMonthYear(monthYear).toLocaleDateString('it-IT', {
-		month: 'short',
-		year: '2-digit',
+	getDateFromMonthYear(monthYear).toLocaleDateString('en-EN', {
+		month: 'long',
+		year: 'numeric',
 	});

@@ -5,12 +5,14 @@ import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
 import { navigateTo } from '../utils/router';
 import { EffortMatrix } from '../utils/types';
+import { EffortTable } from './EffortTable';
 import { Filters } from './Filters';
 import { Toast } from './Toast';
 
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
 	const effortSig = useSignal<EffortMatrix>([]);
+
 	const monthYearListSig = useComputed$<string[]>(() => {
 		if (effortSig.value.length > 0) {
 			const [{ effort }] = Object.values(effortSig.value[0]);
@@ -18,13 +20,17 @@ export const Effort = component$(() => {
 		}
 		return [];
 	});
+
 	const selectedCrewSig = useSignal('');
+	const selectedSkillSig = useSignal('');
 	const selectedNameSig = useSignal('');
 	const selectedServiceLineSig = useSignal('');
 	const errorMessageSig = useSignal('');
 
 	const filteredEffortSig = useComputed$<EffortMatrix>(() => {
 		let result = effortSig.value;
+
+		// Filter by Name
 		if (selectedNameSig.value) {
 			result = result.filter((el) => {
 				const [{ name }] = Object.values(el);
@@ -32,6 +38,15 @@ export const Effort = component$(() => {
 			});
 		}
 
+		// Filter by skill
+		// if (selectedSkillSig.value) {
+		// 	result = result.filter((el) => {
+		// 		const [{ skill }] = Object.values(el);
+		// 		return crew.toLowerCase().includes(selectedSkillSig.value.toLowerCase());
+		// 	});
+		// }
+
+		// Filter by Crew
 		if (selectedCrewSig.value) {
 			result = result.filter((el) => {
 				const [{ crew }] = Object.values(el);
@@ -39,6 +54,7 @@ export const Effort = component$(() => {
 			});
 		}
 
+		// Filter by service line
 		if (selectedServiceLineSig.value) {
 			const selectedCrews = appStore.configuration.crews.filter(
 				({ service_line }) => service_line === selectedServiceLineSig.value
@@ -108,7 +124,7 @@ export const Effort = component$(() => {
 	});
 
 	return (
-		<div class='px-6 pt-5 w-full'>
+		<div class='px-6 pt-5 w-full space-y-5'>
 			{errorMessageSig.value && (
 				<Toast
 					message={errorMessageSig.value}
@@ -119,102 +135,20 @@ export const Effort = component$(() => {
 			<Filters
 				selectedCrew={selectedCrewSig}
 				selectedName={selectedNameSig}
+				selectedSkill={selectedSkillSig}
 				selectedServiceLine={selectedServiceLineSig}
 			/>
 
 			{!!filteredEffortSig.value.length && (
+				<EffortTable
+					averageEffortByMonth={averageEffortByMonthSig}
+					filteredEffort={filteredEffortSig}
+					errorMessage={errorMessageSig}
+				/>
+			)}
+
+			{!!filteredEffortSig.value.length && (
 				<>
-					<div class='border-red-600 border-b-2 w-fit'>
-						{/** Table header */}
-						{/* <div class='flex'>
-							<div class='min-w-[200px] flex flex-col items-center justify-center border-t-2 border-x-2 border-red-600 font-bold'>
-								{t('average')}
-							</div>
-							{Object.keys(averageEffortByMonthSig.value).map((monthYear, index) => (
-								<div
-									class='flex-col border-r-2 border-t-2 border-red-600 w-[390px]'
-									key={index}
-								>
-									<div class='text-center w-[390px] font-bold'>
-										{getDateLabelFromMonthYear(monthYear)}
-									</div>
-
-									<div class='flex justify-around text-center'>
-										<div class='flex-col m-2'>
-											<div>{t('confirmedEffort')}</div>
-											<input
-												class='border-2 border-black w-[50px] h-8 mt-2 text-center'
-												disabled
-												value={
-													averageEffortByMonthSig.value[monthYear]
-														.confirmed
-												}
-											/>
-										</div>
-										<div class='flex-col m-2'>
-											<div>{t('tentativeEffort')}</div>
-											<input
-												class='border-2 border-black w-[50px] h-8 mt-2 text-center'
-												disabled
-												value={
-													averageEffortByMonthSig.value[monthYear]
-														.tentative
-												}
-											/>
-										</div>
-										<div class='flex-col m-2'>
-											<div>{t('total')}</div>
-											<input
-												class={{
-													'border-2 border-black w-[50px] h-8 mt-2 text-center':
-														true,
-													'bg-red-200':
-														averageEffortByMonthSig.value[monthYear]
-															.total <= 50,
-													'bg-green-200':
-														averageEffortByMonthSig.value[monthYear]
-															.total >= 80,
-												}}
-												disabled
-												value={
-													averageEffortByMonthSig.value[monthYear].total
-												}
-											/>
-										</div>
-									</div>
-								</div>
-							))}
-						</div> */}
-
-						{/* Table body */}
-						{/* {filteredEffortSig.value.map((item, key) => {
-							const [[uid, { effort, ...data }]] = Object.entries(item);
-							return (
-								<div key={key} class='flex'>
-									<div class='min-w-[200px] flex flex-col items-center justify-center border-t-2 border-x-2 border-red-600'>
-										<span>{data.name}</span>
-										<span>{data.crew}</span>
-									</div>
-									{effort.map((month, key) => (
-										<Month
-											key={key}
-											month={month}
-											onChange$={async (month: TMonth) => {
-												try {
-													await putEffort(uid, data, month);
-												} catch (error) {
-													const { message } = error as Error;
-													errorMessageSig.value = message;
-												}
-												effortSig.value = await getEffort();
-											}}
-										/>
-									))}
-								</div>
-							);
-						})} */}
-					</div>
-
 					{/* Total chart */}
 					{/* <div class='m-4'>
 						<div class='text-lg font-bold'>{t('total')}</div>

@@ -33,5 +33,11 @@
 	"service_line_label": "Service Line",
 	"skill_label": "Skill",
 	"crew_label": "Crew",
-	"name_label": "Name"
+	"name_label": "Name",
+	"effort_table_title": "Oveview effort",
+	"effort_table_confirmed": "Confirmed",
+	"effort_table_tentative": "Tentative",
+	"effort_table_total": "Total",
+	"effort_table_note": "Note",
+	"effort_table_in_note": "Insert note..."
 }

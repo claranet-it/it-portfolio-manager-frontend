@@ -9,13 +9,18 @@ module.exports = {
       'clara-red': '#DA0812',
       'clara-red-200': '#FFC0C0',
       'red-500': '#B6070F',
+      'clara-red-50': '#FDD1D3',
       'dark-grey': '#464650',
       'darkgray-200': '#CBCBD1',
       'darkgray-300': '#B9B9C2',
       'darkgray-500': '#9696A3',
       'darkgray-900': '#555561',
       'gray-900': '#1A1A1A',
-      'white-100': '#FFFFFF'
+      'white-100': '#FFFFFF',
+      'surface-5': '#FAFBFB',
+      'surface-20': '#F0F3F4',
+      'surface-50': '#E1E6EA',
+      'surface-70': '#D7DEE3'
     },
     screens: {
       'sm': { 'min': '0px', 'max': '767px' },

@@ -62,7 +62,7 @@ export const Filters = component$<{
 			<Input
 				id='name'
 				label={t('name_label')}
-				value={selectedName}
+				bindValue={selectedName}
 				placeholder={t('input_empty_label')}
 			/>
 		</div>
