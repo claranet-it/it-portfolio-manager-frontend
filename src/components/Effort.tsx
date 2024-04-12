@@ -139,7 +139,6 @@ export const Effort = component$(() => {
 			<Filters
 				selectedCrew={selectedCrewSig}
 				selectedName={selectedNameSig}
-				selectedSkill={selectedSkillSig}
 				selectedServiceLine={selectedServiceLineSig}
 			/>
 

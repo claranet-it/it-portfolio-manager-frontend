@@ -20,7 +20,9 @@ module.exports = {
       'surface-5': '#FAFBFB',
       'surface-20': '#F0F3F4',
       'surface-50': '#E1E6EA',
-      'surface-70': '#D7DEE3'
+      'surface-70': '#D7DEE3',
+      'green-1': '#6DB3A7',
+      'yellow-100': '#FAE022'
     },
     screens: {
       'sm': { 'min': '0px', 'max': '767px' },

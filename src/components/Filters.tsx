@@ -43,14 +43,15 @@ export const Filters = component$<{
 				}}
 			/>
 
-			{/* Temporary disabled
-			<Select
-				id='skill'
-				label={t('skill_label')}
-				placeholder={t('select_empty_label')}
-				value={selectedSkill ? selectedSkill : useSignal('')}
-				options={skillsSig}
-			/> */}
+			{selectedSkill && (
+				<Select
+					id='skill'
+					label={t('skill_label')}
+					placeholder={t('select_empty_label')}
+					value={selectedSkill}
+					options={skillsSig}
+				/>
+			)}
 
 			<Select
 				id='crew'

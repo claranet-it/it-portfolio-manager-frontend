@@ -1,5 +1,6 @@
 import { Signal, component$, useComputed$, useContext } from '@builder.io/qwik';
 import { AppContext } from '../app';
+import { t } from '../locale/labels';
 import {
 	COVERAGE_BAD_LIMIT,
 	COVERAGE_GOOD_LIMIT,
@@ -24,14 +25,17 @@ export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 			const key = Object.keys(sailor)[0];
 			return result + sailor[key].skills[skill];
 		}, 0);
+
 		const result =
 			(total * 100) / (skillMatrix.value.length * appStore.configuration.scoreRange.max);
+
 		return {
 			value: result.toFixed(2),
 			status:
 				result < COVERAGE_BAD_LIMIT ? 'BAD' : result > COVERAGE_GOOD_LIMIT ? 'GOOD' : '',
 		};
 	});
+
 	const skillLevelSig = useComputed$(() => {
 		const total = skillMatrix.value.reduce((result, sailor) => {
 			const key = Object.keys(sailor)[0];
@@ -41,25 +45,60 @@ export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 	});
 
 	return (
-		<div class='flex flex-col items-start p-4 m-2 rounded-lg border border-red-200 w-[300px]'>
-			<div class='flex flex-col items-center justify-center w-full'>
-				<div class='flex items-center justify-center bg-red-200 h-12 w-12 rounded-full border border-red-600'>
-					{getIcon(skill)}
-				</div>
-				<span class='text-lg mt-2 mb-4'>{skill.slice(0, 20)}</span>
+		<div class='flex flex-col py-3 px-4 m-1 rounded-md border border-darkgray-200 w-[288px] space-y-3'>
+			{/* Skill name */}
+			<div class='flex flex-row item-start space-x-2'>
+				<span class='text-dark-grey skill-icon'>{getIcon(skill)}</span>
+				<h3 class='text-dark-grey text-xl font-bold'>{skill.slice(0, 20)}</h3>
 			</div>
-			<div class='flex flex-col w-full'>
+
+			{/* Coverage progress bar */}
+			<div class='flex flex-col item-center  justify-center w-full'>
+				<span class='text-xs font-normal text-dark-gray text-center'>
+					{t('coverage').toUpperCase()}
+				</span>
+
+				<div class='flex flex-col space-y-0'>
+					<div class='flex flex-row justify-between'>
+						<span class='text-xs font-bold font-dark-gray'>{COVERAGE_BAD_LIMIT}</span>
+						<span class='text-xs font-bold font-dark-gray'>{COVERAGE_GOOD_LIMIT}</span>
+					</div>
+
+					<div class='w-full bg-gray-200 rounded-full h-1.5 mt-1'>
+						<div
+							class={{
+								'h-1.5 rounded-full': true,
+								'bg-red-500': coverageSig.value.status === 'BAD',
+								'bg-green-1': coverageSig.value.status === 'GOOD',
+								'bg-yellow-100': coverageSig.value.status === '',
+							}}
+							style={`width: ${coverageSig.value.value}%`}
+						/>
+					</div>
+				</div>
+			</div>
+
+			{/* Skill Level */}
+			<div class='w-full flex flex-row justify-between'>
+				<span class='text-xs font-normal font-dark-gray'>
+					{t('skill_level_label2+').toUpperCase()}
+				</span>
+				<span class='text-xs font-bold font-dark-gray'>{skillLevelSig.value}</span>
+			</div>
+
+			<div class='w-full flex flex-col space-y-0'>
 				{skillMatrix.value
 					.sort((a, b) =>
 						Object.values(a)[0].skills[skill] < Object.values(b)[0].skills[skill]
 							? 1
 							: -1
 					)
+					.slice(0, 4) //only the first four
 					.map((skillMatrix, key) => {
 						const [name, { skills }] = Object.entries(skillMatrix)[0];
 						return (
-							<div key={key} class='flex w-full justify-between'>
-								<span>{name}</span>
+							<div key={key} class='flex justify-between '>
+								<span class='text-sm font-normal'>{name}</span>
 								<SfRating
 									max={appStore.configuration.scoreRange.max}
 									value={skills[skill] || 0}
@@ -67,28 +106,6 @@ export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 							</div>
 						);
 					})}
-			</div>
-			<div class='flex flex-col justify-center gap-4 w-full mt-4 pr-1'>
-				<div class='flex items-center'>
-					<div class='font-bold w-[350px]'>
-						Coverage ({COVERAGE_GOOD_LIMIT}/{COVERAGE_BAD_LIMIT})
-					</div>
-					<div class='w-[250px] bg-gray-200 rounded-full h-2.5 mt-1'>
-						<div
-							class={{
-								'h-2.5 rounded-full': true,
-								'bg-red-500': coverageSig.value.status === 'BAD',
-								'bg-green-500': coverageSig.value.status === 'GOOD',
-								'bg-blue-500': coverageSig.value.status === '',
-							}}
-							style={`width: ${coverageSig.value.value}%`}
-						/>
-					</div>
-				</div>
-				<div class='flex justify-between w-full'>
-					<span class='font-bold'>Skill Level ({SKILL_LEVEL_SCORE_LIMIT}+)</span>
-					<span>{skillLevelSig.value}</span>
-				</div>
 			</div>
 		</div>
 	);

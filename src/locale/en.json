@@ -39,5 +39,8 @@
 	"effort_table_tentative": "Tentative",
 	"effort_table_total": "Total",
 	"effort_table_note": "Note",
-	"effort_table_in_note": "Insert note..."
+	"effort_table_in_note": "Insert note...",
+	"service_line_skill": "#serviceLine's skills",
+	"coverage": "coverage",
+	"skill_level_label2+": "skill level (2+)"
 }
