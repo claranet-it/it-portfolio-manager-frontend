@@ -1,13 +1,17 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
+import { t } from '../locale/labels';
 import { getConfiguration, getEffort } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
+import { getDateLabelFromMonthYear } from '../utils/dates';
 import { navigateTo } from '../utils/router';
 import { EffortMatrix } from '../utils/types';
 import { EffortTable } from './EffortTable';
 import { Filters } from './Filters';
+import { MonthChart } from './MonthChart';
 import { Toast } from './Toast';
+import { TotalChart } from './TotalChart';
 
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
@@ -150,16 +154,16 @@ export const Effort = component$(() => {
 			{!!filteredEffortSig.value.length && (
 				<>
 					{/* Total chart */}
-					{/* <div class='m-4'>
+					<div class='m-4'>
 						<div class='text-lg font-bold'>{t('total')}</div>
 						<TotalChart
 							monthYearList={monthYearListSig}
 							effortSig={filteredEffortSig}
 						/>
-					</div> */}
+					</div>
 
 					{/* Annuly Charts area */}
-					{/* <div class='xl:grid xl:grid-cols-2'>
+					<div class='grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
 						{monthYearListSig.value.map((monthYear, key) => {
 							return (
 								<div key={key} class='m-4'>
@@ -173,7 +177,7 @@ export const Effort = component$(() => {
 								</div>
 							);
 						})}
-					</div> */}
+					</div>
 				</>
 			)}
 		</div>

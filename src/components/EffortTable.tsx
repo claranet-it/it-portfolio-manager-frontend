@@ -55,13 +55,13 @@ export const EffortTable = component$<EffortTableInterface>(
 			<div class='space-y-1'>
 				<h1 class='text-2xl font-bold text-darkgray-900'>{t('effort_table_title')}</h1>
 
-				<table class='w-full text-sm text-left rtl:text-right'>
+				<table class='w-full effort-table-min-w text-sm text-left rtl:text-right'>
 					{/** Table header */}
 					<thead class='text-xs text-gray-700 bg-surface-20'>
 						<tr class='border-t border-b border-surface-50'>
 							<th
 								scope='col'
-								class='text-base font-bold text-darkgray-900 content-start px-4 py-3 border-r border-l border-surface-50'
+								class='text-base font-bold text-darkgray-900 content-start px-4 py-3 border-r border-l border-surface-50 bg-surface-20'
 							>
 								{t('average')}
 							</th>
@@ -241,6 +241,7 @@ export const EffortTable = component$<EffortTableInterface>(
 														<input
 															type='string'
 															id={'note_' + key}
+															placeholder={t('effort_table_in_note')}
 															class={
 																'border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
 															}

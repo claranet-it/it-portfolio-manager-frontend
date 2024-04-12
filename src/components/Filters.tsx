@@ -1,4 +1,4 @@
-import { Signal, component$, useComputed$, useContext, useSignal } from '@builder.io/qwik';
+import { Signal, component$, useComputed$, useContext } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
 import { Input } from './form/Input';
@@ -43,13 +43,14 @@ export const Filters = component$<{
 				}}
 			/>
 
+			{/* Temporary disabled
 			<Select
 				id='skill'
 				label={t('skill_label')}
 				placeholder={t('select_empty_label')}
 				value={selectedSkill ? selectedSkill : useSignal('')}
 				options={skillsSig}
-			/>
+			/> */}
 
 			<Select
 				id='crew'

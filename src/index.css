@@ -15,3 +15,16 @@ body {
 	width: 28px;
 	height: 28px;
 }
+
+.effort-table-min-w {
+	min-width: 1100px;
+}
+
+.effort-table-min-w th:first-child {
+	@apply sticky left-0;
+}
+
+.effort-table-min-w td:first-child {
+	@apply sticky left-0;
+	background-color: inherit;
+}
