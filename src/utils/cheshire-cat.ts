@@ -9,8 +9,10 @@ export class CheshireCatClient {
 		this.cat = new CatClient({
 			baseUrl: import.meta.env.VITE_CHESHIRE_CAT_BASE_URL,
 			userId: this.userMail,
+			port: 443,
+			secure: true,
 		});
-		this.cat.onMessage(onMessage);
+		this.cat.init().onMessage(onMessage);
 	}
 
 	send(question: string) {
