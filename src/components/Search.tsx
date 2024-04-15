@@ -12,7 +12,6 @@ export const Search = component$(() => {
 
 	const cheshireCatClient = noSerialize(
 		new CheshireCatClient('Human', (msg) => {
-			console.log(msg);
 			if (msg.type === 'chat_token') {
 				if (chatStore[chatStore.length - 1].answer === '...') {
 					chatStore[chatStore.length - 1].answer = chatStore[
