@@ -43,6 +43,14 @@ export const Search = component$(() => {
 		<div class='w-full flex flex-col'>
 			{/* <!-- Chat Messages --> */}
 			<div class='flex-grow sm:px-8 md:px-36 lg:px-56 py-2 h-1 overflow-y-auto'>
+				{chatStore.length === 0 && (
+					<div class='flex-grow h-full content-center'>
+						<h1 class='text-center text-2xl text-darkgray-900 font-bold'>
+							{t('how_can_help')}
+						</h1>
+					</div>
+				)}
+
 				{chatStore.map(({ answer, question }, index) => (
 					<section key={index}>
 						<div class='flex flex-col leading-1.5 p-4 my-2 border-gray-200 bg-red-100 rounded-s-xl rounded-ee-xl w-3/4 whitespace-pre-line ml-auto'>
