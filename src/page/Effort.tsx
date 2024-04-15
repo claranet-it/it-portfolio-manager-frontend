@@ -26,7 +26,7 @@ export const Effort = component$(() => {
 	});
 
 	const selectedCrewSig = useSignal('');
-	const selectedSkillSig = useSignal('');
+	//const selectedSkillSig = useSignal('');
 	const selectedNameSig = useSignal('');
 	const selectedServiceLineSig = useSignal('');
 	const errorMessageSig = useSignal('');
