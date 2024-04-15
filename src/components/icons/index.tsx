@@ -18,6 +18,7 @@ import { Python } from './Python';
 import { QuickSight } from './QuickSight';
 import { Ruby } from './Ruby';
 import { Rust } from './Rust';
+import { Send } from './Send';
 import { TypeScript } from './TypeScript';
 import { IOS } from './iOS';
 
@@ -71,6 +72,8 @@ export const getIcon = (skill: string) => {
 			return <Close />;
 		case 'Expand':
 			return <Expand />;
+		case 'Send':
+			return <Send />;
 		default:
 			return <AWS />;
 	}
