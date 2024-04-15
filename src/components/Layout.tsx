@@ -7,7 +7,7 @@ export const Layout = component$<{ currentRoute: Exclude<Route, 'auth'> }>(({ cu
 		<div class='h-screen flex flex-col'>
 			<Header currentRoute={currentRoute} />
 
-			<div class='grow flex'>
+			<div class='w-full grow flex'>
 				<Slot />
 			</div>
 		</div>
