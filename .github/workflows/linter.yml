@@ -20,7 +20,9 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v3
 
-            - uses: pnpm/action-setup@v2.2.4
+            - uses: pnpm/action-setup@v3
+              with:
+                version: 8.15.6
 
             - name: Setup Node
               uses: actions/setup-node@v3
@@ -30,9 +32,6 @@ jobs:
                   registry-url: https://registry.npmjs.org/
 
             - run: corepack enable
-
-            - name: PNPM version
-              run: pnpm -v
 
             - name: Install NPM Dependencies
               run: pnpm install --frozen-lockfile
