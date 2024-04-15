@@ -34,5 +34,5 @@
 	"lint-staged": {
 		"src/**/*.{js,jsx,ts,tsx,css,json}": "prettier --write"
 	},
-	"packageManager": "pnpm@8.12.1"
+	"packageManager": "pnpm@8.15.5"
 }
