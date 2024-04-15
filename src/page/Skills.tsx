@@ -1,12 +1,14 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
+import { Filters } from '../components/Filters';
+import { SkillCard } from '../components/SkillCard';
+import { SkillLegend } from '../components/SkillLegend';
+import { tt } from '../locale/labels';
+import { navigateTo } from '../router';
 import { getConfiguration, getSkills } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
-import { navigateTo } from '../utils/router';
 import { SkillMatrix } from '../utils/types';
-import { Filters } from './Filters';
-import { SkillCard } from './SkillCard';
 
 export const Skills = component$(() => {
 	const appStore = useContext(AppContext);
@@ -97,35 +99,43 @@ export const Skills = component$(() => {
 	});
 
 	return (
-		<div class='p-8'>
-			<Filters
-				selectedCrew={selectedCrewSig}
-				selectedName={selectedNameSig}
-				selectedServiceLine={selectedServiceLineSig}
-				selectedSkill={selectedSkillSig}
-			/>
-			<div class='flex flex-col'>
-				{Object.entries(tableStructure.value).map(([serviceLine, configurationSkills]) => {
-					return !selectedServiceLineSig.value ||
-						selectedServiceLineSig.value === serviceLine ? (
-						<div class='pt-4'>
-							<div class='w-full text-center text-3xl font-bold my-4'>
-								{serviceLine}
+		<div class='flex-col pt-5 px-6 space-y-6'>
+			<div class='flex sm:flex-col md:flex-row lg:flex-row md:justify-between lg:justify-between md:space-x-5 lg:space-x-5 sm:space-y-1'>
+				<Filters
+					selectedCrew={selectedCrewSig}
+					selectedName={selectedNameSig}
+					selectedServiceLine={selectedServiceLineSig}
+					selectedSkill={selectedSkillSig}
+				/>
+
+				<SkillLegend />
+			</div>
+
+			<div class='flex flex-col space-y-5'>
+				{Object.entries(tableStructure.value).map(
+					([serviceLine, configurationSkills], index) => {
+						return !selectedServiceLineSig.value ||
+							selectedServiceLineSig.value === serviceLine ? (
+							<div key={index} class='flex flex-col space-y-1'>
+								<h1 class='text-2xl font-bold text-darkgray-900'>
+									{tt('service_line_skill', { serviceLine: serviceLine })}
+								</h1>
+
+								<div class='flex flex-wrap'>
+									{configurationSkills.map((skill, key) => (
+										<SkillCard
+											key={key}
+											skill={skill}
+											skillMatrix={filteredSkillMatrixSig}
+										/>
+									))}
+								</div>
 							</div>
-							<div class='flex flex-wrap justify-between'>
-								{configurationSkills.map((skill, key) => (
-									<SkillCard
-										key={key}
-										skill={skill}
-										skillMatrix={filteredSkillMatrixSig}
-									/>
-								))}
-							</div>
-						</div>
-					) : (
-						<></>
-					);
-				})}
+						) : (
+							<></>
+						);
+					}
+				)}
 			</div>
 		</div>
 	);

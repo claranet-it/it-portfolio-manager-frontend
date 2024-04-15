@@ -1,13 +1,12 @@
 import { $, component$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
+import { tt } from '../locale/labels';
+import { navigateTo } from '../router';
 import { getSkillMatrixMine, pathSkillMatrixMine } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie } from '../utils/cookie';
-import { navigateTo } from '../utils/router';
 import { Skill } from '../utils/types';
-import { SfIconStar } from './SfIconStar';
-import { SfRating } from './SfRating';
-import { getIcon } from './icons';
+import { SkillRow } from './SkillRow';
 
 export const SkillMatrix = component$(() => {
 	const appStore = useContext(AppContext);
@@ -34,63 +33,34 @@ export const SkillMatrix = component$(() => {
 	});
 
 	return (
-		<div>
-			<div class='inline-flex items-center justify-center w-full my-2'>
-				{Object.entries(appStore.configuration.scoreRangeLabels).map(
-					([value, label], key) => (
-						<div key={key} class='flex items-center mr-4'>
-							{value === '0' ? (
-								<div class='relative top-[0.5px]'>
-									<SfIconStar />
-								</div>
-							) : (
-								<SfRating max={Number(value)} value={Number(value)} />
-							)}
-							<span class='ml-1 relative top-[2px]'>{label}</span>
-						</div>
-					)
-				)}
-			</div>
+		<div class='flex sm: flex-col md:flex-row lg:flex-row sm:space-y-4 md:space-x-5 lg:space-x-5'>
 			{Object.entries(skillsMineSig.value).map(([category, skills], key) => (
-				<div key={key}>
-					<div key={key} class='inline-flex items-center justify-center w-full'>
-						<hr class='w-[400px] h-px my-8 py-0.5 bg-red-200 border-0' />
-						<span class='absolute px-3 font-semibold text-black -translate-x-1/2 bg-red-200 left-1/2 min-w-[200px] text-center py-1'>
-							{category}
+				<div key={key} class='flex-1'>
+					{/* title label area  */}
+					<div key={key} class='items-center justify-center w-full mb-1'>
+						<span class='text-2xl text-dark-grey font-bold sm:mt-2'>
+							{tt('my_type_skill', { skillType: category })}
 						</span>
 					</div>
-					<div class='flex flex-wrap justify-content place-content-evenly pb-8'>
-						{skills.map(({ skill, score, skillCategory }, key) => (
-							<div
+					{/* Skill list area  */}
+					<div class='flex flex-col justify-content place-content-evenly space-y-1'>
+						{skills.map((skill, key) => (
+							<SkillRow
 								key={key}
-								class='flex items-start p-4 m-2 rounded-lg border border-red-200'
-							>
-								<div class='flex items-center justify-center bg-red-200 h-12 w-12 rounded-full border border-red-600'>
-									{getIcon(skill)}
-								</div>
-								<div class='ml-4 text-center'>
-									<h2 class='font-semibold'>{skill}</h2>
-									<SfRating
-										max={appStore.configuration.scoreRange.max}
-										value={score}
-										onClick$={async (newScore) => {
-											await pathSkillMatrixMine({
-												skill,
-												skillCategory,
-												score: newScore,
-											});
-											const newSkills = skillsMineSig.value;
-											newSkills[category] = skillsMineSig.value[category].map(
-												(s) => ({
-													...s,
-													score: s.skill === skill ? newScore : s.score,
-												})
-											);
-											skillsMineSig.value = { ...newSkills };
-										}}
-									/>
-								</div>
-							</div>
+								skill={skill}
+								onClick$={async (newScore) => {
+									skill.score = newScore;
+									await pathSkillMatrixMine(skill);
+									const newSkills = skillsMineSig.value;
+									newSkills[category] = skillsMineSig.value[category].map(
+										(s) => ({
+											...s,
+											score: s.skill === skill.skill ? newScore : s.score,
+										})
+									);
+									skillsMineSig.value = { ...newSkills };
+								}}
+							/>
 						))}
 					</div>
 				</div>

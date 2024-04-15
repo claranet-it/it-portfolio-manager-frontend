@@ -1,7 +1,14 @@
 import { Auth0Client } from '@auth0/auth0-spa-js';
-import { component$, createContextId, useContextProvider, useStore } from '@builder.io/qwik';
+import {
+	component$,
+	createContextId,
+	useContextProvider,
+	useStore,
+	useVisibleTask$,
+} from '@builder.io/qwik';
+import { initFlowbite } from 'flowbite';
 import { Layout } from './components/Layout';
-import { routes, useRouter } from './utils/router';
+import { routes, useRouter } from './router';
 import { AppStore } from './utils/types';
 
 const {
@@ -34,6 +41,10 @@ export const App = component$(() => {
 	const appStore = useStore<AppStore>(initialState);
 	useContextProvider(AppContext, appStore);
 	const currentRouteSignal = useRouter();
+
+	useVisibleTask$(() => {
+		initFlowbite();
+	});
 
 	return currentRouteSignal.value === 'auth' ? (
 		routes[currentRouteSignal.value]

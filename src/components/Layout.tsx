@@ -1,12 +1,15 @@
 import { Slot, component$ } from '@builder.io/qwik';
-import { Route } from '../utils/router';
+import { Route } from '../router';
 import { Header } from './Header';
 
 export const Layout = component$<{ currentRoute: Exclude<Route, 'auth'> }>(({ currentRoute }) => {
 	return (
-		<>
+		<div class='h-screen flex flex-col'>
 			<Header currentRoute={currentRoute} />
-			<Slot />
-		</>
+
+			<div class='w-full grow flex'>
+				<Slot />
+			</div>
+		</div>
 	);
 });

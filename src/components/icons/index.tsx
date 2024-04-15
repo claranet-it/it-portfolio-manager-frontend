@@ -2,8 +2,12 @@ import { AWS } from './AWS';
 import { Android } from './Android';
 import { Ansible } from './Ansible';
 import { CSharp } from './CSharp';
+import { Close } from './Close';
 import { Design } from './Design';
+import { Edit } from './Edit';
 import { Elixir } from './Elixir';
+import { Exit } from './Exit';
+import { Expand } from './Expand';
 import { Flutter } from './Flutter';
 import { JavaScript } from './JavaScript';
 import { Kotlin } from './Kotlin';
@@ -14,6 +18,7 @@ import { Python } from './Python';
 import { QuickSight } from './QuickSight';
 import { Ruby } from './Ruby';
 import { Rust } from './Rust';
+import { Send } from './Send';
 import { TypeScript } from './TypeScript';
 import { IOS } from './iOS';
 
@@ -59,6 +64,16 @@ export const getIcon = (skill: string) => {
 			return <Lambda />;
 		case 'UI Development (HTML/CSS/SCSS)':
 			return <Design />;
+		case 'Exit':
+			return <Exit />;
+		case 'Edit':
+			return <Edit />;
+		case 'Close':
+			return <Close />;
+		case 'Expand':
+			return <Expand />;
+		case 'Send':
+			return <Send />;
 		default:
 			return <AWS />;
 	}

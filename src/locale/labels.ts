@@ -1,11 +1,11 @@
-import it from './it.json';
+import en from './en.json';
 
-type Locales = 'it';
-type Labels = keyof typeof it;
-const allLabels: Record<Locales, Record<Labels, string>> = { it };
+type Locales = 'en';
+type Labels = keyof typeof en;
+const allLabels: Record<Locales, Record<Labels, string>> = { en };
 
 export const t = (label: Labels) => {
-	const locale = 'it';
+	const locale = 'en';
 	let text = locale + ' - ' + label;
 	if (allLabels[locale] && allLabels[locale][label]) {
 		text = allLabels[locale][label];

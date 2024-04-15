@@ -1,5 +1,8 @@
 import { Signal, component$, useComputed$, useContext } from '@builder.io/qwik';
 import { AppContext } from '../app';
+import { t } from '../locale/labels';
+import { Input } from './form/Input';
+import { Select } from './form/Select';
 
 export const Filters = component$<{
 	selectedServiceLine: Signal<string>;
@@ -11,7 +14,7 @@ export const Filters = component$<{
 
 	const serviceLinesSig = useComputed$(() => Object.keys(appStore.configuration.skills));
 
-	const crewsSig = useComputed$(() => {
+	const crewsSig = useComputed$(async () => {
 		const result = appStore.configuration.crews.filter(
 			(crew) => !selectedServiceLine.value || crew.service_line === selectedServiceLine.value
 		);
@@ -28,59 +31,42 @@ export const Filters = component$<{
 	});
 
 	return (
-		<div class='w-full flex justify-around mb-4'>
-			<div class='max-w-[200px]'>
-				<span class='block text-xl font-bold'>Service Line</span>
-				<select
-					bind:value={selectedServiceLine}
-					onChange$={() => {
-						selectedCrew.value = '';
-					}}
-					class='border-2 border-red-500 w-full h-8 mt-2'
-				>
-					<option value='' selected></option>
-					{serviceLinesSig.value.map((sl, index) => (
-						<option key={index} value={sl}>
-							{sl}
-						</option>
-					))}
-				</select>
-			</div>
-			<div class='max-w-[200px]'>
-				<span class='block text-xl font-bold'>Crew</span>
-				<select bind:value={selectedCrew} class='border-2 border-red-500 w-full h-8 mt-2'>
-					<option value='' selected></option>
-					{crewsSig.value.map(({ name }, index) => (
-						<option key={index} value={name}>
-							{name}
-						</option>
-					))}
-				</select>
-			</div>
+		<div class='w-full flex sm:flex-col m-0 justify-self-start sm:space-y-2 md:space-x-2 lg:space-x-2'>
+			<Select
+				id='service-line'
+				label={t('service_line_label')}
+				placeholder={t('select_empty_label')}
+				value={selectedServiceLine}
+				options={serviceLinesSig}
+				onChange$={() => {
+					selectedCrew.value = '';
+				}}
+			/>
+
 			{selectedSkill && (
-				<div class='max-w-[200px]'>
-					<span class='block text-xl font-bold'>Skill</span>
-					<select
-						bind:value={selectedSkill}
-						class='border-2 border-red-500 w-full h-8 mt-2'
-					>
-						<option value='' selected></option>
-						{skillsSig.value.map((sk, index) => (
-							<option key={index} value={sk}>
-								{sk}
-							</option>
-						))}
-					</select>
-				</div>
-			)}
-			<div class='max-w-[200px]'>
-				<span class='block text-xl font-bold'>Name</span>
-				<input
-					class='border-2 border-red-500 w-full h-8 mt-2'
-					type='text'
-					bind:value={selectedName}
+				<Select
+					id='skill'
+					label={t('skill_label')}
+					placeholder={t('select_empty_label')}
+					value={selectedSkill}
+					options={skillsSig}
 				/>
-			</div>
+			)}
+
+			<Select
+				id='crew'
+				label={t('crew_label')}
+				placeholder={t('select_empty_label')}
+				value={selectedCrew}
+				options={crewsSig}
+			/>
+
+			<Input
+				id='name'
+				label={t('name_label')}
+				bindValue={selectedName}
+				placeholder={t('input_empty_label')}
+			/>
 		</div>
 	);
 });
