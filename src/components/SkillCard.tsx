@@ -15,6 +15,8 @@ type Props = {
 	skillMatrix: Signal<SkillMatrix>;
 };
 
+const VISIBLE_SAILORS = 10;
+
 export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 	const appStore = useContext(AppContext);
 	const coverageSig = useComputed$<{
@@ -93,7 +95,7 @@ export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 							? 1
 							: -1
 					)
-					.slice(0, 4) //only the first four
+					.slice(0, VISIBLE_SAILORS)
 					.map((skillMatrix, key) => {
 						const [name, { skills }] = Object.entries(skillMatrix)[0];
 						return (
