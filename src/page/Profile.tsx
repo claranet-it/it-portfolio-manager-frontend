@@ -1,7 +1,7 @@
 import { component$ } from '@builder.io/qwik';
-import { SkillLegend } from './SkillLegend';
-import { SkillMatrix } from './SkillMatrix';
-import { UserProfileCard } from './UserProfileCard';
+import { SkillLegend } from '../components/SkillLegend';
+import { SkillMatrix } from '../components/SkillMatrix';
+import { UserProfileCard } from '../components/UserProfileCard';
 
 export const Profile = component$(() => {
 	return (

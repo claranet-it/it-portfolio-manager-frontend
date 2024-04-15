@@ -1,14 +1,14 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
+import { Filters } from '../components/Filters';
+import { SkillCard } from '../components/SkillCard';
+import { SkillLegend } from '../components/SkillLegend';
 import { tt } from '../locale/labels';
+import { navigateTo } from '../router';
 import { getConfiguration, getSkills } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
-import { navigateTo } from '../utils/router';
 import { SkillMatrix } from '../utils/types';
-import { Filters } from './Filters';
-import { SkillCard } from './SkillCard';
-import { SkillLegend } from './SkillLegend';
 
 export const Skills = component$(() => {
 	const appStore = useContext(AppContext);

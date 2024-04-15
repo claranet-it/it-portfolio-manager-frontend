@@ -1,7 +1,7 @@
 import { $, component$, noSerialize, useSignal, useStore } from '@builder.io/qwik';
+import { getIcon } from '../components/icons';
 import { t } from '../locale/labels';
 import { CheshireCatClient } from '../utils/cheshire-cat';
-import { getIcon } from './icons';
 
 type ChatItem = { question: string; answer: string };
 

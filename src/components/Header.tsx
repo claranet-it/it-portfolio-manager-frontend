@@ -1,9 +1,9 @@
 import { component$ } from '@builder.io/qwik';
 import { auth0 } from '../app';
 import { t } from '../locale/labels';
+import { Route, navigateTo } from '../router';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { removeCookie } from '../utils/cookie';
-import { Route, navigateTo } from '../utils/router';
 import { getIcon } from './icons';
 
 type MenuRoutes = Exclude<Route, 'auth'>;

@@ -1,8 +1,8 @@
 import { $, component$, useTask$ } from '@builder.io/qwik';
 import { auth0 } from '../app';
+import { navigateTo } from '../router';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, setCookie } from '../utils/cookie';
-import { navigateTo } from '../utils/router';
 
 export const Auth = component$(() => {
 	const goToEffort = $(() => navigateTo('effort'));

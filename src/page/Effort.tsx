@@ -1,17 +1,17 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
+import { EffortTable } from '../components/EffortTable';
+import { Filters } from '../components/Filters';
+import { MonthChart } from '../components/MonthChart';
+import { Toast } from '../components/Toast';
+import { TotalChart } from '../components/TotalChart';
 import { t } from '../locale/labels';
+import { navigateTo } from '../router';
 import { getConfiguration, getEffort } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
 import { getDateLabelFromMonthYear } from '../utils/dates';
-import { navigateTo } from '../utils/router';
 import { EffortMatrix } from '../utils/types';
-import { EffortTable } from './EffortTable';
-import { Filters } from './Filters';
-import { MonthChart } from './MonthChart';
-import { Toast } from './Toast';
-import { TotalChart } from './TotalChart';
 
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);

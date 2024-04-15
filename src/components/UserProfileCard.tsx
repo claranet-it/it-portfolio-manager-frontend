@@ -1,10 +1,10 @@
 import { $, component$, useContext, useId, useStore, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
+import { navigateTo } from '../router';
 import { getConfiguration, getUserMe, setUserProfile } from '../utils/api';
 import { COOKIE_TOKEN_KEY } from '../utils/constants';
 import { getCookie, removeCookie } from '../utils/cookie';
-import { navigateTo } from '../utils/router';
 import { UserMe } from '../utils/types';
 import { getIcon } from './icons';
 

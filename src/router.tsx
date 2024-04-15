@@ -1,9 +1,9 @@
 import { Signal, useSignal, useTask$ } from '@builder.io/qwik';
-import { Auth } from '../components/Auth';
-import { Effort } from '../components/Effort';
-import { Profile } from '../components/Profile';
-import { Search } from '../components/Search';
-import { Skills } from '../components/Skills';
+import { Auth } from './components/Auth';
+import { Effort } from './page/Effort';
+import { Profile } from './page/Profile';
+import { Search } from './page/Search';
+import { Skills } from './page/Skills';
 
 export type Route = keyof typeof routes;
 

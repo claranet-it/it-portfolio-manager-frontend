@@ -8,7 +8,7 @@ import {
 } from '@builder.io/qwik';
 import { initFlowbite } from 'flowbite';
 import { Layout } from './components/Layout';
-import { routes, useRouter } from './utils/router';
+import { routes, useRouter } from './router';
 import { AppStore } from './utils/types';
 
 const {
