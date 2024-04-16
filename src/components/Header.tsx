@@ -46,11 +46,12 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 					<button
 						class='bg-transparent inline-flex items-center gap-2 text-dark-grey font-semibold p-2 m-2 rounded border-0 min-w-[100px]'
 						onClick$={() => {
-							removeCookie(COOKIE_TOKEN_KEY);
-							auth0.logout({
-								logoutParams: {
-									returnTo: redirect_uri,
-								},
+							removeCookie(COOKIE_TOKEN_KEY, () => {
+								auth0.logout({
+									logoutParams: {
+										returnTo: redirect_uri,
+									},
+								});
 							});
 						}}
 					>

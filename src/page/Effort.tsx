@@ -81,16 +81,14 @@ export const Effort = component$(() => {
 		if (!Object.keys(appStore.configuration.skills).length) {
 			const configuration = await getConfiguration();
 			if (!configuration) {
-				removeCookie(COOKIE_TOKEN_KEY);
-				navigateTo('auth');
+				removeCookie(COOKIE_TOKEN_KEY, () => navigateTo('auth'));
 			}
 			appStore.configuration = configuration;
 		}
 
 		const effort = await getEffort();
 		if (!effort) {
-			removeCookie(COOKIE_TOKEN_KEY);
-			navigateTo('auth');
+			removeCookie(COOKIE_TOKEN_KEY, () => navigateTo('auth'));
 		}
 
 		effortSig.value = effort;
