@@ -29,6 +29,7 @@ export const getCookie = (name: string) => {
 	return null;
 };
 
-export const removeCookie = (name: string) => {
+export const removeCookie = (name: string, cb: Function) => {
 	document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+	cb();
 };
