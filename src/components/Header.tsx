@@ -48,13 +48,10 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 						onClick$={() => {
 							auth0.logout({
 								openUrl: () => {
-									console.log('openUrl')
 									removeCookie(COOKIE_TOKEN_KEY);
 									window.location.replace(redirect_uri)
 								}
-							}).then(() => {
-								console.log('logout')
-							})
+							});
 						}}
 					>
 						{getIcon('Exit')} {t('logout')}
