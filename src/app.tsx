@@ -20,7 +20,11 @@ const {
 export const auth0 = new Auth0Client({
 	domain,
 	clientId,
-	authorizationParams: { redirect_uri, audience },
+	authorizationParams: {
+		redirect_uri,
+		audience,
+		prompt: 'login'
+	},
 });
 
 export const AppContext = createContextId<AppStore>('AppStore');
