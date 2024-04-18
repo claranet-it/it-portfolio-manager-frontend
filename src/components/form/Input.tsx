@@ -32,9 +32,7 @@ export const Input = component$<inputInterface>(
 
 		return (
 			<form class={styleClass}>
-				<label for={id} class={styleLabel}>
-					{label}
-				</label>
+				<label class={styleLabel}>{label}</label>
 
 				<input
 					type={type}
