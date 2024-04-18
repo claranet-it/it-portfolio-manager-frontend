@@ -2,6 +2,7 @@ import { $, component$, noSerialize, useSignal, useStore } from '@builder.io/qwi
 import { getIcon } from '../components/icons';
 import { t } from '../locale/labels';
 import { CheshireCatClient } from '../utils/cheshire-cat';
+import { KEYBOARD_ENTER, SEARCH_TEXT_AREA_ROWS } from '../utils/constants';
 
 type ChatItem = { question: string; answer: string };
 
@@ -37,6 +38,14 @@ export const Search = component$(() => {
 			searchValueSig.value = question;
 		}
 		loadingSig.value = false;
+	});
+
+	const onPressEnter = $((event: KeyboardEvent) => {
+		if (event.key === KEYBOARD_ENTER && !event.shiftKey) {
+			event.preventDefault();
+			const btForm = document.getElementById('search_button');
+			btForm?.click();
+		}
 	});
 
 	return (
@@ -75,13 +84,15 @@ export const Search = component$(() => {
 						<textarea
 							disabled={loadingSig.value}
 							id='chat'
-							rows={3}
+							rows={SEARCH_TEXT_AREA_ROWS}
 							class='block w-full text-sm text-gray-900 bg-white rounded-md border border-gray-300'
 							placeholder={t('search_placeholder')}
 							bind:value={searchValueSig}
+							onKeyDown$={onPressEnter}
 						></textarea>
 
 						<button
+							id='search_button'
 							type='submit'
 							class='block justify-center  text-red-600 cursor-pointer text-center'
 							disabled={!searchValueSig.value || loadingSig.value}
