@@ -42,7 +42,10 @@ export const App = component$(() => {
 	useContextProvider(AppContext, appStore);
 	const currentRouteSignal = useRouter();
 
-	useVisibleTask$(() => {
+	useVisibleTask$(({ track }) => {
+		// on change route
+		track(currentRouteSignal);
+		// run this
 		initFlowbite();
 	});
 
