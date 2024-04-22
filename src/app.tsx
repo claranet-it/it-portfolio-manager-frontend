@@ -39,8 +39,9 @@ const initialState: AppStore = {
 
 export const App = component$(() => {
 	const appStore = useStore<AppStore>(initialState);
-	useContextProvider(AppContext, appStore);
 	const currentRouteSignal = useRouter();
+
+	useContextProvider(AppContext, appStore);
 
 	useVisibleTask$(({ track }) => {
 		// on change route
