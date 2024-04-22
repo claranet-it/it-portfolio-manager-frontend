@@ -43,10 +43,14 @@ const initialState: AppStore = {
 
 export const App = component$(() => {
 	const appStore = useStore<AppStore>(initialState);
-	useContextProvider(AppContext, appStore);
 	const currentRouteSignal = useRouter();
 
-	useVisibleTask$(() => {
+	useContextProvider(AppContext, appStore);
+
+	useVisibleTask$(({ track }) => {
+		// on change route
+		track(currentRouteSignal);
+		// run this
 		initFlowbite();
 	});
 

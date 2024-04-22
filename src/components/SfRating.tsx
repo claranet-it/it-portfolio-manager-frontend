@@ -10,7 +10,12 @@ export const SfRating = component$<{
 	const uniqueId = useId();
 
 	return (
-		<div class='inline-flex items-center text-warning-500 text-base'>
+		<div
+			style={{
+				cursor: onClick$ ? 'pointer' : '',
+			}}
+			class={'inline-flex items-center text-warning-500 text-base'}
+		>
 			{[...Array(max).keys()].map((num, i) => {
 				const currentValue = num + 1;
 				return (

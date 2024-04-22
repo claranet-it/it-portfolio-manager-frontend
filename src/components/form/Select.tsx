@@ -13,11 +13,10 @@ export const Select = component$<selectInterface>(
 	({ id, label, value, options, placeholder, onChange$ }) => {
 		return (
 			<form class='w-full'>
-				<label for={id} class='block text-sm font-normal text-dark-gray'>
-					{label}
-				</label>
+				<label class='block text-sm font-normal text-dark-gray'>{label}</label>
+
 				<select
-					id={id}
+					id={'form_' + id}
 					bind:value={value}
 					onChange$={onChange$}
 					class='bg-white border border-darkgray-500 text-gray-900 text-sm font-normal rounded-md block w-full p-2.5'

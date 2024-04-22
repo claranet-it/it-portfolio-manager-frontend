@@ -85,8 +85,16 @@ export const UserProfileCard = component$(() => {
 					<span class='text-xs uppercase mr-1 text-dark-grey'>{t('crew')}</span>
 					<span class='text-lg font-bold text-dark-grey'>{userStore.crew || '-'}</span>
 
+					<button
+						id='triggerCrewDropdown'
+						data-dropdown-toggle='crew-dropdown'
+						class='bg-transparent inline-flex p-0 text-gray-400 font-semibold hover:text-white rounded border-0'
+					>
+						{getIcon('Expand')}
+					</button>
+
 					<div
-						id='crew-dropdown-states'
+						id='crew-dropdown'
 						class='z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700'
 					>
 						<ul
@@ -96,7 +104,6 @@ export const UserProfileCard = component$(() => {
 							{appStore.configuration.crews.map((crew, key) => (
 								<li key={`${uniqueId}-${key}`}>
 									<button
-										data-dropdown-toggle='crew-dropdown-states'
 										type='button'
 										onClick$={() => updateUserCrew(crew.name)}
 										class='inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white'
@@ -107,14 +114,6 @@ export const UserProfileCard = component$(() => {
 							))}
 						</ul>
 					</div>
-
-					<button
-						id='triggerCrewDropdown'
-						data-dropdown-toggle='crew-dropdown-states'
-						class='bg-transparent inline-flex p-0 text-gray-400 font-semibold hover:text-white rounded border-0'
-					>
-						{getIcon('Expand')}
-					</button>
 				</div>
 				<p class='text-base font-bold text-dark-grey'>
 					{userStore.crewLeader ? t('engineering_manager') : ''}
