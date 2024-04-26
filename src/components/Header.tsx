@@ -2,8 +2,7 @@ import { component$ } from '@builder.io/qwik';
 import { auth0 } from '../app';
 import { t } from '../locale/labels';
 import { Route, navigateTo } from '../router';
-import { COOKIE_TOKEN_KEY } from '../utils/constants';
-import { removeCookie } from '../utils/cookie';
+import { removeAuthToken } from '../utils/token';
 import { getIcon } from './icons';
 
 type MenuRoutes = Exclude<Route, 'auth'>;
@@ -47,10 +46,10 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 						class='bg-transparent inline-flex items-center gap-2 text-dark-grey font-semibold p-2 m-2 rounded border-0 min-w-[100px]'
 						onClick$={() => {
 							auth0.logout({
-								openUrl: () => {
-									removeCookie(COOKIE_TOKEN_KEY);
-									window.location.replace(redirect_uri)
-								}
+								openUrl: async () => {
+									await removeAuthToken();
+									window.location.replace(redirect_uri);
+								},
 							});
 						}}
 					>

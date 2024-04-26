@@ -1,24 +1,35 @@
-import { COOKIE_TOKEN_KEY } from './constants';
-import { getCookie } from './cookie';
+import { getAuthToken, removeAuthToken } from './token';
 
 type HttpMethods = 'GET' | 'POST' | 'PUT' | 'PATCH';
 
-const getHeaders = () => {
-	const token = getCookie(COOKIE_TOKEN_KEY);
+const getHeaders = async () => {
+	const token = await getAuthToken();
 	return new Headers({
 		Authorization: `Bearer ${token}`,
 		'Content-Type': 'application/json',
 	});
 };
 
+const httpStatusHandler = async (response: Response) => {
+	switch (response.status) {
+		case 401:
+			await removeAuthToken();
+			window.location.replace('auth');
+			break;
+		default:
+			return response;
+	}
+};
+
 const executeRequest = async (path: string, method: HttpMethods = 'GET', body?: Object) => {
-	const headers = getHeaders();
+	const headers = await getHeaders();
 	const options: RequestInit = {
 		method,
 		headers,
 		body: JSON.stringify(body),
 	};
-	return await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${path}`, options);
+	const reqeust = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${path}`, options);
+	return await httpStatusHandler(reqeust);
 };
 
 export const getHttpResponse = async <Response>(
@@ -27,7 +38,7 @@ export const getHttpResponse = async <Response>(
 	body?: Object
 ): Promise<Response> => {
 	const response = await executeRequest(path, method, body);
-	return await response.json();
+	return await response?.json();
 };
 
 export const checkHttpResponseStatus = async (
@@ -37,9 +48,10 @@ export const checkHttpResponseStatus = async (
 	body?: Object
 ): Promise<boolean> => {
 	const response = await executeRequest(path, method, body);
-	if (response.status === 400 && expectedStatus !== 400) {
+
+	if (response?.status === 400 && expectedStatus !== 400) {
 		const { message } = await response.json();
 		throw new Error(message);
 	}
-	return response.status === expectedStatus;
+	return response?.status === expectedStatus;
 };
