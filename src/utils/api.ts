@@ -1,4 +1,4 @@
-import { checkHttpResponseStatus, getHttpResponse } from './http-requests';
+import { checkHttpResponseStatus, getHttpResponse } from './httpRequest';
 import {
 	Configuration,
 	Effort,

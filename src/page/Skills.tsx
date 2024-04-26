@@ -4,10 +4,7 @@ import { Filters } from '../components/Filters';
 import { SkillCard } from '../components/SkillCard';
 import { SkillLegend } from '../components/SkillLegend';
 import { tt } from '../locale/labels';
-import { navigateTo } from '../router';
 import { getConfiguration, getSkills } from '../utils/api';
-import { COOKIE_TOKEN_KEY } from '../utils/constants';
-import { getCookie, removeCookie } from '../utils/cookie';
 import { SkillMatrix } from '../utils/types';
 
 export const Skills = component$(() => {
@@ -76,23 +73,12 @@ export const Skills = component$(() => {
 	});
 
 	useTask$(async () => {
-		if (!getCookie(COOKIE_TOKEN_KEY)) {
-			navigateTo('auth');
-		}
-
 		if (!Object.keys(appStore.configuration.skills).length) {
 			const configuration = await getConfiguration();
-			if (!configuration) {
-				removeCookie(COOKIE_TOKEN_KEY, () => navigateTo('auth'));
-			}
 			appStore.configuration = configuration;
 		}
 
 		const skills = await getSkills();
-		if (!skills) {
-			removeCookie(COOKIE_TOKEN_KEY, () => navigateTo('auth'));
-		}
-
 		originalSkillMatrixSig.value = skills;
 	});
 

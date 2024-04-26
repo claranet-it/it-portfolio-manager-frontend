@@ -6,10 +6,7 @@ import { MonthChart } from '../components/MonthChart';
 import { Toast } from '../components/Toast';
 import { TotalChart } from '../components/TotalChart';
 import { t } from '../locale/labels';
-import { navigateTo } from '../router';
 import { getConfiguration, getEffort } from '../utils/api';
-import { COOKIE_TOKEN_KEY } from '../utils/constants';
-import { getCookie, removeCookie } from '../utils/cookie';
 import { getDateLabelFromMonthYear } from '../utils/dates';
 import { EffortMatrix } from '../utils/types';
 
@@ -74,23 +71,12 @@ export const Effort = component$(() => {
 	});
 
 	useTask$(async () => {
-		if (!getCookie(COOKIE_TOKEN_KEY)) {
-			navigateTo('auth');
-		}
-
 		if (!Object.keys(appStore.configuration.skills).length) {
 			const configuration = await getConfiguration();
-			if (!configuration) {
-				removeCookie(COOKIE_TOKEN_KEY, () => navigateTo('auth'));
-			}
 			appStore.configuration = configuration;
 		}
 
 		const effort = await getEffort();
-		if (!effort) {
-			removeCookie(COOKIE_TOKEN_KEY, () => navigateTo('auth'));
-		}
-
 		effortSig.value = effort;
 	});
 

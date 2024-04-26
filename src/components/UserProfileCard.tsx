@@ -1,10 +1,7 @@
 import { $, component$, useContext, useId, useStore, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
-import { navigateTo } from '../router';
 import { getConfiguration, getUserMe, setUserProfile } from '../utils/api';
-import { COOKIE_TOKEN_KEY } from '../utils/constants';
-import { getCookie, removeCookie } from '../utils/cookie';
 import { UserMe } from '../utils/types';
 import { getIcon } from './icons';
 
@@ -35,15 +32,8 @@ export const UserProfileCard = component$(() => {
 	});
 
 	useTask$(async () => {
-		if (!getCookie(COOKIE_TOKEN_KEY)) {
-			navigateTo('auth');
-		}
-
 		if (!Object.keys(appStore.configuration.skills).length) {
 			const configuration = await getConfiguration();
-			if (!configuration) {
-				removeCookie(COOKIE_TOKEN_KEY, () => navigateTo('auth'));
-			}
 			appStore.configuration = configuration;
 		}
 

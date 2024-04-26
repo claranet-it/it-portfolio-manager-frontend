@@ -1,10 +1,7 @@
 import { $, component$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { tt } from '../locale/labels';
-import { navigateTo } from '../router';
 import { getSkillMatrixMine, pathSkillMatrixMine } from '../utils/api';
-import { COOKIE_TOKEN_KEY } from '../utils/constants';
-import { getCookie } from '../utils/cookie';
 import { Skill } from '../utils/types';
 import { SkillRow } from './SkillRow';
 
@@ -26,9 +23,6 @@ export const SkillMatrix = component$(() => {
 	});
 
 	useTask$(async () => {
-		if (!getCookie(COOKIE_TOKEN_KEY)) {
-			navigateTo('auth');
-		}
 		skillsMineSig.value = await loadSkillsMatrixMine();
 	});
 
