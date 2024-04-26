@@ -23,7 +23,7 @@ export const auth0 = new Auth0Client({
 	authorizationParams: {
 		redirect_uri,
 		audience,
-		prompt: 'login'
+		prompt: 'login',
 	},
 });
 
