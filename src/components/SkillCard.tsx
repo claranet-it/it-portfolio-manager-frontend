@@ -15,7 +15,7 @@ type Props = {
 	skillMatrix: Signal<SkillMatrix>;
 };
 
-const VISIBLE_SAILORS = 10;
+const VISIBLE_SAILORS = 999;
 
 export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 	const appStore = useContext(AppContext);
