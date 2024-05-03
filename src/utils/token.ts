@@ -1,5 +1,5 @@
 import { AUTH_TOKEN_KEY } from './constants';
-import { clear, get, set } from './localStorage';
+import { clear, get, set } from './localStorage/localStorage';
 
 export const setAuthToken = async (value: string) => {
 	await set(AUTH_TOKEN_KEY, value);
