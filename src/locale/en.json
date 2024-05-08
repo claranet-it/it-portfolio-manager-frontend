@@ -28,7 +28,7 @@
 	"legend": "legend",
 	"engineering_manager": "Engineering manager",
 	"my_type_skill": "My #skillType's skills",
-	"select_empty_label": "Select a value",
+	"select_empty_label": "Select a option",
 	"input_empty_label": "Insert a value",
 	"service_line_label": "Service Line",
 	"skill_label": "Skill",
@@ -43,5 +43,6 @@
 	"service_line_skill": "#serviceLine's skills",
 	"coverage": "coverage",
 	"skill_level_label2+": "skill level (2+)",
-	"how_can_help": "How can I help you today?"
+	"how_can_help": "How can I help you today?",
+	"clear_filter_label": "Clear filter"
 }

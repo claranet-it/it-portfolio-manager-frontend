@@ -83,7 +83,7 @@ export const Skills = component$(() => {
 	});
 
 	return (
-		<div class='flex-col pt-5 px-6 space-y-6'>
+		<div class='w-full flex-col pt-5 px-6 space-y-6'>
 			<div class='flex sm:flex-col md:flex-row lg:flex-row md:justify-between lg:justify-between md:space-x-5 lg:space-x-5 sm:space-y-1'>
 				<Filters
 					selectedCrew={selectedCrewSig}

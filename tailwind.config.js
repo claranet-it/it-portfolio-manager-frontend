@@ -14,6 +14,7 @@ module.exports = {
       'darkgray-200': '#CBCBD1',
       'darkgray-300': '#B9B9C2',
       'darkgray-500': '#9696A3',
+      'darkgray-700': '#747484',
       'darkgray-900': '#555561',
       'gray-900': '#1A1A1A',
       'white-100': '#FFFFFF',
