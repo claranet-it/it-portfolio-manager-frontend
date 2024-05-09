@@ -18,7 +18,7 @@ export const Filters = component$<{
 		const result = appStore.configuration.crews.filter(
 			(crew) => !selectedServiceLine.value || crew.service_line === selectedServiceLine.value
 		);
-		return result;
+		return result.map((v) => v.name);
 	});
 	const skillsSig = useComputed$(() => {
 		const skills: string[] = selectedServiceLine.value

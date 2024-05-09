@@ -5,7 +5,7 @@ interface selectInterface {
 	id: string;
 	label?: string;
 	value: Signal<string>;
-	options: Signal<string[]> | Signal<{ name: string; service_line: string }[]>;
+	options: Signal<string[]>;
 	placeholder?: string;
 	onChange$?: QRL;
 }
@@ -92,15 +92,14 @@ export const Select = component$<selectInterface>(
 							<li
 								key={index}
 								onClick$={() => {
-									const v = typeof option === 'string' ? option : option.name;
-									updateValue(v);
+									updateValue(option);
 								}}
 							>
 								<a
 									href='#'
 									class='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
 								>
-									{typeof option === 'string' ? option : option.name}
+									{option}
 								</a>
 							</li>
 						))}
