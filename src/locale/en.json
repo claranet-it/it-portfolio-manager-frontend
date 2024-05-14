@@ -2,6 +2,7 @@
 	"crew": "Crew",
 	"profile_picture": "Profile picture",
 	"skill": "Skill",
+	"timesheet": "Timesheet",
 	"score": "Score",
 	"edit": "Edit",
 	"search": "Research",
@@ -43,5 +44,6 @@
 	"service_line_skill": "#serviceLine's skills",
 	"coverage": "coverage",
 	"skill_level_label2+": "skill level (2+)",
-	"how_can_help": "How can I help you today?"
+	"how_can_help": "How can I help you today?",
+	"add_new_project_label": "Add new project"
 }
