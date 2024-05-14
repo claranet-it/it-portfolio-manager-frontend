@@ -20,6 +20,7 @@ import { Ruby } from './Ruby';
 import { Rust } from './Rust';
 import { Send } from './Send';
 import { TypeScript } from './TypeScript';
+import { Add } from './add';
 import { IOS } from './iOS';
 
 export const getIcon = (skill: string) => {
@@ -74,6 +75,8 @@ export const getIcon = (skill: string) => {
 			return <Expand />;
 		case 'Send':
 			return <Send />;
+		case 'Add':
+			return <Add />;
 		default:
 			return <AWS />;
 	}

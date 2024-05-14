@@ -2,6 +2,7 @@
 	"crew": "Crew",
 	"profile_picture": "Profile picture",
 	"skill": "Skill",
+	"timesheet": "Timesheet",
 	"score": "Score",
 	"edit": "Edit",
 	"search": "Research",
@@ -44,5 +45,5 @@
 	"coverage": "coverage",
 	"skill_level_label2+": "skill level (2+)",
 	"how_can_help": "How can I help you today?",
-	"clear_filter_label": "Clear filter"
+	"add_new_project_label": "Add new project"
 }

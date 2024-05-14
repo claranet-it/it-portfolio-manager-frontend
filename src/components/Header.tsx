@@ -9,7 +9,7 @@ import { CHATBOT_COOKIE_KEY } from '../utils/constants';
 
 type MenuRoutes = Exclude<Route, 'auth'>;
 
-const MENU = ['effort', 'profile', 'skills', 'search'] as const;
+const MENU = ['effort', 'profile', 'skills', 'timesheet', 'search'] as const;
 
 const { VITE_AUTH_REDIRECT_URI: redirect_uri } = import.meta.env;
 

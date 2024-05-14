@@ -4,12 +4,14 @@ import { Effort } from './page/Effort';
 import { Profile } from './page/Profile';
 import { Search } from './page/Search';
 import { Skills } from './page/Skills';
+import { Timesheet } from './page/Timesheet';
 
 export type Route = keyof typeof routes;
 
 export const routes = {
 	auth: <Auth />,
 	effort: <Effort />,
+	timesheet: <Timesheet />,
 	profile: <Profile />,
 	skills: <Skills />,
 	search: <Search />,
