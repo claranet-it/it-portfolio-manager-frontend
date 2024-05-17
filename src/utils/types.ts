@@ -18,6 +18,7 @@ export type SetUserProfile = {
 };
 
 export type Configuration = {
+	company: string;
 	crews: { name: string; service_line: string }[];
 	skills: Record<string, string[]>;
 	scoreRange: {
@@ -59,3 +60,9 @@ export type Month = {
 };
 
 export type OpenAIResponse = { message: string };
+
+export type Customer = string;
+
+export type Project = string;
+
+export type Task = string;

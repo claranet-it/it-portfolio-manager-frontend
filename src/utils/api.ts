@@ -1,13 +1,16 @@
 import { checkHttpResponseStatus, getHttpResponse } from './httpRequest';
 import {
 	Configuration,
+	Customer,
 	Effort,
 	EffortMatrix,
 	Month,
 	OpenAIResponse,
+	Project,
 	SetUserProfile,
 	Skill,
 	SkillMatrix,
+	Task,
 	UserMe,
 } from './types';
 
@@ -42,3 +45,16 @@ export const putEffort = async (
 
 export const openAI = async (prompt: string, company: string = 'it'): Promise<OpenAIResponse> =>
 	getHttpResponse<OpenAIResponse>('openAI', 'POST', { prompt, company });
+
+export const getCustomers = async (company: string = 'it'): Promise<Customer[]> =>
+	getHttpResponse<Customer[]>(`task/customer?company=${company}`);
+
+export const getProjects = async (company: string = 'it', customer: Customer): Promise<Project[]> =>
+	getHttpResponse<Project[]>(`task/project?company=${company}&customer=${customer}`);
+
+export const getTasks = async (
+	company: string = 'it',
+	customer: Customer,
+	project: Project
+): Promise<Task[]> =>
+	getHttpResponse<Task[]>(`task/task?company=${company}&customer=${customer}&project=${project}`);

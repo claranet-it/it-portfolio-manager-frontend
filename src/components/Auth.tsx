@@ -12,6 +12,7 @@ export const Auth = component$(() => {
 		if (code) {
 			await auth0.getTokenSilently({ cacheMode: 'off' });
 			const token = await auth0.getIdTokenClaims();
+
 			if (token) {
 				await setAuthToken(token.__raw);
 				goToEffort();

@@ -45,5 +45,9 @@
 	"coverage": "coverage",
 	"skill_level_label2+": "skill level (2+)",
 	"how_can_help": "How can I help you today?",
-	"add_new_project_label": "Add new project"
+	"add_new_project_label": "Add new project",
+	"INSERT_NEW_PROJECT_TITLE_MODAL": "Insert new project",
+	"INSERT_NEW_PROJECT_MESSAGE_MODAL": "Do you confirm the insertion of the new project?",
+	"ACTION_CONFIRM": "Confirm",
+	"ACTION_CANCEL": "Cancel"
 }

@@ -2,6 +2,7 @@ import { AWS } from './AWS';
 import { Android } from './Android';
 import { Ansible } from './Ansible';
 import { CSharp } from './CSharp';
+import { Clear } from './Clear';
 import { Close } from './Close';
 import { Design } from './Design';
 import { Edit } from './Edit';
@@ -18,6 +19,7 @@ import { Python } from './Python';
 import { QuickSight } from './QuickSight';
 import { Ruby } from './Ruby';
 import { Rust } from './Rust';
+import { Search } from './Search';
 import { Send } from './Send';
 import { TypeScript } from './TypeScript';
 import { Add } from './add';
@@ -77,6 +79,10 @@ export const getIcon = (skill: string) => {
 			return <Send />;
 		case 'Add':
 			return <Add />;
+		case 'Clear':
+			return <Clear />;
+		case 'Search':
+			return <Search />;
 		default:
 			return <AWS />;
 	}
