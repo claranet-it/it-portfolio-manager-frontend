@@ -1,73 +1,91 @@
-import { component$, useSignal } from '@builder.io/qwik';
+import {
+	component$,
+	useSignal,
+	$,
+	sync$,
+	QRL,
+	useResource$,
+	Signal,
+	useComputed$,
+	useContext,
+} from '@builder.io/qwik';
 import { Autocomplete } from './Autocomplete';
 import { UUID } from '../../utils/uuid';
+import { Button } from '../Button';
+import { getCustomers, getProjects, getTasks } from '../../utils/api';
+import { Project, Task } from '../../utils/types';
+import { AppContext } from '../../app';
+import { ModalState } from '../../model/ModalState';
+import { useNewTimeEntry } from '../../hooks/useNewTimeEntry';
 
-export const NewProjectForm = component$(() => {
-	const dataCustomers = useSignal([
-		'Smith Family Hardware',
-		'GreenLeaf Organic Foods',
-		'Tranquil Spa Retreat',
-		'Swift Solutions IT Consultancy',
-		'BlueWave Marketing Agency',
-		'SunnySide Bakery & Cafe',
-		'Harmony Yoga Studio',
-		'Golden Gate Travel Agency',
-		'Starlight Cinema',
-		'Sparkle Cleaners',
-	]);
+type NewProjectFormProp = {
+	alertMessageState: ModalState;
+	onCancel$?: QRL;
+};
 
-	const dataProjects = useSignal([
-		'Phoenix Rising: Website Revamp',
-		'Operation Efficiency: Supply Chain Optimization',
-		'Project Atlas: Market Expansion Strategy',
-		'Infinite Horizon: AI Research Initiative',
-		'Project Zenith: Product Launch Campaign',
-		'EcoSolutions: Sustainability Initiative',
-		'Operation Genesis: New Product Development',
-		'Project Odyssey: Customer Experience Enhancement',
-		'Project BlueSky: Cloud Migration',
-		'Innovation Frontier: R&D Investment',
-	]);
+export const NewProjectForm = component$<NewProjectFormProp>(({ alertMessageState, onCancel$ }) => {
+	const {
+		dataCustomersSig,
+		dataProjectsSig,
+		dataTaksSign,
+		customerSelected,
+		projectSelected,
+		taskSelected,
+		projectEnableSig,
+		taskEnableSig,
+		onChangeCustomer,
+		onChangeProject,
+		clearForm,
+		handleSubmit,
+	} = useNewTimeEntry(alertMessageState);
 
-	const dataTaks = useSignal([
-		'Update website homepage layout',
-		'Prepare quarterly financial report',
-		'Conduct market research on competitor products',
-		'Test new software features for bugs',
-		'Create social media content calendar',
-		'Organize team-building event',
-		'Review and optimize SEO strategy',
-		'Develop training materials for new employees',
-		'Schedule client meetings for next week',
-		'Draft project proposal for client presentation',
-	]);
-
-	const customerSelected = useSignal<string>('');
-	const projectSelected = useSignal<string>('');
-	const projectTask = useSignal<string>('');
+	const _onCancel = $(() => {
+		clearForm();
+		onCancel$ && onCancel$();
+	});
 
 	return (
-		<div class='p-4 bg-white-100 rounded-md shadow w-96'>
-			<form class='space-y-3'>
-				<Autocomplete
-					id={UUID()}
-					selected={customerSelected}
-					data={dataCustomers}
-					placeholder='Customer'
-				/>
-				<Autocomplete
-					id={UUID()}
-					selected={projectSelected}
-					data={dataProjects}
-					placeholder='Project'
-				/>
-				<Autocomplete
-					id={UUID()}
-					selected={projectTask}
-					data={dataTaks}
-					placeholder='Task'
-				/>
-			</form>
-		</div>
+		<>
+			<div class='p-4 bg-white-100 rounded-md shadow w-96'>
+				<form class='space-y-3' onSubmit$={handleSubmit}>
+					<Autocomplete
+						id={UUID()}
+						label='Customer'
+						selected={customerSelected}
+						data={dataCustomersSig}
+						placeholder='Search...'
+						required
+						onChange$={onChangeCustomer}
+					/>
+
+					<Autocomplete
+						id={UUID()}
+						label='Project'
+						selected={projectSelected}
+						data={dataProjectsSig}
+						placeholder='Search...'
+						required
+						disabled={!projectEnableSig.value}
+						onChange$={onChangeProject}
+					/>
+
+					<Autocomplete
+						id={UUID()}
+						label='Task'
+						selected={taskSelected}
+						data={dataTaksSign}
+						placeholder='Search...'
+						required
+						disabled={!taskEnableSig.value}
+					/>
+
+					<div class='flex flex-row space-x-1 justify-end'>
+						{onCancel$ && <Button type='button' text='Cancel' onClick$={_onCancel} />}
+
+						<Button type='submit' text='Insert' outline />
+					</div>
+				</form>
+			</div>
+		</>
 	);
 });
