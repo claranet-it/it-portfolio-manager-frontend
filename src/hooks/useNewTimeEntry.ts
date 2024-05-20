@@ -1,9 +1,11 @@
 import { $, sync$, useComputed$, useContext, useSignal } from '@builder.io/qwik';
-import { Project, Task } from '../utils/types';
-import { getCustomers, getProjects, getTasks } from '../utils/api';
-import { ModalState } from '../model/ModalState';
+import { Project, Task } from '../models/types';
+import { ModalState } from '../models/ModalState';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
+import { getCustomers } from '../services/customer';
+import { getProjects } from '../services/projects';
+import { getTasks } from '../services/tasks';
 
 export const useNewTimeEntry = (alertMessageState: ModalState) => {
 	const appStore = useContext(AppContext);

@@ -1,5 +1,5 @@
 import { $, Signal, component$, useComputed$ } from '@builder.io/qwik';
-import { EffortMatrix, Month } from '../utils/types';
+import { EffortMatrix, Month } from '../models/types';
 import { Chart } from './Chart';
 
 export const MonthChart = component$<{

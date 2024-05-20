@@ -6,9 +6,10 @@ import { MonthChart } from '../components/MonthChart';
 import { Toast } from '../components/Toast';
 import { TotalChart } from '../components/TotalChart';
 import { t } from '../locale/labels';
-import { getConfiguration, getEffort } from '../utils/api';
 import { getDateLabelFromMonthYear } from '../utils/dates';
-import { EffortMatrix } from '../utils/types';
+import { EffortMatrix } from '../models/types';
+import { getConfiguration } from '../services/configuration';
+import { getEffort } from '../services/effort';
 
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
