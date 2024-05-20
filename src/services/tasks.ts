@@ -1,5 +1,7 @@
-import { getHttpResponse } from '../network/httpRequest';
-import { Customer, Project, Task } from '../models/Month';
+import { Task } from 'vitest';
+import { Customer } from '../models/customer';
+import { Project } from '../models/project';
+import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
 export const getTasks = async (
 	company: string = 'it',
