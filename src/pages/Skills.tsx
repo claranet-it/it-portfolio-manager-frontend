@@ -4,7 +4,7 @@ import { Filters } from '../components/Filters';
 import { SkillCard } from '../components/SkillCard';
 import { SkillLegend } from '../components/SkillLegend';
 import { tt } from '../locale/labels';
-import { SkillMatrix } from '../models/types';
+import { SkillMatrix } from '../models/Month';
 import { getConfiguration } from '../services/configuration';
 import { getSkills } from '../services/skillMatrix';
 
