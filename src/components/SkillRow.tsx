@@ -1,6 +1,6 @@
 import { QRL, component$, useContext } from '@builder.io/qwik';
 import { AppContext } from '../app';
-import { Skill } from '../utils/types';
+import { Skill } from '../models/types';
 import { SfRating } from './SfRating';
 import { getIcon } from './icons';
 

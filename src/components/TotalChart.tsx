@@ -1,6 +1,6 @@
 import { $, Signal, component$, useComputed$ } from '@builder.io/qwik';
 import { getDateLabelFromMonthYear } from '../utils/dates';
-import { EffortMatrix, Month } from '../utils/types';
+import { EffortMatrix, Month } from '../models/types';
 import { Chart } from './Chart';
 
 export const TotalChart = component$<{

@@ -1,4 +1,5 @@
-import { getAuthToken, removeAuthToken } from './token';
+import { getAuthToken } from '../utils/token';
+import { httpStatusHandler } from './httpsStatusHandler';
 
 type HttpMethods = 'GET' | 'POST' | 'PUT' | 'PATCH';
 
@@ -8,17 +9,6 @@ const getHeaders = async () => {
 		Authorization: `Bearer ${token}`,
 		'Content-Type': 'application/json',
 	});
-};
-
-const httpStatusHandler = async (response: Response) => {
-	switch (response.status) {
-		case 401:
-			await removeAuthToken();
-			window.location.replace('auth');
-			break;
-		default:
-			return response;
-	}
 };
 
 const executeRequest = async (path: string, method: HttpMethods = 'GET', body?: Object) => {

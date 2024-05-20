@@ -10,9 +10,9 @@ import {
 import { initFlowbite } from 'flowbite';
 import { Layout } from './components/Layout';
 import { routes, useRouter } from './router';
-import { AppStore } from './utils/types';
-import { getConfiguration } from './utils/api';
+import { AppStore } from './models/types';
 import { getAuthToken } from './utils/token';
+import { getConfiguration } from './services/configuration';
 
 const {
 	VITE_AUTH_DOMAIN: domain,

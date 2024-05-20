@@ -1,21 +1,8 @@
-import {
-	component$,
-	useSignal,
-	$,
-	sync$,
-	QRL,
-	useResource$,
-	Signal,
-	useComputed$,
-	useContext,
-} from '@builder.io/qwik';
+import { component$, $, QRL } from '@builder.io/qwik';
 import { Autocomplete } from './Autocomplete';
 import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
-import { getCustomers, getProjects, getTasks } from '../../utils/api';
-import { Project, Task } from '../../utils/types';
-import { AppContext } from '../../app';
-import { ModalState } from '../../model/ModalState';
+import { ModalState } from '../../models/ModalState';
 import { useNewTimeEntry } from '../../hooks/useNewTimeEntry';
 
 type NewProjectFormProp = {

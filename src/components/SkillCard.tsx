@@ -6,7 +6,7 @@ import {
 	COVERAGE_GOOD_LIMIT,
 	SKILL_LEVEL_SCORE_LIMIT,
 } from '../utils/constants';
-import { SkillMatrix } from '../utils/types';
+import { SkillMatrix } from '../models/types';
 import { SfRating } from './SfRating';
 import { getIcon } from './icons';
 
