@@ -1,7 +1,7 @@
 import { $, component$, useContext, useId, useStore, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
-import { UserMe } from '../models/types';
+import { UserMe } from '../models/Month';
 import { getIcon } from './icons';
 import { getConfiguration } from '../services/configuration';
 import { getUserMe, setUserProfile } from '../services/user';

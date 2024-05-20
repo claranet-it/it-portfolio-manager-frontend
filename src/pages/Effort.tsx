@@ -7,7 +7,7 @@ import { Toast } from '../components/Toast';
 import { TotalChart } from '../components/TotalChart';
 import { t } from '../locale/labels';
 import { getDateLabelFromMonthYear } from '../utils/dates';
-import { EffortMatrix } from '../models/types';
+import { EffortMatrix } from '../models/Month';
 import { getConfiguration } from '../services/configuration';
 import { getEffort } from '../services/effort';
 

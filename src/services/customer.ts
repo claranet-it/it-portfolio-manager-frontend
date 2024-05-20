@@ -1,4 +1,4 @@
-import { Customer } from '../models/types';
+import { Customer } from '../models/Month';
 import { getHttpResponse } from '../network/httpRequest';
 
 export const getCustomers = async (company: string = 'it'): Promise<Customer[]> =>

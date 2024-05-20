@@ -10,7 +10,7 @@ import {
 import { initFlowbite } from 'flowbite';
 import { Layout } from './components/Layout';
 import { routes, useRouter } from './router';
-import { AppStore } from './models/types';
+import { AppStore } from './models/Month';
 import { getAuthToken } from './utils/token';
 import { getConfiguration } from './services/configuration';
 

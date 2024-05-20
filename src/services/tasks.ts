@@ -1,5 +1,5 @@
 import { getHttpResponse } from '../network/httpRequest';
-import { Customer, Project, Task } from '../models/types';
+import { Customer, Project, Task } from '../models/Month';
 
 export const getTasks = async (
 	company: string = 'it',

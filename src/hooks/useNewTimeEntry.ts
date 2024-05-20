@@ -1,5 +1,5 @@
 import { $, sync$, useComputed$, useContext, useSignal } from '@builder.io/qwik';
-import { Project, Task } from '../models/types';
+import { Project, Task } from '../models/Month';
 import { ModalState } from '../models/ModalState';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';

@@ -10,7 +10,7 @@ import {
 } from '@builder.io/qwik';
 import { Chart as TChart, registerables } from 'chart.js';
 import { t } from '../locale/labels';
-import { EffortMatrix, Month } from '../models/types';
+import { EffortMatrix, Month } from '../models/Month';
 
 export const Chart = component$<{
 	effortSig: Signal<EffortMatrix>;
