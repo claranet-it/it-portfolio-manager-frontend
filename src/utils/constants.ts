@@ -10,3 +10,5 @@ export const GRAVATAR_ACCOUNT_URL = 'https://support.gravatar.com/basic/account-
 
 export const SEARCH_TEXT_AREA_ROWS = 3;
 export const KEYBOARD_ENTER = 'Enter';
+
+export const SELF_TOAST_CLOSING_TIME = 5000; // 5sec

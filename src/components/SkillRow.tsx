@@ -1,8 +1,8 @@
 import { QRL, component$, useContext } from '@builder.io/qwik';
 import { AppContext } from '../app';
-import { Skill } from '../models/Month';
 import { SfRating } from './SfRating';
 import { getIcon } from './icons';
+import { Skill } from '../models/skill';
 
 export const SkillRow = component$(
 	(props: { key: number; skill: Skill; onClick$: QRL<(value: number) => void> }) => {

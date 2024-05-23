@@ -16,8 +16,7 @@ module.exports = {
       'darkgray-300': '#B9B9C2',
       'darkgray-400': '#91929F',
       'darkgray-500': '#9696A3',
-      'darkgray-700': '#747484',
-      'darkgray-900': '#555561',
+      'darkgray-900': '#393941',
       'gray-900': '#1A1A1A',
       'white-100': '#FFFFFF',
       'surface-5': '#FAFBFB',
@@ -27,8 +26,15 @@ module.exports = {
       'surface-90': '#CDD6DC',
       'green-1': '#6DB3A7',
       'yellow-100': '#FAE022',
-      'black-trasparent': '#0000001c'
-
+      'black-trasparent': '#0000001c',
+      'success': '#057A55',
+      'success-light': '#BCF0DA',
+      'success-dark': '#03543F',
+      'warning-light': '#FDF6B2',
+      'danger-light': '#FED0CA',
+      'danger-dark': '#992A1B',
+      'info-light': '#C3DDFD',
+      'info-dark': '#1E429F'
     },
     screens: {
       'sm': { 'min': '0px', 'max': '767px' },

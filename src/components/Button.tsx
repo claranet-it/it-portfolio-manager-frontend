@@ -1,4 +1,4 @@
-import { QRL, component$ } from '@builder.io/qwik';
+import { component$ } from '@builder.io/qwik';
 
 interface ButtonInterface {
 	text: string;

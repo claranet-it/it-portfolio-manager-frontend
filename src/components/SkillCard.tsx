@@ -6,9 +6,9 @@ import {
 	COVERAGE_GOOD_LIMIT,
 	SKILL_LEVEL_SCORE_LIMIT,
 } from '../utils/constants';
-import { SkillMatrix } from '../models/Month';
 import { SfRating } from './SfRating';
 import { getIcon } from './icons';
+import { SkillMatrix } from '../models/skill';
 
 type Props = {
 	skill: string;
