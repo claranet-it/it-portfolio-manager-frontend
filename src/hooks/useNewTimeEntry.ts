@@ -1,15 +1,16 @@
-import { $, sync$, useComputed$, useContext, useSignal } from '@builder.io/qwik';
-import { Project, Task } from '../models/Month';
-import { ModalState } from '../models/ModalState';
-import { AppContext } from '../app';
-import { t } from '../locale/labels';
+import { $, sync$, useComputed$, useSignal } from '@builder.io/qwik';
+import { ModalState } from '../models/modalState';
+import { t, tt } from '../locale/labels';
 import { getCustomers } from '../services/customer';
 import { getProjects } from '../services/projects';
-import { getTasks } from '../services/tasks';
+import { getTasks, saveTask } from '../services/tasks';
+import { Project } from '../models/project';
+import { Customer } from '../models/customer';
+import { useNotification } from './useNotification';
+import { Task } from '../models/task';
 
 export const useNewTimeEntry = (alertMessageState: ModalState) => {
-	const appStore = useContext(AppContext);
-	//const company = appStore.configuration.company
+	const { addEvent } = useNotification();
 
 	const dataCustomersSig = useComputed$(async () => {
 		return await getCustomers();
@@ -18,9 +19,9 @@ export const useNewTimeEntry = (alertMessageState: ModalState) => {
 	const dataProjectsSig = useSignal<Project[]>([]);
 	const dataTaksSign = useSignal<Task[]>([]);
 
-	const customerSelected = useSignal<string>('');
-	const projectSelected = useSignal<string>('');
-	const taskSelected = useSignal<string>('');
+	const customerSelected = useSignal<Customer>('');
+	const projectSelected = useSignal<Project>('');
+	const taskSelected = useSignal<Task>('');
 
 	const projectEnableSig = useSignal(false);
 	const taskEnableSig = useSignal(false);
@@ -35,7 +36,7 @@ export const useNewTimeEntry = (alertMessageState: ModalState) => {
 		}
 	});
 
-	const onChangeProject = $(async (value: string) => {
+	const onChangeProject = $(async (value: Task) => {
 		taskSelected.value = '';
 		if (value != '') {
 			dataTaksSign.value = await getTasks('it', customerSelected.value, value);
@@ -51,8 +52,33 @@ export const useNewTimeEntry = (alertMessageState: ModalState) => {
 		taskSelected.value = '';
 	});
 
-	const insertNewTimeEntry = $(() => {
-		//TODO: POST /dev/api/task/task
+	const insertNewTimeEntry = $(async () => {
+		const savingResult = await saveTask(
+			'it',
+			customerSelected.value,
+			projectSelected.value,
+			taskSelected.value
+		);
+
+		if (!savingResult) {
+			// Show error
+			addEvent({
+				type: 'danger',
+				message: `Something went wrong`,
+			});
+		} else {
+			addEvent({
+				type: 'success',
+				message: tt('INSERT_NEW_PROJECT_SUCCESS_MESSAGE', {
+					customer: customerSelected.value,
+					project: projectSelected.value,
+					task: taskSelected.value,
+				}),
+				autoclose: true,
+			});
+			clearForm();
+		}
+
 		//TODO: local saving time entry
 	});
 

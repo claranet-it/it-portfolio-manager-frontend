@@ -1,5 +1,8 @@
+import { ToastEvent } from './event';
+
 export type AppStore = {
 	configuration: Configuration;
+	events: ToastEvent[];
 };
 
 export type Configuration = {

@@ -1,7 +1,7 @@
-import { Task } from 'vitest';
+import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 import { Customer } from '../models/customer';
 import { Project } from '../models/project';
-import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
+import { Task } from '../models/task';
 
 export const getTasks = async (
 	company: string = 'it',
@@ -9,3 +9,16 @@ export const getTasks = async (
 	project: Project
 ): Promise<Task[]> =>
 	getHttpResponse<Task[]>(`task/task?company=${company}&customer=${customer}&project=${project}`);
+
+export const saveTask = async (
+	company: string = 'it',
+	customer: Customer,
+	project: Project,
+	task: Task
+): Promise<boolean> =>
+	checkHttpResponseStatus(`task/task`, 200, 'POST', {
+		company: company,
+		customer: customer,
+		project: project,
+		task: task,
+	});

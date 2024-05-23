@@ -11,6 +11,7 @@
 	"effort": "Effort",
 	"confirmedEffort": "Confirmed",
 	"tentativeEffort": "Tentative",
+	"EFFORT_SUCCESSFULLY_UPDATED": "Effort successfully updated",
 	"note": "Note",
 	"empty": "Empty",
 	"gravatar": "Gravatar.com",
@@ -48,6 +49,7 @@
 	"add_new_project_label": "Add new project",
 	"INSERT_NEW_PROJECT_TITLE_MODAL": "Insert new project",
 	"INSERT_NEW_PROJECT_MESSAGE_MODAL": "Do you confirm the insertion of the new project?",
+	"INSERT_NEW_PROJECT_SUCCESS_MESSAGE": "#customer - #project - #task has been added",
 	"ACTION_CONFIRM": "Confirm",
 	"ACTION_CANCEL": "Cancel"
 }

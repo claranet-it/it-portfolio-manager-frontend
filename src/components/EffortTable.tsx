@@ -1,8 +1,10 @@
 import { $, Signal, component$, useSignal } from '@builder.io/qwik';
 import { t } from '../locale/labels';
-import { getEffort, putEffort } from '../services/tasks';
 import { getDateLabelFromMonthYear } from '../utils/dates';
-import { EffortMatrix, Month } from '../models/Month';
+import { Month } from '../models/month';
+import { putEffort, getEffort } from '../services/effort';
+import { useNotification } from '../hooks/useNotification';
+import { EffortMatrix } from '../models/effort';
 
 interface EffortTableInterface {
 	averageEffortByMonth: Readonly<
@@ -18,7 +20,6 @@ interface EffortTableInterface {
 		>
 	>;
 	filteredEffort: Readonly<Signal<EffortMatrix>>;
-	errorMessage: Signal<string>;
 }
 
 const getColor = (effort: number) => {
@@ -28,7 +29,9 @@ const getColor = (effort: number) => {
 };
 
 export const EffortTable = component$<EffortTableInterface>(
-	({ averageEffortByMonth, filteredEffort, errorMessage }) => {
+	({ averageEffortByMonth, filteredEffort }) => {
+		const { addEvent } = useNotification();
+
 		const effortSig = useSignal<EffortMatrix>([]);
 
 		const updateEffortField = $(
@@ -43,9 +46,17 @@ export const EffortTable = component$<EffortTableInterface>(
 			) => {
 				try {
 					await putEffort(uid, data, month);
+					addEvent({
+						message: t('EFFORT_SUCCESSFULLY_UPDATED'),
+						type: 'success',
+						autoclose: true,
+					});
 				} catch (error) {
 					const { message } = error as Error;
-					errorMessage.value = message;
+					addEvent({
+						message: message,
+						type: 'danger',
+					});
 				}
 				effortSig.value = await getEffort();
 			}
