@@ -14,13 +14,7 @@ export const AuthManager = component$(() => {
 							class='bg-transparent hover:bg-surface-20 inline-flex items-center border border-clara-red p-2.5 rounded-sm hover:shadow'
 							onClick$={authElement.onClick}
 						>
-							<img
-								alt={authElement.image.alt}
-								height='33'
-								src={authElement.image.src}
-								width='160'
-								class='w-20 h-auto'
-							/>
+							<p>{authElement.name}</p>
 						</button>
 					))}
 				</div>
