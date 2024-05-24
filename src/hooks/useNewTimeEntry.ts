@@ -4,7 +4,7 @@ import { t, tt } from '../locale/labels';
 import { getCustomers } from '../services/customer';
 import { getProjects } from '../services/projects';
 import { getTasks, saveTask } from '../services/tasks';
-import { Project } from '../models/project';
+import { Project } from '../models/Project';
 import { Customer } from '../models/customer';
 import { useNotification } from './useNotification';
 import { Task } from '../models/task';
