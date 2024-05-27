@@ -4,6 +4,8 @@ import { getIcon } from '../components/icons';
 import { NewProjectForm } from '../components/form/NewProjectForm';
 import { Modal } from '../components/Modal';
 import { ModalState } from '../models/modalState';
+import { TimeSheetTable } from '../components/TimeSheetTable';
+import { NewProjectModal } from '../components/modals/newProjectModal';
 
 export const Timesheet = component$(() => {
 	const newProjectCancelAction = $(() => {
@@ -17,29 +19,14 @@ export const Timesheet = component$(() => {
 	return (
 		<>
 			<div class='w-full px-3 pt-2.5 space-y-3'>
-				<div class='h-[500px]'></div>
-				<div class='w-full px-10 py-3 bg-surface-70 flex flex-row'>
-					<button
-						id='open-new-project-bt'
-						data-dropdown-toggle='form-new-project'
-						data-dropdown-placement='top'
-						type='button'
-					>
-						<div class='flex flex-row space-x-1 content text-clara-red'>
-							<span class='text-xl content-center'>{getIcon('Add')}</span>
-							<span class='text-base font-bold content-center'>
-								{t('add_new_project_label')}
-							</span>
-						</div>
-					</button>
-
-					<div id='form-new-project' class='hidden z-10'>
+				<TimeSheetTable>
+					<NewProjectModal q:slot='newProject'>
 						<NewProjectForm
 							alertMessageState={alertMessageState}
 							onCancel$={newProjectCancelAction}
 						/>
-					</div>
-				</div>
+					</NewProjectModal>
+				</TimeSheetTable>
 			</div>
 
 			<Modal state={alertMessageState} />

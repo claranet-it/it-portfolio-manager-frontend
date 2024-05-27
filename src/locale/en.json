@@ -50,6 +50,10 @@
 	"INSERT_NEW_PROJECT_TITLE_MODAL": "Insert new project",
 	"INSERT_NEW_PROJECT_MESSAGE_MODAL": "Do you confirm the insertion of the new project?",
 	"INSERT_NEW_PROJECT_SUCCESS_MESSAGE": "#customer - #project - #task has been added",
+	"TIMESHEET_TABLE_PROJECT_COL_LABLE": "Projects",
+	"TIMESHEET_TABLE_TOTAL_COL_LABLE": "Total on project",
+	"TIMESHEET_TABLE_ACTIONS_COL_LABLE": "Actions",
+	"TIMESHEET_TABLE_TOTAL_FOOTER_LABLE": "Total",
 	"ACTION_CONFIRM": "Confirm",
 	"ACTION_CANCEL": "Cancel"
 }

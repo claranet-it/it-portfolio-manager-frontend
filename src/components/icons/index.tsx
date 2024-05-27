@@ -1,6 +1,7 @@
 import { AWS } from './AWS';
 import { Android } from './Android';
 import { Ansible } from './Ansible';
+import { Bin } from './Bin';
 import { CSharp } from './CSharp';
 import { Clear } from './Clear';
 import { Close } from './Close';
@@ -22,6 +23,7 @@ import { Rust } from './Rust';
 import { Search } from './Search';
 import { Send } from './Send';
 import { TypeScript } from './TypeScript';
+import { V3Dots } from './V3Dots';
 import { Add } from './add';
 import { IOS } from './iOS';
 
@@ -83,6 +85,10 @@ export const getIcon = (skill: string) => {
 			return <Clear />;
 		case 'Search':
 			return <Search />;
+		case 'Bin':
+			return <Bin />;
+		case 'V3Dots':
+			return <V3Dots />;
 		default:
 			return <AWS />;
 	}
