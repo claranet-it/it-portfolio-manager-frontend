@@ -1,4 +1,5 @@
 import { ToastEvent } from './event';
+import { TimeEntry } from './timeEntry';
 
 export type AppStore = {
 	configuration: Configuration;

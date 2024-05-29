@@ -3,7 +3,7 @@ import { Customer } from './customer';
 import { Project } from './project';
 
 export type TimeEntry = {
-	date: Date;
+	date: string;
 	company: string;
 	customer: Customer;
 	project: Project;

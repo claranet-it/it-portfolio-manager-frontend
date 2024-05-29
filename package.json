@@ -38,6 +38,7 @@
     "@builder.io/qwik": "^1.4.0",
     "ccat-api": "^0.10.6",
     "chart.js": "^4.4.1",
+    "date-fns": "^3.6.0",
     "flowbite": "^2.3.0"
   },
   "lint-staged": {

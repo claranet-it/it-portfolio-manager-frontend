@@ -1,4 +1,4 @@
-import { $, sync$, useComputed$, useSignal } from '@builder.io/qwik';
+import { $, QRL, sync$, useComputed$, useSignal } from '@builder.io/qwik';
 import { ModalState } from '../models/modalState';
 import { t, tt } from '../locale/labels';
 import { getCustomers } from '../services/customer';
@@ -8,8 +8,14 @@ import { Project } from '../models/project';
 import { Customer } from '../models/customer';
 import { useNotification } from './useNotification';
 import { Task } from '../models/task';
+import { TimeEntry } from '../models/timeEntry';
+import { format } from 'date-fns';
 
-export const useNewTimeEntry = (alertMessageState: ModalState) => {
+export const useNewTimeEntry = (
+	localTimeEntries: TimeEntry[],
+	alertMessageState: ModalState,
+	closeForm?: QRL
+) => {
 	const { addEvent } = useNotification();
 
 	const dataCustomersSig = useComputed$(async () => {
@@ -67,6 +73,16 @@ export const useNewTimeEntry = (alertMessageState: ModalState) => {
 				message: `Something went wrong`,
 			});
 		} else {
+			// add timeEntry to global store
+			localTimeEntries.push({
+				date: format(new Date(), 'yyyy-MM-dd'),
+				company: 'it', //TODO: Replace with the company value
+				customer: customerSelected.value,
+				project: projectSelected.value,
+				task: taskSelected.value,
+				hours: 0,
+			});
+
 			addEvent({
 				type: 'success',
 				message: tt('INSERT_NEW_PROJECT_SUCCESS_MESSAGE', {
@@ -76,10 +92,10 @@ export const useNewTimeEntry = (alertMessageState: ModalState) => {
 				}),
 				autoclose: true,
 			});
-			clearForm();
-		}
 
-		//TODO: local saving time entry
+			clearForm();
+			closeForm && closeForm();
+		}
 	});
 
 	const newEntityExist = (): boolean => {
