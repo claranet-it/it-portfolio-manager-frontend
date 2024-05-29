@@ -8,6 +8,7 @@ import { getProvider, removeProvider, setProvider } from '../utils/provider';
 
 export const useAuth = () => {
 	const selectedProvider = useSignal<Provider | undefined>(undefined);
+	const isLoading = useSignal<boolean>(false);
 
 	const goToEffort = $(() => navigateTo('effort'));
 	const refreshPage = $(() => navigateTo('auth'));
@@ -32,7 +33,9 @@ export const useAuth = () => {
 	];
 
 	const handleBricklyToken = $(async (provider: Provider, providerToken: string) => {
+		isLoading.value = true;
 		const response = await getAuthValidation(provider, providerToken);
+		isLoading.value = false;
 
 		if (response.token) {
 			await setAuthToken(response.token);
@@ -124,5 +127,6 @@ export const useAuth = () => {
 
 	return {
 		authProviders,
+		isLoading,
 	};
 };
