@@ -1,24 +1,26 @@
-import { $, Slot, component$, useTask$, useVisibleTask$ } from '@builder.io/qwik';
+import { $, Signal, Slot, component$, useTask$ } from '@builder.io/qwik';
 import { t } from '../locale/labels';
 import { getIcon } from './icons';
 import { TimePicker } from './form/TimePicker';
-import { useGetTimeEntries } from '../hooks/useGetTimeEntries';
-import { TimeEntry } from '../models/timeEntry';
+import { Day, TimeEntry } from '../models/timeEntry';
+import { useGetTimeEntries } from '../hooks/timesheet/useGetTimeEntries';
 
 interface TimeSheetTableProps {
 	timeEntries: TimeEntry[];
+	days: Signal<Day[]>;
 }
 
-export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries }) => {
+export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, days }) => {
 	const { loadTimeEntries } = useGetTimeEntries(timeEntries);
 
-	useVisibleTask$(() => {
+	const NEW_PROJECT_ROW_COLSPAN = 10;
+
+	useTask$(() => {
 		loadTimeEntries();
 	});
 
 	return (
 		<div class='relative overflow-x-auto'>
-			<div class='h-[600px]'></div>
 			<table class='w-full'>
 				<thead class='text-xs text-gray-700 bg-surface-20 py-3'>
 					<tr>
@@ -27,12 +29,22 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries }) 
 								{t('TIMESHEET_TABLE_PROJECT_COL_LABLE')}
 							</h3>
 						</th>
-						<th scope='col' class='py-3 px-4 border border-surface-70'>
-							<div class='flex flex-col text-dark-grey'>
-								<h3 class='text-base font-bold'>Mon</h3>
-								<span class='text-xs font-normal uppercase'>apr 22</span>
-							</div>
-						</th>
+						{days.value.map((day, key) => {
+							return (
+								<th
+									key={key}
+									scope='col'
+									class='py-3 px-4 border border-surface-70'
+								>
+									<div class='flex flex-col text-dark-grey'>
+										<h3 class='text-base font-bold'>{day.name}</h3>
+										<span class='text-xs font-normal uppercase'>
+											{day.date.getDate()}
+										</span>
+									</div>
+								</th>
+							);
+						})}
 						<th scope='col' class='py-3 px-4 border border-surface-70'>
 							<h3 class='text-base font-bold'>
 								{t('TIMESHEET_TABLE_TOTAL_COL_LABLE')}
@@ -46,9 +58,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries }) 
 					</tr>
 				</thead>
 				<tbody>
-					{timeEntries.map((entry) => {
+					{timeEntries.map((entry, key) => {
 						return (
-							<tr class='bg-white border-b'>
+							<tr key={key} class='bg-white border-b'>
 								<th
 									scope='row'
 									class='px-6 py-4 font-medium text-left border border-surface-50 whitespace-wrap'
@@ -65,9 +77,13 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries }) 
 										</h4>
 									</div>
 								</th>
-								<td class='py-3 px-4 text-center border border-surface-50'>
-									<TimePicker onClick$={$(() => console.log('test'))} />
-								</td>
+								{days.value.map((day) => {
+									return (
+										<td class='py-3 px-4 text-center border border-surface-50'>
+											<TimePicker onClick$={$(() => console.log('test'))} />
+										</td>
+									);
+								})}
 								<td class='py-3 px-4 text-center border border-surface-50'>
 									<span class='text-base font-normal'>7:00</span>
 								</td>
@@ -80,7 +96,10 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries }) 
 				</tbody>
 				<tfoot>
 					<tr class='bg-surface-5'>
-						<td colSpan={4} class='px-6 py-4 border border-surface-50 '>
+						<td
+							colSpan={NEW_PROJECT_ROW_COLSPAN}
+							class='px-6 py-4 border border-surface-50 '
+						>
 							<Slot name='newProject' />
 						</td>
 					</tr>
@@ -93,9 +112,16 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries }) 
 								{t('TIMESHEET_TABLE_TOTAL_FOOTER_LABLE')}
 							</h3>
 						</th>
-						<td class='px-6 py-4 text-center border border-surface-50'>
-							<span class='text-base font-bold'>7:00</span>
-						</td>
+						{days.value.map((day, key) => {
+							return (
+								<td
+									key={key}
+									class='px-6 py-4 text-center border border-surface-50'
+								>
+									<span class='text-base font-bold'>7:00</span>
+								</td>
+							);
+						})}
 						<td class='px-6 py-4 text-right border border-surface-50' colSpan={2}>
 							<span class='text-base font-bold'>40:00</span>
 						</td>

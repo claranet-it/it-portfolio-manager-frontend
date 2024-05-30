@@ -3,8 +3,8 @@ import { Autocomplete } from './Autocomplete';
 import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
 import { ModalState } from '../../models/modalState';
-import { useNewTimeEntry } from '../../hooks/useNewTimeEntry';
 import { TimeEntry } from '../../models/timeEntry';
+import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
 
 interface NewProjectFormProp {
 	timeEntries: TimeEntry[];

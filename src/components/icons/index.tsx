@@ -1,8 +1,11 @@
 import { AWS } from './AWS';
 import { Android } from './Android';
 import { Ansible } from './Ansible';
+import { ArrowLeft } from './ArrowLeft';
+import { ArrowRight } from './ArrowRight';
 import { Bin } from './Bin';
 import { CSharp } from './CSharp';
+import { Calendar } from './Calendar';
 import { Clear } from './Clear';
 import { Close } from './Close';
 import { Design } from './Design';
@@ -89,6 +92,12 @@ export const getIcon = (skill: string) => {
 			return <Bin />;
 		case 'V3Dots':
 			return <V3Dots />;
+		case 'Calendar':
+			return <Calendar />;
+		case 'ArrowLeft':
+			return <ArrowLeft />;
+		case 'ArrowRight':
+			return <ArrowRight />;
 		default:
 			return <AWS />;
 	}

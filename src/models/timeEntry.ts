@@ -10,3 +10,8 @@ export type TimeEntry = {
 	task: Task;
 	hours: number;
 };
+
+export type Day = {
+	name: string;
+	date: Date;
+};
