@@ -1,6 +1,6 @@
 import { $, QRL, sync$, useComputed$, useSignal } from '@builder.io/qwik';
 import { format } from 'date-fns';
-import { tt } from '../../locale/labels';
+import { t, tt } from '../../locale/labels';
 import { Customer } from '../../models/customer';
 import { ModalState } from '../../models/modalState';
 import { Project } from '../../models/project';
