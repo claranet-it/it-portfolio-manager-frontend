@@ -1,9 +1,12 @@
-import { $, Signal, Slot, component$, useTask$ } from '@builder.io/qwik';
+import { $, Signal, Slot, component$, useStore, useTask$ } from '@builder.io/qwik';
 import { t } from '../locale/labels';
 import { getIcon } from './icons';
 import { TimePicker } from './form/TimePicker';
 import { Day, TimeEntry } from '../models/timeEntry';
 import { useGetTimeEntries } from '../hooks/timesheet/useGetTimeEntries';
+import { Modal } from './modals/Modal';
+import { ModalState } from '../models/modalState';
+import { format } from 'date-fns';
 
 interface TimeSheetTableProps {
 	timeEntries: TimeEntry[];
@@ -12,6 +15,9 @@ interface TimeSheetTableProps {
 
 export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, days }) => {
 	const { loadTimeEntries } = useGetTimeEntries(timeEntries);
+	const editTimeModal = useStore<ModalState>({
+		title: 'Edit time',
+	});
 
 	const NEW_PROJECT_ROW_COLSPAN = 10;
 
@@ -39,7 +45,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 									<div class='flex flex-col text-dark-grey'>
 										<h3 class='text-base font-bold'>{day.name}</h3>
 										<span class='text-xs font-normal uppercase'>
-											{day.date.getDate()}
+											{format(day.date, 'MMM d')}
 										</span>
 									</div>
 								</th>
@@ -77,10 +83,22 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 										</h4>
 									</div>
 								</th>
-								{days.value.map((day) => {
+								{days.value.map((day, key) => {
 									return (
 										<td class='py-3 px-4 text-center border border-surface-50'>
-											<TimePicker onClick$={$(() => console.log('test'))} />
+											<TimePicker
+												key={key}
+												onClick$={$(() => {
+													<Modal state={{ isVisible: true }}>
+														<p
+															q:slot='modalBody'
+															class='text-base leading-relaxed text-dark-gray'
+														>
+															{day.name}
+														</p>
+													</Modal>;
+												})}
+											/>
 										</td>
 									);
 								})}
@@ -128,6 +146,8 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 					</tr>
 				</tfoot>
 			</table>
+
+			<Modal state={editTimeModal}></Modal>
 		</div>
 	);
 });

@@ -1,6 +1,6 @@
 import { component$, $, useStore } from '@builder.io/qwik';
 import { NewProjectForm } from '../components/form/NewProjectForm';
-import { Modal } from '../components/Modal';
+import { Modal } from '../components/modals/Modal';
 import { ModalState } from '../models/modalState';
 import { TimeSheetTable } from '../components/TimeSheetTable';
 import { NewProjectModal } from '../components/modals/newProjectModal';
@@ -41,7 +41,11 @@ export const Timesheet = component$(() => {
 				</TimeSheetTable>
 			</div>
 
-			<Modal state={alertMessageState} />
+			<Modal state={alertMessageState}>
+				<p q:slot='modalBody' class='text-base leading-relaxed text-dark-gray'>
+					{alertMessageState.message}
+				</p>
+			</Modal>
 		</>
 	);
 });

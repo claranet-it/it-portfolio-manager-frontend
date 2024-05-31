@@ -1,7 +1,15 @@
-import { $, component$, useComputed$ } from '@builder.io/qwik';
-import { ModalState } from '../models/modalState';
-import { Button } from './Button';
-import { getIcon } from './icons';
+import {
+	$,
+	JSXChildren,
+	Slot,
+	component$,
+	useComputed$,
+	useSignal,
+	useVisibleTask$,
+} from '@builder.io/qwik';
+import { ModalState } from '../../models/modalState';
+import { Button } from '../Button';
+import { getIcon } from '../icons';
 
 interface ModalProps {
 	state: ModalState;
@@ -20,11 +28,14 @@ export const Modal = component$<ModalProps>(({ state }) => {
 
 	const onClose = $(() => {
 		state.isVisible = false;
+		state.body = undefined;
 	});
 
 	const isVisible = useComputed$(() => {
 		return state.isVisible ? 'fixed' : 'hidden';
 	});
+
+	const body = useSignal<JSXChildren>(<></>);
 
 	return (
 		<div
@@ -46,7 +57,8 @@ export const Modal = component$<ModalProps>(({ state }) => {
 				</div>
 				{/* <!-- Modal body --> */}
 				<div class='py-4 space-y-4 my-4 border-b border-gray-200'>
-					<p class='text-base leading-relaxed text-dark-gray'>{state.message}</p>
+					<Slot name='modalBody' />
+					{/* {body.value} */}
 				</div>
 				{/* <!-- Modal footer --> */}
 				<div class='flex items-center justify-end space-x-1'>
