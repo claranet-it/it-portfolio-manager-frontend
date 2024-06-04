@@ -1,6 +1,6 @@
 import { $, useSignal, useTask$ } from '@builder.io/qwik';
-import { Day } from '../../models/timeEntry';
 import moment from 'moment';
+import { Day } from '../../models/timeEntry';
 
 export const useGetTimeSheetDays = () => {
 	// INITIALIZZATION
@@ -39,6 +39,12 @@ export const useGetTimeSheetDays = () => {
 		to.value = _moment.endOf('isoWeek').toDate();
 		updateDays();
 	});
+
+	// const currentWeek = $(() => {
+	// 	from.value = _moment.clone().startOf('isoWeek').toDate();
+	// 	to.value = _moment.clone().endOf('isoWeek').toDate();
+	// 	updateDays();
+	// });
 
 	useTask$(() => {
 		updateDays();

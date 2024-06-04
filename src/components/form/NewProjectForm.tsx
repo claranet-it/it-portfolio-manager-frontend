@@ -1,10 +1,11 @@
-import { component$, $, QRL } from '@builder.io/qwik';
-import { Autocomplete } from './Autocomplete';
+import { $, QRL, component$ } from '@builder.io/qwik';
+import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
+import { t } from '../../locale/labels';
+import { ModalState } from '../../models/ModalState';
+import { TimeEntry } from '../../models/timeEntry';
 import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
-import { ModalState } from '../../models/modalState';
-import { TimeEntry } from '../../models/timeEntry';
-import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
+import { Autocomplete } from './Autocomplete';
 
 interface NewProjectFormProp {
 	timeEntries: TimeEntry[];
@@ -71,10 +72,12 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 
 						<div class='flex flex-row space-x-1 justify-end'>
 							{onCancel$ && (
-								<Button type='button' text='Cancel' onClick$={_onCancel} />
+								<Button variant={'outline'} onClick$={_onCancel}>
+									{t('ACTION_CANCEL')}
+								</Button>
 							)}
 
-							<Button type='submit' text='Insert' outline />
+							<Button type='submit'>{t('ACTION_INSERT')}</Button>
 						</div>
 					</form>
 				</div>

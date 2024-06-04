@@ -55,5 +55,7 @@
 	"TIMESHEET_TABLE_ACTIONS_COL_LABLE": "Actions",
 	"TIMESHEET_TABLE_TOTAL_FOOTER_LABLE": "Total",
 	"ACTION_CONFIRM": "Confirm",
-	"ACTION_CANCEL": "Cancel"
+	"ACTION_CANCEL": "Cancel",
+	"ACTION_INSERT": "Insert",
+	"THIS_WEEK": "This week"
 }

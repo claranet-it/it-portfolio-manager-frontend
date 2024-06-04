@@ -1,13 +1,5 @@
-import {
-	$,
-	JSXChildren,
-	Slot,
-	component$,
-	useComputed$,
-	useSignal,
-	useVisibleTask$,
-} from '@builder.io/qwik';
-import { ModalState } from '../../models/modalState';
+import { $, Slot, component$, useComputed$ } from '@builder.io/qwik';
+import { ModalState } from '../../models/ModalState';
 import { Button } from '../Button';
 import { getIcon } from '../icons';
 
@@ -35,8 +27,6 @@ export const Modal = component$<ModalProps>(({ state }) => {
 		return state.isVisible ? 'fixed' : 'hidden';
 	});
 
-	const body = useSignal<JSXChildren>(<></>);
-
 	return (
 		<div
 			id='default-modal'
@@ -62,10 +52,10 @@ export const Modal = component$<ModalProps>(({ state }) => {
 				</div>
 				{/* <!-- Modal footer --> */}
 				<div class='flex items-center justify-end space-x-1'>
-					{state.cancelLabel && <Button text={state.cancelLabel} onClick$={onCancel} />}
+					{state.cancelLabel && <Button onClick$={onCancel}>{state.cancelLabel}</Button>}
 
 					{state.confirmLabel && (
-						<Button text={state.confirmLabel} outline onClick$={onConfirm} />
+						<Button onClick$={onConfirm}>{state.confirmLabel}</Button>
 					)}
 				</div>
 			</div>

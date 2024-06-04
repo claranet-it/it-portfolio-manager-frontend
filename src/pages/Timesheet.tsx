@@ -1,12 +1,14 @@
-import { component$, $, useStore } from '@builder.io/qwik';
+import { $, component$, useStore } from '@builder.io/qwik';
+import { Button } from '../components/Button';
+import { TimeSheetTable } from '../components/TimeSheetTable';
+import { DataRange } from '../components/form/DataRange';
 import { NewProjectForm } from '../components/form/NewProjectForm';
 import { Modal } from '../components/modals/Modal';
-import { ModalState } from '../models/modalState';
-import { TimeSheetTable } from '../components/TimeSheetTable';
 import { NewProjectModal } from '../components/modals/newProjectModal';
-import { TimeEntry } from '../models/timeEntry';
-import { DataRange } from '../components/form/DataRange';
 import { useGetTimeSheetDays } from '../hooks/timesheet/useGetTimeSheetDays';
+import { t } from '../locale/labels';
+import { ModalState } from '../models/ModalState';
+import { TimeEntry } from '../models/timeEntry';
 
 export const Timesheet = component$(() => {
 	const newProjectCancelAction = $(() => {
@@ -28,6 +30,7 @@ export const Timesheet = component$(() => {
 					</div>
 
 					<DataRange from={from} to={to} nextAction={nextWeek} prevAction={prevWeek} />
+					<Button>{t('THIS_WEEK')}</Button>
 				</div>
 
 				<TimeSheetTable timeEntries={timeEntries} days={days}>
