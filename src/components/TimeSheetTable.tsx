@@ -1,12 +1,12 @@
 import { $, Signal, Slot, component$, useStore, useTask$ } from '@builder.io/qwik';
-import { t } from '../locale/labels';
-import { getIcon } from './icons';
-import { TimePicker } from './form/TimePicker';
-import { Day, TimeEntry } from '../models/timeEntry';
-import { useGetTimeEntries } from '../hooks/timesheet/useGetTimeEntries';
-import { Modal } from './modals/Modal';
-import { ModalState } from '../models/modalState';
 import { format } from 'date-fns';
+import { useGetTimeEntries } from '../hooks/timesheet/useGetTimeEntries';
+import { t } from '../locale/labels';
+import { ModalState } from '../models/ModalState';
+import { Day, TimeEntry } from '../models/timeEntry';
+import { TimePicker } from './form/TimePicker';
+import { getIcon } from './icons';
+import { Modal } from './modals/Modal';
 
 interface TimeSheetTableProps {
 	timeEntries: TimeEntry[];
@@ -73,13 +73,13 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 								>
 									<div class='flex flex-col'>
 										<h4 class='text-sm font-normal text-darkgray-500'>
-											Customer: Global Corporation Srl
+											{entry.customer}
 										</h4>
 										<h4 class='text-base font-bold text-dark-grey'>
-											CLT-0427/24 - Globex Corporation - SOOOOOOOOOOO
+											{entry.project}
 										</h4>
 										<h4 class='text-sm font-normal text-dark-gray-900'>
-											Task: IT21 24-30 April
+											{entry.task}
 										</h4>
 									</div>
 								</th>
