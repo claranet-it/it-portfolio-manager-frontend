@@ -1,12 +1,13 @@
 import {
-	component$,
-	useSignal,
 	$,
-	Signal,
 	QRL,
-	useVisibleTask$,
+	Signal,
+	component$,
 	useComputed$,
+	useSignal,
+	useVisibleTask$,
 } from '@builder.io/qwik';
+import { useDebounce } from '../../hooks/useDebounce';
 import { getIcon } from '../icons';
 
 interface AutocompleteInterface {
@@ -21,14 +22,15 @@ interface AutocompleteInterface {
 }
 
 export const Autocomplete = component$<AutocompleteInterface>(
-	({ id, label, selected, data, placeholder, disabled, required, onChange$ }) => {
+	({ id, label, selected, data, placeholder, disabled, required, onChange$, ...props }) => {
 		const AUTOCOMPLETE_FIELD_ID = `autocomplete-field-${id}`;
 		const AUTOCOMPLETE_RESULTS_ID = `autocomplete-results-${id}`;
 
 		const results = useSignal<string[]>([]);
+		const debounced = useDebounce(selected, 1000);
 
 		const showResults = $(() => {
-			const searchValue = selected.value.toLowerCase().trim();
+			const searchValue = debounced.value.toLowerCase().trim();
 			if (searchValue === '') results.value = [];
 			// data filtering
 			else
@@ -43,7 +45,7 @@ export const Autocomplete = component$<AutocompleteInterface>(
 		});
 
 		const onSelect = $((value: string) => {
-			selected.value = value;
+			debounced.value = value;
 			results.value = [];
 		});
 
@@ -64,8 +66,8 @@ export const Autocomplete = component$<AutocompleteInterface>(
 		});
 
 		useVisibleTask$(({ track }) => {
-			track(selected);
-			onChange$ && onChange$(selected.value);
+			track(debounced);
+			onChange$ && onChange$(debounced.value);
 		});
 
 		return (
