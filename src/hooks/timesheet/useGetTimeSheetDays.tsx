@@ -5,8 +5,8 @@ import { Day } from '../../models/timeEntry';
 export const useGetTimeSheetDays = () => {
 	// INITIALIZZATION
 	const _moment = moment();
-	const from = useSignal<Date>(_moment!!.startOf('isoWeek').toDate());
-	const to = useSignal<Date>(_moment!!.endOf('isoWeek').toDate());
+	const from = useSignal<Date>(_moment.startOf('isoWeek').toDate());
+	const to = useSignal<Date>(_moment.endOf('isoWeek').toDate());
 	const days = useSignal<Day[]>([]);
 
 	const updateDays = $(() => {
@@ -40,15 +40,16 @@ export const useGetTimeSheetDays = () => {
 		updateDays();
 	});
 
-	// const currentWeek = $(() => {
-	// 	from.value = _moment.clone().startOf('isoWeek').toDate();
-	// 	to.value = _moment.clone().endOf('isoWeek').toDate();
-	// 	updateDays();
-	// });
+	const currentWeek = $(() => {
+		const _moment = moment();
+		from.value = _moment.clone().startOf('isoWeek').toDate();
+		to.value = _moment.clone().endOf('isoWeek').toDate();
+		updateDays();
+	});
 
 	useTask$(() => {
 		updateDays();
 	});
 
-	return { days, from, to, prevWeek, nextWeek };
+	return { days, from, to, prevWeek, nextWeek, currentWeek };
 };

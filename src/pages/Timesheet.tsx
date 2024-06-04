@@ -19,7 +19,7 @@ export const Timesheet = component$(() => {
 	// Init statement to handler modal alert
 	const alertMessageState = useStore<ModalState>({});
 	const timeEntries = useStore<TimeEntry[]>([]);
-	const { days, from, to, nextWeek, prevWeek } = useGetTimeSheetDays();
+	const { days, from, to, nextWeek, prevWeek, currentWeek } = useGetTimeSheetDays();
 
 	return (
 		<>
@@ -33,7 +33,9 @@ export const Timesheet = component$(() => {
 							nextAction={nextWeek}
 							prevAction={prevWeek}
 						/>
-						<Button variant={'outline'}>{t('THIS_WEEK')}</Button>
+						<Button variant={'outline'} onClick$={currentWeek}>
+							{t('THIS_WEEK')}
+						</Button>
 					</div>
 				</div>
 
