@@ -24,13 +24,17 @@ export const Timesheet = component$(() => {
 	return (
 		<>
 			<div class='w-full px-3 pt-2.5 space-y-6'>
-				<div class='flex flex-row md:justify-between lg:justify-between'>
-					<div class='flex flex-col'>
-						<h1 class='text-2xl font-bold text-darkgray-900'>My timesheet</h1>
+				<div class='flex flex-row items-end justify-between'>
+					<h1 class='text-2xl font-bold text-darkgray-900'>My timesheet</h1>
+					<div class='flex items-end justify-end gap-2'>
+						<DataRange
+							from={from}
+							to={to}
+							nextAction={nextWeek}
+							prevAction={prevWeek}
+						/>
+						<Button variant={'outline'}>{t('THIS_WEEK')}</Button>
 					</div>
-
-					<DataRange from={from} to={to} nextAction={nextWeek} prevAction={prevWeek} />
-					<Button variant={'outline'}>{t('THIS_WEEK')}</Button>
 				</div>
 
 				<TimeSheetTable timeEntries={timeEntries} days={days}>
