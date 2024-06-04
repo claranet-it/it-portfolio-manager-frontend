@@ -30,7 +30,7 @@ export const Timesheet = component$(() => {
 					</div>
 
 					<DataRange from={from} to={to} nextAction={nextWeek} prevAction={prevWeek} />
-					<Button>{t('THIS_WEEK')}</Button>
+					<Button variant={'outline'}>{t('THIS_WEEK')}</Button>
 				</div>
 
 				<TimeSheetTable timeEntries={timeEntries} days={days}>

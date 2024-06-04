@@ -10,9 +10,7 @@ const buttonVariants = cva('py-2 px-4 rounded-md font-bold text-base', {
 			link: 'text-clara-red',
 		},
 		size: {
-			default: 'h-10 px-4 py-2',
-			sm: 'h-9 rounded-lg px-3',
-			lg: 'h-11 rounded-lg px-8',
+			default: 'h-11 px-6 py-2',
 		},
 	},
 	defaultVariants: {
