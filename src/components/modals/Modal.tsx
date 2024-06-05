@@ -52,7 +52,11 @@ export const Modal = component$<ModalProps>(({ state }) => {
 				</div>
 				{/* <!-- Modal footer --> */}
 				<div class='flex items-center justify-end space-x-1'>
-					{state.cancelLabel && <Button onClick$={onCancel}>{state.cancelLabel}</Button>}
+					{state.cancelLabel && (
+						<Button variant={'link'} onClick$={onCancel}>
+							{state.cancelLabel}
+						</Button>
+					)}
 
 					{state.confirmLabel && (
 						<Button onClick$={onConfirm}>{state.confirmLabel}</Button>

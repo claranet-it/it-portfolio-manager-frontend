@@ -1,15 +1,15 @@
 import { $, QRL, sync$, useComputed$, useSignal } from '@builder.io/qwik';
 import { format } from 'date-fns';
 import { t, tt } from '../../locale/labels';
+import { ModalState } from '../../models/ModalState';
 import { Customer } from '../../models/customer';
-import { ModalState } from '../../models/modalState';
 import { Project } from '../../models/project';
+import { Task } from '../../models/task';
 import { TimeEntry } from '../../models/timeEntry';
 import { getCustomers } from '../../services/customer';
 import { getProjects } from '../../services/projects';
 import { getTasks, saveTask } from '../../services/tasks';
 import { useNotification } from '../useNotification';
-import { Task } from '../../models/task';
 
 export const useNewTimeEntry = (
 	localTimeEntries: TimeEntry[],

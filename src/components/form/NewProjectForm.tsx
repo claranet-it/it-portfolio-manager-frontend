@@ -72,7 +72,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 
 						<div class='flex flex-row space-x-1 justify-end'>
 							{onCancel$ && (
-								<Button variant={'outline'} onClick$={_onCancel}>
+								<Button variant={'link'} onClick$={_onCancel}>
 									{t('ACTION_CANCEL')}
 								</Button>
 							)}
