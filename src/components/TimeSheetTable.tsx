@@ -78,13 +78,13 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 								>
 									<div class='flex flex-col'>
 										<h4 class='text-sm font-normal text-darkgray-500'>
-											{entry.customer}
+											{`${t('CLIENT')}: ` + entry.customer}
 										</h4>
 										<h4 class='text-base font-bold text-dark-grey'>
 											{entry.project}
 										</h4>
 										<h4 class='text-sm font-normal text-dark-gray-900'>
-											{entry.task}
+											{`${t('TASK')}: ` + entry.task}
 										</h4>
 									</div>
 								</th>
