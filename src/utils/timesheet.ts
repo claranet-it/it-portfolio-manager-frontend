@@ -13,6 +13,6 @@ export const getFormattedHours = (hours: number) => {
 	return moment(hours, 'HH').format('HH:mm');
 };
 
-export const getTotalHoursPerWeek = (hoursPerWeek: number[]) => {
-	return getTotalHours(hoursPerWeek);
+export const getTotalHoursPerRows = (hoursPerRows: number[]) => {
+	return getTotalHours(hoursPerRows);
 };

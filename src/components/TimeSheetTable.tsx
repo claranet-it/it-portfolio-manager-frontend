@@ -7,7 +7,7 @@ import { Day, TimeEntry } from '../models/timeEntry';
 import {
 	getFormattedHours,
 	getTotalHours,
-	getTotalHoursPerWeek,
+	getTotalHoursPerRows,
 	getlHoursPerProject,
 } from '../utils/timesheet';
 import { TimePicker } from './form/TimePicker';
@@ -36,7 +36,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 	};
 
 	const getTotal = () => {
-		return getFormattedHours(getTotalHoursPerWeek([5, 7, 8]));
+		return getFormattedHours(getTotalHoursPerRows([5, 7, 8]));
 	};
 
 	return (

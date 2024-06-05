@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	getFormattedHours,
 	getTotalHours,
-	getTotalHoursPerWeek,
+	getTotalHoursPerRows,
 	getlHoursPerProject,
 } from '../utils/timesheet';
 
@@ -46,8 +46,8 @@ describe('Hours Timesheet', () => {
 		expect(hours).equals('04:00');
 	});
 
-	it('Should get hours per week', async () => {
-		const hoursPerWeek = [
+	it('Should get hours per rows', async () => {
+		const hoursPerRowsMock = [
 			getTotalHours([0, 2, 0]), //2
 			getTotalHours([3, 2, 0]), //5
 			getTotalHours([0, 2, 0]), //2
@@ -58,7 +58,7 @@ describe('Hours Timesheet', () => {
 			//# 35
 		];
 
-		const hours = getTotalHoursPerWeek(hoursPerWeek);
+		const hours = getTotalHoursPerRows(hoursPerRowsMock);
 		expect(hours).equals(35);
 	});
 });
