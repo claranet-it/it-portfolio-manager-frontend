@@ -30,7 +30,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 			<table class='w-full'>
 				<thead class='text-xs text-gray-700 bg-surface-20 py-3'>
 					<tr>
-						<th scope='col' class='px-6 px-4 text-left border border-surface-70'>
+						<th scope='col' class='px-6 text-left border border-surface-70'>
 							<h3 class='text-base text-dark-grey'>
 								{t('TIMESHEET_TABLE_PROJECT_COL_LABLE')}
 							</h3>
@@ -130,7 +130,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 								{t('TIMESHEET_TABLE_TOTAL_FOOTER_LABLE')}
 							</h3>
 						</th>
-						{days.value.map((day, key) => {
+						{days.value.map((_, key) => {
 							return (
 								<td
 									key={key}
