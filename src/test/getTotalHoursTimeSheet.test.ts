@@ -46,6 +46,16 @@ describe('Hours Timesheet', () => {
 		expect(hours).equals('04:00');
 	});
 
+	it('Should string formatted in greather than 24', async () => {
+		const hours = getFormattedHours(35);
+		expect(hours).equals('35:00');
+	});
+
+	it('Should string formatted with comma', async () => {
+		const hours = getFormattedHours(35.5);
+		expect(hours).equals('35:50');
+	});
+
 	it('Should get hours per rows', async () => {
 		const hoursPerRowsMock = [
 			getTotalHours([0, 2, 0]), //2

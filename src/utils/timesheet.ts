@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { TimeEntry } from '../models/timeEntry';
 
 export const getTotalHours = (hours: number[]) => {
@@ -10,7 +9,20 @@ export const getlHoursPerProject = (timeEntries: TimeEntry[]) => {
 };
 
 export const getFormattedHours = (hours: number) => {
-	return moment(hours, 'HH').format('HH:mm');
+	let hoursPart = Math.floor(hours);
+	let minutesPart = ((hours - hoursPart) * 100) % 100;
+
+	let hour;
+	let minute;
+
+	if (hoursPart < 10) {
+		hour = `0${hoursPart}`;
+	} else hour = hoursPart;
+	if (minutesPart < 10) {
+		minute = `0${minutesPart}`;
+	} else minute = minutesPart;
+
+	return `${hour}:${minute}`;
 };
 
 export const getTotalHoursPerRows = (hoursPerRows: number[]) => {
