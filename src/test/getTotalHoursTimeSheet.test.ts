@@ -6,7 +6,7 @@ import {
 	getlHoursPerProject,
 } from '../utils/timesheet';
 
-describe('Total Hours Timesheet', () => {
+describe('Hours Timesheet', () => {
 	it('Should get hours per project', async () => {
 		const timeEnriesMock = [
 			{
