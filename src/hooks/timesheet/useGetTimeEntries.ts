@@ -1,23 +1,28 @@
-import { $, useSignal } from '@builder.io/qwik';
+import { $, Signal, useStore } from '@builder.io/qwik';
 import { TimeEntry } from '../../models/timeEntry';
 import { getTimeEntries } from '../../services/timeSheet';
+import { formatDateString } from '../../utils/dates';
 
 export const useGetTimeEntries = (localTimeEntry: TimeEntry[]) => {
-	const error = useSignal<string>('');
-	const loading = useSignal<boolean>(false);
-	const from = useSignal<string>('2024-06-03');
-	const to = useSignal<string>('2024-06-09');
+	const state = useStore({
+		dataTimeEntries: localTimeEntry,
+		error: '',
+		loading: false,
+	});
 
-	const loadTimeEntries = $(async () => {
+	const loadTimeEntries = $(async (from: Signal<Date>, to: Signal<Date>) => {
 		try {
-			loading.value = true;
-			localTimeEntry.push(...(await getTimeEntries(from.value, to.value)));
-			loading.value = false;
+			state.loading = true;
+			state.dataTimeEntries = await getTimeEntries(
+				formatDateString(from.value),
+				formatDateString(to.value)
+			);
+			state.loading = false;
 		} catch (err) {
-			error.value = (err as Error).message;
-			loading.value = false;
+			state.error = (err as Error).message;
+			state.loading = false;
 		}
 	});
 
-	return { loadTimeEntries, error, loading };
+	return { loadTimeEntries, state };
 };

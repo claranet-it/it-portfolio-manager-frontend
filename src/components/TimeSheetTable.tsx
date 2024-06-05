@@ -18,19 +18,25 @@ import { Modal } from './modals/Modal';
 interface TimeSheetTableProps {
 	timeEntries: TimeEntry[];
 	days: Signal<Day[]>;
+	from: Signal<Date>;
+	to: Signal<Date>;
 }
 
-export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, days }) => {
-	const { loadTimeEntries } = useGetTimeEntries(timeEntries);
+export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, days, from, to }) => {
+	const { loadTimeEntries, state } = useGetTimeEntries(timeEntries);
 	const editTimeModal = useStore<ModalState>({
 		title: 'Edit time',
 	});
 
 	const NEW_PROJECT_ROW_COLSPAN = 10;
 
-	useTask$(() => {
-		loadTimeEntries();
+	useTask$(async ({ track }) => {
+		track(() => from.value);
+		track(() => to.value);
+		await loadTimeEntries(from, to);
 	});
+
+	const { dataTimeEntries } = state;
 
 	const getTotalPerDay = (timeEntries: TimeEntry[]) => {
 		return getFormattedHours(getTotalHours(getlHoursPerProject(timeEntries)));
@@ -83,7 +89,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 					</tr>
 				</thead>
 				<tbody>
-					{timeEntries.map((entry, key) => {
+					{dataTimeEntries.map((entry, key) => {
 						return (
 							<tr key={key} class='bg-white border-b'>
 								<th
@@ -124,7 +130,12 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 								})}
 								<td class='py-3 px-4 text-center border border-surface-50'>
 									<span class='text-base font-normal'>
-										{getTotalPerProject(timeEntries.map((item) => item.hours))}
+										{getTotalPerProject(
+											days.value.map(
+												(_, dayIndex) =>
+													dataTimeEntries[dayIndex]?.hours ?? []
+											)
+										)}
 									</span>
 								</td>
 								<td class='py-3 px-4 text-center border border-surface-50'>
@@ -160,7 +171,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 								>
 									<span class='text-base font-bold'>
 										{getTotalPerDay(
-											timeEntries.filter(
+											dataTimeEntries.filter(
 												(t) => t.date === formatDateString(day.date)
 											)
 										)}
@@ -170,7 +181,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 						})}
 						<td class='px-6 py-4 text-right border border-surface-50' colSpan={2}>
 							<span class='text-base font-bold'>
-								{getTotal(timeEntries.map((item) => item.hours))}
+								{getTotal(dataTimeEntries.map((item) => item.hours))}
 							</span>
 						</td>
 					</tr>

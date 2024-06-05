@@ -39,7 +39,7 @@ export const Timesheet = component$(() => {
 					</div>
 				</div>
 
-				<TimeSheetTable timeEntries={timeEntries} days={days}>
+				<TimeSheetTable timeEntries={timeEntries} days={days} from={from} to={to}>
 					<NewProjectModal q:slot='newProject'>
 						<NewProjectForm
 							timeEntries={timeEntries}
