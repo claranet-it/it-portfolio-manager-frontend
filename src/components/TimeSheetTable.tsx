@@ -4,7 +4,12 @@ import { useGetTimeEntries } from '../hooks/timesheet/useGetTimeEntries';
 import { t } from '../locale/labels';
 import { ModalState } from '../models/ModalState';
 import { Day, TimeEntry } from '../models/timeEntry';
-import { getFormattedHours, getTotalHoursPerDay, getlHoursPerProject } from '../utils/timesheet';
+import {
+	getFormattedHours,
+	getTotalHours,
+	getTotalHoursPerWeek,
+	getlHoursPerProject,
+} from '../utils/timesheet';
 import { TimePicker } from './form/TimePicker';
 import { getIcon } from './icons';
 import { Modal } from './modals/Modal';
@@ -27,7 +32,11 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 	});
 
 	const getTotalPerDay = () => {
-		return getFormattedHours(getTotalHoursPerDay(getlHoursPerProject(timeEntries)));
+		return getFormattedHours(getTotalHours(getlHoursPerProject(timeEntries)));
+	};
+
+	const getTotal = () => {
+		return getFormattedHours(getTotalHoursPerWeek([5, 7, 8]));
 	};
 
 	return (
@@ -146,7 +155,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 							);
 						})}
 						<td class='px-6 py-4 text-right border border-surface-50' colSpan={2}>
-							<span class='text-base font-bold'>40:00</span>
+							<span class='text-base font-bold'>{getTotal()}</span>
 						</td>
 					</tr>
 				</tfoot>
