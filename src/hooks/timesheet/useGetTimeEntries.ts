@@ -1,12 +1,12 @@
 import { $, useSignal } from '@builder.io/qwik';
-import { getTimeEntries } from '../../services/timeSheet';
 import { TimeEntry } from '../../models/timeEntry';
+import { getTimeEntries } from '../../services/timeSheet';
 
 export const useGetTimeEntries = (localTimeEntry: TimeEntry[]) => {
 	const error = useSignal<string>('');
 	const loading = useSignal<boolean>(false);
-	const from = useSignal<string>('2024-01-02');
-	const to = useSignal<string>('2024-08-02');
+	const from = useSignal<string>('2024-06-03');
+	const to = useSignal<string>('2024-06-09');
 
 	const loadTimeEntries = $(async () => {
 		try {

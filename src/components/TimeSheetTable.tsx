@@ -4,6 +4,7 @@ import { useGetTimeEntries } from '../hooks/timesheet/useGetTimeEntries';
 import { t } from '../locale/labels';
 import { ModalState } from '../models/ModalState';
 import { Day, TimeEntry } from '../models/timeEntry';
+import { formatDateString } from '../utils/dates';
 import {
 	getFormattedHours,
 	getTotalHours,
@@ -31,12 +32,16 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 		loadTimeEntries();
 	});
 
-	const getTotalPerDay = () => {
+	const getTotalPerDay = (timeEntries: TimeEntry[]) => {
 		return getFormattedHours(getTotalHours(getlHoursPerProject(timeEntries)));
 	};
 
-	const getTotal = () => {
-		return getFormattedHours(getTotalHoursPerRows([5, 7, 8]));
+	const getTotal = (hours: number[]) => {
+		return getFormattedHours(getTotalHoursPerRows(hours));
+	};
+
+	const getTotalPerProject = (hours: number[]) => {
+		return getFormattedHours(getTotalHoursPerRows(hours));
 	};
 
 	return (
@@ -102,6 +107,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 										<td class='py-3 px-4 text-center border border-surface-50'>
 											<TimePicker
 												key={key}
+												onChange$={() => {}}
 												onClick$={$(() => {
 													<Modal state={{ isVisible: true }}>
 														<p
@@ -117,7 +123,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 									);
 								})}
 								<td class='py-3 px-4 text-center border border-surface-50'>
-									<span class='text-base font-normal'>7:00</span>
+									<span class='text-base font-normal'>
+										{getTotalPerProject(timeEntries.map((item) => item.hours))}
+									</span>
 								</td>
 								<td class='py-3 px-4 text-center border border-surface-50'>
 									<button>{getIcon('Bin')}</button>
@@ -144,18 +152,26 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 								{t('TIMESHEET_TABLE_TOTAL_FOOTER_LABLE')}
 							</h3>
 						</th>
-						{days.value.map((_, key) => {
+						{days.value.map((day, key) => {
 							return (
 								<td
 									key={key}
 									class='px-6 py-4 text-center border border-surface-50'
 								>
-									<span class='text-base font-bold'>{getTotalPerDay()}</span>
+									<span class='text-base font-bold'>
+										{getTotalPerDay(
+											timeEntries.filter(
+												(t) => t.date === formatDateString(day.date)
+											)
+										)}
+									</span>
 								</td>
 							);
 						})}
 						<td class='px-6 py-4 text-right border border-surface-50' colSpan={2}>
-							<span class='text-base font-bold'>{getTotal()}</span>
+							<span class='text-base font-bold'>
+								{getTotal(timeEntries.map((item) => item.hours))}
+							</span>
 						</td>
 					</tr>
 				</tfoot>

@@ -4,12 +4,13 @@ import { getIcon } from '../icons';
 interface TimePickerProps {
 	bindValue?: Signal<string> | undefined;
 	onClick$?: QRL;
+	onChange$?: QRL;
 	required?: boolean;
 	disabled?: boolean;
 }
 
 export const TimePicker = component$<TimePickerProps>(
-	({ bindValue = useSignal('00:00'), onClick$, required, disabled }) => {
+	({ bindValue = useSignal('00:00'), onClick$, onChange$, required, disabled }) => {
 		const style = useComputed$(() => {
 			return disabled
 				? 'bg-darkgray-50 text-darkgray-300 border-darkgray-100'
@@ -31,7 +32,9 @@ export const TimePicker = component$<TimePickerProps>(
 					id='time'
 					class={`block w-full py-3 px-3 leading-none border text-sm rounded-md ${style.value} mr-1.5`}
 					min='00:00'
+					value='08:56'
 					bind:value={bindValue}
+					onChange$={onChange$}
 					disabled={disabled}
 					required={required}
 				/>
