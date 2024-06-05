@@ -22,7 +22,7 @@ interface AutocompleteInterface {
 }
 
 export const Autocomplete = component$<AutocompleteInterface>(
-	({ id, label, selected, data, placeholder, disabled, required, onChange$, ...props }) => {
+	({ id, label, selected, data, placeholder, disabled, required, onChange$ }) => {
 		const AUTOCOMPLETE_FIELD_ID = `autocomplete-field-${id}`;
 		const AUTOCOMPLETE_RESULTS_ID = `autocomplete-results-${id}`;
 
