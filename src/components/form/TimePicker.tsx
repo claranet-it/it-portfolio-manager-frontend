@@ -32,7 +32,6 @@ export const TimePicker = component$<TimePickerProps>(
 					id='time'
 					class={`block w-full py-3 px-3 leading-none border text-sm rounded-md ${style.value} mr-1.5`}
 					min='00:00'
-					value='08:56'
 					bind:value={bindValue}
 					onChange$={onChange$}
 					disabled={disabled}

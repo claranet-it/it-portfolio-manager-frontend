@@ -1,4 +1,4 @@
-import { $, Signal, Slot, component$, useStore, useTask$ } from '@builder.io/qwik';
+import { $, Signal, Slot, component$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
 import { format } from 'date-fns';
 import { useGetTimeEntries } from '../hooks/timesheet/useGetTimeEntries';
 import { t } from '../locale/labels';
@@ -108,12 +108,20 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, da
 										</h4>
 									</div>
 								</th>
+
 								{days.value.map((day, key) => {
+									const formattedDate = formatDateString(day.date);
+									const isDateMatch = formattedDate === entry.date;
 									return (
 										<td class='py-3 px-4 text-center border border-surface-50'>
 											<TimePicker
 												key={key}
 												onChange$={() => {}}
+												bindValue={useSignal(
+													isDateMatch
+														? getFormattedHours(entry.hours)
+														: getFormattedHours(0)
+												)}
 												onClick$={$(() => {
 													<Modal state={{ isVisible: true }}>
 														<p
