@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-	getFormattedHours,
-	getTotalHoursPerDay,
-	getlHoursPerProject,
-} from '../components/TimeSheetTable';
+import { getFormattedHours, getTotalHoursPerDay, getlHoursPerProject } from '../utils/timesheet';
 
 describe('Total Hours Timesheet', () => {
 	it('Should get hours per project', async () => {

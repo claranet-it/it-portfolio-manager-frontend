@@ -1,10 +1,10 @@
 import { $, Signal, Slot, component$, useStore, useTask$ } from '@builder.io/qwik';
 import { format } from 'date-fns';
-import moment from 'moment';
 import { useGetTimeEntries } from '../hooks/timesheet/useGetTimeEntries';
 import { t } from '../locale/labels';
 import { ModalState } from '../models/ModalState';
 import { Day, TimeEntry } from '../models/timeEntry';
+import { getFormattedHours, getTotalHoursPerDay, getlHoursPerProject } from '../utils/timesheet';
 import { TimePicker } from './form/TimePicker';
 import { getIcon } from './icons';
 import { Modal } from './modals/Modal';
@@ -13,18 +13,6 @@ interface TimeSheetTableProps {
 	timeEntries: TimeEntry[];
 	days: Signal<Day[]>;
 }
-
-export const getTotalHoursPerDay = (hours: number[]) => {
-	return hours.length > 0 ? hours.reduce((total, amount) => total + amount) : 0;
-};
-
-export const getlHoursPerProject = (timeEntries: TimeEntry[]) => {
-	return timeEntries.map((item) => item.hours);
-};
-
-export const getFormattedHours = (hours: number) => {
-	return moment(hours, 'HH').format('HH:mm');
-};
 
 export const TimeSheetTable = component$<TimeSheetTableProps>(({ timeEntries, days }) => {
 	const { loadTimeEntries } = useGetTimeEntries(timeEntries);
