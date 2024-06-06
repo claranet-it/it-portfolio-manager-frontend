@@ -17,18 +17,10 @@ export const useAuth = () => {
 		{
 			name: 'Claranet',
 			onClick: $(() => (selectedProvider.value = 'Claranet')),
-			image: {
-				alt: 'Claranet logo',
-				src: '/logo.webp',
-			},
 		},
 		{
 			name: 'Google',
 			onClick: $(() => (selectedProvider.value = 'Google')),
-			image: {
-				alt: 'Google logo',
-				src: '/logo.webp',
-			},
 		},
 	];
 

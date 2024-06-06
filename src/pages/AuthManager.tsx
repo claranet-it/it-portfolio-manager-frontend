@@ -1,16 +1,20 @@
 import { component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { useAuth } from '../hooks/useAuth';
 import { Toast } from '../components/Toast';
+import { BricklyLogo } from '../components/icons/BricklyLogo';
+import { BricklyNaming } from '../components/icons/BricklyNaming';
+import { getIcon } from '../components/icons';
+import { t } from '../locale/labels';
+
+const messageCodes = ['401'] as const;
+const messages: Record<(typeof messageCodes)[number], string> = {
+	'401': t('UNAUTHORIZED'),
+};
 
 export const AuthManager = component$(() => {
 	const { authProviders, isLoading } = useAuth();
 
 	const issueMessage = useSignal<string | undefined>(undefined);
-
-	const messageCodes = ['401'] as const;
-	const messages: Record<(typeof messageCodes)[number], string> = {
-		'401': 'Unauthorized, please try again',
-	};
 
 	useTask$(() => {
 		const url = new URL(window.location.href);
@@ -22,7 +26,7 @@ export const AuthManager = component$(() => {
 	});
 
 	return (
-		<div class='h-screen flex items-center justify-center bg-dark-grey'>
+		<div class='h-screen flex flex-col items-center justify-center bg-white-100'>
 			<div class='fixed top-0 pr-2 pt-2 flex flex-col justify-end items-end space-y-2'>
 				{issueMessage.value && (
 					<Toast
@@ -33,18 +37,32 @@ export const AuthManager = component$(() => {
 					/>
 				)}
 			</div>
-			<div class='w-max flex flex-col justify-evenly border border-clara-red p-10 rounded-md shadow bg-white'>
-				<h1 class='text-2xl font-bold text-darkgray-900 text-center'>Brickly Login</h1>
-				<div class='flex flex-row gap-2.5 mt-3'>
+
+			<div
+				class={`${isLoading.value ? 'animate-pulse' : ''} w-[360px] h-[360px] flex flex-col justify-evenly p-10 rounded-[4px] bg-clara-red`}
+			>
+				<div class='flex flex-row items-center justify-center gap-[28px] text-white-100'>
+					<BricklyLogo />
+					<BricklyNaming />
+				</div>
+				<div class='flex w-[200px] mx-auto flex-col gap-[12px] mt-3'>
+					<span class='relative text-white-100 text-base font-bold text-center'>
+						{t('LOGIN_TITLE')}
+					</span>
 					{authProviders.map((authElement) => (
 						<button
-							class='bg-transparent hover:bg-surface-20 inline-flex items-center border border-clara-red p-2.5 rounded-sm hover:shadow'
+							class='bg-surface-40 h-[56px] enabled:hover:bg-surface-40/[0.8] flex items-center justify-center p-2.5 rounded-[4px]'
 							onClick$={authElement.onClick}
+							disabled={isLoading.value}
 						>
-							<p>{authElement.name}</p>
+							{getIcon(authElement.name)}
 						</button>
 					))}
 				</div>
+			</div>
+
+			<div class='h-[36px] bg-white-100 mt-[12px] text-sm font-normal text-dark-grey'>
+				{t('CLARANET_CREDITS')}
 			</div>
 		</div>
 	);

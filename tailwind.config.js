@@ -21,6 +21,7 @@ module.exports = {
       'white-100': '#FFFFFF',
       'surface-5': '#FAFBFB',
       'surface-20': '#F0F3F4',
+      'surface-40': '#E6EBED',
       'surface-50': '#E1E6EA',
       'surface-70': '#D7DEE3',
       'surface-90': '#CDD6DC',

@@ -34,7 +34,7 @@ export const AppContext = createContextId<AppStore>('AppStore');
 
 const initialState: AppStore = {
 	configuration: {
-		company: '',
+		company: 'it',
 		crews: [],
 		skills: {},
 		scoreRange: {
