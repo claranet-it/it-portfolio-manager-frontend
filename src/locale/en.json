@@ -51,5 +51,8 @@
 	"INSERT_NEW_PROJECT_MESSAGE_MODAL": "Do you confirm the insertion of the new project?",
 	"INSERT_NEW_PROJECT_SUCCESS_MESSAGE": "#customer - #project - #task has been added",
 	"ACTION_CONFIRM": "Confirm",
-	"ACTION_CANCEL": "Cancel"
+	"ACTION_CANCEL": "Cancel",
+	"CLARANET_CREDITS": "Credits by Claranet Srl",
+	"LOGIN_TITLE": "Login with",
+	"UNAUTHORIZED": "Unauthorized, please try again"
 }

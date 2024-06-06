@@ -1,7 +1,10 @@
 import { AWS } from './AWS';
 import { Android } from './Android';
 import { Ansible } from './Ansible';
+import { BricklyLogo } from './BricklyLogo';
+import { BricklyNaming } from './BricklyNaming';
 import { CSharp } from './CSharp';
+import { Claranet } from './Claranet';
 import { Clear } from './Clear';
 import { Close } from './Close';
 import { Design } from './Design';
@@ -10,6 +13,7 @@ import { Elixir } from './Elixir';
 import { Exit } from './Exit';
 import { Expand } from './Expand';
 import { Flutter } from './Flutter';
+import { Google } from './Google';
 import { JavaScript } from './JavaScript';
 import { Kotlin } from './Kotlin';
 import { Kubernetes } from './Kubernetes';
@@ -83,6 +87,14 @@ export const getIcon = (skill: string) => {
 			return <Clear />;
 		case 'Search':
 			return <Search />;
+		case 'Claranet':
+			return <Claranet />;
+		case 'Google':
+			return <Google />;
+		case 'BricklyLogo':
+			return <BricklyLogo />;
+		case 'BricklyNaming':
+			return <BricklyNaming />;
 		default:
 			return <AWS />;
 	}
