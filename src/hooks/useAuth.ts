@@ -10,7 +10,7 @@ export const useAuth = () => {
 	const selectedProvider = useSignal<Provider | undefined>(undefined);
 	const isLoading = useSignal<boolean>(false);
 
-	const goToEffort = $(() => navigateTo('effort'));
+	const goToTimesheet = $(() => navigateTo('timesheet'));
 	const refreshPage = $(() => navigateTo('auth'));
 
 	const authProviders: AuthProviderButton[] = [
@@ -32,7 +32,7 @@ export const useAuth = () => {
 		if (response.token) {
 			await setAuthToken(response.token);
 
-			goToEffort();
+			goToTimesheet();
 		} else {
 			refreshPage();
 		}
@@ -112,7 +112,7 @@ export const useAuth = () => {
 				}
 			} else {
 				await removeProvider();
-				goToEffort();
+				goToTimesheet();
 			}
 		}
 	});
