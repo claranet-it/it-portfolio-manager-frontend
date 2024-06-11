@@ -59,5 +59,8 @@
 	"ACTION_INSERT": "Insert",
 	"THIS_WEEK": "This week",
 	"CLIENT": "Client",
-	"TASK": "Task"
+	"TASK": "Task",
+	"CLARANET_CREDITS": "Credits by Claranet Srl",
+	"LOGIN_TITLE": "Login with",
+	"UNAUTHORIZED": "Unauthorized, please try again"
 }
