@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { format } from 'date-fns';
 
 const getDateFromMonthYear = (monthYear: string): Date => {
 	const [month, year] = monthYear.split('_');
@@ -11,6 +11,6 @@ export const getDateLabelFromMonthYear = (monthYear: string): string =>
 		year: 'numeric',
 	});
 
-export const formatDateString = (date: Date | string): string => {
-	return moment(date).format('yyyy-MM-DD');
+export const formatDateString = (date: Date): string => {
+	return format(date, 'yyyy-MM-dd');
 };

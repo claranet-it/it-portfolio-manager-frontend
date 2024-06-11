@@ -27,7 +27,7 @@ export const Autocomplete = component$<AutocompleteInterface>(
 		const AUTOCOMPLETE_RESULTS_ID = `autocomplete-results-${id}`;
 
 		const results = useSignal<string[]>([]);
-		const debounced = useDebounce(selected, 1000);
+		const debounced = useDebounce(selected, 400);
 
 		const showResults = $(() => {
 			const searchValue = debounced.value.toLowerCase().trim();
@@ -46,6 +46,7 @@ export const Autocomplete = component$<AutocompleteInterface>(
 
 		const onSelect = $((value: string) => {
 			debounced.value = value;
+			selected.value = value;
 			results.value = [];
 		});
 

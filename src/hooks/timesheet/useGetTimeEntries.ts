@@ -1,11 +1,12 @@
-import { $, Signal, useStore } from '@builder.io/qwik';
+import { $, Signal, useStore, useVisibleTask$ } from '@builder.io/qwik';
+
 import { TimeEntry } from '../../models/timeEntry';
 import { getTimeEntries } from '../../services/timeSheet';
 import { formatDateString } from '../../utils/dates';
 
-export const useGetTimeEntries = (localTimeEntry: TimeEntry[]) => {
+export const useGetTimeEntries = (localTimeEntries: TimeEntry[]) => {
 	const state = useStore({
-		dataTimeEntries: localTimeEntry,
+		dataTimeEntries: localTimeEntries,
 		error: '',
 		loading: false,
 	});
@@ -22,6 +23,11 @@ export const useGetTimeEntries = (localTimeEntry: TimeEntry[]) => {
 			state.error = (err as Error).message;
 			state.loading = false;
 		}
+	});
+
+	useVisibleTask$(({ track }) => {
+		track(localTimeEntries);
+		state.dataTimeEntries.push(...localTimeEntries);
 	});
 
 	return { loadTimeEntries, state };
