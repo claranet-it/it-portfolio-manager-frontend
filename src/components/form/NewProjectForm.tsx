@@ -8,13 +8,13 @@ import { Button } from '../Button';
 import { Autocomplete } from './Autocomplete';
 
 interface NewProjectFormProp {
-	timeEntries: TimeEntry[];
+	timeEntry: TimeEntry;
 	alertMessageState: ModalState;
 	onCancel$?: QRL;
 }
 
 export const NewProjectForm = component$<NewProjectFormProp>(
-	({ timeEntries, alertMessageState, onCancel$ }) => {
+	({ timeEntry, alertMessageState, onCancel$ }) => {
 		const {
 			dataCustomersSig,
 			dataProjectsSig,
@@ -28,7 +28,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			onChangeProject,
 			clearForm,
 			handleSubmit,
-		} = useNewTimeEntry(timeEntries, alertMessageState, onCancel$);
+		} = useNewTimeEntry(timeEntry, alertMessageState, onCancel$);
 
 		const _onCancel = $(() => {
 			clearForm();

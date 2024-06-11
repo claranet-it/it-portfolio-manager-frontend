@@ -4,9 +4,9 @@ import { TimeEntry } from '../../models/timeEntry';
 import { getTimeEntries } from '../../services/timeSheet';
 import { formatDateString } from '../../utils/dates';
 
-export const useGetTimeEntries = (localTimeEntries: TimeEntry[]) => {
+export const useGetTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 	const state = useStore({
-		dataTimeEntries: localTimeEntries,
+		dataTimeEntries: [] as TimeEntry[],
 		error: '',
 		loading: false,
 	});
@@ -26,8 +26,8 @@ export const useGetTimeEntries = (localTimeEntries: TimeEntry[]) => {
 	});
 
 	useVisibleTask$(({ track }) => {
-		track(localTimeEntries);
-		state.dataTimeEntries.push(...localTimeEntries);
+		track(newTimeEntry);
+		newTimeEntry.value && state.dataTimeEntries.push(newTimeEntry.value);
 	});
 
 	return { loadTimeEntries, state };

@@ -1,4 +1,4 @@
-import { $, QRL, sync$, useComputed$, useSignal } from '@builder.io/qwik';
+import { $, QRL, Signal, sync$, useComputed$, useSignal } from '@builder.io/qwik';
 import { format } from 'date-fns';
 import { t, tt } from '../../locale/labels';
 import { ModalState } from '../../models/ModalState';
@@ -12,7 +12,7 @@ import { getTasks, saveTask } from '../../services/tasks';
 import { useNotification } from '../useNotification';
 
 export const useNewTimeEntry = (
-	localTimeEntries: TimeEntry[],
+	newTimeEntry: Signal<TimeEntry | undefined>,
 	alertMessageState: ModalState,
 	closeForm?: QRL
 ) => {
@@ -73,15 +73,15 @@ export const useNewTimeEntry = (
 				message: `Something went wrong`,
 			});
 		} else {
-			// add timeEntry to global store
-			localTimeEntries.push({
+			// add new timeEntry to store
+			newTimeEntry.value = {
 				date: format(new Date(), 'yyyy-MM-dd'),
 				company: 'it', //TODO: Replace with the company value
 				customer: customerSelected.value,
 				project: projectSelected.value,
 				task: taskSelected.value,
 				hours: 0,
-			});
+			};
 
 			addEvent({
 				type: 'success',

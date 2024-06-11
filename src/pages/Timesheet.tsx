@@ -1,4 +1,4 @@
-import { $, component$, useStore } from '@builder.io/qwik';
+import { $, component$, useSignal, useStore } from '@builder.io/qwik';
 import { Button } from '../components/Button';
 import { TimeSheetTable } from '../components/TimeSheetTable';
 import { DataRange } from '../components/form/DataRange';
@@ -18,7 +18,7 @@ export const Timesheet = component$(() => {
 
 	// Init statement to handler modal alert
 	const alertMessageState = useStore<ModalState>({});
-	const timeEntries = useStore<TimeEntry[]>([]);
+	const newTimeEntry = useSignal<TimeEntry>();
 	const { days, from, to, nextWeek, prevWeek, currentWeek } = useGetTimeSheetDays();
 
 	return (
@@ -39,10 +39,10 @@ export const Timesheet = component$(() => {
 					</div>
 				</div>
 
-				<TimeSheetTable timeEntries={timeEntries} days={days} from={from} to={to}>
+				<TimeSheetTable newTimeEntry={newTimeEntry} days={days} from={from} to={to}>
 					<NewProjectModal q:slot='newProject'>
 						<NewProjectForm
-							timeEntries={timeEntries}
+							timeEntry={newTimeEntry}
 							alertMessageState={alertMessageState}
 							onCancel$={newProjectCancelAction}
 						/>
