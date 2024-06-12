@@ -1,6 +1,6 @@
-import { Task } from './task';
-import { Customer } from './customer';
-import { Project } from './project';
+import { Customer } from './Customer';
+import { Project } from './Project';
+import { Task } from './Task';
 
 export type TimeEntry = {
 	date: string;
@@ -10,6 +10,8 @@ export type TimeEntry = {
 	task: Task;
 	hours: number;
 };
+
+export type TimeEntryObject = Omit<TimeEntry, 'company'>;
 
 export type Day = {
 	name: string;

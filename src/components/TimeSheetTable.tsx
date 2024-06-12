@@ -1,6 +1,6 @@
 import { $, Signal, Slot, component$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
 import { format } from 'date-fns';
-import { useGetTimeEntries } from '../hooks/timesheet/useGetTimeEntries';
+import { useTimeEntries } from '../hooks/timesheet/useTimeEntries';
 import { t } from '../locale/labels';
 import { ModalState } from '../models/ModalState';
 import { Day, TimeEntry } from '../models/timeEntry';
@@ -24,12 +24,25 @@ interface TimeSheetTableProps {
 
 export const TimeSheetTable = component$<TimeSheetTableProps>(
 	({ newTimeEntry, days, from, to }) => {
-		const { loadTimeEntries, state } = useGetTimeEntries(newTimeEntry);
+		const { loadTimeEntries, state, updateTimeEntries } = useTimeEntries(newTimeEntry);
 		const editTimeModal = useStore<ModalState>({
 			title: 'Edit time',
 		});
 
-		const NEW_PROJECT_ROW_COLSPAN = 10;
+		//const NEW_PROJECT_ROW_COLSPAN = 10;
+
+		const timeEntriesState = useStore<Record<string, Record<string, number>>>({});
+
+		const handleTimeChange = $((timeEntryObject: TimeEntry) => {
+			const { project, date, hours } = timeEntryObject;
+
+			if (!timeEntriesState[project]) {
+				timeEntriesState[project] = {};
+			}
+			timeEntriesState[project][date] = hours;
+
+			updateTimeEntries(timeEntryObject);
+		});
 
 		useTask$(async ({ track }) => {
 			track(() => from.value);
@@ -61,22 +74,20 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 									{t('TIMESHEET_TABLE_PROJECT_COL_LABLE')}
 								</h3>
 							</th>
-							{days.value.map((day, key) => {
-								return (
-									<th
-										key={key}
-										scope='col'
-										class='py-3 px-4 border border-surface-70'
-									>
-										<div class='flex flex-col text-dark-grey'>
-											<h3 class='text-base font-bold'>{day.name}</h3>
-											<span class='text-xs font-normal uppercase'>
-												{format(day.date, 'MMM d')}
-											</span>
-										</div>
-									</th>
-								);
-							})}
+							{days.value.map((day, key) => (
+								<th
+									key={key}
+									scope='col'
+									class='py-3 px-4 border border-surface-70'
+								>
+									<div class='flex flex-col text-dark-grey'>
+										<h3 class='text-base font-bold'>{day.name}</h3>
+										<span class='text-xs font-normal uppercase'>
+											{format(day.date, 'MMM d')}
+										</span>
+									</div>
+								</th>
+							))}
 							<th scope='col' class='py-3 px-4 border border-surface-70'>
 								<h3 class='text-base font-bold'>
 									{t('TIMESHEET_TABLE_TOTAL_COL_LABLE')}
@@ -90,76 +101,87 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						</tr>
 					</thead>
 					<tbody>
-						{dataTimeEntries.map((entry, key) => {
-							return (
-								<tr key={key} class='bg-white border-b'>
-									<th
-										scope='row'
-										class='px-6 py-4 font-medium text-left border border-surface-50 whitespace-wrap'
-									>
-										<div class='flex flex-col'>
-											<h4 class='text-sm font-normal text-darkgray-500'>
-												{`${t('CLIENT')}: ` + entry.customer}
-											</h4>
-											<h4 class='text-base font-bold text-dark-grey'>
-												{entry.project}
-											</h4>
-											<h4 class='text-sm font-normal text-dark-gray-900'>
-												{`${t('TASK')}: ` + entry.task}
-											</h4>
-										</div>
-									</th>
-
-									{days.value.map((day, key) => {
-										const formattedDate = formatDateString(day.date);
-										const isDateMatch = formattedDate === entry.date;
-										return (
-											<td class='py-3 px-4 text-center border border-surface-50'>
-												<TimePicker
-													key={key}
-													onChange$={() => {}}
-													bindValue={useSignal(
-														isDateMatch
-															? getFormattedHours(entry.hours)
-															: getFormattedHours(0)
-													)}
-													onClick$={$(() => {
-														<Modal state={{ isVisible: true }}>
-															<p
-																q:slot='modalBody'
-																class='text-base leading-relaxed text-dark-gray'
-															>
-																{day.name}
-															</p>
-														</Modal>;
-													})}
-												/>
-											</td>
-										);
-									})}
-									<td class='py-3 px-4 text-center border border-surface-50'>
-										<span class='text-base font-normal'>
-											{getTotalPerProject(
-												days.value.map(
-													(_, dayIndex) =>
-														dataTimeEntries[dayIndex]?.hours ?? []
-												)
-											)}
-										</span>
-									</td>
-									<td class='py-3 px-4 text-center border border-surface-50'>
-										<button>{getIcon('Bin')}</button>
-									</td>
-								</tr>
-							);
-						})}
+						{dataTimeEntries.map((entry, key) => (
+							<tr key={key} class='bg-white border-b'>
+								<th
+									scope='row'
+									class='px-6 py-4 font-medium text-left border border-surface-50 whitespace-wrap'
+								>
+									<div class='flex flex-col'>
+										<h4 class='text-sm font-normal text-darkgray-500'>
+											{`${t('CLIENT')}: ` + entry.customer}
+										</h4>
+										<h4 class='text-base font-bold text-dark-grey'>
+											{entry.project}
+										</h4>
+										<h4 class='text-sm font-normal text-dark-gray-900'>
+											{`${t('TASK')}: ` + entry.task}
+										</h4>
+									</div>
+								</th>
+								{days.value.map((day, key) => {
+									const formattedDate = formatDateString(day.date);
+									const isDateMatch = formattedDate === entry.date;
+									const hours =
+										timeEntriesState[entry.hours]?.[formattedDate] || 0;
+									return (
+										<td class='py-3 px-4 text-center border border-surface-50'>
+											<TimePicker
+												key={key}
+												onBlur$={(e: FocusEvent) => {
+													const value = (e.target as HTMLInputElement)
+														.value;
+													const hours = parseFloat(value);
+													if (
+														value !== '' &&
+														hours !== 0 &&
+														!isNaN(hours)
+													) {
+														handleTimeChange({
+															...entry,
+															date: formattedDate,
+															hours,
+														});
+													}
+												}}
+												bindValue={useSignal(
+													isDateMatch
+														? getFormattedHours(entry.hours)
+														: getFormattedHours(hours)
+												)}
+												onClick$={$(() => {
+													<Modal state={{ isVisible: true }}>
+														<p
+															q:slot='modalBody'
+															class='text-base leading-relaxed text-dark-gray'
+														>
+															{day.name}
+														</p>
+													</Modal>;
+												})}
+											/>
+										</td>
+									);
+								})}
+								<td class='py-3 px-4 text-center border border-surface-50'>
+									<span class='text-base font-normal'>
+										{getTotalPerProject(
+											days.value.map(
+												(_, dayIndex) =>
+													dataTimeEntries[dayIndex]?.hours ?? []
+											)
+										)}
+									</span>
+								</td>
+								<td class='py-3 px-4 text-center border border-surface-50'>
+									<button>{getIcon('Bin')}</button>
+								</td>
+							</tr>
+						))}
 					</tbody>
 					<tfoot>
 						<tr class='bg-surface-5'>
-							<td
-								colSpan={NEW_PROJECT_ROW_COLSPAN}
-								class='px-6 py-4 border border-surface-50 '
-							>
+							<td colSpan={10} class='px-6 py-4 border border-surface-50'>
 								<Slot name='newProject' />
 							</td>
 						</tr>
@@ -172,22 +194,20 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 									{t('TIMESHEET_TABLE_TOTAL_FOOTER_LABLE')}
 								</h3>
 							</th>
-							{days.value.map((day, key) => {
-								return (
-									<td
-										key={key}
-										class='px-6 py-4 text-center border border-surface-50'
-									>
-										<span class='text-base font-bold'>
-											{getTotalPerDay(
-												dataTimeEntries.filter(
-													(t) => t.date === formatDateString(day.date)
-												)
-											)}
-										</span>
-									</td>
-								);
-							})}
+							{days.value.map((day, key) => (
+								<td
+									key={key}
+									class='px-6 py-4 text-center border border-surface-50'
+								>
+									<span class='text-base font-bold'>
+										{getTotalPerDay(
+											dataTimeEntries.filter(
+												(t) => t.date === formatDateString(day.date)
+											)
+										)}
+									</span>
+								</td>
+							))}
 							<td class='px-6 py-4 text-right border border-surface-50' colSpan={2}>
 								<span class='text-base font-bold'>
 									{getTotal(dataTimeEntries.map((item) => item.hours))}
@@ -196,7 +216,6 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						</tr>
 					</tfoot>
 				</table>
-
 				<Modal state={editTimeModal}></Modal>
 			</div>
 		);
