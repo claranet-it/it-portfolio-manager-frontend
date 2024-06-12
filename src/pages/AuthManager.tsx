@@ -51,7 +51,7 @@ export const AuthManager = component$(() => {
 					</span>
 					{authProviders.map((authElement) => (
 						<button
-							class='bg-surface-40 h-[56px] enabled:hover:bg-surface-70 flex items-center justify-center p-2.5 rounded-[4px]'
+							class='bg-white-100 h-[56px] enabled:hover:bg-surface-20 flex items-center justify-center p-2.5 rounded-[4px] border border-surface-70'
 							onClick$={authElement.onClick}
 							disabled={isLoading.value}
 						>
