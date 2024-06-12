@@ -1,15 +1,17 @@
 import { Signal, useSignal, useTask$ } from '@builder.io/qwik';
-import { Auth } from './components/Auth';
-import { Effort } from './page/Effort';
-import { Profile } from './page/Profile';
-import { Search } from './page/Search';
-import { Skills } from './page/Skills';
+import { Effort } from './pages/Effort';
+import { Profile } from './pages/Profile';
+import { Search } from './pages/Search';
+import { Skills } from './pages/Skills';
+import { Timesheet } from './pages/Timesheet';
+import { AuthManager } from './pages/AuthManager';
 
 export type Route = keyof typeof routes;
 
 export const routes = {
-	auth: <Auth />,
+	auth: <AuthManager />,
 	effort: <Effort />,
+	timesheet: <Timesheet />,
 	profile: <Profile />,
 	skills: <Skills />,
 	search: <Search />,

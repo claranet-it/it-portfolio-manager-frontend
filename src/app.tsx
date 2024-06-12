@@ -4,12 +4,15 @@ import {
 	createContextId,
 	useContextProvider,
 	useStore,
+	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
 import { initFlowbite } from 'flowbite';
 import { Layout } from './components/Layout';
 import { routes, useRouter } from './router';
-import { AppStore } from './utils/types';
+import { AppStore } from './models/Configurations';
+import { getAuthToken } from './utils/token';
+import { getConfiguration } from './services/configuration';
 
 const {
 	VITE_AUTH_DOMAIN: domain,
@@ -31,6 +34,7 @@ export const AppContext = createContextId<AppStore>('AppStore');
 
 const initialState: AppStore = {
 	configuration: {
+		company: 'it',
 		crews: [],
 		skills: {},
 		scoreRange: {
@@ -39,6 +43,7 @@ const initialState: AppStore = {
 		},
 		scoreRangeLabels: [],
 	},
+	events: [],
 };
 
 export const App = component$(() => {
@@ -52,6 +57,13 @@ export const App = component$(() => {
 		track(currentRouteSignal);
 		// run this
 		initFlowbite();
+	});
+
+	useTask$(async () => {
+		if ((await getAuthToken()) != null) {
+			const configuration = await getConfiguration();
+			appStore.configuration = configuration;
+		}
 	});
 
 	return currentRouteSignal.value === 'auth' ? (

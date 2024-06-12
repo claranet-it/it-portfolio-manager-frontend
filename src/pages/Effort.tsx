@@ -3,12 +3,12 @@ import { AppContext } from '../app';
 import { EffortTable } from '../components/EffortTable';
 import { Filters } from '../components/Filters';
 import { MonthChart } from '../components/MonthChart';
-import { Toast } from '../components/Toast';
 import { TotalChart } from '../components/TotalChart';
 import { t } from '../locale/labels';
-import { getConfiguration, getEffort } from '../utils/api';
 import { getDateLabelFromMonthYear } from '../utils/dates';
-import { EffortMatrix } from '../utils/types';
+import { getConfiguration } from '../services/configuration';
+import { getEffort } from '../services/effort';
+import { EffortMatrix } from '../models/effort';
 
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
@@ -26,7 +26,6 @@ export const Effort = component$(() => {
 	//const selectedSkillSig = useSignal('');
 	const selectedNameSig = useSignal('');
 	const selectedServiceLineSig = useSignal('');
-	const errorMessageSig = useSignal('');
 
 	const filteredEffortSig = useComputed$<EffortMatrix>(() => {
 		let result = effortSig.value;
@@ -113,13 +112,6 @@ export const Effort = component$(() => {
 
 	return (
 		<div class='px-6 pt-5 w-full space-y-5'>
-			{errorMessageSig.value && (
-				<Toast
-					message={errorMessageSig.value}
-					onClose$={() => (errorMessageSig.value = '')}
-				/>
-			)}
-
 			<Filters
 				selectedCrew={selectedCrewSig}
 				selectedName={selectedNameSig}
@@ -130,7 +122,6 @@ export const Effort = component$(() => {
 				<EffortTable
 					averageEffortByMonth={averageEffortByMonthSig}
 					filteredEffort={filteredEffortSig}
-					errorMessage={errorMessageSig}
 				/>
 			)}
 

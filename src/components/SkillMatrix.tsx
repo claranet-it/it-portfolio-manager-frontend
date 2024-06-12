@@ -1,9 +1,9 @@
 import { $, component$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { tt } from '../locale/labels';
-import { getSkillMatrixMine, pathSkillMatrixMine } from '../utils/api';
-import { Skill } from '../utils/types';
 import { SkillRow } from './SkillRow';
+import { getSkillMatrixMine, pathSkillMatrixMine } from '../services/skillMatrix';
+import { Skill } from '../models/skill';
 
 export const SkillMatrix = component$(() => {
 	const appStore = useContext(AppContext);

@@ -1,9 +1,10 @@
 import { $, component$, useContext, useId, useStore, useTask$ } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
-import { getConfiguration, getUserMe, setUserProfile } from '../utils/api';
-import { UserMe } from '../utils/types';
 import { getIcon } from './icons';
+import { getConfiguration } from '../services/configuration';
+import { getUserMe, setUserProfile } from '../services/user';
+import { UserMe } from '../models/user';
 
 export const UserProfileCard = component$(() => {
 	const appStore = useContext(AppContext);
