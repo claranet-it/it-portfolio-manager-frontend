@@ -13,6 +13,10 @@ export type TimeEntry = {
 
 export type TimeEntryObject = Omit<TimeEntry, 'company'>;
 
+export type TimeEntryRow = {
+	[project: string]: TimeEntry[];
+};
+
 export type Day = {
 	name: string;
 	date: Date;

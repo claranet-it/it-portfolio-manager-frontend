@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { useTimeEntries } from '../hooks/timesheet/useTimeEntries';
 import { t } from '../locale/labels';
 import { ModalState } from '../models/ModalState';
-import { Day, TimeEntry } from '../models/timeEntry';
+import { Day, TimeEntry, TimeEntryObject, TimeEntryRow } from '../models/timeEntry';
 import { formatDateString } from '../utils/dates';
 import {
 	convertTimeToDecimal,
@@ -32,7 +32,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 
 		const timeEntriesState = useStore<Record<string, Record<string, number>>>({});
 
-		const handleTimeChange = $((timeEntryObject: TimeEntry) => {
+		const handleTimeChange = $((timeEntryObject: TimeEntryObject) => {
 			const { project, date, hours } = timeEntryObject;
 
 			if (!timeEntriesState[project]) {
@@ -40,6 +40,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			}
 			timeEntriesState[project][date] = hours;
 
+			console.log('timeEntryObject', timeEntryObject);
 			updateTimeEntries(timeEntryObject);
 		});
 
@@ -62,6 +63,17 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		const getTotalPerProject = (hours: number[]) => {
 			return getFormattedHours(getTotalHoursPerRows(hours));
 		};
+
+		const groupedByProject = dataTimeEntries.reduce<TimeEntryRow>((acc, entry) => {
+			const key = entry.project;
+
+			if (!acc[key]) {
+				acc[key] = [];
+			}
+
+			acc[key].push(entry);
+			return acc;
+		}, {});
 
 		return (
 			<div class='relative overflow-x-auto'>
@@ -100,7 +112,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						</tr>
 					</thead>
 					<tbody>
-						{dataTimeEntries.map((entry, key) => (
+						{Object.entries(groupedByProject).map(([project, entries], key) => (
 							<tr key={key} class='bg-white border-b'>
 								<th
 									scope='row'
@@ -108,21 +120,23 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								>
 									<div class='flex flex-col'>
 										<h4 class='text-sm font-normal text-darkgray-500'>
-											{`${t('CLIENT')}: ` + entry.customer}
+											{`${t('CLIENT')}: ` + entries[0].customer}
 										</h4>
 										<h4 class='text-base font-bold text-dark-grey'>
-											{entry.project}
+											{project}
 										</h4>
 										<h4 class='text-sm font-normal text-dark-gray-900'>
-											{`${t('TASK')}: ` + entry.task}
+											{`${t('TASK')}: ` + entries[0].task}
 										</h4>
 									</div>
 								</th>
 								{days.value.map((day, key) => {
 									const formattedDate = formatDateString(day.date);
-									const isDateMatch = formattedDate === entry.date;
-									const hours =
-										timeEntriesState[entry.hours]?.[formattedDate] || 0;
+									const entry = entries.find((e) => e.date === formattedDate);
+									const hours = entry
+										? timeEntriesState[entry.hours]?.[formattedDate] || 0
+										: 0;
+
 									return (
 										<td class='py-3 px-4 text-center border border-surface-50'>
 											<TimePicker
@@ -132,13 +146,15 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 														.value;
 													const hours = convertTimeToDecimal(value);
 													handleTimeChange({
-														...entry,
+														project,
 														date: formattedDate,
 														hours,
-													});
+														customer: entries[0].customer,
+														task: entries[0].task,
+													} as TimeEntryObject);
 												}}
 												bindValue={useSignal(
-													isDateMatch
+													entry
 														? getFormattedHours(entry.hours)
 														: getFormattedHours(hours)
 												)}
