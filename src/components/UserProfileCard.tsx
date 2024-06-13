@@ -4,7 +4,7 @@ import { t } from '../locale/labels';
 import { getIcon } from './icons';
 import { getConfiguration } from '../services/configuration';
 import { getUserMe, setUserProfile } from '../services/user';
-import { UserMe } from '../models/User';
+import { UserMe } from '@models/User';
 
 export const UserProfileCard = component$(() => {
 	const appStore = useContext(AppContext);

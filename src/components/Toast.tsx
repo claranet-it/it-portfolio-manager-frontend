@@ -1,7 +1,7 @@
 import { $, JSXOutput, QRL, component$, useComputed$, useTask$ } from '@builder.io/qwik';
 import { getIcon } from './icons';
 import { UUID } from '../utils/uuid';
-import { ToastEventType } from '../models/event';
+import { ToastEventType } from '@models/event';
 import { SELF_TOAST_CLOSING_TIME } from '../utils/constants';
 
 interface ToastProps {

@@ -3,7 +3,7 @@ import { t } from '../locale/labels';
 import { getIcon } from '../components/icons';
 import { NewProjectForm } from '../components/form/NewProjectForm';
 import { Modal } from '../components/Modal';
-import { ModalState } from '../models/ModalState';
+import { ModalState } from '@models/ModalState';
 
 export const Timesheet = component$(() => {
 	const newProjectCancelAction = $(() => {
