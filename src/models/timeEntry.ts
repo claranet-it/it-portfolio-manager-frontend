@@ -1,6 +1,6 @@
-import { Task } from './task';
-import { Customer } from './customer';
-import { Project } from './project';
+import { Task } from './Task';
+import { Customer } from './Customer';
+import { Project } from './Project';
 
 export type TimeEntry = {
 	date: Date;
