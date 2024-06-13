@@ -8,7 +8,7 @@
     "dev": "vite",
     "fmt": "prettier --write src",
     "fmt.check": "prettier --check src",
-    "precommit": "lint-staged",
+    "precommit": "lint-staged --shell",
     "prepare": "husky install",
     "preview": "npx serve ./dist",
     "test": "vitest",
