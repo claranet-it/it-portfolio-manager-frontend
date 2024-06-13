@@ -54,11 +54,26 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 		try {
 			state.loading = true;
 			erasableEntries.map(async (entry) => {
-				const result = await deleteTimeEntry(entry);
-				//if (result) // delete
+				await deleteTimeEntry(entry);
 			});
+			// Remove deleted item
+			state.dataTimeEntries = state.dataTimeEntries.filter(
+				(_entry) => !isEqualEntries(_entry, entry)
+			);
+			state.loading = false;
+			addEvent({
+				message: t('TIMEENTRIES_ROW_SUCCESSFULLY_DELETED'),
+				type: 'success',
+				autoclose: true,
+			});
+			console.log(state.dataTimeEntries);
 		} catch (error) {
 			state.loading = false;
+			const { message } = error as Error;
+			addEvent({
+				type: 'danger',
+				message: message,
+			});
 		}
 	});
 

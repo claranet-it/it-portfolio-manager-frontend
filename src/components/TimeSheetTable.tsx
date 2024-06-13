@@ -26,13 +26,17 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 	({ newTimeEntry, days, from, to }) => {
 		const { loadTimeEntries, state, updateTimeEntries, deleteProjectEntries } =
 			useTimeEntries(newTimeEntry);
-		const editTimeModal = useStore<ModalState>({
-			title: 'Edit time',
-		});
 
-		//const NEW_PROJECT_ROW_COLSPAN = 10;
+		// const editTimeModal = useStore<ModalState>({
+		// 	title: 'Edit time',
+		// });
 
 		const timeEntriesState = useStore<Record<string, Record<string, number>>>({});
+
+		const deleteTimeEntriesRowModalState = useStore<ModalState>({
+			title: t('TIMESHEET_DELETE_ALERT_TITLE'),
+			message: t('TIMESHEET_DELETE_ALERT_MESSAGE'),
+		});
 
 		const handleTimeChange = $((timeEntryObject: TimeEntry) => {
 			const { project, date, hours } = timeEntryObject;
@@ -43,6 +47,21 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			timeEntriesState[project][date] = hours;
 
 			updateTimeEntries(timeEntryObject);
+		});
+
+		const deleteHandler = $((entry: TimeEntry) => {
+			if (!!!entry.isUnsaved) {
+				deleteTimeEntriesRowModalState.isVisible = true;
+				deleteTimeEntriesRowModalState.confirmLabel = t('ACTION_CONFIRM');
+				deleteTimeEntriesRowModalState.cancelLabel = t('ACTION_CANCEL');
+				deleteTimeEntriesRowModalState.onConfirm$ = $(() => {
+					deleteProjectEntries(entry);
+				});
+
+				return;
+			}
+
+			deleteProjectEntries(entry);
 		});
 
 		useTask$(async ({ track }) => {
@@ -175,7 +194,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 									</span>
 								</td>
 								<td class='py-3 px-4 text-center border border-surface-50'>
-									<button onClick$={() => deleteProjectEntries(entry)}>
+									<button onClick$={() => deleteHandler(entry)}>
 										{getIcon('Bin')}
 									</button>
 								</td>
@@ -219,7 +238,8 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						</tr>
 					</tfoot>
 				</table>
-				<Modal state={editTimeModal}></Modal>
+				{/* <Modal state={editTimeModal}></Modal> */}
+				<Modal state={deleteTimeEntriesRowModalState} />
 			</div>
 		);
 	}

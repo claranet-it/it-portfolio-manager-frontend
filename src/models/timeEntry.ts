@@ -9,6 +9,7 @@ export type TimeEntry = {
 	project: Project;
 	task: Task;
 	hours: number;
+	isUnsaved?: boolean;
 };
 
 export type TimeEntryObject = Omit<TimeEntry, 'company'>;
