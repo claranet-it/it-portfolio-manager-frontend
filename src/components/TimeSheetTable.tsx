@@ -175,10 +175,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								<td class='py-3 px-4 text-center border border-surface-50'>
 									<span class='text-base font-normal'>
 										{getTotalPerProject(
-											days.value.map(
-												(_, dayIndex) =>
-													dataTimeEntries[dayIndex]?.hours ?? []
-											)
+											entries.map((entry) => {
+												return entry.hours;
+											})
 										)}
 									</span>
 								</td>
