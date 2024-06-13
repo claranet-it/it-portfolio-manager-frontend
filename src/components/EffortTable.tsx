@@ -1,10 +1,10 @@
 import { $, Signal, component$, useSignal } from '@builder.io/qwik';
 import { t } from '../locale/labels';
 import { getDateLabelFromMonthYear } from '../utils/dates';
-import { Month } from '../models/Month';
+import { Month } from '../models/month';
 import { putEffort, getEffort } from '../services/effort';
 import { useNotification } from '../hooks/useNotification';
-import { EffortMatrix } from '../models/Effort';
+import { EffortMatrix } from '../models/effort';
 
 interface EffortTableInterface {
 	averageEffortByMonth: Readonly<

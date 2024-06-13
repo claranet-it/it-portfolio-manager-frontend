@@ -1,4 +1,4 @@
-import { OpenAIResponse } from '../models/OpenAIResponse';
+import { OpenAIResponse } from '../models/openairesponse';
 import { getHttpResponse } from '../network/httpRequest';
 
 export const openAI = async (prompt: string, company: string = 'it'): Promise<OpenAIResponse> =>

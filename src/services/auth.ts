@@ -1,4 +1,4 @@
-import { BricklyTokenResponse, Provider, TokenConfiguration } from '../models/Auth';
+import { BricklyTokenResponse, Provider, TokenConfiguration } from '../models/auth';
 import { getHttpResponse } from '../network/httpRequest';
 
 export const getAuthValidation = async (

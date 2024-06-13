@@ -1,4 +1,4 @@
-import { Provider } from '../models/Auth';
+import { Provider } from '../models/auth';
 import { clear, get, set } from './localStorage/localStorage';
 
 export const setProvider = async (provider: Provider) => await set('provider', provider);

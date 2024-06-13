@@ -8,7 +8,7 @@ import { t } from '../locale/labels';
 import { getDateLabelFromMonthYear } from '../utils/dates';
 import { getConfiguration } from '../services/configuration';
 import { getEffort } from '../services/effort';
-import { EffortMatrix } from '../models/Effort';
+import { EffortMatrix } from '../models/effort';
 
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);

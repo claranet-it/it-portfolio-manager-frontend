@@ -1,4 +1,4 @@
-import { Month } from './Month';
+import { Month } from './month';
 
 export type EffortMatrix = Record<string, Effort>[];
 
