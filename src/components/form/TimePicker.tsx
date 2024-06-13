@@ -5,12 +5,13 @@ interface TimePickerProps {
 	bindValue?: Signal<string> | undefined;
 	onClick$?: QRL;
 	onChange$?: QRL;
+	onBlur$?: QRL;
 	required?: boolean;
 	disabled?: boolean;
 }
 
 export const TimePicker = component$<TimePickerProps>(
-	({ bindValue = useSignal('00:00'), onClick$, onChange$, required, disabled }) => {
+	({ bindValue = useSignal('00:00'), onClick$, onChange$, onBlur$, required, disabled }) => {
 		const style = useComputed$(() => {
 			return disabled
 				? 'bg-darkgray-50 text-darkgray-300 border-darkgray-100'
@@ -34,6 +35,7 @@ export const TimePicker = component$<TimePickerProps>(
 					min='00:00'
 					bind:value={bindValue}
 					onChange$={onChange$}
+					onBlur$={onBlur$}
 					disabled={disabled}
 					required={required}
 				/>
