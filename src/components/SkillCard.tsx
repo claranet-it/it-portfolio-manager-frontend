@@ -8,7 +8,7 @@ import {
 } from '../utils/constants';
 import { SfRating } from './SfRating';
 import { getIcon } from './icons';
-import { SkillMatrix } from '@models/Skill';
+import { SkillMatrix } from '@models/skill';
 
 type Props = {
 	skill: string;

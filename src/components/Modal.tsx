@@ -1,5 +1,5 @@
 import { $, component$, useComputed$ } from '@builder.io/qwik';
-import { ModalState } from '@models/ModalState';
+import { ModalState } from '@models/modalState';
 import { Button } from './Button';
 import { getIcon } from './icons';
 
