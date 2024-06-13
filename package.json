@@ -11,7 +11,8 @@
     "precommit": "lint-staged --shell",
     "prepare": "husky install",
     "preview": "npx serve ./dist",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "test.ui": "vitest --ui components",
     "coverage": "vitest --coverage",
     "qwik": "qwik"
