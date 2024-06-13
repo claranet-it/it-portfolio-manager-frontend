@@ -1,4 +1,4 @@
-import { EffortMatrix, Effort } from '@models/Effort';
+import { EffortMatrix, Effort } from '@models/effort';
 import { Month } from '@models/month';
 import { getHttpResponse, checkHttpResponseStatus } from '../network/httpRequest';
 
