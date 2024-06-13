@@ -81,6 +81,7 @@ export const useNewTimeEntry = (
 				project: projectSelected.value,
 				task: taskSelected.value,
 				hours: 0,
+				isUnsaved: true,
 			};
 
 			addEvent({

@@ -2,8 +2,9 @@ import { $, Signal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 
 import { t } from '../../locale/labels';
 import { TimeEntry, TimeEntryObject } from '../../models/timeEntry';
-import { getTimeEntries, postTimeEntries } from '../../services/timeSheet';
+import { deleteTimeEntry, getTimeEntries, postTimeEntries } from '../../services/timeSheet';
 import { formatDateString } from '../../utils/dates';
+import { isEqualEntries } from '../../utils/timesheet';
 import { useNotification } from '../useNotification';
 
 export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
@@ -46,10 +47,40 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 		}
 	});
 
+	const deleteProjectEntries = $((entry: TimeEntry) => {
+		const erasableEntries = state.dataTimeEntries.filter((_entry) =>
+			isEqualEntries(_entry, entry)
+		);
+		try {
+			state.loading = true;
+			erasableEntries.map(async (entry) => {
+				await deleteTimeEntry(entry);
+			});
+			// Remove deleted item
+			state.dataTimeEntries = state.dataTimeEntries.filter(
+				(_entry) => !isEqualEntries(_entry, entry)
+			);
+			state.loading = false;
+			addEvent({
+				message: t('TIMEENTRIES_ROW_SUCCESSFULLY_DELETED'),
+				type: 'success',
+				autoclose: true,
+			});
+			console.log(state.dataTimeEntries);
+		} catch (error) {
+			state.loading = false;
+			const { message } = error as Error;
+			addEvent({
+				type: 'danger',
+				message: message,
+			});
+		}
+	});
+
 	useVisibleTask$(({ track }) => {
 		track(newTimeEntry);
 		newTimeEntry.value && state.dataTimeEntries.push(newTimeEntry.value);
 	});
 
-	return { loadTimeEntries, updateTimeEntries, state };
+	return { loadTimeEntries, updateTimeEntries, deleteProjectEntries, state };
 };

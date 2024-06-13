@@ -25,12 +25,15 @@ interface TimeSheetTableProps {
 
 export const TimeSheetTable = component$<TimeSheetTableProps>(
 	({ newTimeEntry, days, from, to }) => {
-		const { loadTimeEntries, state, updateTimeEntries } = useTimeEntries(newTimeEntry);
-		const editTimeModal = useStore<ModalState>({
-			title: 'Edit time',
-		});
+		const { loadTimeEntries, state, updateTimeEntries, deleteProjectEntries } =
+			useTimeEntries(newTimeEntry);
 
 		const timeEntriesState = useStore<Record<string, Record<string, number>>>({});
+
+		const deleteTimeEntriesRowModalState = useStore<ModalState>({
+			title: t('TIMESHEET_DELETE_ALERT_TITLE'),
+			message: t('TIMESHEET_DELETE_ALERT_MESSAGE'),
+		});
 
 		const handleTimeChange = $((timeEntryObject: TimeEntryObject) => {
 			const { project, date, hours } = timeEntryObject;
@@ -42,6 +45,21 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 
 			console.log('timeEntryObject', timeEntryObject);
 			updateTimeEntries(timeEntryObject);
+		});
+
+		const deleteHandler = $((entry: TimeEntry) => {
+			if (!entry.isUnsaved) {
+				deleteTimeEntriesRowModalState.isVisible = true;
+				deleteTimeEntriesRowModalState.confirmLabel = t('ACTION_CONFIRM');
+				deleteTimeEntriesRowModalState.cancelLabel = t('ACTION_CANCEL');
+				deleteTimeEntriesRowModalState.onConfirm$ = $(() => {
+					deleteProjectEntries(entry);
+				});
+
+				return;
+			}
+
+			deleteProjectEntries(entry);
 		});
 
 		useTask$(async ({ track }) => {
@@ -74,6 +92,12 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			acc[key].push(entry);
 			return acc;
 		}, {});
+
+		const extractFirstEntryDetails = (entries: TimeEntry[]) => {
+			if (entries.length === 0) return {};
+			const { customer, task } = entries[0];
+			return { customer, task };
+		};
 
 		return (
 			<div class='relative overflow-x-auto'>
@@ -112,80 +136,85 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						</tr>
 					</thead>
 					<tbody>
-						{Object.entries(groupedByProject).map(([project, entries], key) => (
-							<tr key={key} class='bg-white border-b'>
-								<th
-									scope='row'
-									class='px-6 py-4 font-medium text-left border border-surface-50 whitespace-wrap'
-								>
-									<div class='flex flex-col'>
-										<h4 class='text-sm font-normal text-darkgray-500'>
-											{`${t('CLIENT')}: ` + entries[0].customer}
-										</h4>
-										<h4 class='text-base font-bold text-dark-grey'>
-											{project}
-										</h4>
-										<h4 class='text-sm font-normal text-dark-gray-900'>
-											{`${t('TASK')}: ` + entries[0].task}
-										</h4>
-									</div>
-								</th>
-								{days.value.map((day, key) => {
-									const formattedDate = formatDateString(day.date);
-									const entry = entries.find((e) => e.date === formattedDate);
-									const hours = entry
-										? timeEntriesState[entry.hours]?.[formattedDate] || 0
-										: 0;
+						{Object.entries(groupedByProject).map(([project, entries], key) => {
+							const { customer, task } = extractFirstEntryDetails(entries);
+							return (
+								<tr key={key} class='bg-white border-b'>
+									<th
+										scope='row'
+										class='px-6 py-4 font-medium text-left border border-surface-50 whitespace-wrap'
+									>
+										<div class='flex flex-col'>
+											<h4 class='text-sm font-normal text-darkgray-500'>
+												{`${t('CLIENT')}: ${customer}`}
+											</h4>
+											<h4 class='text-base font-bold text-dark-grey'>
+												{project}
+											</h4>
+											<h4 class='text-sm font-normal text-dark-gray-900'>
+												{`${t('TASK')}: ${task}`}
+											</h4>
+										</div>
+									</th>
+									{days.value.map((day, key) => {
+										const formattedDate = formatDateString(day.date);
+										const entry = entries.find((e) => e.date === formattedDate);
+										const hours = entry
+											? timeEntriesState[entry.hours]?.[formattedDate] || 0
+											: 0;
 
-									return (
-										<td class='py-3 px-4 text-center border border-surface-50'>
-											<TimePicker
+										return (
+											<td
 												key={key}
-												onBlur$={(e: FocusEvent) => {
-													const value = (e.target as HTMLInputElement)
-														.value;
-													const hours = convertTimeToDecimal(value);
-													handleTimeChange({
-														project,
-														date: formattedDate,
-														hours,
-														customer: entries[0].customer,
-														task: entries[0].task,
-													} as TimeEntryObject);
-												}}
-												bindValue={useSignal(
-													entry
-														? getFormattedHours(entry.hours)
-														: getFormattedHours(hours)
-												)}
-												onClick$={$(() => {
-													<Modal state={{ isVisible: true }}>
-														<p
-															q:slot='modalBody'
-															class='text-base leading-relaxed text-dark-gray'
-														>
-															{day.name}
-														</p>
-													</Modal>;
-												})}
-											/>
-										</td>
-									);
-								})}
-								<td class='py-3 px-4 text-center border border-surface-50'>
-									<span class='text-base font-normal'>
-										{getTotalPerProject(
-											entries.map((entry) => {
-												return entry.hours;
-											})
-										)}
-									</span>
-								</td>
-								<td class='py-3 px-4 text-center border border-surface-50'>
-									<button>{getIcon('Bin')}</button>
-								</td>
-							</tr>
-						))}
+												class='py-3 px-4 text-center border border-surface-50'
+											>
+												<TimePicker
+													onBlur$={(e: FocusEvent) => {
+														const value = (e.target as HTMLInputElement)
+															.value;
+														const hours = convertTimeToDecimal(value);
+														handleTimeChange({
+															project,
+															date: formattedDate,
+															hours,
+															customer,
+															task,
+														} as TimeEntryObject);
+													}}
+													bindValue={useSignal(
+														entry
+															? getFormattedHours(entry.hours)
+															: getFormattedHours(hours)
+													)}
+													onClick$={$(() => {
+														<Modal state={{ isVisible: true }}>
+															<p
+																q:slot='modalBody'
+																class='text-base leading-relaxed text-dark-gray'
+															>
+																{day.name}
+															</p>
+														</Modal>;
+													})}
+												/>
+											</td>
+										);
+									})}
+									<td class='py-3 px-4 text-center border border-surface-50'>
+										<span class='text-base font-normal'>
+											{getTotalPerProject(
+												entries.map((entry) => entry.hours)
+											)}
+										</span>
+									</td>
+									<td class='py-3 px-4 text-center border border-surface-50'>
+										<button onClick$={() => deleteHandler(entries[0])}>
+											{getIcon('Bin')}
+										</button>
+									</td>
+								</tr>
+							);
+						})}
 					</tbody>
 					<tfoot>
 						<tr class='bg-surface-5'>
@@ -224,7 +253,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						</tr>
 					</tfoot>
 				</table>
-				<Modal state={editTimeModal}></Modal>
+				<Modal state={deleteTimeEntriesRowModalState} />
 			</div>
 		);
 	}

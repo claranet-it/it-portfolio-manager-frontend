@@ -1,7 +1,7 @@
 import { getAuthToken } from '../utils/token';
 import { httpStatusHandler } from './httpsStatusHandler';
 
-type HttpMethods = 'GET' | 'POST' | 'PUT' | 'PATCH';
+type HttpMethods = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 const getHeaders = async () => {
 	const token = await getAuthToken();
