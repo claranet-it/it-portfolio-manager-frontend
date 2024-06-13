@@ -24,7 +24,8 @@ interface TimeSheetTableProps {
 
 export const TimeSheetTable = component$<TimeSheetTableProps>(
 	({ newTimeEntry, days, from, to }) => {
-		const { loadTimeEntries, state, updateTimeEntries } = useTimeEntries(newTimeEntry);
+		const { loadTimeEntries, state, updateTimeEntries, deleteProjectEntries } =
+			useTimeEntries(newTimeEntry);
 		const editTimeModal = useStore<ModalState>({
 			title: 'Edit time',
 		});
@@ -174,7 +175,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 									</span>
 								</td>
 								<td class='py-3 px-4 text-center border border-surface-50'>
-									<button>{getIcon('Bin')}</button>
+									<button onClick$={() => deleteProjectEntries(entry)}>
+										{getIcon('Bin')}
+									</button>
 								</td>
 							</tr>
 						))}

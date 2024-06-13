@@ -2,8 +2,9 @@ import { $, Signal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 
 import { t } from '../../locale/labels';
 import { TimeEntry, TimeEntryObject } from '../../models/timeEntry';
-import { getTimeEntries, postTimeEntries } from '../../services/timeSheet';
+import { deleteTimeEntry, getTimeEntries, postTimeEntries } from '../../services/timeSheet';
 import { formatDateString } from '../../utils/dates';
+import { isEqualEntries } from '../../utils/timesheet';
 import { useNotification } from '../useNotification';
 
 export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
@@ -46,10 +47,25 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 		}
 	});
 
+	const deleteProjectEntries = $((entry: TimeEntry) => {
+		const erasableEntries = state.dataTimeEntries.filter((_entry) =>
+			isEqualEntries(_entry, entry)
+		);
+		try {
+			state.loading = true;
+			erasableEntries.map(async (entry) => {
+				const result = await deleteTimeEntry(entry);
+				//if (result) // delete
+			});
+		} catch (error) {
+			state.loading = false;
+		}
+	});
+
 	useVisibleTask$(({ track }) => {
 		track(newTimeEntry);
 		newTimeEntry.value && state.dataTimeEntries.push(newTimeEntry.value);
 	});
 
-	return { loadTimeEntries, updateTimeEntries, state };
+	return { loadTimeEntries, updateTimeEntries, deleteProjectEntries, state };
 };
