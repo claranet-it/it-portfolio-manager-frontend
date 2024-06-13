@@ -186,16 +186,6 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 															? getFormattedHours(entry.hours)
 															: getFormattedHours(hours)
 													)}
-													onClick$={$(() => {
-														<Modal state={{ isVisible: true }}>
-															<p
-																q:slot='modalBody'
-																class='text-base leading-relaxed text-dark-gray'
-															>
-																{day.name}
-															</p>
-														</Modal>;
-													})}
 												/>
 											</td>
 										);
