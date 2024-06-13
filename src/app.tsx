@@ -7,7 +7,7 @@ import {
 	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
-import { AppStore } from '@models/configurations';
+import { AppStore } from '@models/configuration';
 import { initFlowbite } from 'flowbite';
 import { Layout } from './components/Layout';
 import { routes, useRouter } from './router';
