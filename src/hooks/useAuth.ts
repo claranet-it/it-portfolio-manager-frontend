@@ -2,7 +2,7 @@ import { $, useSignal, useTask$ } from '@builder.io/qwik';
 import { auth0 } from '../app';
 import { getAuthToken, setAuthToken } from '../utils/token';
 import { navigateTo } from '../router';
-import { AuthProviderButton, Provider } from '../models/Auth';
+import { AuthProviderButton, Provider } from '@models/auth';
 import { getAuthValidation } from '../services/auth';
 import { getProvider, removeProvider, setProvider } from '../utils/provider';
 

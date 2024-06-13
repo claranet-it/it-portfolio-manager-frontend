@@ -6,7 +6,7 @@ import { SkillLegend } from '../components/SkillLegend';
 import { tt } from '../locale/labels';
 import { getConfiguration } from '../services/configuration';
 import { getSkills } from '../services/skillMatrix';
-import { SkillMatrix } from '../models/skill';
+import { SkillMatrix } from '@models/skill';
 
 export const Skills = component$(() => {
 	const appStore = useContext(AppContext);

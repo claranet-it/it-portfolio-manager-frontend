@@ -1,6 +1,6 @@
 import { useContext, $ } from '@builder.io/qwik';
 import { AppContext } from '../app';
-import { ToastEvent } from '../models/event';
+import { ToastEvent } from '@models/event';
 
 export const useNotification = () => {
 	const appStore = useContext(AppContext);
