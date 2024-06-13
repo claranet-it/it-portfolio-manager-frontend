@@ -6,6 +6,7 @@ import { ModalState } from '../models/ModalState';
 import { Day, TimeEntry } from '../models/timeEntry';
 import { formatDateString } from '../utils/dates';
 import {
+	convertTimeToDecimal,
 	getFormattedHours,
 	getTotalHours,
 	getTotalHoursPerRows,
@@ -131,18 +132,12 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 												onBlur$={(e: FocusEvent) => {
 													const value = (e.target as HTMLInputElement)
 														.value;
-													const hours = parseFloat(value);
-													if (
-														value !== '' &&
-														hours !== 0 &&
-														!isNaN(hours)
-													) {
-														handleTimeChange({
-															...entry,
-															date: formattedDate,
-															hours,
-														});
-													}
+													const hours = convertTimeToDecimal(value);
+													handleTimeChange({
+														...entry,
+														date: formattedDate,
+														hours,
+													});
 												}}
 												bindValue={useSignal(
 													isDateMatch

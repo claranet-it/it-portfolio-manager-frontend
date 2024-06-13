@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+	convertTimeToDecimal,
 	getFormattedHours,
 	getTotalHours,
 	getTotalHoursPerRows,
@@ -8,7 +9,7 @@ import {
 
 describe('Hours Timesheet', () => {
 	it('Should get hours per project', async () => {
-		const timeEnriesMock = [
+		const timeEntriesMock = [
 			{
 				date: '',
 				company: '',
@@ -27,7 +28,7 @@ describe('Hours Timesheet', () => {
 			},
 		];
 
-		const hours = getlHoursPerProject(timeEnriesMock);
+		const hours = getlHoursPerProject(timeEntriesMock);
 		expect(hours).to.eql([0, 6]);
 	});
 
@@ -46,29 +47,34 @@ describe('Hours Timesheet', () => {
 		expect(hours).equals('04:00');
 	});
 
-	it('Should string formatted in greather than 24', async () => {
+	it('Should string formatted in greater than 24', async () => {
 		const hours = getFormattedHours(35);
 		expect(hours).equals('35:00');
 	});
 
-	it('Should string formatted with comma', async () => {
-		const hours = getFormattedHours(35.5);
-		expect(hours).equals('35:50');
+	it('Should string formatted with minutes', async () => {
+		const hours = getFormattedHours(5.5);
+		expect(hours).equals('05:30');
 	});
 
 	it('Should get hours per rows', async () => {
 		const hoursPerRowsMock = [
-			getTotalHours([0, 2, 0]), //2
-			getTotalHours([3, 2, 0]), //5
-			getTotalHours([0, 2, 0]), //2
-			getTotalHours([8, 0, 0]), //8
-			getTotalHours([0, 2, 0]), //2
-			getTotalHours([1, 2, 5]), //8
+			getTotalHours([0, 2, 0]), // 2
+			getTotalHours([3, 2, 0]), // 5
+			getTotalHours([0, 2, 0]), // 2
+			getTotalHours([8, 0, 0]), // 8
+			getTotalHours([0, 2, 0]), // 2
+			getTotalHours([1, 2, 5]), // 8
 			getTotalHours([0, 2, 6]), // 8
 			//# 35
 		];
 
 		const hours = getTotalHoursPerRows(hoursPerRowsMock);
 		expect(hours).equals(35);
+	});
+
+	it('Should convert time string to decimal', async () => {
+		const timeDecimal = convertTimeToDecimal('05:30');
+		expect(timeDecimal).equals(5.5);
 	});
 });

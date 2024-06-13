@@ -9,22 +9,21 @@ export const getlHoursPerProject = (timeEntries: TimeEntry[]) => {
 };
 
 export const getFormattedHours = (hours: number) => {
-	let hoursPart = Math.floor(hours);
-	let minutesPart = ((hours - hoursPart) * 100) % 100;
+	const hoursPart = Math.floor(hours);
+	const minutesPart = (hours - hoursPart) * 60;
 
-	let hour;
-	let minute;
-
-	if (hoursPart < 10) {
-		hour = `0${hoursPart}`;
-	} else hour = hoursPart;
-	if (minutesPart < 10) {
-		minute = `0${minutesPart}`;
-	} else minute = minutesPart;
+	const hour = hoursPart < 10 ? `0${hoursPart}` : hoursPart.toString();
+	const minute =
+		minutesPart < 10 ? `0${Math.round(minutesPart)}` : Math.round(minutesPart).toString();
 
 	return `${hour}:${minute}`;
 };
 
 export const getTotalHoursPerRows = (hoursPerRows: number[]) => {
 	return getTotalHours(hoursPerRows);
+};
+
+export const convertTimeToDecimal = (time: string): number => {
+	const [hours, minutes] = time.split(':').map(Number);
+	return hours + minutes / 60;
 };
