@@ -1,5 +1,5 @@
-import { UserMe, SetUserProfile } from '../models/user';
-import { getHttpResponse, checkHttpResponseStatus } from '../network/httpRequest';
+import { SetUserProfile, UserMe } from '@models/user';
+import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
 export const getUserMe = async (): Promise<UserMe> => getHttpResponse<UserMe>('user/me');
 

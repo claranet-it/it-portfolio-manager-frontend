@@ -22,7 +22,7 @@ export const Input = component$<inputInterface>(
 		bindValue = undefined,
 		value,
 		placeholder,
-		styleClass = 'w-full',
+		styleClass = 'w-full md:max-w-[300px] lg:max-w-[300px]',
 		styleLabel = 'block text-sm font-normal text-dark-gray',
 		bgColor = 'bg-white',
 		disabled = false,

@@ -1,9 +1,9 @@
 import { component$, useSignal, useTask$ } from '@builder.io/qwik';
-import { useAuth } from '../hooks/useAuth';
 import { Toast } from '../components/Toast';
+import { getIcon } from '../components/icons';
 import { BricklyLogo } from '../components/icons/BricklyLogo';
 import { BricklyNaming } from '../components/icons/BricklyNaming';
-import { getIcon } from '../components/icons';
+import { useAuth } from '../hooks/useAuth';
 import { t } from '../locale/labels';
 
 const messageCodes = ['401'] as const;
@@ -51,7 +51,7 @@ export const AuthManager = component$(() => {
 					</span>
 					{authProviders.map((authElement) => (
 						<button
-							class='bg-surface-40 h-[56px] enabled:hover:bg-surface-40/[0.8] flex items-center justify-center p-2.5 rounded-[4px]'
+							class='bg-white-100 h-[56px] enabled:hover:bg-surface-20 flex items-center justify-center p-2.5 rounded-[4px] border border-surface-70'
 							onClick$={authElement.onClick}
 							disabled={isLoading.value}
 						>

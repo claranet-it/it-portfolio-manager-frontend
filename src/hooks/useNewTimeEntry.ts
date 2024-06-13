@@ -1,21 +1,15 @@
-import { $, QRL, Signal, sync$, useComputed$, useSignal } from '@builder.io/qwik';
+import { $, sync$, useComputed$, useSignal } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
-import { format } from 'date-fns';
-import { t, tt } from '../../locale/labels';
-import { Customer } from '../../models/customer';
-import { Project } from '../../models/project';
-import { Task } from '../../models/task';
-import { TimeEntry } from '../../models/timeEntry';
-import { getCustomers } from '../../services/customer';
-import { getProjects } from '../../services/projects';
-import { getTasks, saveTask } from '../../services/tasks';
-import { useNotification } from '../useNotification';
+import { t, tt } from '../locale/labels';
+import { getCustomers } from '../services/customer';
+import { getProjects } from '../services/projects';
+import { getTasks, saveTask } from '../services/tasks';
+import { Project } from '@models/project';
+import { Customer } from '@models/customer';
+import { useNotification } from './useNotification';
+import { Task } from '@models/task';
 
-export const useNewTimeEntry = (
-	newTimeEntry: Signal<TimeEntry | undefined>,
-	alertMessageState: ModalState,
-	closeForm?: QRL
-) => {
+export const useNewTimeEntry = (alertMessageState: ModalState) => {
 	const { addEvent } = useNotification();
 
 	const dataCustomersSig = useComputed$(async () => {
@@ -73,17 +67,6 @@ export const useNewTimeEntry = (
 				message: `Something went wrong`,
 			});
 		} else {
-			// add new timeEntry to store
-			newTimeEntry.value = {
-				date: format(new Date(), 'yyyy-MM-dd'),
-				company: 'it', //TODO: Replace with the company value
-				customer: customerSelected.value,
-				project: projectSelected.value,
-				task: taskSelected.value,
-				hours: 0,
-				isUnsaved: true,
-			};
-
 			addEvent({
 				type: 'success',
 				message: tt('INSERT_NEW_PROJECT_SUCCESS_MESSAGE', {
@@ -93,10 +76,10 @@ export const useNewTimeEntry = (
 				}),
 				autoclose: true,
 			});
-
 			clearForm();
-			closeForm && closeForm();
 		}
+
+		//TODO: local saving time entry
 	});
 
 	const newEntityExist = (): boolean => {

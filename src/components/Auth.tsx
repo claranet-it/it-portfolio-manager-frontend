@@ -2,6 +2,8 @@ import { $, component$, useTask$ } from '@builder.io/qwik';
 import { auth0 } from '../app';
 import { navigateTo } from '../router';
 import { getAuthToken, setAuthToken } from '../utils/token';
+import { removeCookie, setCookie } from '../utils/cookie';
+import { CHATBOT_COOKIE_KEY } from '../utils/constants';
 
 export const Auth = component$(() => {
 	const goToEffort = $(() => navigateTo('effort'));
@@ -15,10 +17,12 @@ export const Auth = component$(() => {
 
 			if (token) {
 				await setAuthToken(token.__raw);
+				setCookie(CHATBOT_COOKIE_KEY, token.__raw);
 				goToEffort();
 			}
 		} else {
 			if (!(await getAuthToken())) {
+				removeCookie(CHATBOT_COOKIE_KEY);
 				auth0.loginWithRedirect();
 			} else {
 				goToEffort();

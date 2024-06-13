@@ -1,6 +1,6 @@
 import { QRL, component$ } from '@builder.io/qwik';
+import { Month as TMonth } from '@models/month';
 import { t } from '../locale/labels';
-import { Month as TMonth } from '../models/month';
 
 export const Month = component$<{
 	month: TMonth;

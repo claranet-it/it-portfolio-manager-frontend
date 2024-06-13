@@ -7,12 +7,12 @@ import {
 	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
+import { AppStore } from '@models/configurations';
 import { initFlowbite } from 'flowbite';
 import { Layout } from './components/Layout';
 import { routes, useRouter } from './router';
-import { AppStore } from './models/Configurations';
-import { getAuthToken } from './utils/token';
 import { getConfiguration } from './services/configuration';
+import { getAuthToken } from './utils/token';
 
 const {
 	VITE_AUTH_DOMAIN: domain,

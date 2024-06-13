@@ -4,6 +4,8 @@ import { t } from '../locale/labels';
 import { Route, navigateTo } from '../router';
 import { removeAuthToken } from '../utils/token';
 import { getIcon } from './icons';
+import { removeCookie } from '../utils/cookie';
+import { CHATBOT_COOKIE_KEY } from '../utils/constants';
 
 type MenuRoutes = Exclude<Route, 'auth'>;
 
@@ -47,6 +49,7 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 						onClick$={() => {
 							auth0.logout({
 								openUrl: async () => {
+									removeCookie(CHATBOT_COOKIE_KEY);
 									await removeAuthToken();
 									window.location.replace(redirect_uri);
 								},

@@ -1,14 +1,14 @@
-import { $, QRL, component$ } from '@builder.io/qwik';
+import { $, QRL, Signal, component$ } from '@builder.io/qwik';
+import { ModalState } from '@models/modalState';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
 import { t } from '../../locale/labels';
-import { ModalState } from '../../models/ModalState';
 import { TimeEntry } from '../../models/timeEntry';
 import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
 import { Autocomplete } from './Autocomplete';
 
 interface NewProjectFormProp {
-	timeEntry: TimeEntry;
+	timeEntry: Signal<TimeEntry | undefined>;
 	alertMessageState: ModalState;
 	onCancel$?: QRL;
 }

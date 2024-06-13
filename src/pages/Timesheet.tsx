@@ -1,14 +1,14 @@
 import { $, component$, useSignal, useStore } from '@builder.io/qwik';
-import { Button } from '../components/Button';
-import { TimeSheetTable } from '../components/TimeSheetTable';
-import { DataRange } from '../components/form/DataRange';
+import { ModalState } from '@models/modalState';
+import { TimeEntry } from '@models/timeEntry';
+import { Button } from 'src/components/Button';
+import { TimeSheetTable } from 'src/components/TimeSheetTable';
+import { DataRange } from 'src/components/form/DataRange';
+import { NewProjectModal } from 'src/components/modals/newProjectModal';
+import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
+import { Modal } from '../components/Modal';
 import { NewProjectForm } from '../components/form/NewProjectForm';
-import { Modal } from '../components/modals/Modal';
-import { NewProjectModal } from '../components/modals/newProjectModal';
-import { useGetTimeSheetDays } from '../hooks/timesheet/useGetTimeSheetDays';
 import { t } from '../locale/labels';
-import { ModalState } from '../models/ModalState';
-import { TimeEntry } from '../models/timeEntry';
 
 export const Timesheet = component$(() => {
 	const newProjectCancelAction = $(() => {

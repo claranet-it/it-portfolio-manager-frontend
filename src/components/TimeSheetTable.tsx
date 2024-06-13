@@ -1,8 +1,8 @@
 import { $, Signal, Slot, component$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
+import { ModalState } from '@models/modalState';
 import { format } from 'date-fns';
 import { useTimeEntries } from '../hooks/timesheet/useTimeEntries';
 import { t } from '../locale/labels';
-import { ModalState } from '../models/ModalState';
 import { Day, TimeEntry, TimeEntryObject, TimeEntryRow } from '../models/timeEntry';
 import { formatDateString } from '../utils/dates';
 import {

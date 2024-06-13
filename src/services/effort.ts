@@ -1,6 +1,6 @@
-import { EffortMatrix, Effort } from '../models/effort';
-import { Month } from '../models/month';
-import { getHttpResponse, checkHttpResponseStatus } from '../network/httpRequest';
+import { Effort, EffortMatrix } from '@models/effort';
+import { Month } from '@models/month';
+import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
 export const getEffort = async (
 	months: number = 3,
