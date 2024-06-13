@@ -30,8 +30,6 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			title: 'Edit time',
 		});
 
-		//const NEW_PROJECT_ROW_COLSPAN = 10;
-
 		const timeEntriesState = useStore<Record<string, Record<string, number>>>({});
 
 		const handleTimeChange = $((timeEntryObject: TimeEntry) => {
