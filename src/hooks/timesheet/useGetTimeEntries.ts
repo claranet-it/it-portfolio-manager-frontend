@@ -1,8 +1,9 @@
 import { $, Signal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 
 import { TimeEntry } from '../../models/timeEntry';
-import { getTimeEntries } from '../../services/timeSheet';
+import { deleteTimeEntry, getTimeEntries } from '../../services/timeSheet';
 import { formatDateString } from '../../utils/dates';
+import { isEqualEntries } from '../../utils/timesheet';
 
 export const useGetTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 	const state = useStore({
@@ -25,10 +26,25 @@ export const useGetTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) =
 		}
 	});
 
+	const deleteProjectEntries = $((entry: TimeEntry) => {
+		const erasableEntries = state.dataTimeEntries.filter((_entry) =>
+			isEqualEntries(_entry, entry)
+		);
+		try {
+			state.loading = true;
+			erasableEntries.map(async (entry) => {
+				const result = await deleteTimeEntry(entry);
+				//if (result) // delete
+			});
+		} catch (error) {
+			state.loading = false;
+		}
+	});
+
 	useVisibleTask$(({ track }) => {
 		track(newTimeEntry);
 		newTimeEntry.value && state.dataTimeEntries.push(newTimeEntry.value);
 	});
 
-	return { loadTimeEntries, state };
+	return { state, loadTimeEntries, deleteProjectEntries };
 };

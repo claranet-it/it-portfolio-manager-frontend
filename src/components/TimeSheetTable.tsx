@@ -24,7 +24,7 @@ interface TimeSheetTableProps {
 
 export const TimeSheetTable = component$<TimeSheetTableProps>(
 	({ newTimeEntry, days, from, to }) => {
-		const { loadTimeEntries, state } = useGetTimeEntries(newTimeEntry);
+		const { loadTimeEntries, deleteProjectEntries, state } = useGetTimeEntries(newTimeEntry);
 		const editTimeModal = useStore<ModalState>({
 			title: 'Edit time',
 		});
@@ -110,6 +110,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 										</div>
 									</th>
 
+									{/* Weekly day columns*/}
 									{days.value.map((day, key) => {
 										const formattedDate = formatDateString(day.date);
 										const isDateMatch = formattedDate === entry.date;
@@ -137,6 +138,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 											</td>
 										);
 									})}
+
 									<td class='py-3 px-4 text-center border border-surface-50'>
 										<span class='text-base font-normal'>
 											{getTotalPerProject(
@@ -148,7 +150,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 										</span>
 									</td>
 									<td class='py-3 px-4 text-center border border-surface-50'>
-										<button>{getIcon('Bin')}</button>
+										<button onClick$={() => deleteProjectEntries(entry)}>
+											{getIcon('Bin')}
+										</button>
 									</td>
 								</tr>
 							);
