@@ -1,5 +1,5 @@
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
-import { Customer } from '../models/customer';
+import { Customer } from '../models/Customer';
 import { Project } from '../models/Project';
 import { Task } from '../models/Task';
 

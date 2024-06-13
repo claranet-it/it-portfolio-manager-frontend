@@ -47,6 +47,7 @@
 	"skill_level_label2+": "skill level (2+)",
 	"how_can_help": "How can I help you today?",
 	"add_new_project_label": "Add new project",
+	"clear_filter_label": "Clear filter",
 	"INSERT_NEW_PROJECT_TITLE_MODAL": "Insert new project",
 	"INSERT_NEW_PROJECT_MESSAGE_MODAL": "Do you confirm the insertion of the new project?",
 	"INSERT_NEW_PROJECT_SUCCESS_MESSAGE": "#customer - #project - #task has been added",

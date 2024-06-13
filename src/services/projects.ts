@@ -1,4 +1,4 @@
-import { Customer } from '../models/customer';
+import { Customer } from '../models/Customer';
 import { Project } from '../models/Project';
 import { getHttpResponse } from '../network/httpRequest';
 

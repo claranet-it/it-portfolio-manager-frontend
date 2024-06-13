@@ -2,7 +2,7 @@ import { component$, $, QRL } from '@builder.io/qwik';
 import { Autocomplete } from './Autocomplete';
 import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
-import { ModalState } from '../../models/modalState';
+import { ModalState } from '../../models/ModalState';
 import { useNewTimeEntry } from '../../hooks/useNewTimeEntry';
 
 type NewProjectFormProp = {
