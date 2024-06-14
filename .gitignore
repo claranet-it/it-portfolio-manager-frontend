@@ -21,4 +21,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.vscode/settings.json
+!.vscode/settings.json

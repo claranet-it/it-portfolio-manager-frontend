@@ -1,9 +1,14 @@
-import { component$, $, useStore } from '@builder.io/qwik';
-import { t } from '../locale/labels';
-import { getIcon } from '../components/icons';
-import { NewProjectForm } from '../components/form/NewProjectForm';
-import { Modal } from '../components/Modal';
+import { $, component$, useSignal, useStore } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { TimeEntry } from '@models/timeEntry';
+import { Button } from 'src/components/Button';
+import { TimeSheetTable } from 'src/components/TimeSheetTable';
+import { DataRange } from 'src/components/form/DataRange';
+import { NewProjectModal } from 'src/components/modals/newProjectModal';
+import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
+import { Modal } from '../components/Modal';
+import { NewProjectForm } from '../components/form/NewProjectForm';
+import { t } from '../locale/labels';
 
 export const Timesheet = component$(() => {
 	const newProjectCancelAction = $(() => {
@@ -13,36 +18,43 @@ export const Timesheet = component$(() => {
 
 	// Init statement to handler modal alert
 	const alertMessageState = useStore<ModalState>({});
+	const newTimeEntry = useSignal<TimeEntry>();
+	const { days, from, to, nextWeek, prevWeek, currentWeek } = useGetTimeSheetDays();
 
 	return (
 		<>
-			<div class='w-full px-3 pt-2.5 space-y-3'>
-				<div class='h-[500px]'></div>
-				<div class='w-full px-10 py-3 bg-surface-70 flex flex-row'>
-					<button
-						id='open-new-project-bt'
-						data-dropdown-toggle='form-new-project'
-						data-dropdown-placement='top'
-						type='button'
-					>
-						<div class='flex flex-row space-x-1 content text-clara-red'>
-							<span class='text-xl content-center'>{getIcon('Add')}</span>
-							<span class='text-base font-bold content-center'>
-								{t('add_new_project_label')}
-							</span>
-						</div>
-					</button>
+			<div class='w-full px-3 pt-2.5 space-y-6'>
+				<div class='flex sm:flex-col md:flex-row lg:flex-row md:items-end md:justify-between lg:items-end lg:justify-between'>
+					<h1 class='text-2xl font-bold text-darkgray-900'>My timesheet</h1>
+					<div class='flex items-end justify-end gap-2'>
+						<DataRange
+							from={from}
+							to={to}
+							nextAction={nextWeek}
+							prevAction={prevWeek}
+						/>
+						<Button variant={'outline'} onClick$={currentWeek}>
+							{t('THIS_WEEK')}
+						</Button>
+					</div>
+				</div>
 
-					<div id='form-new-project' class='hidden z-10'>
+				<TimeSheetTable newTimeEntry={newTimeEntry} days={days} from={from} to={to}>
+					<NewProjectModal q:slot='newProject'>
 						<NewProjectForm
+							timeEntry={newTimeEntry}
 							alertMessageState={alertMessageState}
 							onCancel$={newProjectCancelAction}
 						/>
-					</div>
-				</div>
+					</NewProjectModal>
+				</TimeSheetTable>
 			</div>
 
-			<Modal state={alertMessageState} />
+			<Modal state={alertMessageState}>
+				<p q:slot='modalBody' class='text-base leading-relaxed text-dark-gray'>
+					{alertMessageState.message}
+				</p>
+			</Modal>
 		</>
 	);
 });

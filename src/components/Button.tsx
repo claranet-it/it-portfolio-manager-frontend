@@ -1,26 +1,43 @@
-import { component$ } from '@builder.io/qwik';
+import { ButtonHTMLAttributes, Slot, component$ } from '@builder.io/qwik';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-interface ButtonInterface {
-	text: string;
-	onClick$?: (event: PointerEvent, element: HTMLButtonElement) => any;
-	type?: 'button' | 'reset' | 'submit' | undefined;
-	outline?: boolean;
+const buttonVariants = cva('py-2 px-4 rounded-md font-bold text-base', {
+	variants: {
+		variant: {
+			primary: 'bg-clara-red text-white-100',
+			outline:
+				'border border-clara-red text-clara-red bg-transparent  disabled:text-disabled disabled:border-disabled',
+			link: 'text-clara-red',
+		},
+		size: {
+			default: 'h-11 px-6 py-2',
+		},
+	},
+	defaultVariants: {
+		variant: 'primary',
+		size: 'default',
+	},
+});
+
+export interface ButtonInterface
+	extends ButtonHTMLAttributes<HTMLButtonElement>,
+		VariantProps<typeof buttonVariants> {
+	asChild?: boolean;
 }
 
 export const Button = component$<ButtonInterface>(
-	({ text, type = 'button', onClick$, outline = false }) => {
-		const baseStyle = 'py-2 px-4 rounded-md font-bold text-base';
-		const styleOutline = `${baseStyle} bg-clara-red text-white-100`;
-		const style = `${baseStyle} text-clara-red`;
+	({ onClick$, asChild = false, variant, size, ...props }) => {
+		const Comp = asChild ? Slot : 'button';
 
 		return (
-			<button
-				class={outline ? styleOutline : style}
-				type={type}
+			<Comp
 				onClick$={onClick$ && onClick$}
+				class={buttonVariants({ variant, size })}
+				type='button'
+				{...props}
 			>
-				{text}
-			</button>
+				<Slot />
+			</Comp>
 		);
 	}
 );

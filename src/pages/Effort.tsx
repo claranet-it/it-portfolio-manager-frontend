@@ -1,14 +1,14 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
+import { EffortMatrix } from '@models/effort';
 import { AppContext } from '../app';
 import { EffortTable } from '../components/EffortTable';
 import { Filters } from '../components/Filters';
 import { MonthChart } from '../components/MonthChart';
 import { TotalChart } from '../components/TotalChart';
 import { t } from '../locale/labels';
-import { getDateLabelFromMonthYear } from '../utils/dates';
 import { getConfiguration } from '../services/configuration';
 import { getEffort } from '../services/effort';
-import { EffortMatrix } from '@models/effort';
+import { getDateLabelFromMonthYear } from '../utils/dates';
 
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);

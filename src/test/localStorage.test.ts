@@ -1,5 +1,5 @@
-import { expect, vi, describe, beforeEach, it } from 'vitest';
-import { clear, clearAll, get, set } from './localStorage';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { clear, clearAll, get, set } from '../utils/localStorage/localStorage';
 
 describe('Local storage utils', () => {
 	beforeEach(() => {

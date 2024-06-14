@@ -1,4 +1,5 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
+import { SkillMatrix } from '@models/skill';
 import { AppContext } from '../app';
 import { Filters } from '../components/Filters';
 import { SkillCard } from '../components/SkillCard';
@@ -6,7 +7,6 @@ import { SkillLegend } from '../components/SkillLegend';
 import { tt } from '../locale/labels';
 import { getConfiguration } from '../services/configuration';
 import { getSkills } from '../services/skillMatrix';
-import { SkillMatrix } from '@models/skill';
 
 export const Skills = component$(() => {
 	const appStore = useContext(AppContext);

@@ -1,4 +1,5 @@
 import { Signal, component$, useComputed$, useContext } from '@builder.io/qwik';
+import { SkillMatrix } from '@models/skill';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
 import {
@@ -8,7 +9,6 @@ import {
 } from '../utils/constants';
 import { SfRating } from './SfRating';
 import { getIcon } from './icons';
-import { SkillMatrix } from '@models/skill';
 
 type Props = {
 	skill: string;

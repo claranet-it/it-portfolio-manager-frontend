@@ -1,4 +1,3 @@
-import { Month } from '@models/month';
 import {
 	NoSerialize,
 	QRL,
@@ -9,9 +8,10 @@ import {
 	useSignal,
 	useVisibleTask$,
 } from '@builder.io/qwik';
+import { EffortMatrix } from '@models/effort';
+import { Month } from '@models/month';
 import { Chart as TChart, registerables } from 'chart.js';
 import { t } from '../locale/labels';
-import { EffortMatrix } from '@models/effort';
 
 export const Chart = component$<{
 	effortSig: Signal<EffortMatrix>;
