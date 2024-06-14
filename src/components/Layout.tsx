@@ -4,8 +4,6 @@ import { useNotification } from '../hooks/useNotification';
 import { Route } from '../router';
 import { Header } from './Header';
 import { Toast } from './Toast';
-import { ToastEvent } from '@models/event';
-import { useNotification } from '../hooks/useNotification';
 
 export const Layout = component$<{ currentRoute: Exclude<Route, 'auth'> }>(({ currentRoute }) => {
 	const { eventsList, removeEvent } = useNotification();

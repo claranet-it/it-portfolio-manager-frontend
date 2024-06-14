@@ -3,7 +3,7 @@ import { Skill } from '@models/skill';
 import { AppContext } from '../app';
 import { tt } from '../locale/labels';
 import { getSkillMatrixMine, pathSkillMatrixMine } from '../services/skillMatrix';
-import { Skill } from '@models/skill';
+import { SkillRow } from './SkillRow';
 
 export const SkillMatrix = component$(() => {
 	const appStore = useContext(AppContext);
