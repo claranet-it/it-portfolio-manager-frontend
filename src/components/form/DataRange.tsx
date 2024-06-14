@@ -1,6 +1,6 @@
 import { QRL, Signal, component$, useComputed$ } from '@builder.io/qwik';
+import { formatDateString } from 'src/utils/dates';
 import { getIcon } from '../icons';
-import { format } from 'date-fns';
 
 interface DataRangeProps {
 	from: Signal<Date>;
@@ -11,7 +11,7 @@ interface DataRangeProps {
 
 export const DataRange = component$<DataRangeProps>(({ from, to, nextAction, prevAction }) => {
 	const currenDataRange = useComputed$(() => {
-		return format(from.value, 'MMM dd, yyyy') + ' - ' + format(to.value, 'MMM dd, yyyy');
+		return formatDateString(from.value) + ' - ' + formatDateString(to.value);
 	});
 
 	return (
@@ -28,7 +28,7 @@ export const DataRange = component$<DataRangeProps>(({ from, to, nextAction, pre
 						type='text'
 						id='input-group-1'
 						disabled
-						class='bg-white w-60 border border-darkgray-500 text-dark-grey text-sm rounded-md block w-full px-2.5 py-3 ps-8'
+						class='bg-white w-60 border border-darkgray-500 text-dark-grey text-sm rounded-md block w-full min-w-56 px-2.5 py-3 ps-8'
 						value={currenDataRange.value}
 					/>
 				</div>
