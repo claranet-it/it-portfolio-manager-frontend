@@ -5,6 +5,10 @@ import { useNotification } from '../hooks/useNotification';
 import { t } from '../locale/labels';
 import { getEffort, putEffort } from '../services/effort';
 import { getDateLabelFromMonthYear } from '../utils/dates';
+import { Month } from '@models/month';
+import { putEffort, getEffort } from '../services/effort';
+import { useNotification } from '../hooks/useNotification';
+import { EffortMatrix } from '@models/effort';
 
 interface EffortTableInterface {
 	averageEffortByMonth: Readonly<

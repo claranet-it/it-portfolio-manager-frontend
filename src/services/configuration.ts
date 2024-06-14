@@ -1,4 +1,4 @@
-import { Configuration } from '@models/configuration';
+import { Configuration } from '@models/configurations';
 import { getHttpResponse } from '../network/httpRequest';
 
 export const getConfiguration = async (): Promise<Configuration> =>

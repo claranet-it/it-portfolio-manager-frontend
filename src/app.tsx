@@ -11,6 +11,7 @@ import { AppStore } from '@models/configuration';
 import { initFlowbite } from 'flowbite';
 import { Layout } from './components/Layout';
 import { routes, useRouter } from './router';
+import { getAuthToken } from './utils/token';
 import { getConfiguration } from './services/configuration';
 import { getAuthToken } from './utils/token';
 
