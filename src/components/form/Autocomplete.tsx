@@ -27,10 +27,10 @@ export const Autocomplete = component$<AutocompleteInterface>(
 		const AUTOCOMPLETE_RESULTS_ID = `autocomplete-results-${id}`;
 
 		const results = useSignal<string[]>([]);
-		const debounced = useDebounce(selected, 400);
+		const debounced = useDebounce(selected, 300);
 
 		const showResults = $(() => {
-			const searchValue = debounced.value.toLowerCase().trim();
+			const searchValue = selected.value.toLowerCase().trim();
 			if (searchValue === '') results.value = [];
 			// data filtering
 			else
@@ -40,6 +40,7 @@ export const Autocomplete = component$<AutocompleteInterface>(
 		});
 
 		const clearText = $(() => {
+			debounced.value = '';
 			selected.value = '';
 			results.value = [];
 		});
