@@ -1,4 +1,4 @@
-import { $, Signal, useStore, useVisibleTask$ } from '@builder.io/qwik';
+import { $, Signal, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 
 import { t } from '../../locale/labels';
 import { TimeEntry, TimeEntryObject } from '../../models/timeEntry';
@@ -12,11 +12,15 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 		dataTimeEntries: [] as TimeEntry[],
 		error: '',
 		loading: false,
+		from: useSignal<Date>(new Date()),
+		to: useSignal<Date>(new Date()),
 	});
 
 	const { addEvent } = useNotification();
 
 	const loadTimeEntries = $(async (from: Signal<Date>, to: Signal<Date>) => {
+		state.from = from;
+		state.to = to;
 		try {
 			state.loading = true;
 			state.dataTimeEntries = await getTimeEntries(
@@ -38,6 +42,7 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 				type: 'success',
 				autoclose: true,
 			});
+			loadTimeEntries(state.from, state.to);
 		} catch (error) {
 			const { message } = error as Error;
 			addEvent({

@@ -43,7 +43,6 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			}
 			timeEntriesState[project][date] = hours;
 
-			console.log('timeEntryObject', timeEntryObject);
 			updateTimeEntries(timeEntryObject);
 		});
 
