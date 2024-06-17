@@ -1,9 +1,13 @@
 import { AWS } from './AWS';
 import { Android } from './Android';
 import { Ansible } from './Ansible';
+import { ArrowLeft } from './ArrowLeft';
+import { ArrowRight } from './ArrowRight';
+import { Bin } from './Bin';
 import { BricklyLogo } from './BricklyLogo';
 import { BricklyNaming } from './BricklyNaming';
 import { CSharp } from './CSharp';
+import { Calendar } from './Calendar';
 import { Claranet } from './Claranet';
 import { Clear } from './Clear';
 import { Close } from './Close';
@@ -26,6 +30,7 @@ import { Rust } from './Rust';
 import { Search } from './Search';
 import { Send } from './Send';
 import { TypeScript } from './TypeScript';
+import { V3Dots } from './V3Dots';
 import { Add } from './add';
 import { IOS } from './iOS';
 
@@ -87,6 +92,16 @@ export const getIcon = (skill: string) => {
 			return <Clear />;
 		case 'Search':
 			return <Search />;
+		case 'Bin':
+			return <Bin />;
+		case 'V3Dots':
+			return <V3Dots />;
+		case 'Calendar':
+			return <Calendar />;
+		case 'ArrowLeft':
+			return <ArrowLeft />;
+		case 'ArrowRight':
+			return <ArrowRight />;
 		case 'Claranet':
 			return <Claranet />;
 		case 'Google':

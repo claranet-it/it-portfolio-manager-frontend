@@ -1,9 +1,9 @@
 import { component$, useSignal, useTask$ } from '@builder.io/qwik';
-import { useAuth } from '../hooks/useAuth';
 import { Toast } from '../components/Toast';
+import { getIcon } from '../components/icons';
 import { BricklyLogo } from '../components/icons/BricklyLogo';
 import { BricklyNaming } from '../components/icons/BricklyNaming';
-import { getIcon } from '../components/icons';
+import { useAuth } from '../hooks/useAuth';
 import { t } from '../locale/labels';
 
 const messageCodes = ['401'] as const;

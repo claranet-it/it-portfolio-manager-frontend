@@ -1,10 +1,10 @@
 import { $, useSignal, useTask$ } from '@builder.io/qwik';
-import { auth0 } from '../app';
-import { getAuthToken, setAuthToken } from '../utils/token';
-import { navigateTo } from '../router';
 import { AuthProviderButton, Provider } from '@models/auth';
+import { auth0 } from '../app';
+import { navigateTo } from '../router';
 import { getAuthValidation } from '../services/auth';
 import { getProvider, removeProvider, setProvider } from '../utils/provider';
+import { getAuthToken, setAuthToken } from '../utils/token';
 
 export const useAuth = () => {
 	const selectedProvider = useSignal<Provider | undefined>(undefined);

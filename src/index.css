@@ -28,3 +28,8 @@ body {
 	@apply sticky left-0;
 	background-color: inherit;
 }
+
+input[type='time']::-webkit-calendar-picker-indicator {
+	display: none;
+	-webkit-appearance: none;
+}

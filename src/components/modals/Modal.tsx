@@ -1,7 +1,7 @@
-import { $, component$, useComputed$ } from '@builder.io/qwik';
+import { $, Slot, component$, useComputed$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
-import { Button } from './Button';
-import { getIcon } from './icons';
+import { Button } from '../Button';
+import { getIcon } from '../icons';
 
 interface ModalProps {
 	state: ModalState;
@@ -20,6 +20,7 @@ export const Modal = component$<ModalProps>(({ state }) => {
 
 	const onClose = $(() => {
 		state.isVisible = false;
+		state.body = undefined;
 	});
 
 	const isVisible = useComputed$(() => {
@@ -46,15 +47,18 @@ export const Modal = component$<ModalProps>(({ state }) => {
 				</div>
 				{/* <!-- Modal body --> */}
 				<div class='py-4 space-y-4 my-4 border-b border-gray-200'>
-					<p class='text-base leading-relaxed text-dark-gray'>{state.message}</p>
+					{state.body && <Slot name='modalBody' />}
+					{state.message && (
+						<p class='text-sm font-normal text-dark-grey'>{state.message}</p>
+					)}
 				</div>
 				{/* <!-- Modal footer --> */}
 				<div class='flex items-center justify-end space-x-1'>
-					{
-						<Button variant={'outline'} onClick$={onCancel}>
+					{state.cancelLabel && (
+						<Button variant={'link'} onClick$={onCancel}>
 							{state.cancelLabel}
 						</Button>
-					}
+					)}
 
 					{state.confirmLabel && (
 						<Button onClick$={onConfirm}>{state.confirmLabel}</Button>

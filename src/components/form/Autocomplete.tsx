@@ -1,12 +1,13 @@
 import {
-	component$,
-	useSignal,
 	$,
-	Signal,
 	QRL,
-	useVisibleTask$,
+	Signal,
+	component$,
 	useComputed$,
+	useSignal,
+	useVisibleTask$,
 } from '@builder.io/qwik';
+import { useDebounce } from '../../hooks/useDebounce';
 import { getIcon } from '../icons';
 
 interface AutocompleteInterface {
@@ -26,6 +27,7 @@ export const Autocomplete = component$<AutocompleteInterface>(
 		const AUTOCOMPLETE_RESULTS_ID = `autocomplete-results-${id}`;
 
 		const results = useSignal<string[]>([]);
+		const debounced = useDebounce(selected, 300);
 
 		const showResults = $(() => {
 			const searchValue = selected.value.toLowerCase().trim();
@@ -38,11 +40,13 @@ export const Autocomplete = component$<AutocompleteInterface>(
 		});
 
 		const clearText = $(() => {
+			debounced.value = '';
 			selected.value = '';
 			results.value = [];
 		});
 
 		const onSelect = $((value: string) => {
+			debounced.value = value;
 			selected.value = value;
 			results.value = [];
 		});
@@ -64,8 +68,8 @@ export const Autocomplete = component$<AutocompleteInterface>(
 		});
 
 		useVisibleTask$(({ track }) => {
-			track(selected);
-			onChange$ && onChange$(selected.value);
+			track(debounced);
+			onChange$ && onChange$(debounced.value);
 		});
 
 		return (

@@ -1,5 +1,5 @@
 import { Skill, SkillMatrix } from '@models/skill';
-import { getHttpResponse, checkHttpResponseStatus } from '../network/httpRequest';
+import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
 export const getSkillMatrixMine = async (): Promise<Skill[]> =>
 	getHttpResponse<Skill[]>('skill-matrix/mine');
