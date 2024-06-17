@@ -1,5 +1,5 @@
 import { $, Signal, component$, useSignal } from '@builder.io/qwik';
-import { EffortMatrix } from '@models/effort';
+import { Effort, EffortMatrix } from '@models/effort';
 import { Month } from '@models/month';
 import { useNotification } from 'src/hooks/useNotification';
 import { getEffort, putEffort } from 'src/services/effort';
@@ -8,16 +8,7 @@ import { t } from '../locale/labels';
 
 interface EffortTableInterface {
 	averageEffortByMonth: Readonly<
-		Signal<
-			Record<
-				string,
-				{
-					confirmed: number;
-					tentative: number;
-					total: number;
-				}
-			>
-		>
+		Signal<Record<string, Omit<Month, 'people' | 'notes' | 'month_year'>>>
 	>;
 	filteredEffort: Readonly<Signal<EffortMatrix>>;
 }
@@ -35,15 +26,7 @@ export const EffortTable = component$<EffortTableInterface>(
 		const effortSig = useSignal<EffortMatrix>([]);
 
 		const updateEffortField = $(
-			async (
-				uid: string,
-				month: Month,
-				data: {
-					company: string;
-					crew: string;
-					name: string;
-				}
-			) => {
+			async (uid: string, month: Month, data: Omit<Effort, 'effort' | 'skill'>) => {
 				try {
 					await putEffort(uid, data, month);
 					addEvent({
@@ -101,7 +84,7 @@ export const EffortTable = component$<EffortTableInterface>(
 													class='bg-surface-20 border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
 													value={
 														averageEffortByMonth.value[monthYear]
-															.confirmed
+															.confirmedEffort
 													}
 													disabled
 												/>
@@ -120,7 +103,7 @@ export const EffortTable = component$<EffortTableInterface>(
 													class='bg-surface-20 border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
 													value={
 														averageEffortByMonth.value[monthYear]
-															.tentative
+															.tentativeEffort
 													}
 													disabled
 												/>
@@ -139,12 +122,13 @@ export const EffortTable = component$<EffortTableInterface>(
 													class={
 														getColor(
 															averageEffortByMonth.value[monthYear]
-																.total
+																.totalEffort ?? 0
 														) +
 														' border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
 													}
 													value={
-														averageEffortByMonth.value[monthYear].total
+														averageEffortByMonth.value[monthYear]
+															.totalEffort
 													}
 													disabled
 												/>
@@ -158,7 +142,7 @@ export const EffortTable = component$<EffortTableInterface>(
 
 					{/* Table body */}
 					<tbody>
-						{filteredEffort.value.map((item, key) => {
+						{/* {filteredEffort.value.map((item, key) => {
 							const [[uid, { effort, ...data }]] = Object.entries(item);
 							return (
 								<tr
@@ -273,7 +257,7 @@ export const EffortTable = component$<EffortTableInterface>(
 									))}
 								</tr>
 							);
-						})}
+						})} */}
 					</tbody>
 				</table>
 			</div>

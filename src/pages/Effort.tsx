@@ -1,24 +1,21 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { EffortMatrix } from '@models/effort';
+import { Month } from '@models/month';
 import { AppContext } from '../app';
-import { EffortTable } from '../components/EffortTable';
-import { Filters } from '../components/Filters';
-import { MonthChart } from '../components/MonthChart';
 import { TotalChart } from '../components/TotalChart';
 import { t } from '../locale/labels';
 import { getConfiguration } from '../services/configuration';
 import { getEffort } from '../services/effort';
-import { getDateLabelFromMonthYear } from '../utils/dates';
 
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
 	const effortSig = useSignal<EffortMatrix>([]);
 
 	const monthYearListSig = useComputed$<string[]>(() => {
-		if (effortSig.value.length > 0) {
-			const [{ effort }] = Object.values(effortSig.value[0]);
-			return effort.map(({ month_year }) => month_year);
-		}
+		// if (effortSig.value.length > 0) {
+		// 	const [{ effort }] = Object.values(effortSig.value[0]);
+		// 	return effort.map(({ month_year }) => month_year);
+		// }
 		return [];
 	});
 
@@ -34,7 +31,7 @@ export const Effort = component$(() => {
 		if (selectedNameSig.value) {
 			result = result.filter((el) => {
 				const [{ name }] = Object.values(el);
-				return name.toLowerCase().includes(selectedNameSig.value.toLowerCase());
+				return name?.toLowerCase().includes(selectedNameSig.value.toLowerCase());
 			});
 		}
 
@@ -50,7 +47,7 @@ export const Effort = component$(() => {
 		if (selectedCrewSig.value) {
 			result = result.filter((el) => {
 				const [{ crew }] = Object.values(el);
-				return crew.toLowerCase().includes(selectedCrewSig.value.toLowerCase());
+				return crew?.toLowerCase().includes(selectedCrewSig.value.toLowerCase());
 			});
 		}
 
@@ -62,7 +59,7 @@ export const Effort = component$(() => {
 			result = result.filter((el) => {
 				const [{ crew }] = Object.values(el);
 				return selectedCrews.some(({ name }) =>
-					crew.toLowerCase().includes(name.toLowerCase())
+					crew?.toLowerCase().includes(name.toLowerCase())
 				);
 			});
 		}
@@ -80,31 +77,31 @@ export const Effort = component$(() => {
 	});
 
 	const averageEffortByMonthSig = useComputed$<
-		Record<string, { confirmed: number; tentative: number; total: number }>
+		Record<string, Omit<Month, 'people' | 'notes' | 'month_year'>>
 	>(() => {
 		const result = filteredEffortSig.value.reduce(
 			(acc, el) => {
 				const [{ effort }] = Object.values(el);
 				for (const { month_year, confirmedEffort, tentativeEffort } of effort) {
 					acc[month_year] = {
-						confirmed: (acc[month_year]?.confirmed || 0) + confirmedEffort,
-						tentative: (acc[month_year]?.tentative || 0) + tentativeEffort,
-						total: 0,
+						confirmedEffort: (acc[month_year]?.confirmedEffort || 0) + confirmedEffort,
+						tentativeEffort: (acc[month_year]?.tentativeEffort || 0) + tentativeEffort,
+						totalEffort: 0,
 					};
 				}
 				return acc;
 			},
-			{} as Record<string, { confirmed: number; tentative: number; total: number }>
+			{} as Record<string, Omit<Month, 'people' | 'notes' | 'month_year'>>
 		);
 
 		for (const key in result) {
-			result[key].confirmed = Math.round(
-				result[key].confirmed / filteredEffortSig.value.length
+			result[key].confirmedEffort = Math.round(
+				result[key].confirmedEffort / filteredEffortSig.value.length
 			);
-			result[key].tentative = Math.round(
-				result[key].tentative / filteredEffortSig.value.length
+			result[key].tentativeEffort = Math.round(
+				result[key].tentativeEffort / filteredEffortSig.value.length
 			);
-			result[key].total = result[key].confirmed + result[key].tentative;
+			result[key].totalEffort = result[key].confirmedEffort + result[key].tentativeEffort;
 		}
 
 		return result;
@@ -112,18 +109,18 @@ export const Effort = component$(() => {
 
 	return (
 		<div class='px-6 pt-5 w-full space-y-5'>
-			<Filters
+			{/* <Filters
 				selectedCrew={selectedCrewSig}
 				selectedName={selectedNameSig}
 				selectedServiceLine={selectedServiceLineSig}
-			/>
+			/> */}
 
-			{!!filteredEffortSig.value.length && (
+			{/* {!!filteredEffortSig.value.length && (
 				<EffortTable
 					averageEffortByMonth={averageEffortByMonthSig}
 					filteredEffort={filteredEffortSig}
 				/>
-			)}
+			)} */}
 
 			{!!filteredEffortSig.value.length && (
 				<>
@@ -138,7 +135,7 @@ export const Effort = component$(() => {
 
 					{/* Annuly Charts area */}
 					<div class='grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
-						{monthYearListSig.value.map((monthYear, key) => {
+						{/* {monthYearListSig.value.map((monthYear, key) => {
 							return (
 								<div key={key} class='m-4'>
 									<div class='text-lg font-bold'>
@@ -150,7 +147,7 @@ export const Effort = component$(() => {
 									/>
 								</div>
 							);
-						})}
+						})} */}
 					</div>
 				</>
 			)}
