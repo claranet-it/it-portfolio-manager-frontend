@@ -5,6 +5,7 @@ import { useNotification } from 'src/hooks/useNotification';
 import { getEffort, putEffort } from 'src/services/effort';
 import { getDateLabelFromMonthYear } from 'src/utils/dates';
 import { t } from '../locale/labels';
+import { getIcon } from './icons';
 
 interface EffortTableInterface {
 	averageEffortByMonth: Readonly<
@@ -151,7 +152,12 @@ export const EffortTable = component$<EffortTableInterface>(
 								>
 									<td class='px-4 py-3 border-r border-l border-surface-50 content-start'>
 										<div class='flow-col'>
-											<h3 class='text-xl font-bold text-dark-gray'>
+											<h3 class='text-xl font-bold text-dark-grey'>
+												{data.isCompany && (
+													<span class='inline-block mr-1 align-middle -translate-y-0.5'>
+														{data.isCompany && getIcon('UserGroup')}
+													</span>
+												)}
 												{data.name}
 											</h3>
 											<p class='text-sm font-normal text-darkgray-900'>
@@ -173,6 +179,7 @@ export const EffortTable = component$<EffortTableInterface>(
 														{t('effort_table_confirmed')}
 													</label>
 													<input
+														disabled={data.isCompany}
 														type='number'
 														id={'confirmed' + key}
 														class={
@@ -203,6 +210,7 @@ export const EffortTable = component$<EffortTableInterface>(
 														{t('effort_table_tentative')}
 													</label>
 													<input
+														disabled={data.isCompany}
 														type='number'
 														id={'tentative_' + key}
 														class={
@@ -225,32 +233,36 @@ export const EffortTable = component$<EffortTableInterface>(
 													/>
 												</form>
 
-												<div class='col-span-2'>
-													<form class='w-full'>
-														<label
-															class='text-sm font-normal'
-															for={'note_' + key}
-														>
-															{t('effort_table_note')}
-														</label>
-														<input
-															type='string'
-															id={'note_' + key}
-															placeholder={t('effort_table_in_note')}
-															class={
-																'border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
-															}
-															value={month.notes}
-															onChange$={(_, { value }) => {
-																updateEffortField(
-																	uid,
-																	{ ...month, notes: value },
-																	data
-																);
-															}}
-														/>
-													</form>
-												</div>
+												{!data.isCompany && (
+													<div class='col-span-2'>
+														<form class='w-full'>
+															<label
+																class='text-sm font-normal'
+																for={'note_' + key}
+															>
+																{t('effort_table_note')}
+															</label>
+															<input
+																type='string'
+																id={'note_' + key}
+																placeholder={t(
+																	'effort_table_in_note'
+																)}
+																class={
+																	'border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
+																}
+																value={month.notes}
+																onChange$={(_, { value }) => {
+																	updateEffortField(
+																		uid,
+																		{ ...month, notes: value },
+																		data
+																	);
+																}}
+															/>
+														</form>
+													</div>
+												)}
 											</div>
 										</td>
 									))}

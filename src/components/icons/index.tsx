@@ -30,6 +30,7 @@ import { Rust } from './Rust';
 import { Search } from './Search';
 import { Send } from './Send';
 import { TypeScript } from './TypeScript';
+import { UserGroup } from './Usergroup';
 import { V3Dots } from './V3Dots';
 import { Add } from './add';
 import { IOS } from './iOS';
@@ -110,6 +111,8 @@ export const getIcon = (skill: string) => {
 			return <BricklyLogo />;
 		case 'BricklyNaming':
 			return <BricklyNaming />;
+		case 'UserGroup':
+			return <UserGroup />;
 		default:
 			return <AWS />;
 	}
