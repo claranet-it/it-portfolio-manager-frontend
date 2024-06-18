@@ -142,7 +142,7 @@ export const EffortTable = component$<EffortTableInterface>(
 
 					{/* Table body */}
 					<tbody>
-						{/* {filteredEffort.value.map((item, key) => {
+						{filteredEffort.value.map((item, key) => {
 							const [[uid, { effort, ...data }]] = Object.entries(item);
 							return (
 								<tr
@@ -155,7 +155,7 @@ export const EffortTable = component$<EffortTableInterface>(
 												{data.name}
 											</h3>
 											<p class='text-sm font-normal text-darkgray-900'>
-												{data.crew}
+												{data.isCompany ? data.skill : data.crew}
 											</p>
 										</div>
 									</td>
@@ -242,7 +242,6 @@ export const EffortTable = component$<EffortTableInterface>(
 															}
 															value={month.notes}
 															onChange$={(_, { value }) => {
-																console.log(value);
 																updateEffortField(
 																	uid,
 																	{ ...month, notes: value },
@@ -257,7 +256,7 @@ export const EffortTable = component$<EffortTableInterface>(
 									))}
 								</tr>
 							);
-						})} */}
+						})}
 					</tbody>
 				</table>
 			</div>

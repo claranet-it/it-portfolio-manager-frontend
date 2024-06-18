@@ -4,5 +4,5 @@ export type Month = {
 	tentativeEffort: number;
 	totalEffort?: number;
 	people?: number;
-	notes?: string;
+	notes: string;
 };
