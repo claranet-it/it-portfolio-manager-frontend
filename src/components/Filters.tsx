@@ -3,13 +3,15 @@ import { AppContext } from '../app';
 import { t } from '../locale/labels';
 import { Input } from './form/Input';
 import { Select } from './form/Select';
+import { ToggleSwitch } from './form/ToggleSwitch';
 
 export const Filters = component$<{
 	selectedServiceLine: Signal<string>;
 	selectedCrew: Signal<string>;
 	selectedSkill?: Signal<string>;
 	selectedName: Signal<string>;
-}>(({ selectedServiceLine, selectedCrew, selectedSkill, selectedName }) => {
+	onlyCompany: Signal<boolean>;
+}>(({ selectedServiceLine, selectedCrew, selectedSkill, selectedName, onlyCompany }) => {
 	const appStore = useContext(AppContext);
 
 	const serviceLinesSig = useComputed$(() => Object.keys(appStore.configuration.skills));
@@ -67,6 +69,10 @@ export const Filters = component$<{
 				bindValue={selectedName}
 				placeholder={t('input_empty_label')}
 			/>
+
+			<div class='flex items-end'>
+				<ToggleSwitch isChecked={onlyCompany} label={t('SHOW_ONLY_COMPANY_LABEL')} />
+			</div>
 		</div>
 	);
 });

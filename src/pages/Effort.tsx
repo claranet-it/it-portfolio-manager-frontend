@@ -27,6 +27,7 @@ export const Effort = component$(() => {
 	//const selectedSkillSig = useSignal('');
 	const selectedNameSig = useSignal('');
 	const selectedServiceLineSig = useSignal('');
+	const onlyCompanySig = useSignal(false);
 
 	const filteredEffortSig = useComputed$<EffortMatrix>(() => {
 		let result = effortSig.value;
@@ -64,6 +65,13 @@ export const Effort = component$(() => {
 				return selectedCrews.some(({ name }) =>
 					crew?.toLowerCase().includes(name.toLowerCase())
 				);
+			});
+		}
+		// Filter only company
+		if (onlyCompanySig.value) {
+			result = result.filter((el) => {
+				const [{ isCompany }] = Object.values(el);
+				return isCompany;
 			});
 		}
 
@@ -120,6 +128,7 @@ export const Effort = component$(() => {
 				selectedCrew={selectedCrewSig}
 				selectedName={selectedNameSig}
 				selectedServiceLine={selectedServiceLineSig}
+				onlyCompany={onlyCompanySig}
 			/>
 
 			{!!filteredEffortSig.value.length && (

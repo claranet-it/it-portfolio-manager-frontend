@@ -66,5 +66,6 @@
 	"ACTION_CANCEL": "Cancel",
 	"CLARANET_CREDITS": "Credits by Claranet Srl",
 	"LOGIN_TITLE": "Login with",
-	"UNAUTHORIZED": "Unauthorized, please try again"
+	"UNAUTHORIZED": "Unauthorized, please try again",
+	"SHOW_ONLY_COMPANY_LABEL": "Show only company"
 }
