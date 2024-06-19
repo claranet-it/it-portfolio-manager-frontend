@@ -1,23 +1,15 @@
 import { $, Signal, component$, useSignal } from '@builder.io/qwik';
-import { EffortMatrix } from '@models/effort';
+import { Effort, EffortMatrix } from '@models/effort';
 import { Month } from '@models/month';
 import { useNotification } from 'src/hooks/useNotification';
 import { getEffort, putEffort } from 'src/services/effort';
 import { getDateLabelFromMonthYear } from 'src/utils/dates';
 import { t } from '../locale/labels';
+import { getIcon } from './icons';
 
 interface EffortTableInterface {
 	averageEffortByMonth: Readonly<
-		Signal<
-			Record<
-				string,
-				{
-					confirmed: number;
-					tentative: number;
-					total: number;
-				}
-			>
-		>
+		Signal<Record<string, Omit<Month, 'people' | 'notes' | 'month_year'>>>
 	>;
 	filteredEffort: Readonly<Signal<EffortMatrix>>;
 }
@@ -35,15 +27,7 @@ export const EffortTable = component$<EffortTableInterface>(
 		const effortSig = useSignal<EffortMatrix>([]);
 
 		const updateEffortField = $(
-			async (
-				uid: string,
-				month: Month,
-				data: {
-					company: string;
-					crew: string;
-					name: string;
-				}
-			) => {
+			async (uid: string, month: Month, data: Omit<Effort, 'effort' | 'skill'>) => {
 				try {
 					await putEffort(uid, data, month);
 					addEvent({
@@ -101,7 +85,7 @@ export const EffortTable = component$<EffortTableInterface>(
 													class='bg-surface-20 border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
 													value={
 														averageEffortByMonth.value[monthYear]
-															.confirmed
+															.confirmedEffort
 													}
 													disabled
 												/>
@@ -120,7 +104,7 @@ export const EffortTable = component$<EffortTableInterface>(
 													class='bg-surface-20 border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
 													value={
 														averageEffortByMonth.value[monthYear]
-															.tentative
+															.tentativeEffort
 													}
 													disabled
 												/>
@@ -139,12 +123,13 @@ export const EffortTable = component$<EffortTableInterface>(
 													class={
 														getColor(
 															averageEffortByMonth.value[monthYear]
-																.total
+																.totalEffort ?? 0
 														) +
 														' border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
 													}
 													value={
-														averageEffortByMonth.value[monthYear].total
+														averageEffortByMonth.value[monthYear]
+															.totalEffort
 													}
 													disabled
 												/>
@@ -167,11 +152,16 @@ export const EffortTable = component$<EffortTableInterface>(
 								>
 									<td class='px-4 py-3 border-r border-l border-surface-50 content-start'>
 										<div class='flow-col'>
-											<h3 class='text-xl font-bold text-dark-gray'>
+											<h3 class='text-xl font-bold text-dark-grey'>
+												{data.isCompany && (
+													<span class='inline-block mr-1 align-middle -translate-y-0.5'>
+														{data.isCompany && getIcon('UserGroup')}
+													</span>
+												)}
 												{data.name}
 											</h3>
 											<p class='text-sm font-normal text-darkgray-900'>
-												{data.crew}
+												{data.isCompany ? data.skill : data.crew}
 											</p>
 										</div>
 									</td>
@@ -189,6 +179,7 @@ export const EffortTable = component$<EffortTableInterface>(
 														{t('effort_table_confirmed')}
 													</label>
 													<input
+														disabled={data.isCompany}
 														type='number'
 														id={'confirmed' + key}
 														class={
@@ -219,6 +210,7 @@ export const EffortTable = component$<EffortTableInterface>(
 														{t('effort_table_tentative')}
 													</label>
 													<input
+														disabled={data.isCompany}
 														type='number'
 														id={'tentative_' + key}
 														class={
@@ -241,33 +233,36 @@ export const EffortTable = component$<EffortTableInterface>(
 													/>
 												</form>
 
-												<div class='col-span-2'>
-													<form class='w-full'>
-														<label
-															class='text-sm font-normal'
-															for={'note_' + key}
-														>
-															{t('effort_table_note')}
-														</label>
-														<input
-															type='string'
-															id={'note_' + key}
-															placeholder={t('effort_table_in_note')}
-															class={
-																'border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
-															}
-															value={month.notes}
-															onChange$={(_, { value }) => {
-																console.log(value);
-																updateEffortField(
-																	uid,
-																	{ ...month, notes: value },
-																	data
-																);
-															}}
-														/>
-													</form>
-												</div>
+												{!data.isCompany && (
+													<div class='col-span-2'>
+														<form class='w-full'>
+															<label
+																class='text-sm font-normal'
+																for={'note_' + key}
+															>
+																{t('effort_table_note')}
+															</label>
+															<input
+																type='string'
+																id={'note_' + key}
+																placeholder={t(
+																	'effort_table_in_note'
+																)}
+																class={
+																	'border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
+																}
+																value={month.notes}
+																onChange$={(_, { value }) => {
+																	updateEffortField(
+																		uid,
+																		{ ...month, notes: value },
+																		data
+																	);
+																}}
+															/>
+														</form>
+													</div>
+												)}
 											</div>
 										</td>
 									))}

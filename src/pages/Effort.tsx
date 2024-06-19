@@ -1,14 +1,15 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { EffortMatrix } from '@models/effort';
+import { Month } from '@models/month';
+import { EffortTable } from 'src/components/EffortTable';
+import { Filters } from 'src/components/Filters';
+import { MonthChart } from 'src/components/MonthChart';
+import { getDateLabelFromMonthYear } from 'src/utils/dates';
 import { AppContext } from '../app';
-import { EffortTable } from '../components/EffortTable';
-import { Filters } from '../components/Filters';
-import { MonthChart } from '../components/MonthChart';
 import { TotalChart } from '../components/TotalChart';
 import { t } from '../locale/labels';
 import { getConfiguration } from '../services/configuration';
 import { getEffort } from '../services/effort';
-import { getDateLabelFromMonthYear } from '../utils/dates';
 
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
@@ -26,11 +27,11 @@ export const Effort = component$(() => {
 	//const selectedSkillSig = useSignal('');
 	const selectedNameSig = useSignal('');
 	const selectedServiceLineSig = useSignal('');
+	const onlyCompanySig = useSignal(false);
 
 	const filteredEffortSig = useComputed$<EffortMatrix>(() => {
 		let result = effortSig.value;
-
-		// Filter by Name
+		//Filter by Name
 		if (selectedNameSig.value) {
 			result = result.filter((el) => {
 				const [{ name }] = Object.values(el);
@@ -38,7 +39,7 @@ export const Effort = component$(() => {
 			});
 		}
 
-		// Filter by skill
+		//Filter by skill
 		// if (selectedSkillSig.value) {
 		// 	result = result.filter((el) => {
 		// 		const [{ skill }] = Object.values(el);
@@ -46,15 +47,15 @@ export const Effort = component$(() => {
 		// 	});
 		// }
 
-		// Filter by Crew
+		//Filter by Crew
 		if (selectedCrewSig.value) {
 			result = result.filter((el) => {
 				const [{ crew }] = Object.values(el);
-				return crew.toLowerCase().includes(selectedCrewSig.value.toLowerCase());
+				return crew?.toLowerCase().includes(selectedCrewSig.value.toLowerCase());
 			});
 		}
 
-		// Filter by service line
+		//Filter by service line
 		if (selectedServiceLineSig.value) {
 			const selectedCrews = appStore.configuration.crews.filter(
 				({ service_line }) => service_line === selectedServiceLineSig.value
@@ -62,10 +63,18 @@ export const Effort = component$(() => {
 			result = result.filter((el) => {
 				const [{ crew }] = Object.values(el);
 				return selectedCrews.some(({ name }) =>
-					crew.toLowerCase().includes(name.toLowerCase())
+					crew?.toLowerCase().includes(name.toLowerCase())
 				);
 			});
 		}
+		// Filter only company
+		if (onlyCompanySig.value) {
+			result = result.filter((el) => {
+				const [{ isCompany }] = Object.values(el);
+				return isCompany;
+			});
+		}
+
 		return result;
 	});
 
@@ -80,31 +89,34 @@ export const Effort = component$(() => {
 	});
 
 	const averageEffortByMonthSig = useComputed$<
-		Record<string, { confirmed: number; tentative: number; total: number }>
+		Record<string, Omit<Month, 'people' | 'notes' | 'month_year'>>
 	>(() => {
 		const result = filteredEffortSig.value.reduce(
 			(acc, el) => {
 				const [{ effort }] = Object.values(el);
-				for (const { month_year, confirmedEffort, tentativeEffort } of effort) {
-					acc[month_year] = {
-						confirmed: (acc[month_year]?.confirmed || 0) + confirmedEffort,
-						tentative: (acc[month_year]?.tentative || 0) + tentativeEffort,
-						total: 0,
-					};
-				}
+				if (effort)
+					for (const { month_year, confirmedEffort, tentativeEffort } of effort) {
+						acc[month_year] = {
+							confirmedEffort:
+								(acc[month_year]?.confirmedEffort || 0) + confirmedEffort,
+							tentativeEffort:
+								(acc[month_year]?.tentativeEffort || 0) + tentativeEffort,
+							totalEffort: 0,
+						};
+					}
 				return acc;
 			},
-			{} as Record<string, { confirmed: number; tentative: number; total: number }>
+			{} as Record<string, Omit<Month, 'people' | 'notes' | 'month_year'>>
 		);
 
 		for (const key in result) {
-			result[key].confirmed = Math.round(
-				result[key].confirmed / filteredEffortSig.value.length
+			result[key].confirmedEffort = Math.round(
+				result[key].confirmedEffort / filteredEffortSig.value.length
 			);
-			result[key].tentative = Math.round(
-				result[key].tentative / filteredEffortSig.value.length
+			result[key].tentativeEffort = Math.round(
+				result[key].tentativeEffort / filteredEffortSig.value.length
 			);
-			result[key].total = result[key].confirmed + result[key].tentative;
+			result[key].totalEffort = result[key].confirmedEffort + result[key].tentativeEffort;
 		}
 
 		return result;
@@ -116,6 +128,7 @@ export const Effort = component$(() => {
 				selectedCrew={selectedCrewSig}
 				selectedName={selectedNameSig}
 				selectedServiceLine={selectedServiceLineSig}
+				onlyCompany={onlyCompanySig}
 			/>
 
 			{!!filteredEffortSig.value.length && (

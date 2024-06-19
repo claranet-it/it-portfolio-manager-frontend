@@ -4,11 +4,18 @@ export type Skill = {
 	skillCategory: string;
 };
 
-export type SkillMatrix = Record<
-	string,
-	{
-		company: string;
-		crew: string;
-		skills: Record<string, number>;
-	}
->[];
+export type personalSkill = number;
+
+export type companySkill = {
+	people: number;
+	averageScore: number;
+};
+
+export type ItemSkill = {
+	company: string;
+	isCompany: boolean;
+	crew: string;
+	skills: Record<string, personalSkill | companySkill>;
+};
+
+export type SkillMatrix = Record<string, ItemSkill>[];
