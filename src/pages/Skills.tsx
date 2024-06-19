@@ -1,5 +1,6 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { SkillMatrix } from '@models/skill';
+import { getSkillScore } from 'src/utils/skill';
 import { AppContext } from '../app';
 import { Filters } from '../components/Filters';
 import { SkillCard } from '../components/SkillCard';
@@ -28,13 +29,14 @@ export const Skills = component$(() => {
 		if (selectedCrewSig.value) {
 			result = result.filter((sk) => {
 				const crew = Object.values(sk)[0].crew;
-				return crew.toLowerCase().indexOf(selectedCrewSig.value.toLowerCase()) >= 0;
+				return crew?.toLowerCase().indexOf(selectedCrewSig.value.toLowerCase()) >= 0;
 			});
 		}
 		if (selectedSkillSig.value) {
 			result = result.filter((sk) => {
-				const skills = Object.values(sk)[0].skills;
-				return skills[selectedSkillSig.value] > 0;
+				const skillItem = Object.values(sk)[0];
+				const score = getSkillScore(skillItem, selectedSkillSig.value);
+				return score > 0;
 			});
 		}
 

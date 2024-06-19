@@ -1,5 +1,6 @@
 import { Signal, component$, useComputed$, useContext } from '@builder.io/qwik';
 import { SkillMatrix } from '@models/skill';
+import { getSkillScore, skillComparator } from 'src/utils/skill';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
 import {
@@ -25,7 +26,8 @@ export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 	}>(() => {
 		const total = skillMatrix.value.reduce((result, sailor) => {
 			const key = Object.keys(sailor)[0];
-			return result + sailor[key].skills[skill];
+			const score = getSkillScore(sailor[key], skill);
+			return result + score;
 		}, 0);
 
 		const result =
@@ -41,7 +43,8 @@ export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 	const skillLevelSig = useComputed$(() => {
 		const total = skillMatrix.value.reduce((result, sailor) => {
 			const key = Object.keys(sailor)[0];
-			return result + (sailor[key].skills[skill] >= SKILL_LEVEL_SCORE_LIMIT ? 1 : 0);
+			const score = getSkillScore(sailor[key], skill);
+			return result + (score >= SKILL_LEVEL_SCORE_LIMIT ? 1 : 0);
 		}, 0);
 		return total;
 	});
@@ -90,20 +93,19 @@ export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 
 			<div class='w-full flex flex-col space-y-0'>
 				{skillMatrix.value
-					.sort((a, b) =>
-						Object.values(a)[0].skills[skill] < Object.values(b)[0].skills[skill]
-							? 1
-							: -1
-					)
+					.sort((s1, s2) => skillComparator(s1, s2, skill))
 					.slice(0, VISIBLE_SAILORS)
 					.map((skillMatrix, key) => {
-						const [name, { skills }] = Object.entries(skillMatrix)[0];
+						const [name, skillItem] = Object.entries(skillMatrix)[0];
 						return (
-							<div key={key} class='flex justify-between '>
-								<span class='text-sm font-normal'>{name}</span>
+							<div key={key} class='flex justify-between align-middle'>
+								<span class='text-sm font-normal flex flex-row gap-0.5'>
+									{skillItem.isCompany && getIcon('UserGroup')}
+									{name}
+								</span>
 								<SfRating
 									max={appStore.configuration.scoreRange.max}
-									value={skills[skill] || 0}
+									value={getSkillScore(skillItem, skill) || 0}
 								/>
 							</div>
 						);

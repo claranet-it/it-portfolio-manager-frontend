@@ -30,7 +30,7 @@ import { Rust } from './Rust';
 import { Search } from './Search';
 import { Send } from './Send';
 import { TypeScript } from './TypeScript';
-import { UserGroup } from './Usergroup';
+import { UserGroup } from './UserGroup';
 import { V3Dots } from './V3Dots';
 import { Add } from './add';
 import { IOS } from './iOS';

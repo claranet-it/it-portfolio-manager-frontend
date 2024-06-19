@@ -10,7 +10,7 @@ export const Filters = component$<{
 	selectedCrew: Signal<string>;
 	selectedSkill?: Signal<string>;
 	selectedName: Signal<string>;
-	onlyCompany: Signal<boolean>;
+	onlyCompany?: Signal<boolean>;
 }>(({ selectedServiceLine, selectedCrew, selectedSkill, selectedName, onlyCompany }) => {
 	const appStore = useContext(AppContext);
 
@@ -70,9 +70,11 @@ export const Filters = component$<{
 				placeholder={t('input_empty_label')}
 			/>
 
-			<div class='flex items-end'>
-				<ToggleSwitch isChecked={onlyCompany} label={t('SHOW_ONLY_COMPANY_LABEL')} />
-			</div>
+			{onlyCompany && (
+				<div class='flex items-end'>
+					<ToggleSwitch isChecked={onlyCompany} label={t('SHOW_ONLY_COMPANY_LABEL')} />
+				</div>
+			)}
 		</div>
 	);
 });
