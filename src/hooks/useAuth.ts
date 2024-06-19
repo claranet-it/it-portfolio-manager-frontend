@@ -1,5 +1,7 @@
 import { $, useSignal, useTask$ } from '@builder.io/qwik';
 import { AuthProviderButton, Provider } from '@models/auth';
+import { CHATBOT_COOKIE_KEY } from 'src/utils/constants';
+import { removeCookie, setCookie } from 'src/utils/cookie';
 import { auth0 } from '../app';
 import { navigateTo } from '../router';
 import { getAuthValidation } from '../services/auth';
@@ -31,7 +33,7 @@ export const useAuth = () => {
 
 		if (response.token) {
 			await setAuthToken(response.token);
-
+			setCookie(CHATBOT_COOKIE_KEY, response.token);
 			goToTimesheet();
 		} else {
 			refreshPage();
@@ -94,6 +96,8 @@ export const useAuth = () => {
 			}
 		} else {
 			if (!(await getAuthToken())) {
+				removeCookie(CHATBOT_COOKIE_KEY);
+
 				if (provider) {
 					await setProvider(provider);
 
