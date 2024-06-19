@@ -105,7 +105,7 @@ export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 								</span>
 								<SfRating
 									max={appStore.configuration.scoreRange.max}
-									value={getSkillScore(skillItem, skill) || 0}
+									value={getSkillScore(skillItem, skill) ?? 0}
 								/>
 							</div>
 						);
