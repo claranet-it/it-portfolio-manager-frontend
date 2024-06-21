@@ -1,8 +1,6 @@
-import { $, Signal, component$, useSignal } from '@builder.io/qwik';
-import { Effort, EffortMatrix } from '@models/effort';
+import { $, QRL, Signal, component$ } from '@builder.io/qwik';
+import { EffortMatrix } from '@models/effort';
 import { Month } from '@models/month';
-import { useNotification } from 'src/hooks/useNotification';
-import { getEffort, putEffort } from 'src/services/effort';
 import { getDateLabelFromMonthYear } from 'src/utils/dates';
 import { t } from '../locale/labels';
 import { getIcon } from './icons';
@@ -12,6 +10,7 @@ interface EffortTableInterface {
 		Signal<Record<string, Omit<Month, 'people' | 'notes' | 'month_year'>>>
 	>;
 	filteredEffort: Readonly<Signal<EffortMatrix>>;
+	updateEffortField: QRL;
 }
 
 const getColor = (effort: number) => {
@@ -20,32 +19,13 @@ const getColor = (effort: number) => {
 	return 'bg-clara-red-50';
 };
 
+const fallbackValue = $((event: Event, oldValue: string) => {
+	const element = event.target as HTMLInputElement;
+	element.value = oldValue;
+});
+
 export const EffortTable = component$<EffortTableInterface>(
-	({ averageEffortByMonth, filteredEffort }) => {
-		const { addEvent } = useNotification();
-
-		const effortSig = useSignal<EffortMatrix>([]);
-
-		const updateEffortField = $(
-			async (uid: string, month: Month, data: Omit<Effort, 'effort' | 'skill'>) => {
-				try {
-					await putEffort(uid, data, month);
-					addEvent({
-						message: t('EFFORT_SUCCESSFULLY_UPDATED'),
-						type: 'success',
-						autoclose: true,
-					});
-				} catch (error) {
-					const { message } = error as Error;
-					addEvent({
-						message: message,
-						type: 'danger',
-					});
-				}
-				effortSig.value = await getEffort();
-			}
-		);
-
+	({ averageEffortByMonth, filteredEffort, updateEffortField }) => {
 		return (
 			<div class='space-y-1'>
 				<h1 class='text-2xl font-bold text-darkgray-900'>{t('effort_table_title')}</h1>
@@ -143,11 +123,11 @@ export const EffortTable = component$<EffortTableInterface>(
 
 					{/* Table body */}
 					<tbody>
-						{filteredEffort.value.map((item, key) => {
+						{filteredEffort.value.map((item, userKey) => {
 							const [[uid, { effort, ...data }]] = Object.entries(item);
 							return (
 								<tr
-									key={key}
+									key={userKey}
 									class='bg-white border-b border-t border-surface-50 even:bg-surface-5 odd:bg-white'
 								>
 									<td class='px-4 py-3 border-r border-l border-surface-50 content-start'>
@@ -165,29 +145,31 @@ export const EffortTable = component$<EffortTableInterface>(
 											</p>
 										</div>
 									</td>
-									{effort.map((month, key) => (
+									{effort.map((month, efforKey) => (
 										<td
 											class='px-4 py-3 border-r border-l border-surface-50'
-											key={key}
+											key={efforKey}
 										>
 											<div class='grid grid-cols-2 gap-2'>
 												<form class='max-w min-w-16'>
 													<label
 														class='text-sm font-normal'
-														for={'confirmed_' + key}
+														for={'confirmed_' + efforKey}
 													>
 														{t('effort_table_confirmed')}
 													</label>
 													<input
 														disabled={data.isCompany}
 														type='number'
-														id={'confirmed' + key}
+														id={'confirmed' + efforKey}
 														class={
 															'border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
 														}
 														value={month.confirmedEffort}
-														onChange$={(_, { value }) => {
-															updateEffortField(
+														onChange$={async (event, { value }) => {
+															const result = await updateEffortField(
+																userKey,
+																efforKey,
 																uid,
 																{
 																	...month,
@@ -198,6 +180,11 @@ export const EffortTable = component$<EffortTableInterface>(
 																},
 																data
 															);
+															!result &&
+																fallbackValue(
+																	event,
+																	month.confirmedEffort.toString()
+																);
 														}}
 													/>
 												</form>
@@ -205,20 +192,22 @@ export const EffortTable = component$<EffortTableInterface>(
 												<form class='max-w min-w-16'>
 													<label
 														class='text-sm font-normal'
-														for={'tentative_' + key}
+														for={'tentative_' + efforKey}
 													>
 														{t('effort_table_tentative')}
 													</label>
 													<input
 														disabled={data.isCompany}
 														type='number'
-														id={'tentative_' + key}
+														id={'tentative_' + efforKey}
 														class={
 															'border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
 														}
 														value={month.tentativeEffort}
-														onChange$={(_, { value }) => {
-															updateEffortField(
+														onChange$={async (event, { value }) => {
+															const result = await updateEffortField(
+																userKey,
+																efforKey,
 																uid,
 																{
 																	...month,
@@ -229,6 +218,11 @@ export const EffortTable = component$<EffortTableInterface>(
 																},
 																data
 															);
+															!result &&
+																fallbackValue(
+																	event,
+																	month.tentativeEffort.toString()
+																);
 														}}
 													/>
 												</form>
@@ -238,13 +232,13 @@ export const EffortTable = component$<EffortTableInterface>(
 														<form class='w-full'>
 															<label
 																class='text-sm font-normal'
-																for={'note_' + key}
+																for={'note_' + efforKey}
 															>
 																{t('effort_table_note')}
 															</label>
 															<input
 																type='string'
-																id={'note_' + key}
+																id={'note_' + efforKey}
 																placeholder={t(
 																	'effort_table_in_note'
 																)}
@@ -252,12 +246,23 @@ export const EffortTable = component$<EffortTableInterface>(
 																	'border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
 																}
 																value={month.notes}
-																onChange$={(_, { value }) => {
-																	updateEffortField(
-																		uid,
-																		{ ...month, notes: value },
-																		data
-																	);
+																onChange$={(event, { value }) => {
+																	const result =
+																		updateEffortField(
+																			userKey,
+																			efforKey,
+																			uid,
+																			{
+																				...month,
+																				notes: value,
+																			},
+																			data
+																		);
+																	!result &&
+																		fallbackValue(
+																			event,
+																			month.notes
+																		);
 																}}
 															/>
 														</form>
