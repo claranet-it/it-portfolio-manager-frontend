@@ -39,7 +39,7 @@ export const AuthManager = component$(() => {
 			</div>
 
 			<div
-				class={`${isLoading.value ? 'animate-pulse' : ''} w-[360px] h-[360px] flex flex-col justify-evenly p-10 rounded-[4px] bg-clara-red`}
+				class={`${isLoading.value ? 'animate-pulse duration-500' : ''} w-[360px] h-[360px] flex flex-col justify-evenly p-10 rounded-[4px] bg-clara-red`}
 			>
 				<div class='flex flex-row items-center justify-center gap-[28px] text-white-100'>
 					<BricklyLogo />

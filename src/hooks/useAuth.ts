@@ -27,13 +27,12 @@ export const useAuth = () => {
 	];
 
 	const handleBricklyToken = $(async (provider: Provider, providerToken: string) => {
-		isLoading.value = true;
 		const response = await getAuthValidation(provider, providerToken);
-		isLoading.value = false;
 
 		if (response.token) {
 			await setAuthToken(response.token);
 			setCookie(CHATBOT_COOKIE_KEY, response.token);
+			isLoading.value = false;
 			goToTimesheet();
 		} else {
 			refreshPage();
@@ -67,8 +66,9 @@ export const useAuth = () => {
 
 		if (code || token) {
 			selectedProvider.value = provider;
-		} else {
+		} else if (provider !== undefined) {
 			await removeProvider();
+			isLoading.value = false;
 		}
 	});
 
@@ -79,6 +79,7 @@ export const useAuth = () => {
 		const token = url.searchParams.get('token');
 
 		if (code || token) {
+			isLoading.value = true;
 			switch (provider) {
 				case 'Claranet': {
 					handleClaranetAuth();
@@ -90,6 +91,7 @@ export const useAuth = () => {
 				}
 				default: {
 					await removeProvider();
+					isLoading.value = false;
 					refreshPage();
 					break;
 				}
@@ -113,9 +115,11 @@ export const useAuth = () => {
 					}
 				} else {
 					await removeProvider();
+					isLoading.value = false;
 				}
 			} else {
 				await removeProvider();
+				isLoading.value = false;
 				goToTimesheet();
 			}
 		}
