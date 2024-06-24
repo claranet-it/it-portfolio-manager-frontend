@@ -82,7 +82,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		};
 
 		const groupedByProject = dataTimeEntries.reduce<TimeEntryRow>((acc, entry) => {
-			const key = entry.project;
+			const key = `${entry.customer}-${entry.project}-${entry.task}`;
 
 			if (!acc[key]) {
 				acc[key] = [];
@@ -94,8 +94,8 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 
 		const extractFirstEntryDetails = (entries: TimeEntry[]) => {
 			if (entries.length === 0) return {};
-			const { customer, task } = entries[0];
-			return { customer, task };
+			const { customer, project, task } = entries[0];
+			return { customer, project, task };
 		};
 
 		return (
@@ -135,8 +135,8 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						</tr>
 					</thead>
 					<tbody>
-						{Object.entries(groupedByProject).map(([project, entries], key) => {
-							const { customer, task } = extractFirstEntryDetails(entries);
+						{Object.entries(groupedByProject).map(([_, entries], key) => {
+							const { customer, project, task } = extractFirstEntryDetails(entries);
 							return (
 								<tr key={key} class='bg-white border-b'>
 									<th
