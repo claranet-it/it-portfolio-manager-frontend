@@ -1,27 +1,18 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { EffortMatrix } from '@models/effort';
 import { Month } from '@models/month';
+import { AppContext } from 'src/app';
 import { EffortTable } from 'src/components/EffortTable';
 import { Filters } from 'src/components/Filters';
 import { MonthChart } from 'src/components/MonthChart';
+import { useEffort } from 'src/hooks/useEffort';
 import { getDateLabelFromMonthYear } from 'src/utils/dates';
-import { AppContext } from '../app';
 import { TotalChart } from '../components/TotalChart';
 import { t } from '../locale/labels';
-import { getConfiguration } from '../services/configuration';
-import { getEffort } from '../services/effort';
 
 export const Effort = component$(() => {
 	const appStore = useContext(AppContext);
-	const effortSig = useSignal<EffortMatrix>([]);
-
-	const monthYearListSig = useComputed$<string[]>(() => {
-		if (effortSig.value.length > 0) {
-			const [{ effort }] = Object.values(effortSig.value[0]);
-			return effort.map(({ month_year }) => month_year);
-		}
-		return [];
-	});
+	const { monthYearListSig, loadEffort, effortSig, updateEffortField } = useEffort();
 
 	const selectedCrewSig = useSignal('');
 	//const selectedSkillSig = useSignal('');
@@ -79,13 +70,7 @@ export const Effort = component$(() => {
 	});
 
 	useTask$(async () => {
-		if (!Object.keys(appStore.configuration.skills).length) {
-			const configuration = await getConfiguration();
-			appStore.configuration = configuration;
-		}
-
-		const effort = await getEffort();
-		effortSig.value = effort;
+		loadEffort();
 	});
 
 	const averageEffortByMonthSig = useComputed$<
@@ -135,6 +120,7 @@ export const Effort = component$(() => {
 				<EffortTable
 					averageEffortByMonth={averageEffortByMonthSig}
 					filteredEffort={filteredEffortSig}
+					updateEffortField={updateEffortField}
 				/>
 			)}
 
@@ -149,7 +135,7 @@ export const Effort = component$(() => {
 						/>
 					</div>
 
-					{/* Annuly Charts area */}
+					{/* Annual Charts area */}
 					<div class='grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2'>
 						{monthYearListSig.value.map((monthYear, key) => {
 							return (
