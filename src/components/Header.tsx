@@ -2,14 +2,14 @@ import { component$ } from '@builder.io/qwik';
 import { auth0 } from '../app';
 import { t } from '../locale/labels';
 import { Route, navigateTo } from '../router';
+import { CHATBOT_COOKIE_KEY } from '../utils/constants';
+import { removeCookie } from '../utils/cookie';
 import { removeAuthToken } from '../utils/token';
 import { getIcon } from './icons';
-import { removeCookie } from '../utils/cookie';
-import { CHATBOT_COOKIE_KEY } from '../utils/constants';
 
 type MenuRoutes = Exclude<Route, 'auth'>;
 
-const MENU = ['effort', 'profile', 'skills', 'timesheet', 'search'] as const;
+const MENU = ['effort', 'profile', 'skills', 'timesheet', 'report', 'search'] as const;
 
 const { VITE_AUTH_REDIRECT_URI: redirect_uri } = import.meta.env;
 
