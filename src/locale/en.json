@@ -64,7 +64,7 @@
 	"INSERT_NEW_PROJECT_SUCCESS_MESSAGE": "#customer - #project - #task has been added",
 	"ACTION_CONFIRM": "Confirm",
 	"ACTION_CANCEL": "Cancel",
-	"CLARANET_CREDITS": "Credits by Claranet Srl",
+	"CLARANET_CREDITS": "Made by",
 	"LOGIN_TITLE": "Login with",
 	"UNAUTHORIZED": "Unauthorized, please try again",
 	"SHOW_ONLY_COMPANY_LABEL": "Show only company"

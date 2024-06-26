@@ -63,7 +63,10 @@ export const AuthManager = component$(() => {
 			</div>
 
 			<div class='h-[36px] bg-white-100 mt-[12px] text-sm font-normal text-dark-grey'>
-				{t('CLARANET_CREDITS')}
+				{t('CLARANET_CREDITS')}{' '}
+				<a style={{ 'text-decoration': 'underline' }} href='https://www.claranet.com/it'>
+					Claranet Srl
+				</a>
 			</div>
 		</div>
 	);
