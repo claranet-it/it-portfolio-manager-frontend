@@ -45,6 +45,7 @@ export const ReportFilters = component$<{
 				placeholder={t('select_empty_label')}
 				value={selectedProject}
 				options={projectSig}
+				disabled={!selectedCustomer.value}
 				onChange$={() => {
 					selectedTask.value = '';
 				}}
@@ -54,6 +55,7 @@ export const ReportFilters = component$<{
 				id='filter-task'
 				label={t('TASK_LABEL')}
 				placeholder={t('select_empty_label')}
+				disabled={!selectedProject.value}
 				value={selectedTask}
 				options={taskSig}
 			/>

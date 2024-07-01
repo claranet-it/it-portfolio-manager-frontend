@@ -2,6 +2,7 @@ import { component$, useSignal } from '@builder.io/qwik';
 import { ProductivityTable } from 'src/components/ProductivityTable';
 import { ReportFilters } from 'src/components/ReportFilters';
 import { DataRange } from 'src/components/form/DataRange';
+import { useProductivity } from 'src/hooks/report/useProductivity';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
 
 export const Report = component$(() => {
@@ -11,6 +12,15 @@ export const Report = component$(() => {
 	const selectedProjectSig = useSignal<string>('');
 	const selectedTaskSig = useSignal<string>('');
 	const selectedNameSig = useSignal<string>('');
+
+	const { results } = useProductivity(
+		selectedCustomerSig,
+		selectedProjectSig,
+		selectedTaskSig,
+		selectedNameSig,
+		from,
+		to
+	);
 
 	return (
 		<div class='w-full px-3 pt-2.5 space-y-6'>
@@ -58,7 +68,7 @@ export const Report = component$(() => {
 						role='tabpanel'
 						aria-labelledby='productivity-tab'
 					>
-						<ProductivityTable />
+						<ProductivityTable results={results} />
 					</div>
 				</div>
 			</div>

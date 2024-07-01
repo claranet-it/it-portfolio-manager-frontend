@@ -1,6 +1,17 @@
-import { component$ } from '@builder.io/qwik';
+import { Signal, component$ } from '@builder.io/qwik';
+import { ReportProductivityItem } from '@models/report';
 
-export const ProductivityTable = component$(() => {
+interface ProductivityTableProps {
+	// selectedCustomer: Signal<String>;
+	// selectedProject: Signal<String>;
+	// selectedTask: Signal<String>;
+	// selectedName: Signal<String>;
+	// from: Signal<Date>;
+	// to: Signal<Date>;
+	results: Signal<ReportProductivityItem[]>;
+}
+
+export const ProductivityTable = component$<ProductivityTableProps>(({ results }) => {
 	return (
 		<table class='w-full'>
 			<thead class='text-xs text-dark-grey bg-surface-20 py-3'>
@@ -20,16 +31,20 @@ export const ProductivityTable = component$(() => {
 				</tr>
 			</thead>
 			<tbody>
-				<tr class='bg-white border-b'>
-					<td class='py-3 px-4 text-left border border-surface-50'>user</td>
-					<td class='py-3 px-4 text-right border border-surface-50'>
-						<span class='text-base'>120</span>
-					</td>
-					<td class='py-3 px-4 text-center border border-surface-50'>Barra</td>
-					<td class='py-3 px-4 text-right border border-surface-50'>
-						<span class='text-base'>92%</span>
-					</td>
-				</tr>
+				{results.value.map((result) => (
+					<tr class='bg-white border-b'>
+						<td class='py-3 px-4 text-left border border-surface-50'>
+							{result.user.name}
+						</td>
+						<td class='py-3 px-4 text-right border border-surface-50'>
+							<span class='text-base'>{result.workedHours}</span>
+						</td>
+						<td class='py-3 px-4 text-center border border-surface-50'>Barra</td>
+						<td class='py-3 px-4 text-right border border-surface-50'>
+							<span class='text-base'>{result.totalProductivity}</span>
+						</td>
+					</tr>
+				))}
 			</tbody>
 		</table>
 	);

@@ -1,4 +1,4 @@
-import { QRL, Signal, component$, $, useVisibleTask$ } from '@builder.io/qwik';
+import { $, QRL, Signal, component$, useComputed$, useVisibleTask$ } from '@builder.io/qwik';
 import { t } from '../../locale/labels';
 
 interface selectInterface {
@@ -8,10 +8,11 @@ interface selectInterface {
 	options: Signal<string[]>;
 	placeholder?: string;
 	onChange$?: QRL;
+	disabled?: boolean;
 }
 
 export const Select = component$<selectInterface>(
-	({ id, label, value, options, placeholder, onChange$ }) => {
+	({ id, label, value, options, placeholder, onChange$, disabled }) => {
 		const closeDropdown = $(() => {
 			const button = document.getElementById('select-button-' + id);
 			button?.click();
@@ -33,6 +34,18 @@ export const Select = component$<selectInterface>(
 			if (menu !== null) menu.style.width = `${button?.offsetWidth}px`;
 		});
 
+		const labelStyle = useComputed$(() => {
+			if (disabled) return 'text-darkgray-400';
+
+			return 'text-dark-gray';
+		});
+
+		const buttonStyle = useComputed$(() => {
+			if (disabled) return 'bg-dark-gray-50 border-darkgray-300 text-darkgray-400';
+
+			return 'bg-white border-darkgray-500 text-gray-900';
+		});
+
 		useVisibleTask$(({ track }) => {
 			track(value);
 			onChange$ && onChange$();
@@ -51,12 +64,13 @@ export const Select = component$<selectInterface>(
 
 		return (
 			<form class='w-full md:max-w-[300px] lg:max-w-[300px]'>
-				<label class='block text-sm font-normal text-dark-gray'>{label}</label>
+				<label class={`block text-sm font-normal ${labelStyle.value}`}>{label}</label>
 
 				<button
 					id={'select-button-' + id}
+					disabled={disabled}
 					data-dropdown-toggle={'select-dropdown-' + id}
-					class='w-full bg-white border border-darkgray-500 text-gray-900 text-sm font-normal rounded-md block w-full p-2.5 inline-flex flex-row justify-between align-middle'
+					class={`w-full  border ${buttonStyle.value} text-sm font-normal rounded-md block w-full p-2.5 inline-flex flex-row justify-between align-middle`}
 					type='button'
 				>
 					<span class={(!value.value && 'text-darkgray-500') + ' truncate'}>
