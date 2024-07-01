@@ -1,8 +1,9 @@
-import { $, Signal, useSignal, useTask$ } from '@builder.io/qwik';
+import { $, Signal, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { ReportProductivityItem } from '@models/report';
 import { Task } from '@models/task';
+import { AppContext } from 'src/app';
 import { getProductivity } from 'src/services/report';
 import { formatDateString } from 'src/utils/dates';
 import { useDebounce } from '../useDebounce';
@@ -15,26 +16,28 @@ export const useProductivity = (
 	from: Signal<Date>,
 	to: Signal<Date>
 ) => {
-	const isLoading = useSignal(false);
+	const appStore = useContext(AppContext);
 	const results = useSignal<ReportProductivityItem[]>([]);
 	const nameDebunce = useDebounce(name, 300);
 
 	const loadProductivityResults = $(async () => {
-		isLoading.value = true;
-		try {
-			results.value = await getProductivity(
-				customer.value,
-				project.value,
-				task.value,
-				nameDebunce.value,
-				formatDateString(from.value),
-				formatDateString(to.value)
-			);
-		} catch (error) {
-			const errorObject = error as Error;
-			console.error(errorObject.message);
-		}
-		isLoading.value = false;
+		appStore.isLoading = true;
+		setTimeout(async () => {
+			try {
+				results.value = await getProductivity(
+					customer.value,
+					project.value,
+					task.value,
+					nameDebunce.value,
+					formatDateString(from.value),
+					formatDateString(to.value)
+				);
+			} catch (error) {
+				const errorObject = error as Error;
+				console.error(errorObject.message);
+			}
+			appStore.isLoading = false;
+		}, 3000);
 	});
 
 	useTask$(({ track }) => {
@@ -47,5 +50,5 @@ export const useProductivity = (
 		loadProductivityResults();
 	});
 
-	return { isLoading, loadProductivityResults, results };
+	return { loadProductivityResults, results };
 };

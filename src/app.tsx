@@ -7,7 +7,7 @@ import {
 	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
-import { AppStore } from '@models/configuration';
+import { AppStore } from '@models/configurations';
 import { initFlowbite } from 'flowbite';
 import { Layout } from './components/Layout';
 import { routes, useRouter } from './router';
@@ -44,6 +44,7 @@ const initialState: AppStore = {
 		scoreRangeLabels: [],
 	},
 	events: [],
+	isLoading: false,
 };
 
 export const App = component$(() => {
