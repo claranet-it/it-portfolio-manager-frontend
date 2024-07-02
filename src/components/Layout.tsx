@@ -1,15 +1,24 @@
-import { Slot, component$ } from '@builder.io/qwik';
+import { Slot, component$, useContext } from '@builder.io/qwik';
 import { ToastEvent } from '@models/event';
+import { AppContext } from 'src/app';
 import { useNotification } from '../hooks/useNotification';
 import { Route } from '../router';
 import { Header } from './Header';
+import { LoadingSpinner } from './LoadingSpinner';
 import { Toast } from './Toast';
 
 export const Layout = component$<{ currentRoute: Exclude<Route, 'auth'> }>(({ currentRoute }) => {
 	const { eventsList, removeEvent } = useNotification();
+	const appStore = useContext(AppContext);
 
 	return (
 		<div class='h-screen flex flex-col'>
+			{appStore.isLoading && (
+				<div class='fixed t-0 l-0 w-full h-full bg-darkgray-900/30 flex z-50 items-center justify-center'>
+					{<LoadingSpinner />}
+				</div>
+			)}
+
 			<Header currentRoute={currentRoute} />
 
 			<div class='w-full grow flex justify-end'>

@@ -71,5 +71,6 @@
 	"SHOW_ONLY_COMPANY_LABEL": "Show only company",
 	"CUSTOMER_LABEL": "Customer",
 	"PROJECT_LABEL": "Project",
-	"TASK_LABEL": "Task"
+	"TASK_LABEL": "Task",
+	"LOADING_LABEL": "Loading..."
 }

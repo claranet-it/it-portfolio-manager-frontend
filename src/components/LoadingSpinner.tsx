@@ -1,8 +1,9 @@
 import { component$ } from '@builder.io/qwik';
+import { t } from '../locale/labels';
 
 export const LoadingSpinner = component$(() => {
 	return (
-		<div role='status'>
+		<div class='flex flex-col gap-3 p-3 items-center justify-center  border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700'>
 			<svg
 				aria-hidden='true'
 				class=' w-8 h-8 text-gray-200 animate-spin fill-clara-red'
@@ -19,7 +20,10 @@ export const LoadingSpinner = component$(() => {
 					fill='currentFill'
 				/>
 			</svg>
-			<span class='sr-only'>Loading...</span>
+
+			<div class='px-3 py-1 text-xs font-medium leading-none text-center bg-clara-red rounded-md animate-pulse'>
+				<span class='text-white-100 text-xs'>{t('LOADING_LABEL')}</span>
+			</div>
 		</div>
 	);
 });

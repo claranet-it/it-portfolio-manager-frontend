@@ -1,11 +1,10 @@
-import { component$, useContext } from '@builder.io/qwik';
-import { AppContext, auth0 } from '../app';
+import { component$ } from '@builder.io/qwik';
+import { auth0 } from '../app';
 import { t } from '../locale/labels';
 import { Route, navigateTo } from '../router';
 import { CHATBOT_COOKIE_KEY } from '../utils/constants';
 import { removeCookie } from '../utils/cookie';
 import { removeAuthToken } from '../utils/token';
-import { LoadingSpinner } from './LoadingSpinner';
 import { getIcon } from './icons';
 
 type MenuRoutes = Exclude<Route, 'auth'>;
@@ -15,8 +14,6 @@ const MENU = ['effort', 'profile', 'skills', 'timesheet', 'report', 'search'] as
 const { VITE_AUTH_REDIRECT_URI: redirect_uri } = import.meta.env;
 
 export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }) => {
-	const appStore = useContext(AppContext);
-
 	return (
 		<header>
 			<div class='md:flex lg:flex justify-between items-center bg-white border-b border-b-darkgray-300 '>
@@ -29,8 +26,6 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 							width='160'
 							class='sm:inline'
 						/>
-
-						{appStore.isLoading && <LoadingSpinner />}
 					</div>
 				</div>
 
