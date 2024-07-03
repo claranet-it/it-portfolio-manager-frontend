@@ -7,9 +7,14 @@ export type ReportProductivityItem = {
 	totalProductivity: number;
 };
 
-type TotalTracked = {
+export type TotalTracked = {
 	billableProductivity: number;
 	nonBillableProductivity: number;
 	slackTime: number;
 	absence: number;
+};
+
+export type BarLegendColor = {
+	fontColor: string;
+	bgColor: string;
 };

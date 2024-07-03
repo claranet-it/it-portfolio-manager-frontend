@@ -22,22 +22,20 @@ export const useProductivity = (
 
 	const loadProductivityResults = $(async () => {
 		appStore.isLoading = true;
-		setTimeout(async () => {
-			try {
-				results.value = await getProductivity(
-					customer.value,
-					project.value,
-					task.value,
-					nameDebunce.value,
-					formatDateString(from.value),
-					formatDateString(to.value)
-				);
-			} catch (error) {
-				const errorObject = error as Error;
-				console.error(errorObject.message);
-			}
-			appStore.isLoading = false;
-		}, 3000);
+		try {
+			results.value = await getProductivity(
+				customer.value,
+				project.value,
+				task.value,
+				nameDebunce.value,
+				formatDateString(from.value),
+				formatDateString(to.value)
+			);
+		} catch (error) {
+			const errorObject = error as Error;
+			console.error(errorObject.message);
+		}
+		appStore.isLoading = false;
 	});
 
 	useTask$(({ track }) => {
