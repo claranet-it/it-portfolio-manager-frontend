@@ -25,7 +25,7 @@ export const Report = component$(() => {
 	);
 
 	return (
-		<div class='w-full px-3 pt-2.5 space-y-6'>
+		<div class='w-full px-6 pt-2.5 space-y-6'>
 			<div class='flex sm:flex-col md:flex-row lg:flex-row item-right gap-2'>
 				<h1 class='text-2xl font-bold text-darkgray-900 me-4'>{t('REPORT_PAGE_TITLE')}</h1>
 

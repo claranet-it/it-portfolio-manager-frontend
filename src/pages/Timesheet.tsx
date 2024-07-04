@@ -23,7 +23,7 @@ export const Timesheet = component$(() => {
 
 	return (
 		<>
-			<div class='w-full px-3 pt-2.5 space-y-6'>
+			<div class='w-full px-6 pt-2.5 space-y-6'>
 				<div class='flex sm:flex-col md:flex-row lg:flex-row md:items-end md:justify-between lg:items-end lg:justify-between'>
 					<h1 class='text-2xl font-bold text-darkgray-900'>
 						{t('TIMESHEET_PAGE_TITLE')}

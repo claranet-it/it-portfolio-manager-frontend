@@ -1,7 +1,7 @@
 import { component$ } from '@builder.io/qwik';
 import { auth0 } from '../app';
 import { t } from '../locale/labels';
-import { Route, navigateTo } from '../router';
+import { navigateTo, Route } from '../router';
 import { CHATBOT_COOKIE_KEY } from '../utils/constants';
 import { removeCookie } from '../utils/cookie';
 import { removeAuthToken } from '../utils/token';
@@ -17,16 +17,8 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 	return (
 		<header>
 			<div class='md:flex lg:flex justify-between items-center bg-white border-b border-b-darkgray-300 '>
-				<div class='py-4 px-6 sm:text-center'>
-					<div class='flex flex-row space-x-3'>
-						<img
-							alt='Claranet logo'
-							height='33'
-							src='/logo.webp'
-							width='160'
-							class='sm:inline'
-						/>
-					</div>
+				<div class='py-4 px-6 sm:text-center [&_svg]:sm:inline'>
+					{getIcon('BricklyRedLogo')}
 				</div>
 
 				<div class='pr-6 sm:w-[100%] sm:text-center sm:text-center md:flex lg:flex justify-end'>

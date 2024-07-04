@@ -6,6 +6,7 @@ import { ArrowRight } from './ArrowRight';
 import { Bin } from './Bin';
 import { BricklyLogo } from './BricklyLogo';
 import { BricklyNaming } from './BricklyNaming';
+import { BricklyRedLogo } from './BricklyRedLogo';
 import { CSharp } from './CSharp';
 import { Calendar } from './Calendar';
 import { Claranet } from './Claranet';
@@ -111,6 +112,8 @@ export const getIcon = (skill: string) => {
 			return <BricklyLogo />;
 		case 'BricklyNaming':
 			return <BricklyNaming />;
+		case 'BricklyRedLogo':
+			return <BricklyRedLogo />;
 		case 'UserGroup':
 			return <UserGroup />;
 		default:
