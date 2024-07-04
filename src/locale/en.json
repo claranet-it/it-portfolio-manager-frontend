@@ -72,5 +72,9 @@
 	"CUSTOMER_LABEL": "Customer",
 	"PROJECT_LABEL": "Project",
 	"TASK_LABEL": "Task",
+	"USER_LABEL": "User",
+	"WORK_HOURS_LABEL": "Work Hours",
+	"TOTAL_TRACKER_LABEL": "Total tracker",
+	"PRODUCTIVITY_LABEL": "Productivity",
 	"LOADING_LABEL": "Loading..."
 }
