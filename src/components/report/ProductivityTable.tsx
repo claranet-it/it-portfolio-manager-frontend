@@ -49,7 +49,9 @@ export const ProductivityTable = component$<ProductivityTableProps>(({ results }
 								<span class='text-base'>{result.workedHours}</span>
 							</td>
 							<td class='py-3 px-4 text-center border border-surface-50'>
-								<BarLegend elements={result.totalTracked} />
+								{result.workedHours > 0 && (
+									<BarLegend elements={result.totalTracked} />
+								)}
 							</td>
 							<td class='w-12 py-3 px-4 text-right border border-surface-50'>
 								<span class='text-base'>{result.totalProductivity}</span>
