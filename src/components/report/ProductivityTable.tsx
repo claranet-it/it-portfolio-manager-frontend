@@ -1,7 +1,7 @@
 import { Signal, component$ } from '@builder.io/qwik';
 import { ReportProductivityItem } from '@models/report';
 import { t } from 'src/locale/labels';
-import { Avatar } from './Avatart';
+import { Avatar } from '../Avatart';
 import { BarLegend } from './BarLegend';
 
 interface ProductivityTableProps {

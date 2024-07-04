@@ -1,9 +1,10 @@
 import { component$, useSignal } from '@builder.io/qwik';
-import { ProductivityTable } from 'src/components/ProductivityTable';
-import { ReportFilters } from 'src/components/ReportFilters';
 import { DataRange } from 'src/components/form/DataRange';
+import { ProductivityTable } from 'src/components/report/ProductivityTable';
+import { ReportFilters } from 'src/components/report/ReportFilters';
 import { useProductivity } from 'src/hooks/report/useProductivity';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
+import { t } from 'src/locale/labels';
 
 export const Report = component$(() => {
 	const { from, to, nextWeek, prevWeek } = useGetTimeSheetDays();
@@ -24,7 +25,7 @@ export const Report = component$(() => {
 
 	return (
 		<div class='w-full px-3 pt-2.5 space-y-6'>
-			<div class='flex flex-row item-right'>
+			<div class='flex sm:flex-col md:flex-row lg:flex-row item-right gap-2'>
 				<ReportFilters
 					selectedCustomer={selectedCustomerSig}
 					selectedProject={selectedProjectSig}
@@ -56,21 +57,54 @@ export const Report = component$(() => {
 								aria-controls='productivity'
 								aria-selected='false'
 							>
-								Productivity
+								{t('PRODUCTIVITY_LABEL')}
 							</button>
 						</li>
 					</ul>
 				</div>
 				<div id='report-tab-content' class='border border-surface-70 p-6'>
 					<div
-						class='hidden'
+						class='hidden flex flex-col  gap-6'
 						id='productivity'
 						role='tabpanel'
 						aria-labelledby='productivity-tab'
 					>
+						<ProductivityLegend />
+
 						<ProductivityTable results={results} />
 					</div>
 				</div>
+			</div>
+		</div>
+	);
+});
+
+const ProductivityLegend = component$(() => {
+	return (
+		<div class='flex flex-row'>
+			<div class='flex sm:flex-col md:flex-row lg:flex-row text-dark-grey'>
+				<h3 class=' font-bold text-base me-6'>{t('LEGEND_USERS_ACTIVITIES')}</h3>
+
+				<span class='flex items-center text-xs font-normal text-dark-grey me-1'>
+					{t('LEGEND_LABEL').toUpperCase()}
+				</span>
+
+				<span class='flex items-center text-xs font-normal text-dark-grey me-3'>
+					<span class='flex w-2.5 h-2.5 bg-green-500 rounded-full me-1.5 flex-shrink-0'></span>
+					{t('PRODUCTIVILY_BILLABLE_LABEL')}
+				</span>
+				<span class='flex items-center text-xs font-normal text-dark-grey me-3'>
+					<span class='flex w-2.5 h-2.5 bg-green-200 rounded-full me-1.5 flex-shrink-0'></span>
+					{t('PRODUCTIVITY_NOT_BILLABLE_LABEL')}
+				</span>
+				<span class='flex items-center text-xs font-normal text-dark-grey me-3'>
+					<span class='flex w-2.5 h-2.5 bg-yellow-100 rounded-full me-1.5 flex-shrink-0'></span>
+					{t('PRODUCTIVITY_SLACK_TIME_LABEL')}
+				</span>
+				<span class='flex items-center text-xs font-normal text-dark-grey me-3'>
+					<span class='flex w-2.5 h-2.5 bg-pink-1 rounded-full me-1.5 flex-shrink-0'></span>
+					{t('PRODUCTIVITY_ABSENCE_LABEL')}
+				</span>
 			</div>
 		</div>
 	);

@@ -28,7 +28,7 @@ export const DataRange = component$<DataRangeProps>(({ from, to, nextAction, pre
 						type='text'
 						id='input-group-1'
 						disabled
-						class='bg-white w-60 border border-darkgray-500 text-dark-grey text-sm rounded-md block w-full min-w-56 px-2.5 py-3 ps-8'
+						class='bg-white w-60 border border-darkgray-500 text-dark-grey text-sm rounded-md block w-full min-w-56 px-2.5 py-2.5 ps-8'
 						value={currenDataRange.value}
 					/>
 				</div>

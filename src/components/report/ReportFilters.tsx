@@ -1,10 +1,10 @@
 import { Signal, component$, useComputed$ } from '@builder.io/qwik';
+import { t } from 'src/locale/labels';
 import { getCustomers } from 'src/services/customer';
 import { getProjects } from 'src/services/projects';
 import { getTasks } from 'src/services/tasks';
-import { t } from '../locale/labels';
-import { Input } from './form/Input';
-import { Select } from './form/Select';
+import { Input } from '../form/Input';
+import { Select } from '../form/Select';
 
 export const ReportFilters = component$<{
 	selectedCustomer: Signal<string>;

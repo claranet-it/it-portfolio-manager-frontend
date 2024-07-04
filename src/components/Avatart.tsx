@@ -21,15 +21,6 @@ export const Avatar = component$<AvatarProps>(({ user }) => {
 		return _url.test(url);
 	};
 
-	const getRandomColor = () => {
-		var letters = '0123456789ABCDEF';
-		var color = '#';
-		for (var i = 0; i < 6; i++) {
-			color += letters[Math.floor(Math.random() * 16)];
-		}
-		return color;
-	};
-
 	if (verifyURL(user.picture))
 		return (
 			<img
@@ -41,8 +32,8 @@ export const Avatar = component$<AvatarProps>(({ user }) => {
 
 	return (
 		<svg height='24' width='24' class='rounded-full aspect-squar'>
-			<rect fill={getRandomColor()} x='0' y='0' height='24' width='24'></rect>
-			<text fill='#ffffff' font-size='11' text-anchor='middle' x='12' y='16'>
+			<rect fill='#C8D2D8' x='0' y='0' height='24' width='24'></rect>
+			<text fill='#4C4C58' font-size='11' text-anchor='middle' x='12' y='16'>
 				{getInitials(user.name)}
 			</text>
 		</svg>

@@ -76,5 +76,11 @@
 	"WORK_HOURS_LABEL": "Work Hours",
 	"TOTAL_TRACKER_LABEL": "Total tracker",
 	"PRODUCTIVITY_LABEL": "Productivity",
+	"LEGEND_USERS_ACTIVITIES": "Users' activities",
+	"LEGEND_LABEL": "Legend",
+	"PRODUCTIVILY_BILLABLE_LABEL": "productivity billable",
+	"PRODUCTIVITY_NOT_BILLABLE_LABEL": "productivity not billable",
+	"PRODUCTIVITY_SLACK_TIME_LABEL": "slack time",
+	"PRODUCTIVITY_ABSENCE_LABEL": "absence",
 	"LOADING_LABEL": "Loading..."
 }
