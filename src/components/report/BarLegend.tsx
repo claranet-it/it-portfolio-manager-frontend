@@ -16,8 +16,8 @@ export const BarLegend = component$<BarLegendProps>(({ elements }) => {
 
 	return (
 		<div class='w-full flex flex-row'>
-			{elementsList.map(([type, value]) => (
-				<Bar type={type} value={value} />
+			{elementsList.map(([type, value], key) => (
+				<Bar key={key} type={type} value={value} />
 			))}
 		</div>
 	);

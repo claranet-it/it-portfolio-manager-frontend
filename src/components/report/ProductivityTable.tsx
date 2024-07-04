@@ -15,7 +15,7 @@ export const ProductivityTable = component$<ProductivityTableProps>(({ results }
 				<tr>
 					<th
 						scope='col'
-						class='min-w-10 max-w-16 px-4 text-left border border-surface-70 bg-surface-20'
+						class='w-16 px-4 text-left border border-surface-70 bg-surface-20'
 					>
 						<h3 class='text-base text-dark-grey'>{t('USER_LABEL')}</h3>
 					</th>
@@ -34,11 +34,15 @@ export const ProductivityTable = component$<ProductivityTableProps>(({ results }
 				{results.value.length > 0 &&
 					results.value.map((result) => (
 						<tr class='bg-white border-b even:bg-surface-5 odd:bg-white'>
-							<td class='min-w-10 max-w-16 py-3 px-4 text-left border border-surface-50'>
+							<td class='w-16 py-3 px-4 text-left border border-surface-50'>
 								<div class='flex sm:flex-col md:flex-row lg:flex-row sm:space-y-1 md:space-x-1.5 lg:space-x-1.5 text-left'>
-									<Avatar user={result.user} />
+									{result.user.name !== '' && <Avatar user={result.user} />}
 
-									<span>{result.user.name}</span>
+									<span>
+										{result.user.name !== ''
+											? result.user.name
+											: result.user.email}
+									</span>
 								</div>
 							</td>
 							<td class='w-12 py-3 px-4 text-right border border-surface-50'>
