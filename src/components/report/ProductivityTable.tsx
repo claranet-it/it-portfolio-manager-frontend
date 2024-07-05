@@ -2,6 +2,7 @@ import { Signal, component$ } from '@builder.io/qwik';
 import { ReportProductivityItem } from '@models/report';
 import { t } from 'src/locale/labels';
 import { Avatar } from '../Avatart';
+import { getIcon } from '../icons';
 import { BarLegend } from './BarLegend';
 
 interface ProductivityTableProps {
@@ -15,7 +16,7 @@ export const ProductivityTable = component$<ProductivityTableProps>(({ results }
 				<tr>
 					<th
 						scope='col'
-						class='w-16 px-4 text-left border border-surface-70 bg-surface-20'
+						class='min-w-52 w-52 px-4 text-left border border-surface-70 bg-surface-20'
 					>
 						<h3 class='text-base text-dark-grey'>{t('USER_LABEL')}</h3>
 					</th>
@@ -25,8 +26,25 @@ export const ProductivityTable = component$<ProductivityTableProps>(({ results }
 					<th scope='col' class='py-3 px-4 border border-surface-70'>
 						<h3 class='text-base font-bold'>{t('TOTAL_TRACKER_LABEL')}</h3>
 					</th>
-					<th scope='col' class='w-12 min-w-12 py-3 px-4 border border-surface-70'>
-						<h3 class='text-base font-bold'>{t('PRODUCTIVITY_LABEL')}</h3>
+					<th
+						scope='col'
+						class='w-12 py-3 px-4 border border-surface-70'
+						data-tooltip-target='tooltip-default'
+					>
+						<h3 class='text-base font-bold'>
+							<span class='inline-flex'>
+								{t('PRODUCTIVITY_LABEL')}
+								{getIcon('Info')}
+							</span>
+						</h3>
+						<div
+							id='tooltip-default'
+							role='tooltip'
+							class='absolute z-10 invisible inline-block px-3 py-2 text-sx font-normal text-white transition-opacity duration-300 bg-gray-700 rounded-lg shadow-sm opacity-0 tooltip'
+						>
+							{t('PRODUCTIVITY_DESCRIPTION_TEXT')}
+							<div class='tooltip-arrow' data-popper-arrow></div>
+						</div>
 					</th>
 				</tr>
 			</thead>
@@ -34,7 +52,7 @@ export const ProductivityTable = component$<ProductivityTableProps>(({ results }
 				{results.value.length > 0 &&
 					results.value.map((result) => (
 						<tr class='bg-white border-b even:bg-surface-5 odd:bg-white'>
-							<td class='w-16 py-3 px-4 text-left border border-surface-50'>
+							<td class='min-w-52 w-52 py-3 px-4 text-left border border-surface-50'>
 								<div class='flex sm:flex-col md:flex-row lg:flex-row sm:space-y-1 md:space-x-1.5 lg:space-x-1.5 text-left'>
 									{result.user.name !== '' && <Avatar user={result.user} />}
 

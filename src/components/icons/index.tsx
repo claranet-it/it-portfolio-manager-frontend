@@ -19,6 +19,7 @@ import { Exit } from './Exit';
 import { Expand } from './Expand';
 import { Flutter } from './Flutter';
 import { Google } from './Google';
+import { Info } from './Info';
 import { JavaScript } from './JavaScript';
 import { Kotlin } from './Kotlin';
 import { Kubernetes } from './Kubernetes';
@@ -116,6 +117,8 @@ export const getIcon = (skill: string) => {
 			return <BricklyRedLogo />;
 		case 'UserGroup':
 			return <UserGroup />;
+		case 'Info':
+			return <Info />;
 		default:
 			return <AWS />;
 	}

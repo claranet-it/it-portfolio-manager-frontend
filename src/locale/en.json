@@ -84,5 +84,6 @@
 	"PRODUCTIVITY_NOT_BILLABLE_LABEL": "productivity not billable",
 	"PRODUCTIVITY_SLACK_TIME_LABEL": "slack time",
 	"PRODUCTIVITY_ABSENCE_LABEL": "absence",
-	"LOADING_LABEL": "Loading..."
+	"LOADING_LABEL": "Loading...",
+	"PRODUCTIVITY_DESCRIPTION_TEXT": "The productivity percentage is the sum of billable hours and non-billable but functional hours"
 }

@@ -15,10 +15,10 @@ export const BarLegend = component$<BarLegendProps>(({ elements }) => {
 	const elementsList = Object.entries(elements);
 
 	return (
-		<div class='w-full flex flex-row'>
-			{elementsList.map(([type, value], key) => (
-				<Bar key={key} type={type} value={value} />
-			))}
+		<div class='w-full flex flex-row bg-surface-20'>
+			{elementsList.map(
+				([type, value], key) => value > 0 && <Bar key={key} type={type} value={value} />
+			)}
 		</div>
 	);
 });
