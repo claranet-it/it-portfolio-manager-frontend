@@ -1,5 +1,7 @@
 import { component$, useSignal } from '@builder.io/qwik';
+import { Button } from 'src/components/Button';
 import { DataRange } from 'src/components/form/DataRange';
+import { getIcon } from 'src/components/icons';
 import { ProductivityLegend } from 'src/components/report/ProductivityLegend';
 import { ProductivityTable } from 'src/components/report/ProductivityTable';
 import { ReportFilters } from 'src/components/report/ReportFilters';
@@ -72,7 +74,14 @@ export const Report = component$(() => {
 						role='tabpanel'
 						aria-labelledby='productivity-tab'
 					>
-						<ProductivityLegend />
+						<div class='flex sm:flex-col md:flex-row lg:flex-row md:justify-between lg:justify-between'>
+							<ProductivityLegend />
+							<Button variant={'link'}>
+								<span class='inline-flex items-end gap-1'>
+									{getIcon('Downlaod')} Download report
+								</span>
+							</Button>
+						</div>
 
 						<ProductivityTable results={results} />
 					</div>

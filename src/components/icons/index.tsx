@@ -13,6 +13,7 @@ import { Claranet } from './Claranet';
 import { Clear } from './Clear';
 import { Close } from './Close';
 import { Design } from './Design';
+import { Downalod } from './Download';
 import { Edit } from './Edit';
 import { Elixir } from './Elixir';
 import { Exit } from './Exit';
@@ -119,6 +120,8 @@ export const getIcon = (skill: string) => {
 			return <UserGroup />;
 		case 'Info':
 			return <Info />;
+		case 'Downlaod':
+			return <Downalod />;
 		default:
 			return <AWS />;
 	}
