@@ -41,7 +41,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 					<form class='space-y-3' onSubmit$={handleSubmit}>
 						<Autocomplete
 							id={UUID()}
-							label='Customer'
+							label={t('CUSTOMER_LABEL')}
 							selected={customerSelected}
 							data={dataCustomersSig}
 							placeholder='Search...'
@@ -51,7 +51,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 
 						<Autocomplete
 							id={UUID()}
-							label='Project'
+							label={t('PROJECT_LABEL')}
 							selected={projectSelected}
 							data={dataProjectsSig}
 							placeholder='Search...'
@@ -62,7 +62,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 
 						<Autocomplete
 							id={UUID()}
-							label='Task'
+							label={t('TASK_LABEL')}
 							selected={taskSelected}
 							data={dataTaksSign}
 							placeholder='Search...'

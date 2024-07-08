@@ -8,6 +8,8 @@ export type UserMe = {
 	crewLeader: Boolean;
 };
 
+export type User = Omit<UserMe, 'crew' | 'company' | 'place' | 'crewLeader'>;
+
 export type SetUserProfile = {
 	crew: string;
 	company: string;

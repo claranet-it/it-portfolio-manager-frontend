@@ -22,6 +22,7 @@ export const Filters = component$<{
 		);
 		return result.map((v) => v.name);
 	});
+
 	const skillsSig = useComputed$(() => {
 		const skills: string[] = selectedServiceLine.value
 			? appStore.configuration.skills[selectedServiceLine.value]

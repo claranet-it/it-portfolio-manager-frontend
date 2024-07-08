@@ -3,6 +3,7 @@ import { ToastEvent } from './event';
 export type AppStore = {
 	configuration: Configuration;
 	events: ToastEvent[];
+	isLoading: Boolean;
 };
 
 export type Configuration = {
