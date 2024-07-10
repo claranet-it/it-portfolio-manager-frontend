@@ -1,4 +1,4 @@
-import { component$, useSignal } from '@builder.io/qwik';
+import { $, component$, useSignal } from '@builder.io/qwik';
 import { Button } from 'src/components/Button';
 import { DataRange } from 'src/components/form/DataRange';
 import { getIcon } from 'src/components/icons';
@@ -16,6 +16,7 @@ export const Report = component$(() => {
 	const selectedProjectSig = useSignal<string>('');
 	const selectedTaskSig = useSignal<string>('');
 	const selectedNameSig = useSignal<string>('');
+	const ref = useSignal<HTMLElement>();
 
 	const { results } = useProductivity(
 		selectedCustomerSig,
@@ -25,6 +26,17 @@ export const Report = component$(() => {
 		from,
 		to
 	);
+
+	const handlePrint = $(() => {
+		const printContent = ref.value;
+		if (printContent) {
+			const originalContents = document.body.innerHTML;
+			document.body.innerHTML = printContent.innerHTML;
+			window.print();
+			document.body.innerHTML = originalContents;
+			window.location.reload();
+		}
+	});
 
 	return (
 		<div class='w-full px-6 pt-2.5 space-y-6'>
@@ -76,14 +88,13 @@ export const Report = component$(() => {
 					>
 						<div class='flex sm:flex-col md:flex-row lg:flex-row md:justify-between lg:justify-between'>
 							<ProductivityLegend />
-							<Button variant={'link'}>
+							<Button variant={'link'} onClick$={handlePrint}>
 								<span class='inline-flex items-end gap-1'>
 									{getIcon('Downlaod')} Download report
 								</span>
 							</Button>
 						</div>
-
-						<ProductivityTable results={results} />
+						<ProductivityTable results={results} ref={ref} />
 					</div>
 				</div>
 			</div>
