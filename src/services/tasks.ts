@@ -1,5 +1,5 @@
 import { Customer } from '@models/customer';
-import { Project } from '@models/project';
+import { Project, ProjectType } from '@models/project';
 import { Task } from '@models/task';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
@@ -14,11 +14,13 @@ export const saveTask = async (
 	company: string = 'it',
 	customer: Customer,
 	project: Project,
-	task: Task
+	task: Task,
+	projectType: ProjectType
 ): Promise<boolean> =>
 	checkHttpResponseStatus(`task/task`, 200, 'POST', {
 		company: company,
 		customer: customer,
 		project: project,
 		task: task,
+		projectType: projectType,
 	});

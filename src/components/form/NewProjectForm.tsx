@@ -1,4 +1,4 @@
-import { $, QRL, Signal, component$ } from '@builder.io/qwik';
+import { $, QRL, Signal, component$, useComputed$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
 import { t } from '../../locale/labels';
@@ -6,6 +6,7 @@ import { TimeEntry } from '../../models/timeEntry';
 import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
 import { Autocomplete } from './Autocomplete';
+import { Select } from './Select';
 
 interface NewProjectFormProp {
 	timeEntry: Signal<TimeEntry | undefined>;
@@ -22,6 +23,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			customerSelected,
 			projectSelected,
 			taskSelected,
+			projectTypeSelected,
 			projectEnableSig,
 			taskEnableSig,
 			onChangeCustomer,
@@ -33,6 +35,12 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 		const _onCancel = $(() => {
 			clearForm();
 			onCancel$ && onCancel$();
+		});
+
+		const projectTypeList = useComputed$(() => {
+			const types = ['', 'billable', 'non-billable', 'slack-time', 'absence'];
+
+			return types;
 		});
 
 		return (
@@ -68,6 +76,15 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 							placeholder='Search...'
 							required
 							disabled={!taskEnableSig.value}
+						/>
+
+						<Select
+							id={UUID()}
+							disabled={false}
+							label='Project Type'
+							placeholder='Select Project Type'
+							value={projectTypeSelected}
+							options={projectTypeList}
 						/>
 
 						<div class='flex flex-row space-x-1 justify-end'>

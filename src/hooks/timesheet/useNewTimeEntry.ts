@@ -3,7 +3,7 @@ import { ModalState } from '@models/modalState';
 import { format } from 'date-fns';
 import { t, tt } from '../../locale/labels';
 import { Customer } from '../../models/customer';
-import { Project } from '../../models/project';
+import { Project, ProjectType } from '../../models/project';
 import { Task } from '../../models/task';
 import { TimeEntry } from '../../models/timeEntry';
 import { getCustomers } from '../../services/customer';
@@ -28,6 +28,7 @@ export const useNewTimeEntry = (
 	const customerSelected = useSignal<Customer>('');
 	const projectSelected = useSignal<Project>('');
 	const taskSelected = useSignal<Task>('');
+	const projectTypeSelected = useSignal<ProjectType>('');
 
 	const projectEnableSig = useSignal(false);
 	const taskEnableSig = useSignal(false);
@@ -56,6 +57,7 @@ export const useNewTimeEntry = (
 		customerSelected.value = '';
 		projectSelected.value = '';
 		taskSelected.value = '';
+		projectTypeSelected.value = '';
 	});
 
 	const insertNewTimeEntry = $(async () => {
@@ -63,7 +65,8 @@ export const useNewTimeEntry = (
 			'it',
 			customerSelected.value,
 			projectSelected.value,
-			taskSelected.value
+			taskSelected.value,
+			projectTypeSelected.value
 		);
 
 		if (!savingResult) {
@@ -130,6 +133,7 @@ export const useNewTimeEntry = (
 		customerSelected,
 		projectSelected,
 		taskSelected,
+		projectTypeSelected,
 		projectEnableSig,
 		taskEnableSig,
 		onChangeCustomer,

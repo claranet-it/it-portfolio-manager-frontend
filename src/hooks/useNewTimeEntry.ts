@@ -1,13 +1,13 @@
 import { $, sync$, useComputed$, useSignal } from '@builder.io/qwik';
+import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
+import { Project, ProjectType } from '@models/project';
+import { Task } from '@models/task';
 import { t, tt } from '../locale/labels';
 import { getCustomers } from '../services/customer';
 import { getProjects } from '../services/projects';
 import { getTasks, saveTask } from '../services/tasks';
-import { Project } from '@models/project';
-import { Customer } from '@models/customer';
 import { useNotification } from './useNotification';
-import { Task } from '@models/task';
 
 export const useNewTimeEntry = (alertMessageState: ModalState) => {
 	const { addEvent } = useNotification();
@@ -22,6 +22,7 @@ export const useNewTimeEntry = (alertMessageState: ModalState) => {
 	const customerSelected = useSignal<Customer>('');
 	const projectSelected = useSignal<Project>('');
 	const taskSelected = useSignal<Task>('');
+	const projectTypeSelected = useSignal<ProjectType>('');
 
 	const projectEnableSig = useSignal(false);
 	const taskEnableSig = useSignal(false);
@@ -50,6 +51,7 @@ export const useNewTimeEntry = (alertMessageState: ModalState) => {
 		customerSelected.value = '';
 		projectSelected.value = '';
 		taskSelected.value = '';
+		projectTypeSelected.value = '';
 	});
 
 	const insertNewTimeEntry = $(async () => {
@@ -57,7 +59,8 @@ export const useNewTimeEntry = (alertMessageState: ModalState) => {
 			'it',
 			customerSelected.value,
 			projectSelected.value,
-			taskSelected.value
+			taskSelected.value,
+			projectTypeSelected.value
 		);
 
 		if (!savingResult) {
@@ -113,6 +116,7 @@ export const useNewTimeEntry = (alertMessageState: ModalState) => {
 		customerSelected,
 		projectSelected,
 		taskSelected,
+		projectTypeSelected,
 		projectEnableSig,
 		taskEnableSig,
 		onChangeCustomer,

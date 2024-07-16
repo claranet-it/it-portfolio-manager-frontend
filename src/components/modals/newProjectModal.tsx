@@ -1,6 +1,6 @@
 import { $, Slot, component$, useComputed$, useStore } from '@builder.io/qwik';
-import { getIcon } from '../icons';
 import { t } from '../../locale/labels';
+import { getIcon } from '../icons';
 
 export const NewProjectModal = component$(() => {
 	const modalStatus = useStore<{
