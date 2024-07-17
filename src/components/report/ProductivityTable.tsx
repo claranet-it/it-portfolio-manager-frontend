@@ -13,7 +13,7 @@ interface ProductivityTableProps {
 export const ProductivityTable = component$<ProductivityTableProps>(({ results, ref }) => {
 	return (
 		<div ref={ref}>
-			<table class='w-full table-left-ticky productivity-tablw-min-w rtl:text-right'>
+			<table class='w-full table-left-sticky productivity-tablw-min-w rtl:text-right'>
 				<thead class='text-xs text-dark-grey bg-surface-20 py-3'>
 					<tr>
 						<th
@@ -66,7 +66,7 @@ export const ProductivityTable = component$<ProductivityTableProps>(({ results, 
 									</div>
 								</td>
 								<td class='w-12 py-3 px-4 text-right border border-surface-50'>
-									<span class='text-base'>{result.workedHours}</span>
+									<span class='text-base'>{result.workedHours.toFixed(0)}</span>
 								</td>
 								<td class='py-3 px-4 text-center border border-surface-50'>
 									{result.workedHours > 0 && (

@@ -1,4 +1,4 @@
-import { $, component$, useSignal } from '@builder.io/qwik';
+import { component$, useSignal } from '@builder.io/qwik';
 import { Button } from 'src/components/Button';
 import { DataRange } from 'src/components/form/DataRange';
 import { getIcon } from 'src/components/icons';
@@ -8,6 +8,7 @@ import { ReportFilters } from 'src/components/report/ReportFilters';
 import { useProductivity } from 'src/hooks/report/useProductivity';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
 import { t } from 'src/locale/labels';
+import { handlePrint } from 'src/utils/handlePrint';
 
 export const Report = component$(() => {
 	const { from, to, nextWeek, prevWeek } = useGetTimeSheetDays();
@@ -26,17 +27,6 @@ export const Report = component$(() => {
 		from,
 		to
 	);
-
-	const handlePrint = $(() => {
-		const printContent = ref.value;
-		if (printContent) {
-			const originalContents = document.body.innerHTML;
-			document.body.innerHTML = printContent.innerHTML;
-			window.print();
-			document.body.innerHTML = originalContents;
-			window.location.reload();
-		}
-	});
 
 	return (
 		<div class='w-full px-6 pt-2.5 space-y-6'>
@@ -88,7 +78,7 @@ export const Report = component$(() => {
 					>
 						<div class='flex sm:flex-col md:flex-row lg:flex-row md:justify-between lg:justify-between'>
 							<ProductivityLegend />
-							<Button variant={'link'} onClick$={handlePrint}>
+							<Button variant={'link'} onClick$={() => handlePrint(ref)}>
 								<span class='inline-flex items-end gap-1'>
 									{getIcon('Downlaod')} Download report
 								</span>

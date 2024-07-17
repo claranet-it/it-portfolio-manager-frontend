@@ -24,16 +24,44 @@ body {
 	min-width: 800px;
 }
 
-.table-left-ticky th:first-child {
-	@apply sticky left-0;
-}
-
-.table-left-ticky td:first-child {
-	@apply sticky left-0;
-	background-color: inherit;
-}
-
 input[type='time']::-webkit-calendar-picker-indicator {
 	display: none;
 	-webkit-appearance: none;
+}
+
+@media screen {
+	.table-left-sticky th:first-child {
+		@apply sticky left-1;
+		background-color: inherit;
+	}
+
+	.table-left-sticky td:first-child {
+		@apply sticky left-1;
+		background-color: inherit;
+	}
+}
+
+@media print {
+	* {
+		-webkit-print-color-adjust: exact !important;
+		print-color-adjust: exact !important;
+	}
+
+	table {
+		page-break-after: auto;
+	}
+	tr {
+		page-break-inside: avoid;
+		page-break-after: auto;
+	}
+	td {
+		page-break-inside: avoid;
+		page-break-after: auto;
+	}
+	thead {
+		display: table-header-group;
+	}
+	tfoot {
+		display: table-footer-group;
+	}
 }

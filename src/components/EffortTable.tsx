@@ -30,7 +30,7 @@ export const EffortTable = component$<EffortTableInterface>(
 			<div class='space-y-1'>
 				<h1 class='text-2xl font-bold text-darkgray-900'>{t('effort_table_title')}</h1>
 
-				<table class='w-full effort-table-min-w table-left-ticky text-sm text-left rtl:text-right'>
+				<table class='w-full effort-table-min-w table-left-sticky text-sm text-left rtl:text-right'>
 					{/** Table header */}
 					<thead class='text-xs text-gray-700 bg-surface-20'>
 						<tr class='border-t border-b border-surface-50'>
