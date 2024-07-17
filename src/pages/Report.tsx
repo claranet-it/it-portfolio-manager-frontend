@@ -1,11 +1,14 @@
 import { component$, useSignal } from '@builder.io/qwik';
+import { Button } from 'src/components/Button';
 import { DataRange } from 'src/components/form/DataRange';
+import { getIcon } from 'src/components/icons';
 import { ProductivityLegend } from 'src/components/report/ProductivityLegend';
 import { ProductivityTable } from 'src/components/report/ProductivityTable';
 import { ReportFilters } from 'src/components/report/ReportFilters';
 import { useProductivity } from 'src/hooks/report/useProductivity';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
 import { t } from 'src/locale/labels';
+import { handlePrint } from 'src/utils/handlePrint';
 
 export const Report = component$(() => {
 	const { from, to, nextWeek, prevWeek } = useGetTimeSheetDays();
@@ -14,6 +17,7 @@ export const Report = component$(() => {
 	const selectedProjectSig = useSignal<string>('');
 	const selectedTaskSig = useSignal<string>('');
 	const selectedNameSig = useSignal<string>('');
+	const ref = useSignal<HTMLElement>();
 
 	const { results } = useProductivity(
 		selectedCustomerSig,
@@ -72,9 +76,15 @@ export const Report = component$(() => {
 						role='tabpanel'
 						aria-labelledby='productivity-tab'
 					>
-						<ProductivityLegend />
-
-						<ProductivityTable results={results} />
+						<div class='flex sm:flex-col md:flex-row lg:flex-row md:justify-between lg:justify-between'>
+							<ProductivityLegend />
+							<Button variant={'link'} onClick$={() => handlePrint(ref)}>
+								<span class='inline-flex items-end gap-1'>
+									{getIcon('Downlaod')} Download report
+								</span>
+							</Button>
+						</div>
+						<ProductivityTable results={results} ref={ref} />
 					</div>
 				</div>
 			</div>

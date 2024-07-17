@@ -11,7 +11,7 @@ interface BarProps {
 	value: number;
 }
 
-export const BarLegend = component$<BarLegendProps>(({ elements }) => {
+const BarLegend = component$<BarLegendProps>(({ elements }) => {
 	const elementsList = Object.entries(elements);
 
 	return (
@@ -59,3 +59,5 @@ const Bar = component$<BarProps>(({ type, value }) => {
 		</div>
 	);
 });
+
+export { BarLegend };
