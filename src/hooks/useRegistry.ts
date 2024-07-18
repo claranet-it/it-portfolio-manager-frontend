@@ -6,7 +6,7 @@ import { Task } from '@models/task';
 import { tt } from 'src/locale/labels';
 import { getCustomers } from 'src/services/customer';
 import { getProjects } from 'src/services/projects';
-import { deleteProject, editRegistry } from 'src/services/registry';
+import { deleteProject, editRegistry, RegistryResponse } from 'src/services/registry';
 import { getTasks } from 'src/services/tasks';
 import { capitalizeFirstLetter, RegistryHandler, showAlert } from 'src/utils/registry';
 import { useNotification } from './useNotification';
@@ -30,6 +30,11 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 
 	const selectedCustomer = useSignal<Customer[]>([]);
 	const selectedProject = useSignal<{ customer: Customer; project: Project }[]>([]);
+
+	const editValuesReset = () => {
+		prevValue.value = '';
+		newValue.value = '';
+	};
 
 	const setLoading = $((value: string) => {
 		if (loadingList.value.includes(value)) {
@@ -190,6 +195,71 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 		await fetchTasks();
 	});
 
+	const handleCustomerEdit = $(async (props: RegistryHandler, newCustomer: string) => {
+		await setLoading('edit');
+		const customerIndex = data.findIndex((registry) => registry.customer == props.customer);
+		let projectCount = data[customerIndex].projects.length;
+		let projects = [];
+
+		if (projectCount === 0) {
+			projects = await getProjects('it', props.customer);
+		} else {
+			projects = data[customerIndex].projects.map((project) => project.projectName);
+		}
+
+		projectCount = projects.length;
+
+		const results = {
+			success: 0,
+			failure: 0,
+		};
+
+		try {
+			for (let i = 0; i <= projectCount - 1; i++) {
+				const res = await editRegistry(props, newCustomer, projects[i]);
+				if (res.message === 'OK') {
+					results.success++;
+				} else {
+					results.failure++;
+				}
+			}
+
+			// TODO: improve this, simplify and add labels
+			if (results.success === 0 && results.failure !== 0) {
+				addEvent({
+					type: 'danger',
+					message: `Customer couldn't be edited! ${results.failure} / ${projectCount} projects are already assigned!`,
+					autoclose: true,
+				});
+			} else if (results.success !== 0 && results.failure === 0) {
+				addEvent({
+					type: 'success',
+					message: `Customer edited successfully! ${results.success} / ${projectCount} projects were edited!`,
+					autoclose: true,
+				});
+			} else if (results.success !== 0 && results.failure !== 0) {
+				addEvent({
+					type: 'success',
+					message: `Edit partially completed! Success: ${results.success} Failure: ${results.failure}`,
+					autoclose: true,
+				});
+			}
+
+			editValuesReset();
+			await setLoading('edit');
+
+			await fetchCustomers(props);
+		} catch (e) {
+			addEvent({
+				type: 'danger',
+				message: 'There was an error while editing the customer!',
+				autoclose: true,
+			});
+			editValuesReset();
+			await setLoading('edit');
+		}
+	});
+
 	const handleEdit = $((props: RegistryHandler) => {
 		prevValue.value =
 			props.type == 'customer'
@@ -203,30 +273,35 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 			props,
 			editMessageState,
 			$(async () => {
-				await setLoading('edit');
-				const result = await editRegistry(props, newValue.value);
-
-				if (result.message === 'OK') {
-					addEvent({
-						type: 'success',
-						message: tt('EDIT_REGISTRY_ELEMENT_SUCCESS_MESSAGE', {
-							type: capitalizeFirstLetter(props.type),
-						}),
-						autoclose: true,
-					});
-					newValue.value = '';
-					await setLoading('edit');
-
-					await fetchCustomers(props);
-					return;
+				let result: RegistryResponse;
+				if (props.type == 'customer') {
+					await handleCustomerEdit(props, newValue.value);
 				} else {
-					addEvent({
-						type: 'danger',
-						message: result.message,
-						autoclose: true,
-					});
+					await setLoading('edit');
+					result = await editRegistry(props, newValue.value);
+
+					if (result.message === 'OK') {
+						addEvent({
+							type: 'success',
+							message: tt('EDIT_REGISTRY_ELEMENT_SUCCESS_MESSAGE', {
+								type: capitalizeFirstLetter(props.type),
+							}),
+							autoclose: true,
+						});
+						editValuesReset();
+						await setLoading('edit');
+
+						await fetchCustomers(props);
+						return;
+					} else {
+						addEvent({
+							type: 'danger',
+							message: result.message,
+							autoclose: true,
+						});
+						await setLoading('edit');
+					}
 				}
-				await setLoading('edit');
 			})
 		);
 		editMessageState.body = true;

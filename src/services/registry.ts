@@ -3,13 +3,14 @@ import { Project } from '@models/project';
 import { getHttpResponse } from 'src/network/httpRequest';
 import { RegistryHandler } from 'src/utils/registry';
 
-type RegistryResponse = {
+export type RegistryResponse = {
 	message: string;
 };
 
 export const editRegistry = async (
 	props: RegistryHandler,
-	newValue: string
+	newValue: string,
+	projectValue?: Project
 ): Promise<RegistryResponse> => {
 	if (props.type === 'task') {
 		return getHttpResponse<RegistryResponse>('task/task', 'PUT', {
@@ -28,6 +29,7 @@ export const editRegistry = async (
 		return getHttpResponse<RegistryResponse>('task/customer-project', 'PUT', {
 			customer: props.customer,
 			newCustomer: newValue,
+			project: projectValue,
 		});
 	}
 };
