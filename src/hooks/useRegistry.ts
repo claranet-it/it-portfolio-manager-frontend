@@ -31,10 +31,10 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 	const selectedCustomer = useSignal<Customer[]>([]);
 	const selectedProject = useSignal<{ customer: Customer; project: Project }[]>([]);
 
-	const editValuesReset = () => {
+	const editValuesReset = $(() => {
 		prevValue.value = '';
 		newValue.value = '';
-	};
+	});
 
 	const setLoading = $((value: string) => {
 		if (loadingList.value.includes(value)) {
@@ -245,7 +245,7 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 				});
 			}
 
-			editValuesReset();
+			await editValuesReset();
 			await setLoading('edit');
 
 			await fetchCustomers(props);
@@ -255,7 +255,7 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 				message: 'There was an error while editing the customer!',
 				autoclose: true,
 			});
-			editValuesReset();
+			await editValuesReset();
 			await setLoading('edit');
 		}
 	});
@@ -288,7 +288,7 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 							}),
 							autoclose: true,
 						});
-						editValuesReset();
+						await editValuesReset();
 						await setLoading('edit');
 
 						await fetchCustomers(props);
@@ -299,6 +299,7 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 							message: result.message,
 							autoclose: true,
 						});
+						await editValuesReset();
 						await setLoading('edit');
 					}
 				}
