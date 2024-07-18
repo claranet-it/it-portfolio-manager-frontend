@@ -52,39 +52,27 @@ export const Registry = component$(() => {
 			>
 				{props.mainData}{' '}
 				<div class='flex flex-row gap-4'>
+					{!['customer', 'task'].includes(props.type) && (
+						<Button
+							variant={'outline'}
+							disabled={loading}
+							onClick$={(e) => {
+								e.stopPropagation();
+								if (props.type === 'project') {
+									handlers.delete({
+										type: 'project',
+										customer: props.customer,
+										project: props.mainData,
+									});
+								}
+							}}
+						>
+							{getIcon('Bin')}
+						</Button>
+					)}
 					<Button
 						variant={'outline'}
-						disabled={loading.value}
-						onClick$={(e) => {
-							e.stopPropagation();
-							if (props.type === 'project') {
-								handlers.delete({
-									type: 'project',
-									customer: props.customer,
-									project: props.mainData,
-								});
-							} else if (props.type === 'task') {
-								handlers.delete({
-									type: 'task',
-									customer: props.customer,
-									project:
-										data[props.customerIndex].projects[props.projectIndex]
-											.projectName,
-									task: props.mainData,
-								});
-							} else {
-								handlers.delete({
-									type: 'customer',
-									customer: props.mainData,
-								});
-							}
-						}}
-					>
-						{getIcon('Bin')}
-					</Button>
-					<Button
-						variant={'outline'}
-						disabled={loading.value}
+						disabled={loading}
 						onClick$={(e) => {
 							e.stopPropagation();
 							if (props.type === 'project') {
@@ -146,7 +134,7 @@ export const Registry = component$(() => {
 								customerIndex,
 								mainData: task,
 							}),
-							disabled: loading.value,
+							disabled: loading,
 						}))}
 					/>
 				</>
@@ -181,7 +169,7 @@ export const Registry = component$(() => {
 							onTitleClick: $(() =>
 								selected.setProject(customer, project.projectName)
 							),
-							disabled: loading.value,
+							disabled: loading,
 							body: taskList(customer, project.projectName),
 						}))}
 					/>
@@ -202,10 +190,11 @@ export const Registry = component$(() => {
 							timeEntry={trackValue as Signal<TimeEntry>}
 							alertMessageState={alertMessageState}
 							onCancel$={newProjectCancelAction}
+							allowNewEntry={true}
 						/>
 					</NewProjectModal>
 				</div>
-				<div class={`${loading.value ? 'animate-pulse' : ''}`}>
+				<div class={`${loading ? 'animate-pulse' : ''}`}>
 					<Accordion
 						cards={data.map((data) => ({
 							title: buttonList({
@@ -215,7 +204,7 @@ export const Registry = component$(() => {
 							opened: selected.getCustomer.value.includes(data.customer),
 							onTitleClick: $(() => selected.setCustomer(data.customer)),
 							body: projectList(data.customer),
-							disabled: loading.value,
+							disabled: loading,
 						}))}
 					/>
 				</div>

@@ -1,48 +1,44 @@
+import { Customer } from '@models/customer';
+import { Project } from '@models/project';
+import { getHttpResponse } from 'src/network/httpRequest';
 import { RegistryHandler } from 'src/utils/registry';
 
-const getTemp = () => {
-	return new Promise<boolean>((resolve) => setTimeout(resolve, 500, true));
+type RegistryResponse = {
+	message: string;
 };
 
-// TODO: Activate routing when available
-export const editRegistry = async (props: RegistryHandler, newValue: string): Promise<boolean> => {
-	console.log('Edit', newValue);
+export const editRegistry = async (
+	props: RegistryHandler,
+	newValue: string
+): Promise<RegistryResponse> => {
 	if (props.type === 'task') {
-		return getTemp();
-
-		// return getHttpResponse<boolean>('task/task', 'PUT', {
-		// 	customer: props.customer,
-		// 	project: props.project,
-		// 	task: props.task,
-		// 	newTask: newValue,
-		// });
+		return getHttpResponse<RegistryResponse>('task/task', 'PUT', {
+			customer: props.customer,
+			project: props.project,
+			task: props.task,
+			newTask: newValue,
+		});
 	} else if (props.type === 'project') {
-		return getTemp();
-		// return getHttpResponse<boolean>('task/customer-project', 'PUT', {
-		// 	customer: props.customer,
-		// 	project: props.project,
-		// 	newProject: newValue,
-		// });
+		return getHttpResponse<RegistryResponse>('task/customer-project', 'PUT', {
+			customer: props.customer,
+			project: props.project,
+			newProject: newValue,
+		});
 	} else {
-		return getTemp();
-		// return getHttpResponse<boolean>('task/customer-project', 'PUT', {
-		// 	customer: props.customer,
-		// 	newCustomer: newValue,
-		// });
+		return getHttpResponse<RegistryResponse>('task/customer-project', 'PUT', {
+			customer: props.customer,
+			newCustomer: newValue,
+		});
 	}
 };
 
-export const deleteRegistry = async (props: RegistryHandler): Promise<boolean> => {
-	if (props.type === 'task') {
-		return getTemp();
-	} else if (props.type === 'project') {
-		return getTemp();
-		// return getHttpResponse<boolean>('task/task', 'DELETE', {
-		// 	customer: props.customer,
-		// 	project: props.project,
-		// 	inactive: true,
-		// });
-	} else {
-		return getTemp();
-	}
+export const deleteProject = async (
+	customer: Customer,
+	project: Project
+): Promise<RegistryResponse> => {
+	return getHttpResponse<RegistryResponse>('task/customer-project', 'DELETE', {
+		customer: customer,
+		project: project,
+		inactive: true,
+	});
 };

@@ -1,5 +1,6 @@
-import { $, QRL, Signal, component$, useComputed$ } from '@builder.io/qwik';
+import { $, QRL, Signal, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { initFlowbite } from 'flowbite';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
 import { t } from '../../locale/labels';
 import { TimeEntry } from '../../models/timeEntry';
@@ -12,10 +13,11 @@ interface NewProjectFormProp {
 	timeEntry: Signal<TimeEntry | undefined>;
 	alertMessageState: ModalState;
 	onCancel$?: QRL;
+	allowNewEntry?: boolean;
 }
 
 export const NewProjectForm = component$<NewProjectFormProp>(
-	({ timeEntry, alertMessageState, onCancel$ }) => {
+	({ timeEntry, alertMessageState, onCancel$, allowNewEntry }) => {
 		const {
 			dataCustomersSig,
 			dataProjectsSig,
@@ -24,24 +26,25 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			projectSelected,
 			taskSelected,
 			projectTypeSelected,
+			projectTypeInvalid,
 			projectEnableSig,
 			taskEnableSig,
 			onChangeCustomer,
 			onChangeProject,
 			clearForm,
 			handleSubmit,
-		} = useNewTimeEntry(timeEntry, alertMessageState, onCancel$);
+		} = useNewTimeEntry(timeEntry, alertMessageState, onCancel$, allowNewEntry);
+
+		useVisibleTask$(() => {
+			initFlowbite();
+		});
 
 		const _onCancel = $(() => {
 			clearForm();
 			onCancel$ && onCancel$();
 		});
 
-		const projectTypeList = useComputed$(() => {
-			const types = ['', 'billable', 'non-billable', 'slack-time', 'absence'];
-
-			return types;
-		});
+		const projectTypeList = useSignal(['billable', 'non-billable', 'slack-time', 'absence']);
 
 		return (
 			<>
@@ -68,6 +71,18 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 							onChange$={onChangeProject}
 						/>
 
+						{allowNewEntry && (
+							<Select
+								id={UUID()}
+								disabled={!taskEnableSig.value}
+								label='Project Type'
+								placeholder='Select Project Type'
+								value={projectTypeSelected}
+								options={projectTypeList}
+								invalid={projectTypeInvalid.value}
+							/>
+						)}
+
 						<Autocomplete
 							id={UUID()}
 							label={t('TASK_LABEL')}
@@ -76,15 +91,6 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 							placeholder='Search...'
 							required
 							disabled={!taskEnableSig.value}
-						/>
-
-						<Select
-							id={UUID()}
-							disabled={false}
-							label='Project Type'
-							placeholder='Select Project Type'
-							value={projectTypeSelected}
-							options={projectTypeList}
 						/>
 
 						<div class='flex flex-row space-x-1 justify-end'>

@@ -1,4 +1,4 @@
-import { $, QRL, Signal, sync$, useComputed$, useSignal } from '@builder.io/qwik';
+import { $, QRL, Signal, sync$, useComputed$, useSignal, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { format } from 'date-fns';
 import { t, tt } from '../../locale/labels';
@@ -14,7 +14,8 @@ import { useNotification } from '../useNotification';
 export const useNewTimeEntry = (
 	newTimeEntry: Signal<TimeEntry | undefined>,
 	alertMessageState: ModalState,
-	closeForm?: QRL
+	closeForm?: QRL,
+	allowNewEntry?: boolean
 ) => {
 	const { addEvent } = useNotification();
 
@@ -29,6 +30,7 @@ export const useNewTimeEntry = (
 	const projectSelected = useSignal<Project>('');
 	const taskSelected = useSignal<Task>('');
 	const projectTypeSelected = useSignal<ProjectType>('');
+	const projectTypeInvalid = useSignal<boolean>(false);
 
 	const projectEnableSig = useSignal(false);
 	const taskEnableSig = useSignal(false);
@@ -103,27 +105,65 @@ export const useNewTimeEntry = (
 	});
 
 	const newEntityExist = (): boolean => {
-		return dataCustomersSig.value.find((customer) => customer === customerSelected.value) &&
-			dataProjectsSig.value.find((project) => project === projectSelected.value) &&
-			dataTaksSign.value.find((task) => task === taskSelected.value)
-			? false
-			: true;
+		return Boolean(
+			dataCustomersSig.value.find((customer) => customer === customerSelected.value) &&
+				dataProjectsSig.value.find((project) => project === projectSelected.value) &&
+				dataTaksSign.value.find((task) => task === taskSelected.value)
+		);
 	};
 
-	const showNewEntityAlert = () => {
-		(alertMessageState.isVisible = true),
-			(alertMessageState.title = t('INSERT_NEW_PROJECT_TITLE_MODAL'));
-		alertMessageState.message = t('INSERT_NEW_PROJECT_MESSAGE_MODAL');
-		(alertMessageState.confirmLabel = t('ACTION_CONFIRM')),
-			(alertMessageState.cancelLabel = t('ACTION_CANCEL'));
-		alertMessageState.onConfirm$ = insertNewTimeEntry;
+	const showAlert = (props: ModalState) => {
+		(alertMessageState.isVisible = true), (alertMessageState.title = props.title);
+		alertMessageState.message = props.message;
+		(alertMessageState.confirmLabel = props.confirmLabel),
+			(alertMessageState.cancelLabel = props.cancelLabel);
+		alertMessageState.onConfirm$ = props.onConfirm$;
 	};
+
+	useTask$(({ track }) => {
+		const projectTypeValue = track(() => projectTypeSelected.value);
+		if (projectTypeInvalid.value && projectTypeValue !== '') {
+			projectTypeInvalid.value = false;
+		}
+	});
 
 	const handleSubmit = sync$((event: SubmitEvent, _: HTMLFormElement) => {
 		event.preventDefault();
 
-		if (newEntityExist()) showNewEntityAlert();
-		else insertNewTimeEntry();
+		const isNewEntryAlreadyInserted = newEntityExist();
+
+		if (allowNewEntry) {
+			if (projectTypeSelected.value === '') {
+				projectTypeInvalid.value = true;
+				return;
+			}
+
+			if (isNewEntryAlreadyInserted) {
+				showAlert({
+					title: t('EXISTING_ENTITY_TITLE'),
+					message: t('EXISTING_ENTITY_MESSAGE'),
+					cancelLabel: t('ACTION_CANCEL'),
+				});
+			} else {
+				showAlert({
+					title: t('INSERT_NEW_PROJECT_TITLE_MODAL'),
+					message: t('INSERT_NEW_PROJECT_MESSAGE_MODAL'),
+					confirmLabel: t('ACTION_CONFIRM'),
+					cancelLabel: t('ACTION_CANCEL'),
+					onConfirm$: insertNewTimeEntry,
+				});
+			}
+		} else {
+			if (isNewEntryAlreadyInserted) {
+				insertNewTimeEntry();
+			} else {
+				showAlert({
+					title: t('CANNOT_CREATE_ENTITY_TITLE'),
+					message: t('CANNOT_CREATE_ENTITY_MESSAGE'),
+					cancelLabel: t('ACTION_CANCEL'),
+				});
+			}
+		}
 	});
 
 	return {
@@ -134,6 +174,7 @@ export const useNewTimeEntry = (
 		projectSelected,
 		taskSelected,
 		projectTypeSelected,
+		projectTypeInvalid,
 		projectEnableSig,
 		taskEnableSig,
 		onChangeCustomer,

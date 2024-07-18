@@ -9,10 +9,11 @@ interface selectInterface {
 	placeholder?: string;
 	onChange$?: QRL;
 	disabled?: boolean;
+	invalid?: boolean;
 }
 
 export const Select = component$<selectInterface>(
-	({ id, label, value, options, placeholder, onChange$, disabled }) => {
+	({ id, label, value, options, placeholder, onChange$, disabled, invalid }) => {
 		const closeDropdown = $(() => {
 			const button = document.getElementById('select-button-' + id);
 			button?.click();
@@ -31,7 +32,8 @@ export const Select = component$<selectInterface>(
 		const updateMenuWidth = $(() => {
 			const button = document.getElementById('select-button-' + id);
 			const menu = document.getElementById('select-dropdown-' + id);
-			if (menu !== null) menu.style.width = `${button?.offsetWidth}px`;
+			const buttonWidth = button ? button.offsetWidth : 0;
+			if (menu !== null && buttonWidth !== 0) menu.style.width = `${buttonWidth}px`;
 		});
 
 		const labelStyle = useComputed$(() => {
@@ -42,6 +44,8 @@ export const Select = component$<selectInterface>(
 
 		const buttonStyle = useComputed$(() => {
 			if (disabled) return 'bg-dark-gray-50 border-darkgray-300 text-darkgray-400';
+
+			if (invalid) return 'bg-white border-red-500 text-red-900';
 
 			return 'bg-white border-darkgray-500 text-gray-900';
 		});
@@ -93,9 +97,12 @@ export const Select = component$<selectInterface>(
 					</svg>
 				</button>
 
+				{invalid && <p class='text-red-500 text-xs mt-1'>{t('REQUIRED_FIELD_LABEL')}</p>}
+
 				{/* <!-- Dropdown menu --> */}
 				<div
 					id={'select-dropdown-' + id}
+					style={{ width: '100%' }}
 					class='z-10 hidden  md:max-w-[300px] lg:max-w-[300px] bg-white divide-y divide-gray-100 rounded-md shadow'
 				>
 					<ul

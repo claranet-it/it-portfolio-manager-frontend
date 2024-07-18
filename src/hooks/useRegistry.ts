@@ -3,12 +3,13 @@ import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
-import { t, tt } from 'src/locale/labels';
+import { tt } from 'src/locale/labels';
 import { getCustomers } from 'src/services/customer';
 import { getProjects } from 'src/services/projects';
-import { deleteRegistry, editRegistry } from 'src/services/registry';
+import { deleteProject, editRegistry } from 'src/services/registry';
 import { getTasks } from 'src/services/tasks';
-import { RegistryHandler, showAlert } from 'src/utils/registry';
+import { capitalizeFirstLetter, RegistryHandler, showAlert } from 'src/utils/registry';
+import { useNotification } from './useNotification';
 
 type Registry = {
 	customer: Customer;
@@ -19,7 +20,9 @@ type Registry = {
 };
 
 export const useRegistry = (alertMessageState: ModalState, editMessageState: ModalState) => {
-	const loading = useSignal<boolean>(false);
+	const { addEvent } = useNotification();
+
+	const loadingList = useSignal<string[]>([]);
 	const data = useStore<Registry[]>([]);
 	const trackValue = useSignal<unknown>();
 	const prevValue = useSignal<string>('');
@@ -27,6 +30,14 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 
 	const selectedCustomer = useSignal<Customer[]>([]);
 	const selectedProject = useSignal<{ customer: Customer; project: Project }[]>([]);
+
+	const setLoading = $((value: string) => {
+		if (loadingList.value.includes(value)) {
+			loadingList.value = loadingList.value.filter((loadingValue) => loadingValue !== value);
+		} else {
+			loadingList.value = [...loadingList.value, value];
+		}
+	});
 
 	const setSelectedCustomer = $((customer: Customer) => {
 		const isCustomerSelected = selectedCustomer.value.includes(customer);
@@ -58,30 +69,20 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 	});
 
 	const fetchCustomers = $(async (props?: RegistryHandler) => {
-		loading.value = true;
+		await setLoading('customers');
 		const customers = await getCustomers();
 
-		await new Promise<void>((resolve) => setTimeout(resolve, 500));
-
-		/* ---------------------------------------- */
-		/* TODO: think about this. */
-		if (props && props.type !== 'customer') {
-			selectedCustomer.value = [props.customer];
+		if (props) {
+			selectedCustomer.value =
+				props.type !== 'customer' && customers.find((c) => c === props.customer)
+					? [props.customer]
+					: [];
+			selectedProject.value =
+				props.type === 'task' ? [{ customer: props.customer, project: props.project }] : [];
 		} else {
 			selectedCustomer.value = [];
-		}
-
-		if (props && props.type === 'task') {
-			selectedProject.value = [
-				{
-					customer: props.customer,
-					project: props.project,
-				},
-			];
-		} else {
 			selectedProject.value = [];
 		}
-		/* ---------------------------------------- */
 
 		if (data.length !== 0) {
 			data.splice(0, data.length);
@@ -93,7 +94,8 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 				projects: [],
 			});
 		});
-		loading.value = false;
+
+		await setLoading('customers');
 	});
 
 	const fetchProjects = $(async () => {
@@ -113,10 +115,9 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 				return;
 			}
 
-			loading.value = true;
+			await setLoading('projects');
 
 			const projects = await getProjects('it', lastCustomer);
-			await new Promise<void>((resolve) => setTimeout(resolve, 500));
 
 			const lastCustomerIndex = data.findIndex(
 				(registry) => registry.customer == lastCustomer
@@ -132,13 +133,11 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 				});
 			});
 
-			loading.value = false;
+			await setLoading('projects');
 		}
 	});
 
 	const fetchTasks = $(async () => {
-		await new Promise<void>((resolve) => setTimeout(resolve, 500));
-
 		if (selectedCustomer.value.length == 0 || selectedProject.value.length == 0) {
 			return;
 		}
@@ -167,12 +166,12 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 		}
 
 		if (customerIndex !== -1 && projectIndex !== -1) {
-			loading.value = true;
+			await setLoading('tasks');
 
 			const tasks = await getTasks('it', lastProject.customer, lastProject.project);
 			data[customerIndex].projects[projectIndex].tasks = tasks;
 
-			loading.value = false;
+			await setLoading('tasks');
 		}
 	});
 
@@ -200,49 +199,80 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 					: props.task;
 
 		showAlert(
-			{
-				isVisible: true,
-				title: tt('REGISTRY_EDIT_TITLE', { type: props.type }),
-			},
+			'EDIT',
+			props,
 			editMessageState,
 			$(async () => {
-				loading.value = true;
-				await editRegistry(props, newValue.value);
-				loading.value = false;
-				await fetchCustomers(props);
+				await setLoading('edit');
+				const result = await editRegistry(props, newValue.value);
+
+				if (result.message === 'OK') {
+					addEvent({
+						type: 'success',
+						message: tt('EDIT_REGISTRY_ELEMENT_SUCCESS_MESSAGE', {
+							type: capitalizeFirstLetter(props.type),
+						}),
+						autoclose: true,
+					});
+					newValue.value = '';
+					await setLoading('edit');
+
+					await fetchCustomers(props);
+					return;
+				} else {
+					addEvent({
+						type: 'danger',
+						message: result.message,
+						autoclose: true,
+					});
+				}
+				await setLoading('edit');
 			})
 		);
 		editMessageState.body = true;
 	});
 
 	const handleDelete = $((props: RegistryHandler) => {
+		if (props.type !== 'project') {
+			return;
+		}
+
 		showAlert(
-			{
-				isVisible: true,
-				title: t('REGISTRY_DELETE_TITLE'),
-				message: tt('REGISTRY_DELETE_MESSAGE', {
-					type: props.type,
-					value:
-						props.type == 'customer'
-							? props.customer
-							: props.type == 'project'
-								? props.project
-								: props.task,
-				}),
-			},
+			'DELETE',
+			props,
 			alertMessageState,
 			$(async () => {
-				loading.value = true;
-				await deleteRegistry(props);
-				loading.value = false;
-				await fetchCustomers(props);
+				await setLoading('delete');
+				const result = await deleteProject(props.customer, props.project);
+				if (result.message === 'OK') {
+					addEvent({
+						type: 'success',
+						message: tt('DELETE_REGISTRY_ELEMENT_SUCCESS_MESSAGE', {
+							type: capitalizeFirstLetter(props.type),
+						}),
+						autoclose: true,
+					});
+
+					await setLoading('delete');
+					await fetchCustomers(props);
+
+					return;
+				} else {
+					addEvent({
+						type: 'danger',
+						message: result.message,
+						autoclose: true,
+					});
+				}
+
+				await setLoading('delete');
 			})
 		);
 	});
 
 	return {
 		data,
-		loading,
+		loading: loadingList.value.length !== 0,
 		trackValue,
 		selected: {
 			getCustomer: selectedCustomer,

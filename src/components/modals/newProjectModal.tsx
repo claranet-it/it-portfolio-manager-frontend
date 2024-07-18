@@ -36,7 +36,7 @@ export const NewProjectModal = component$(() => {
 			</button>
 
 			<div id='form-new-project' style={modalStyle.value} class='fixed z-10'>
-				<Slot />
+				{modalStatus.visible ? <Slot /> : null}
 			</div>
 		</div>
 	);
