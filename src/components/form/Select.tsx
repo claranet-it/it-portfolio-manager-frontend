@@ -64,7 +64,8 @@ export const Select = component$<selectInterface>(
 		});
 
 		// Set menu width as initial button width
-		useVisibleTask$(() => {
+		useVisibleTask$(({ track }) => {
+			track(() => hidden);
 			setTimeout(updateMenuWidth, 600);
 		});
 
@@ -111,7 +112,7 @@ export const Select = component$<selectInterface>(
 				<div
 					id={'select-dropdown-' + id}
 					style={{ width: '100%' }}
-					class={`z-10 hidden  ${sizeStyle.value} bg-white divide-y divide-gray-100 rounded-md shadow`}
+					class={`z-10 hidden ${sizeStyle.value} bg-white divide-y divide-gray-100 rounded-md shadow`}
 				>
 					<ul
 						class='max-h-96 overflow-y-auto py-2 text-sm text-gray-700'
