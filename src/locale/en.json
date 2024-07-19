@@ -101,5 +101,10 @@
 	"EXISTING_ENTITY_MESSAGE": "Cannot create duplicate",
 	"CANNOT_CREATE_ENTITY_TITLE": "Cannot create",
 	"CANNOT_CREATE_ENTITY_MESSAGE": "Cannot create new element",
-	"REQUIRED_FIELD_LABEL": "This field is required"
+	"REQUIRED_FIELD_LABEL": "This field is required",
+	"REGISTRY_CUSTOMER_EDIT_FAILURE_MESSAGE": "Customer couldn't be edited! #fail / #total projects are already assigned!",
+	"REGISTRY_CUSTOMER_EDIT_SUCCESS_MESSAGE": "Customer edited successfully! #success / #total projects were edited!",
+	"REGISTRY_CUSTOMER_EDIT_PARTIAL_MESSAGE": "Edit partially completed! Success: #success Failure: #fail",
+	"REGISTRY_CUSTOMER_EDIT_ERROR_MESSAGE": "There was an error while editing the customer!",
+	"REGISTRY_CREATE_MESSAGE": "The #type will be created!"
 }

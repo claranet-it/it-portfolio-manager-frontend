@@ -23,11 +23,20 @@ export type RegistryHandler =
 			task: string;
 	  };
 
-const modalBuilder = (type: 'EDIT' | 'DELETE', props: RegistryHandler) => {
+const modalBuilder = (
+	type: 'EDIT' | 'EDIT_CUSTOMER' | 'DELETE',
+	props: RegistryHandler
+): ModalState => {
 	if (type === 'EDIT') {
 		return {
 			isVisible: true,
 			title: tt('REGISTRY_EDIT_TITLE', { type: props.type }),
+		};
+	} else if (type === 'EDIT_CUSTOMER') {
+		return {
+			isVisible: true,
+			title: tt('REGISTRY_EDIT_TITLE', { type: props.type }),
+			message: 'Some projects of the customer may not be updated because already assigned.',
 		};
 	}
 
@@ -47,7 +56,12 @@ const modalBuilder = (type: 'EDIT' | 'DELETE', props: RegistryHandler) => {
 };
 
 export const showAlert = $(
-	(type: 'EDIT' | 'DELETE', props: RegistryHandler, state: ModalState, onConfirm: QRL) => {
+	(
+		type: 'EDIT' | 'EDIT_CUSTOMER' | 'DELETE',
+		props: RegistryHandler,
+		state: ModalState,
+		onConfirm: QRL
+	) => {
 		const data = modalBuilder(type, props);
 
 		state.isVisible = data.isVisible;

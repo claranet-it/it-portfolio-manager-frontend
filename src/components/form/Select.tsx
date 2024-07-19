@@ -6,6 +6,7 @@ interface selectInterface {
 	label?: string;
 	value: Signal<string>;
 	options: Signal<string[]>;
+	size?: 'm' | 'auto';
 	placeholder?: string;
 	onChange$?: QRL;
 	disabled?: boolean;
@@ -13,7 +14,7 @@ interface selectInterface {
 }
 
 export const Select = component$<selectInterface>(
-	({ id, label, value, options, placeholder, onChange$, disabled, invalid }) => {
+	({ id, label, value, options, size, placeholder, onChange$, disabled, invalid }) => {
 		const closeDropdown = $(() => {
 			const button = document.getElementById('select-button-' + id);
 			button?.click();
@@ -50,6 +51,12 @@ export const Select = component$<selectInterface>(
 			return 'bg-white border-darkgray-500 text-gray-900';
 		});
 
+		const sizeStyle = useComputed$(() => {
+			if (size === 'auto') return '';
+
+			return 'md:max-w-[300px] lg:max-w-[300px]';
+		});
+
 		useVisibleTask$(({ track }) => {
 			track(value);
 			onChange$ && onChange$();
@@ -67,7 +74,7 @@ export const Select = component$<selectInterface>(
 		});
 
 		return (
-			<form class='w-full md:max-w-[300px] lg:max-w-[300px]'>
+			<form class={`w-full ${sizeStyle.value}`}>
 				<label class={`block text-sm font-normal ${labelStyle.value}`}>{label}</label>
 
 				<button
@@ -103,7 +110,7 @@ export const Select = component$<selectInterface>(
 				<div
 					id={'select-dropdown-' + id}
 					style={{ width: '100%' }}
-					class='z-10 hidden  md:max-w-[300px] lg:max-w-[300px] bg-white divide-y divide-gray-100 rounded-md shadow'
+					class={`z-10 hidden  ${sizeStyle.value} bg-white divide-y divide-gray-100 rounded-md shadow`}
 				>
 					<ul
 						class='max-h-96 overflow-y-auto py-2 text-sm text-gray-700'

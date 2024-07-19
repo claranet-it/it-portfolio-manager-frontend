@@ -15,7 +15,7 @@ export const saveTask = async (
 	customer: Customer,
 	project: Project,
 	task: Task,
-	projectType: ProjectType
+	projectType?: ProjectType
 ): Promise<boolean> =>
 	checkHttpResponseStatus(`task/task`, 200, 'POST', {
 		company: company,

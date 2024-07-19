@@ -2,7 +2,7 @@ import { $, QRL, Signal, component$, useSignal, useVisibleTask$ } from '@builder
 import { ModalState } from '@models/modalState';
 import { initFlowbite } from 'flowbite';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
-import { t } from '../../locale/labels';
+import { t, tt } from '../../locale/labels';
 import { TimeEntry } from '../../models/timeEntry';
 import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
@@ -27,6 +27,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			taskSelected,
 			projectTypeSelected,
 			projectTypeInvalid,
+			projectTypeEnabled,
 			projectEnableSig,
 			taskEnableSig,
 			onChangeCustomer,
@@ -35,7 +36,9 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			handleSubmit,
 		} = useNewTimeEntry(timeEntry, alertMessageState, onCancel$, allowNewEntry);
 
-		useVisibleTask$(() => {
+		useVisibleTask$(({ track }) => {
+			track(() => projectTypeEnabled.newCustomer);
+			track(() => projectTypeEnabled.newProject);
 			initFlowbite();
 		});
 
@@ -50,38 +53,59 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			<>
 				<div class='p-4 bg-white-100 rounded-md shadow w-96'>
 					<form class='space-y-3' onSubmit$={handleSubmit}>
-						<Autocomplete
-							id={UUID()}
-							label={t('CUSTOMER_LABEL')}
-							selected={customerSelected}
-							data={dataCustomersSig}
-							placeholder='Search...'
-							required
-							onChange$={onChangeCustomer}
-						/>
-
-						<Autocomplete
-							id={UUID()}
-							label={t('PROJECT_LABEL')}
-							selected={projectSelected}
-							data={dataProjectsSig}
-							placeholder='Search...'
-							required
-							disabled={!projectEnableSig.value}
-							onChange$={onChangeProject}
-						/>
-
-						{allowNewEntry && (
-							<Select
+						<div>
+							<Autocomplete
 								id={UUID()}
-								disabled={!taskEnableSig.value}
-								label='Project Type'
-								placeholder='Select Project Type'
-								value={projectTypeSelected}
-								options={projectTypeList}
-								invalid={projectTypeInvalid.value}
+								label={t('CUSTOMER_LABEL')}
+								selected={customerSelected}
+								data={dataCustomersSig}
+								placeholder='Search...'
+								required
+								onChange$={onChangeCustomer}
 							/>
-						)}
+							{!dataCustomersSig.value.includes(customerSelected.value) &&
+								customerSelected.value !== '' && (
+									<p class='text-xs mt-1 text-gray-500 dark:text-gray-400'>
+										{tt('REGISTRY_CREATE_MESSAGE', {
+											type: 'customer',
+										})}
+									</p>
+								)}
+						</div>
+						<div>
+							<Autocomplete
+								id={UUID()}
+								label={t('PROJECT_LABEL')}
+								selected={projectSelected}
+								data={dataProjectsSig}
+								placeholder='Search...'
+								required
+								disabled={!projectEnableSig.value}
+								onChange$={onChangeProject}
+							/>
+							{!dataProjectsSig.value.includes(projectSelected.value) &&
+								projectSelected.value !== '' && (
+									<p class='text-xs mt-1 text-gray-500 dark:text-gray-400'>
+										{tt('REGISTRY_CREATE_MESSAGE', {
+											type: 'project',
+										})}
+									</p>
+								)}
+						</div>
+
+						{allowNewEntry &&
+							(projectTypeEnabled.newCustomer || projectTypeEnabled.newProject) && (
+								<Select
+									id={UUID()}
+									disabled={!taskEnableSig.value}
+									label='Project Type'
+									placeholder='Select Project Type'
+									value={projectTypeSelected}
+									options={projectTypeList}
+									invalid={projectTypeInvalid.value}
+									size='auto'
+								/>
+							)}
 
 						<Autocomplete
 							id={UUID()}

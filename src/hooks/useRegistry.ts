@@ -3,7 +3,7 @@ import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
-import { tt } from 'src/locale/labels';
+import { t, tt } from 'src/locale/labels';
 import { getCustomers } from 'src/services/customer';
 import { getProjects } from 'src/services/projects';
 import { deleteProject, editRegistry, RegistryResponse } from 'src/services/registry';
@@ -77,17 +77,12 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 		await setLoading('customers');
 		const customers = await getCustomers();
 
-		if (props) {
-			selectedCustomer.value =
-				props.type !== 'customer' && customers.find((c) => c === props.customer)
-					? [props.customer]
-					: [];
-			selectedProject.value =
-				props.type === 'task' ? [{ customer: props.customer, project: props.project }] : [];
-		} else {
-			selectedCustomer.value = [];
-			selectedProject.value = [];
-		}
+		selectedCustomer.value =
+			props && props.type !== 'customer' && customers.find((c) => c === props.customer)
+				? [props.customer]
+				: [];
+
+		selectedProject.value = [];
 
 		if (data.length !== 0) {
 			data.splice(0, data.length);
@@ -103,7 +98,7 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 		await setLoading('customers');
 	});
 
-	const fetchProjects = $(async () => {
+	const fetchProjects = $(async (customer?: Customer, project?: Project) => {
 		if (selectedCustomer.value.length == 0) {
 			return;
 		}
@@ -139,6 +134,9 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 			});
 
 			await setLoading('projects');
+			if (project && customer) {
+				selectedProject.value = [{ customer: customer, project: project }];
+			}
 		}
 	});
 
@@ -224,23 +222,31 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 				}
 			}
 
-			// TODO: improve this, simplify and add labels
 			if (results.success === 0 && results.failure !== 0) {
 				addEvent({
 					type: 'danger',
-					message: `Customer couldn't be edited! ${results.failure} / ${projectCount} projects are already assigned!`,
+					message: tt('REGISTRY_CUSTOMER_EDIT_FAILURE_MESSAGE', {
+						fail: results.failure.toString(),
+						total: projectCount.toString(),
+					}),
 					autoclose: true,
 				});
 			} else if (results.success !== 0 && results.failure === 0) {
 				addEvent({
 					type: 'success',
-					message: `Customer edited successfully! ${results.success} / ${projectCount} projects were edited!`,
+					message: tt('REGISTRY_CUSTOMER_EDIT_SUCCESS_MESSAGE', {
+						success: results.success.toString(),
+						total: projectCount.toString(),
+					}),
 					autoclose: true,
 				});
 			} else if (results.success !== 0 && results.failure !== 0) {
 				addEvent({
 					type: 'success',
-					message: `Edit partially completed! Success: ${results.success} Failure: ${results.failure}`,
+					message: tt('REGISTRY_CUSTOMER_EDIT_PARTIAL_MESSAGE', {
+						success: results.success.toString(),
+						fail: results.failure.toString(),
+					}),
 					autoclose: true,
 				});
 			}
@@ -252,7 +258,7 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 		} catch (e) {
 			addEvent({
 				type: 'danger',
-				message: 'There was an error while editing the customer!',
+				message: t('REGISTRY_CUSTOMER_EDIT_ERROR_MESSAGE'),
 				autoclose: true,
 			});
 			await editValuesReset();
@@ -269,7 +275,7 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 					: props.task;
 
 		showAlert(
-			'EDIT',
+			props.type === 'customer' ? 'EDIT_CUSTOMER' : 'EDIT',
 			props,
 			editMessageState,
 			$(async () => {
@@ -292,7 +298,10 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 						await setLoading('edit');
 
 						await fetchCustomers(props);
-						return;
+
+						if (props.type === 'task') {
+							await fetchProjects(props.customer, props.project);
+						}
 					} else {
 						addEvent({
 							type: 'danger',

@@ -1,4 +1,13 @@
-import { $, QRL, Signal, sync$, useComputed$, useSignal, useTask$ } from '@builder.io/qwik';
+import {
+	$,
+	QRL,
+	Signal,
+	sync$,
+	useComputed$,
+	useSignal,
+	useStore,
+	useTask$,
+} from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { format } from 'date-fns';
 import { t, tt } from '../../locale/labels';
@@ -31,9 +40,32 @@ export const useNewTimeEntry = (
 	const taskSelected = useSignal<Task>('');
 	const projectTypeSelected = useSignal<ProjectType>('');
 	const projectTypeInvalid = useSignal<boolean>(false);
+	const projectTypeEnabled = useStore<{
+		newCustomer: boolean;
+		newProject: boolean;
+	}>({ newCustomer: false, newProject: false });
 
 	const projectEnableSig = useSignal(false);
 	const taskEnableSig = useSignal(false);
+
+	const handleProjectTypeEnabled = $((customer?: Customer, project?: Project) => {
+		if (customer !== undefined) {
+			if (customer === '' || dataCustomersSig.value.includes(customer)) {
+				projectTypeEnabled.newCustomer = false;
+				projectTypeSelected.value = '';
+			} else {
+				projectTypeEnabled.newCustomer = true;
+			}
+		} else if (project !== undefined) {
+			console.log('projkect', [project, dataProjectsSig.value.includes(project)]);
+			if (project === '' || dataProjectsSig.value.includes(project)) {
+				projectTypeEnabled.newProject = false;
+				projectTypeSelected.value = '';
+			} else {
+				projectTypeEnabled.newProject = true;
+			}
+		}
+	});
 
 	const onChangeCustomer = $(async (value: string) => {
 		projectSelected.value = '';
@@ -43,9 +75,10 @@ export const useNewTimeEntry = (
 		} else {
 			projectEnableSig.value = false;
 		}
+		handleProjectTypeEnabled(value);
 	});
 
-	const onChangeProject = $(async (value: Task) => {
+	const onChangeProject = $(async (value: Project) => {
 		taskSelected.value = '';
 		if (value != '') {
 			dataTaksSign.value = await getTasks('it', customerSelected.value, value);
@@ -53,6 +86,7 @@ export const useNewTimeEntry = (
 		} else {
 			taskEnableSig.value = false;
 		}
+		handleProjectTypeEnabled(undefined, value);
 	});
 
 	const clearForm = $(() => {
@@ -60,6 +94,8 @@ export const useNewTimeEntry = (
 		projectSelected.value = '';
 		taskSelected.value = '';
 		projectTypeSelected.value = '';
+		projectTypeEnabled.newCustomer = false;
+		projectTypeEnabled.newProject = false;
 	});
 
 	const insertNewTimeEntry = $(async () => {
@@ -68,7 +104,7 @@ export const useNewTimeEntry = (
 			customerSelected.value,
 			projectSelected.value,
 			taskSelected.value,
-			projectTypeSelected.value
+			projectTypeSelected.value === '' ? undefined : projectTypeSelected.value
 		);
 
 		if (!savingResult) {
@@ -133,7 +169,10 @@ export const useNewTimeEntry = (
 		const isNewEntryAlreadyInserted = newEntityExist();
 
 		if (allowNewEntry) {
-			if (projectTypeSelected.value === '') {
+			const isProjectTypeEnabled =
+				projectTypeEnabled.newCustomer || projectTypeEnabled.newProject;
+
+			if (projectTypeSelected.value === '' && isProjectTypeEnabled) {
 				projectTypeInvalid.value = true;
 				return;
 			}
@@ -175,6 +214,7 @@ export const useNewTimeEntry = (
 		taskSelected,
 		projectTypeSelected,
 		projectTypeInvalid,
+		projectTypeEnabled,
 		projectEnableSig,
 		taskEnableSig,
 		onChangeCustomer,
