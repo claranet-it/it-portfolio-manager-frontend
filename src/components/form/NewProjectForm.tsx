@@ -97,7 +97,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								(projectTypeEnabled.newCustomer || projectTypeEnabled.newProject)
 							}
 							id={UUID()}
-							disabled={!!taskEnableSig.value}
+							disabled={!taskEnableSig.value}
 							label='Project Type'
 							placeholder='Select Project Type'
 							value={projectTypeSelected}
