@@ -62,7 +62,8 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								onChange$={onChangeCustomer}
 							/>
 							{!dataCustomersSig.value.includes(customerSelected.value) &&
-								customerSelected.value !== '' && (
+								customerSelected.value !== '' &&
+								allowNewEntry && (
 									<p class='text-xs mt-1 text-gray-500 dark:text-gray-400'>
 										{tt('REGISTRY_CREATE_MESSAGE', {
 											type: 'customer',
@@ -82,7 +83,8 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								onChange$={onChangeProject}
 							/>
 							{!dataProjectsSig.value.includes(projectSelected.value) &&
-								projectSelected.value !== '' && (
+								projectSelected.value !== '' &&
+								allowNewEntry && (
 									<p class='text-xs mt-1 text-gray-500 dark:text-gray-400'>
 										{tt('REGISTRY_CREATE_MESSAGE', {
 											type: 'project',
