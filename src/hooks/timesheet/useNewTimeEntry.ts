@@ -57,7 +57,6 @@ export const useNewTimeEntry = (
 				projectTypeEnabled.newCustomer = true;
 			}
 		} else if (project !== undefined) {
-			console.log('projkect', [project, dataProjectsSig.value.includes(project)]);
 			if (project === '' || dataProjectsSig.value.includes(project)) {
 				projectTypeEnabled.newProject = false;
 				projectTypeSelected.value = '';

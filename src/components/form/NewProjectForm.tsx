@@ -93,8 +93,11 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 
 						<Select
 							hidden={
-								allowNewEntry &&
-								(projectTypeEnabled.newCustomer || projectTypeEnabled.newProject)
+								!(
+									allowNewEntry &&
+									(projectTypeEnabled.newCustomer ||
+										projectTypeEnabled.newProject)
+								)
 							}
 							id={UUID()}
 							disabled={!taskEnableSig.value}
