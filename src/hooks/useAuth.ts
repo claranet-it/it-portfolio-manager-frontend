@@ -11,6 +11,7 @@ import { getAuthToken, setAuthToken } from '../utils/token';
 export const useAuth = () => {
 	const selectedProvider = useSignal<Provider | undefined>(undefined);
 	const isLoading = useSignal<boolean>(false);
+	const issueMessage = useSignal<string | undefined>(undefined);
 
 	const goToTimesheet = $(() => navigateTo('timesheet'));
 	const refreshPage = $(() => navigateTo('auth'));
@@ -40,11 +41,16 @@ export const useAuth = () => {
 	});
 
 	const handleClaranetAuth = $(async () => {
-		await auth0.getTokenSilently({ cacheMode: 'off' });
-		const token = await auth0.getIdTokenClaims();
+		try {
+			await auth0.getTokenSilently({ cacheMode: 'off' });
+			const token = await auth0.getIdTokenClaims();
 
-		if (token) {
-			await handleBricklyToken('Claranet', token.__raw);
+			if (token) {
+				await handleBricklyToken('Claranet', token.__raw);
+			}
+		} catch (error) {
+			console.log('claranet-authentication', error);
+			throw new Error('cookies-disabled');
 		}
 	});
 
@@ -79,24 +85,35 @@ export const useAuth = () => {
 		const token = url.searchParams.get('token');
 
 		if (code || token) {
+			// after redirect
 			isLoading.value = true;
-			switch (provider) {
-				case 'Claranet': {
-					handleClaranetAuth();
-					break;
+			try {
+				switch (provider) {
+					case 'Claranet': {
+						await handleClaranetAuth();
+						break;
+					}
+					case 'Google': {
+						await handleGoogleAuth(token);
+						break;
+					}
+					default: {
+						await removeProvider();
+						isLoading.value = false;
+						refreshPage();
+						break;
+					}
 				}
-				case 'Google': {
-					handleGoogleAuth(token);
-					break;
-				}
-				default: {
-					await removeProvider();
-					isLoading.value = false;
-					refreshPage();
-					break;
+			} catch (error) {
+				isLoading.value = false;
+				const errorMessage = (error as Error).message;
+				console.error(error);
+				if (errorMessage === 'cookies-disabled') {
+					issueMessage.value = 'Please enable cookies for this app';
 				}
 			}
 		} else {
+			// user no authorized
 			if (!(await getAuthToken())) {
 				removeCookie(CHATBOT_COOKIE_KEY);
 
@@ -105,7 +122,7 @@ export const useAuth = () => {
 
 					switch (provider) {
 						case 'Claranet': {
-							auth0.loginWithRedirect();
+							await auth0.loginWithRedirect();
 							break;
 						}
 						case 'Google': {
@@ -113,6 +130,7 @@ export const useAuth = () => {
 							break;
 						}
 					}
+					isLoading.value = false;
 				} else {
 					await removeProvider();
 					isLoading.value = false;
@@ -128,5 +146,6 @@ export const useAuth = () => {
 	return {
 		authProviders,
 		isLoading,
+		issueMessage,
 	};
 };

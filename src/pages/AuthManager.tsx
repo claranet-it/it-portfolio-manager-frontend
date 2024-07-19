@@ -1,4 +1,5 @@
-import { component$, useSignal, useTask$ } from '@builder.io/qwik';
+import { component$, useTask$ } from '@builder.io/qwik';
+import { LoadingSpinner } from 'src/components/LoadingSpinner';
 import { Toast } from '../components/Toast';
 import { getIcon } from '../components/icons';
 import { BricklyLogo } from '../components/icons/BricklyLogo';
@@ -12,9 +13,7 @@ const messages: Record<(typeof messageCodes)[number], string> = {
 };
 
 export const AuthManager = component$(() => {
-	const { authProviders, isLoading } = useAuth();
-
-	const issueMessage = useSignal<string | undefined>(undefined);
+	const { authProviders, isLoading, issueMessage } = useAuth();
 
 	useTask$(() => {
 		const url = new URL(window.location.href);
@@ -27,7 +26,13 @@ export const AuthManager = component$(() => {
 
 	return (
 		<div class='h-screen flex flex-col items-center justify-center bg-white-100'>
-			<div class='fixed top-0 pr-2 pt-2 flex flex-col justify-end items-end space-y-2'>
+			{isLoading.value && (
+				<div class='fixed t-0 l-0 w-full h-full bg-darkgray-900/30 flex z-50 items-center justify-center'>
+					{<LoadingSpinner />}
+				</div>
+			)}
+
+			<div class='fixed top-0 right-0 pr-2 pt-2 flex flex-col justify-end items-end space-y-2'>
 				{issueMessage.value && (
 					<Toast
 						type={'warning'}
@@ -39,7 +44,7 @@ export const AuthManager = component$(() => {
 			</div>
 
 			<div
-				class={`${isLoading.value ? 'animate-pulse duration-500' : ''} w-[360px] h-[360px] flex flex-col justify-evenly p-10 rounded-[4px] bg-clara-red`}
+				class={`${isLoading.value ? 'hidden' : ''} w-[360px] h-[360px] flex flex-col justify-evenly p-10 rounded-[4px] bg-clara-red`}
 			>
 				<div class='flex flex-row items-center justify-center gap-[28px] text-white-100'>
 					<BricklyLogo />
@@ -62,7 +67,9 @@ export const AuthManager = component$(() => {
 				</div>
 			</div>
 
-			<div class='h-[36px] bg-white-100 mt-[12px] text-sm font-normal text-dark-grey'>
+			<div
+				class={`${isLoading.value ? 'hidden' : ''} 'h-[36px] bg-white-100 mt-[12px] text-sm font-normal text-dark-grey`}
+			>
 				{t('CLARANET_CREDITS')}{' '}
 				<a style={{ 'text-decoration': 'underline' }} href='https://www.claranet.com/it'>
 					Claranet Srl

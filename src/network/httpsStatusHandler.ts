@@ -1,3 +1,4 @@
+import { t } from 'src/locale/labels';
 import { removeAuthToken } from '../utils/token';
 
 export const httpStatusHandler = async (response: Response) => {
@@ -8,7 +9,7 @@ export const httpStatusHandler = async (response: Response) => {
 			break;
 		case 500:
 			//TODO: launch event
-			console.log('OPS, something went wrog from backend :(');
+			console.log(t('GENERIC_BE_ERROR'));
 			break;
 		default:
 			return response;
