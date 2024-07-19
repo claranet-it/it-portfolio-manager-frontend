@@ -11,10 +11,11 @@ interface selectInterface {
 	onChange$?: QRL;
 	disabled?: boolean;
 	invalid?: boolean;
+	hidden?: boolean;
 }
 
 export const Select = component$<selectInterface>(
-	({ id, label, value, options, size, placeholder, onChange$, disabled, invalid }) => {
+	({ id, label, value, options, size, placeholder, onChange$, disabled, invalid, hidden }) => {
 		const closeDropdown = $(() => {
 			const button = document.getElementById('select-button-' + id);
 			button?.click();
@@ -74,7 +75,7 @@ export const Select = component$<selectInterface>(
 		});
 
 		return (
-			<form class={`w-full ${sizeStyle.value}`}>
+			<form class={`w-full ${sizeStyle.value} ${hidden ? 'hidden' : 'block'}`}>
 				<label class={`block text-sm font-normal ${labelStyle.value}`}>{label}</label>
 
 				<button

@@ -36,9 +36,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			handleSubmit,
 		} = useNewTimeEntry(timeEntry, alertMessageState, onCancel$, allowNewEntry);
 
-		useVisibleTask$(({ track }) => {
-			track(() => projectTypeEnabled.newCustomer);
-			track(() => projectTypeEnabled.newProject);
+		useVisibleTask$(() => {
 			initFlowbite();
 		});
 
@@ -93,19 +91,20 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								)}
 						</div>
 
-						{allowNewEntry &&
-							(projectTypeEnabled.newCustomer || projectTypeEnabled.newProject) && (
-								<Select
-									id={UUID()}
-									disabled={!taskEnableSig.value}
-									label='Project Type'
-									placeholder='Select Project Type'
-									value={projectTypeSelected}
-									options={projectTypeList}
-									invalid={projectTypeInvalid.value}
-									size='auto'
-								/>
-							)}
+						<Select
+							hidden={
+								allowNewEntry &&
+								(projectTypeEnabled.newCustomer || projectTypeEnabled.newProject)
+							}
+							id={UUID()}
+							disabled={!!taskEnableSig.value}
+							label='Project Type'
+							placeholder='Select Project Type'
+							value={projectTypeSelected}
+							options={projectTypeList}
+							invalid={projectTypeInvalid.value}
+							size='auto'
+						/>
 
 						<Autocomplete
 							id={UUID()}

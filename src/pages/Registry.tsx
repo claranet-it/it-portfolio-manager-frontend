@@ -9,7 +9,7 @@ import { Input } from 'src/components/form/Input';
 import { NewProjectForm } from 'src/components/form/NewProjectForm';
 import { getIcon } from 'src/components/icons';
 import { Modal } from 'src/components/modals/Modal';
-import { NewProjectModal } from 'src/components/modals/newProjectModal';
+import { NewProjectOverlayModal } from 'src/components/modals/newProjectOverlayModal';
 import { useRegistry } from 'src/hooks/useRegistry';
 import { t } from 'src/locale/labels';
 
@@ -185,14 +185,14 @@ export const Registry = component$(() => {
 					<h1 class='text-2xl font-bold text-darkgray-900 me-4'>
 						{t('REGISTRY_PAGE_TITLE')}
 					</h1>
-					<NewProjectModal q:slot='newProject'>
+					<NewProjectOverlayModal q:slot='newProject'>
 						<NewProjectForm
 							timeEntry={trackValue as Signal<TimeEntry>}
 							alertMessageState={alertMessageState}
 							onCancel$={newProjectCancelAction}
 							allowNewEntry={true}
 						/>
-					</NewProjectModal>
+					</NewProjectOverlayModal>
 				</div>
 				<div class={`${loading ? 'animate-pulse' : ''}`}>
 					<Accordion
