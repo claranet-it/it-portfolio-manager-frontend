@@ -8,7 +8,6 @@ import { Button } from 'src/components/Button';
 import { Input } from 'src/components/form/Input';
 import { NewProjectForm } from 'src/components/form/NewProjectForm';
 import { getIcon } from 'src/components/icons';
-import { LoadingSpinner } from 'src/components/LoadingSpinner';
 import { Modal } from 'src/components/modals/Modal';
 import { NewProjectOverlayModal } from 'src/components/modals/newProjectOverlayModal';
 import { useRegistry } from 'src/hooks/useRegistry';
@@ -181,11 +180,6 @@ export const Registry = component$(() => {
 
 	return (
 		<>
-			{loading && (
-				<div class='fixed t-0 l-0 w-full h-full bg-darkgray-900/30 flex z-50 items-center justify-center'>
-					{<LoadingSpinner />}
-				</div>
-			)}
 			<div class='w-full px-6 pt-2.5 space-y-3 mb-32'>
 				<div class='flex sm:flex-col md:flex-row lg:flex-row  sm:space-y-3 md:justify-between lg:justify-between'>
 					<h1 class='text-2xl font-bold text-darkgray-900 me-4'>

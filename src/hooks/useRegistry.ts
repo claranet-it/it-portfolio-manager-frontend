@@ -1,8 +1,9 @@
-import { $, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
+import { $, useContext, useSignal, useStore, useTask$, useVisibleTask$ } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
+import { AppContext } from 'src/app';
 import { t, tt } from 'src/locale/labels';
 import { getCustomers } from 'src/services/customer';
 import { getProjects } from 'src/services/projects';
@@ -21,6 +22,7 @@ type Registry = {
 
 export const useRegistry = (alertMessageState: ModalState, editMessageState: ModalState) => {
 	const { addEvent } = useNotification();
+	const appStore = useContext(AppContext);
 
 	const loadingList = useSignal<string[]>([]);
 	const data = useStore<Registry[]>([]);
@@ -191,6 +193,10 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 	useVisibleTask$(async ({ track }) => {
 		track(() => selectedProject.value);
 		await fetchTasks();
+	});
+
+	useTask$(({ track }) => {
+		appStore.isLoading = track(() => loadingList.value.length !== 0);
 	});
 
 	const handleCustomerEdit = $(async (props: RegistryHandler, newCustomer: string) => {

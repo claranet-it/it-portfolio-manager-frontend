@@ -1,6 +1,6 @@
 import { component$, JSXChildren } from '@builder.io/qwik';
 
-export interface AccordionInterface {
+export interface AccordionProps {
 	cards: Card[];
 	nested?: boolean;
 	loading?: boolean;
@@ -78,7 +78,7 @@ const AccordionCard = ({
 	);
 };
 
-export const Accordion = component$<AccordionInterface>(({ cards, nested, loading }) => {
+export const Accordion = component$<AccordionProps>(({ cards, nested, loading }) => {
 	return (
 		<div id={`accordion-nested-parent`}>
 			{loading ? (
