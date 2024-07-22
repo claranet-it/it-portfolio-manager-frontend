@@ -24,10 +24,20 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 		state.to = to;
 		try {
 			appStore.isLoading = true;
-			state.dataTimeEntries = await getTimeEntries(
+			const timeEntries = await getTimeEntries(
 				formatDateString(from.value),
 				formatDateString(to.value)
 			);
+
+			if (state.dataTimeEntries.length === 0) {
+				state.dataTimeEntries = timeEntries;
+			} else {
+				timeEntries.map((entry) => {
+					if (!state.dataTimeEntries.some((_entry) => isEqualEntries(_entry, entry))) {
+						state.dataTimeEntries.push(entry);
+					}
+				});
+			}
 			appStore.isLoading = false;
 		} catch (err) {
 			state.error = (err as Error).message;
