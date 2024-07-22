@@ -1,4 +1,4 @@
-import { $, Signal, Slot, component$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
+import { $, Signal, Slot, component$, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { format } from 'date-fns';
 import { useTimeEntries } from '../hooks/timesheet/useTimeEntries';
@@ -155,8 +155,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 											</h4>
 										</div>
 									</th>
-									{days.value.map((day, key) => {
+									{days.value.map((day, index) => {
 										const formattedDate = formatDateString(day.date);
+										const key = `${index}-${formattedDate}`;
 										const entry = entries.find((e) => e.date === formattedDate);
 										const hours = entry
 											? timeEntriesState[entry.hours]?.[formattedDate] || 0
@@ -180,11 +181,11 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 															task,
 														} as TimeEntryObject);
 													}}
-													bindValue={useSignal(
+													bindValue={
 														entry
 															? getFormattedHours(entry.hours)
 															: getFormattedHours(hours)
-													)}
+													}
 												/>
 											</td>
 										);
