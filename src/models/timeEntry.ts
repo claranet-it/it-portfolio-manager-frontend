@@ -9,8 +9,8 @@ export type TimeEntry = {
 	project: Project;
 	task: Task;
 	hours: number;
-	startHour: string;
-	description: string;
+	startHour?: string;
+	description?: string;
 	isUnsaved?: boolean;
 };
 
