@@ -15,6 +15,7 @@ import { Close } from './Close';
 import { Design } from './Design';
 import { Downalod } from './Download';
 import { Edit } from './Edit';
+import { EditWhite } from './EditWhite';
 import { Elixir } from './Elixir';
 import { Exit } from './Exit';
 import { Expand } from './Expand';
@@ -84,6 +85,8 @@ export const getIcon = (skill: string) => {
 			return <Exit />;
 		case 'Edit':
 			return <Edit />;
+		case 'EditWhite':
+			return <EditWhite />;
 		case 'Close':
 			return <Close />;
 		case 'Expand':

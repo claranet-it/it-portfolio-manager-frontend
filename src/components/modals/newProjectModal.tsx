@@ -1,6 +1,6 @@
 import { $, Slot, component$, useComputed$, useStore } from '@builder.io/qwik';
-import { getIcon } from '../icons';
 import { t } from '../../locale/labels';
+import { getIcon } from '../icons';
 
 export const NewProjectModal = component$(() => {
 	const modalStatus = useStore<{
@@ -36,7 +36,7 @@ export const NewProjectModal = component$(() => {
 			</button>
 
 			<div id='form-new-project' style={modalStyle.value} class='fixed z-10'>
-				<Slot />
+				{modalStatus.visible ? <Slot /> : null}
 			</div>
 		</div>
 	);
