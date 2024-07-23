@@ -21,4 +21,5 @@ export type TimeEntryRow = {
 export type Day = {
 	name: string;
 	date: Date;
+	weekend: boolean;
 };

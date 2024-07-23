@@ -162,12 +162,13 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 										const hours = entry
 											? timeEntriesState[entry.hours]?.[formattedDate] || 0
 											: 0;
+										const { weekend } = day;
+										1;
+
+										const tdClass = `py-3 px-4 text-center border border-surface-50 ${weekend ? 'bg-danger-light' : ''}`;
 
 										return (
-											<td
-												key={key}
-												class='py-3 px-4 text-center border border-surface-50'
-											>
+											<td key={key} class={tdClass}>
 												<TimePicker
 													onBlur$={(e: FocusEvent) => {
 														const value = (e.target as HTMLInputElement)
