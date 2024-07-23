@@ -64,7 +64,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		useTask$(async ({ track }) => {
 			track(() => from.value);
 			track(() => to.value);
-			await loadTimeEntries(from, to);
+			await loadTimeEntries(from, to, true);
 		});
 
 		const { dataTimeEntries } = state;
