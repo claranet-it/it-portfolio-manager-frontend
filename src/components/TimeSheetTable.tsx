@@ -12,6 +12,7 @@ import {
 	getTotalHoursPerRows,
 	getlHoursPerProject,
 } from '../utils/timesheet';
+import { EditTimeEntryForm } from './form/editTimeEntryForm';
 import { TimePicker } from './form/TimePicker';
 import { getIcon } from './icons';
 import { Modal } from './modals/Modal';
@@ -167,9 +168,20 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 
 										const tdClass = `py-3 px-4 text-center border border-surface-50 ${weekend ? 'bg-danger-light' : ''}`;
 
+										const modalState = useStore<ModalState>({
+											title: t('EDIT_TIME_ENTRY'),
+											onCancel$: $(() => {}),
+											onConfirm$: $(() => {}),
+											cancelLabel: t('ACTION_CANCEL'),
+											confirmLabel: t('ACTION_CONFIRM'),
+										});
+
 										return (
 											<td key={key} class={tdClass}>
 												<TimePicker
+													onClick$={() => {
+														modalState.isVisible = true;
+													}}
 													onBlur$={(e: FocusEvent) => {
 														const value = (e.target as HTMLInputElement)
 															.value;
@@ -188,6 +200,15 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 															: getFormattedHours(hours)
 													}
 												/>
+
+												<Modal key={key} state={modalState}>
+													<EditTimeEntryForm
+														date={day.date}
+														customer={customer}
+														project={project}
+														task={task}
+													/>
+												</Modal>
 											</td>
 										);
 									})}

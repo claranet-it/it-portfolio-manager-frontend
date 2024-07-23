@@ -46,8 +46,10 @@ export const Modal = component$<ModalProps>(({ state }) => {
 					</button>
 				</div>
 				{/* <!-- Modal body --> */}
-				<div class='py-4 space-y-4 my-4 border-b border-gray-200'>
-					{state.body && <Slot name='modalBody' />}
+				<div
+					class={`${state.message ? 'py-4' : 'pt-0 pb-4'} space-y-4 my-4 border-b border-gray-200`}
+				>
+					{!state.message && <Slot />}
 					{state.message && (
 						<p class='text-sm font-normal text-dark-grey'>{state.message}</p>
 					)}

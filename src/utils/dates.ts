@@ -11,6 +11,6 @@ export const getDateLabelFromMonthYear = (monthYear: string): string =>
 		year: 'numeric',
 	});
 
-export const formatDateString = (date: Date): string => {
-	return format(date, 'yyyy-MM-dd');
+export const formatDateString = (date: Date, extended?: boolean): string => {
+	return extended ? format(date, 'eeee, dd MMMM yyyy') : format(date, 'yyyy-MM-dd');
 };

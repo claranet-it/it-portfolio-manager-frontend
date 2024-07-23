@@ -106,5 +106,6 @@
 	"REGISTRY_CUSTOMER_EDIT_SUCCESS_MESSAGE": "Customer edited successfully! #success / #total projects were edited!",
 	"REGISTRY_CUSTOMER_EDIT_PARTIAL_MESSAGE": "Edit partially completed! Success: #success Failure: #fail",
 	"REGISTRY_CUSTOMER_EDIT_ERROR_MESSAGE": "There was an error while editing the customer!",
-	"REGISTRY_CREATE_MESSAGE": "The #type will be created!"
+	"REGISTRY_CREATE_MESSAGE": "The #type will be created!",
+	"EDIT_TIME_ENTRY": "Edit time"
 }

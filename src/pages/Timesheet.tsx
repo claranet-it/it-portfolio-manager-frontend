@@ -4,9 +4,9 @@ import { TimeEntry } from '@models/timeEntry';
 import { Button } from 'src/components/Button';
 import { TimeSheetTable } from 'src/components/TimeSheetTable';
 import { DataRange } from 'src/components/form/DataRange';
+import { Modal } from 'src/components/modals/Modal';
 import { NewProjectModal } from 'src/components/modals/newProjectModal';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
-import { Modal } from '../components/Modal';
 import { NewProjectForm } from '../components/form/NewProjectForm';
 import { t } from '../locale/labels';
 
