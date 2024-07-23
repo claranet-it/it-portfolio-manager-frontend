@@ -18,6 +18,7 @@ export const useGetTimeSheetDays = () => {
 			days.value.push({
 				name: currentDate.format('ddd').toString(),
 				date: currentDate.toDate(),
+				weekend: currentDate.isoWeekday() > 5,
 			});
 			// Move to the next day
 			currentDate.add(1, 'day');
