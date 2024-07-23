@@ -19,7 +19,7 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 
 	const { addEvent } = useNotification();
 
-	const loadTimeEntries = $(async (from: Signal<Date>, to: Signal<Date>) => {
+	const loadTimeEntries = $(async (from: Signal<Date>, to: Signal<Date>, reset?: boolean) => {
 		state.from = from;
 		state.to = to;
 		try {
@@ -29,7 +29,7 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 				formatDateString(to.value)
 			);
 
-			if (state.dataTimeEntries.length === 0) {
+			if (state.dataTimeEntries.length === 0 || reset) {
 				state.dataTimeEntries = timeEntries;
 			} else {
 				timeEntries.map((entry) => {
