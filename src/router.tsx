@@ -22,7 +22,7 @@ export const routes = {
 };
 
 export const navigateTo = (route: Route): void => {
-	window.history.pushState({}, '', route);
+	window.history.pushState({}, '', `/${route}`);
 	dispatchEvent(new PopStateEvent('popstate'));
 };
 
