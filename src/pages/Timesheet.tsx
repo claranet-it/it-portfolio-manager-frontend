@@ -4,10 +4,10 @@ import { TimeEntry } from '@models/timeEntry';
 import { Button } from 'src/components/Button';
 import { TimeSheetTable } from 'src/components/TimeSheetTable';
 import { DataRange } from 'src/components/form/DataRange';
-import { NewProjectModal } from 'src/components/modals/newProjectModal';
+import { NewTaskForm } from 'src/components/form/NewTaskForm';
+import { NewProjectOverlayModal } from 'src/components/modals/newProjectOverlayModal';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
 import { Modal } from '../components/Modal';
-import { NewProjectForm } from '../components/form/NewProjectForm';
 import { t } from '../locale/labels';
 
 export const Timesheet = component$(() => {
@@ -42,13 +42,13 @@ export const Timesheet = component$(() => {
 				</div>
 
 				<TimeSheetTable newTimeEntry={newTimeEntry} days={days} from={from} to={to}>
-					<NewProjectModal q:slot='newProject'>
-						<NewProjectForm
+					<NewProjectOverlayModal q:slot='newProject'>
+						<NewTaskForm
 							timeEntry={newTimeEntry}
 							alertMessageState={alertMessageState}
 							onCancel$={newProjectCancelAction}
 						/>
-					</NewProjectModal>
+					</NewProjectOverlayModal>
 				</TimeSheetTable>
 			</div>
 
