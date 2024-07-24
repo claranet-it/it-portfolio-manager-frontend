@@ -1,9 +1,11 @@
 import { QRL, component$, useComputed$, useSignal } from '@builder.io/qwik';
+import { getFormattedHours } from 'src/utils/timesheet';
 import { getIcon } from '../icons';
 
 interface TimePickerProps {
-	bindValue?: string | undefined;
+	bindValue?: number | undefined;
 	onClick$?: QRL;
+	disableOnClick?: boolean;
 	onChange$?: QRL;
 	onBlur$?: QRL;
 	required?: boolean;
@@ -11,8 +13,8 @@ interface TimePickerProps {
 }
 
 export const TimePicker = component$<TimePickerProps>(
-	({ bindValue = '00:00', onClick$, onChange$, onBlur$, required, disabled }) => {
-		const signalValue = useSignal(bindValue);
+	({ bindValue = 0, onClick$, onChange$, onBlur$, required, disabled }) => {
+		const signalValue = useSignal(getFormattedHours(bindValue));
 		const style = useComputed$(() => {
 			return disabled
 				? 'bg-darkgray-50 text-darkgray-300 border-darkgray-100'

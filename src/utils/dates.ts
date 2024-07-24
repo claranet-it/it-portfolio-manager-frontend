@@ -14,3 +14,15 @@ export const getDateLabelFromMonthYear = (monthYear: string): string =>
 export const formatDateString = (date: Date, extended?: boolean): string => {
 	return extended ? format(date, 'eeee, dd MMMM yyyy') : format(date, 'yyyy-MM-dd');
 };
+
+export const getDateFromHourString = (stringHours: string): Date => {
+	const [hours, minutes] = stringHours.split(':').map(Number);
+	const date = new Date();
+	date.setHours(hours, minutes, 0, 0);
+
+	return date;
+};
+
+export const getHoursStringFromDate = (date: Date): string => {
+	return format(date, 'HH:MM');
+};

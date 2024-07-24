@@ -30,7 +30,6 @@ export const Modal = component$<ModalProps>(({ state }) => {
 	return (
 		<div
 			id='default-modal'
-			aria-hidden='true'
 			class={`${isVisible.value} overflow-y-auto overflow-x-hidden top-0 left-0 z-50 m-0 flex justify-center items-center w-full h-full bg-black-trasparent`}
 		>
 			<div class='relative p-6  max-w-2xl max-h-full bg-white rounded-md shadow'>

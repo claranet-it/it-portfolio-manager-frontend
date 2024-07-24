@@ -1,4 +1,4 @@
-import { $, Signal, Slot, component$, useStore, useTask$ } from '@builder.io/qwik';
+import { $, Signal, Slot, component$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { format } from 'date-fns';
 import { useTimeEntries } from '../hooks/timesheet/useTimeEntries';
@@ -168,10 +168,22 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 
 										const tdClass = `py-3 px-4 text-center border border-surface-50 ${weekend ? 'bg-danger-light' : ''}`;
 
+										const destriptionSig = useSignal(entry?.description ?? '');
+										const hoursSig = useSignal(entry?.hours ?? 0);
+
 										const modalState = useStore<ModalState>({
 											title: t('EDIT_TIME_ENTRY'),
-											onCancel$: $(() => {}),
-											onConfirm$: $(() => {}),
+											onCancel$: $(() => {
+												destriptionSig.value = entry?.description ?? '';
+												hoursSig.value = entry?.hours ?? 0;
+											}),
+											onConfirm$: $(() => {
+												handleTimeChange({
+													...entry,
+													hours: hoursSig.value,
+													description: destriptionSig.value,
+												} as TimeEntryObject);
+											}),
 											cancelLabel: t('ACTION_CANCEL'),
 											confirmLabel: t('ACTION_CONFIRM'),
 										});
@@ -194,21 +206,21 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 															task,
 														} as TimeEntryObject);
 													}}
-													bindValue={
-														entry
-															? getFormattedHours(entry.hours)
-															: getFormattedHours(hours)
-													}
+													bindValue={entry ? entry.hours : hours}
 												/>
 
-												<Modal key={key} state={modalState}>
-													<EditTimeEntryForm
-														date={day.date}
-														customer={customer}
-														project={project}
-														task={task}
-													/>
-												</Modal>
+												{entry && (
+													<Modal key={key} state={modalState}>
+														<EditTimeEntryForm
+															destriptionSig={destriptionSig}
+															hoursSig={hoursSig}
+															date={day.date}
+															customer={customer}
+															project={project}
+															task={task}
+														/>
+													</Modal>
+												)}
 											</td>
 										);
 									})}

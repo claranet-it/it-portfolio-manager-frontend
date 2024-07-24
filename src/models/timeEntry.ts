@@ -14,7 +14,7 @@ export type TimeEntry = {
 	isUnsaved?: boolean;
 };
 
-export type TimeEntryObject = Omit<TimeEntry, 'company'>;
+export type TimeEntryObject = Omit<TimeEntry, 'company' | 'isUnsaved'>;
 
 export type TimeEntryRow = {
 	[project: string]: TimeEntry[];
