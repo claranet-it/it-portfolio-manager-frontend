@@ -51,7 +51,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 								label={t('CUSTOMER_LABEL')}
 								selected={customerSelected}
 								data={dataCustomersSig}
-								placeholder='Search...'
+								placeholder={t('SEARCH')}
 								required
 								onChange$={onChangeCustomer}
 							/>
@@ -60,6 +60,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 							<Select
 								id={UUID()}
 								label={t('PROJECT_LABEL')}
+								placeholder={t('SELECT_PROJECT_PLACEHOLDER')}
 								value={projectSelected}
 								options={dataProjectsSig}
 								disabled={!projectEnableSig.value}
@@ -70,8 +71,8 @@ export const NewTaskForm = component$<NewTaskForm>(
 						<Select
 							id={UUID()}
 							disabled={!taskEnableSig.value}
-							label='Task'
-							placeholder='Select Task'
+							label={t('TASK_LABEL')}
+							placeholder={t('SELECT_TASK_PLACEHOLDER')}
 							value={taskSelected}
 							options={dataTaksSign}
 							size='auto'
