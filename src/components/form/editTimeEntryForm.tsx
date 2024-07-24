@@ -40,13 +40,6 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 
 								const hours = convertTimeToDecimal(value);
 								hoursSig.value = hours;
-								// handleTimeChange({
-								// 	project,
-								// 	date: formattedDate,
-								// 	hours,
-								// 	customer,
-								// 	task,
-								// } as TimeEntryObject);
 							}}
 							bindValue={hoursSig.value}
 						/>
@@ -54,37 +47,12 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 
 					<div>
 						<label class='block mb-1 text-sm font-normal text-dark-grey'>Start</label>
-						<TimePicker
-							onBlur$={(e: FocusEvent) => {
-								const value = (e.target as HTMLInputElement).value;
-								//startSig.value = Number(value);
-								// const hours = convertTimeToDecimal(value);
-								// handleTimeChange({
-								// 	project,
-								// 	date: formattedDate,
-								// 	hours,
-								// 	customer,
-								// 	task,
-								// } as TimeEntryObject);
-							}}
-						/>
+						<TimePicker onBlur$={(_: FocusEvent) => {}} />
 					</div>
 
 					<div>
 						<label class='block mb-1 text-sm font-normal text-dark-grey'>End</label>
-						<TimePicker
-							onBlur$={(e: FocusEvent) => {
-								const value = (e.target as HTMLInputElement).value;
-								// const hours = convertTimeToDecimal(value);
-								// handleTimeChange({
-								// 	project,
-								// 	date: formattedDate,
-								// 	hours,
-								// 	customer,
-								// 	task,
-								// } as TimeEntryObject);
-							}}
-						/>
+						<TimePicker onBlur$={(_: FocusEvent) => {}} />
 					</div>
 				</div>
 
