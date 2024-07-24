@@ -23,7 +23,7 @@ export const formatDateString = (date: Date): string => {
 
 const dateToDay = (date: Date): Day => {
 	return {
-		name: format(date, 'EEEE'),
+		name: format(date, 'EE'),
 		date: new Date(date),
 		weekend: isWeekend(date),
 	};
