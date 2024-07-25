@@ -18,9 +18,16 @@ export const addHttpErrorListener = (listener: (payload: ErrorListenerPayload) =
 export const httpResponseHandler = async (response: Response) => {
 	if (response.ok) return response;
 
-	const message: string = await response
+	const responseMessage: string = await response
 		.clone()
 		.json()
-		.then((data) => data?.message ?? t('GENERIC_BE_ERROR'));
-	listeners.forEach((listener) => listener({ message, status: response.status }));
+		.then((data) => data?.message)
+		.catch(() => undefined);
+
+	listeners.forEach((listener) =>
+		listener({
+			message: responseMessage ?? t('GENERIC_BE_ERROR'),
+			status: response.status,
+		})
+	);
 };
