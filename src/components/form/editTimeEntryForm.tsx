@@ -11,17 +11,20 @@ interface EditTimeEntryFormProps {
 	hoursSig: Signal<number | undefined>;
 	destriptionSig: Signal<string | undefined>;
 	date: Date;
+	hoursRange: {
+		start: Signal<number>;
+		end: Signal<number>;
+	};
 	customer?: Customer;
 	project?: Project;
 	task?: Task;
 }
 
 export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
-	({ hoursSig, destriptionSig, date, customer, project, task }) => {
-		//const timeSig = useSignal(timeEntry?.hours);
-
+	({ hoursSig, destriptionSig, date, hoursRange, customer, project, task }) => {
+		const key = `${task}-${date}-${hoursSig.value}-${hoursRange.start.value}-${hoursRange.end.value}`;
 		return (
-			<div class='flex flex-col text-left gap-2'>
+			<div key={key} class='flex flex-col text-left gap-2'>
 				<div class='flex flex-col border-b border-gray-200 pb-3'>
 					<h4 class='text-sm font-normal text-dark-gray-900 mb-2'>
 						{formatDateString(date, true)}
@@ -33,26 +36,41 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 
 				<div class='flex flex-row gap-2'>
 					<div>
-						<label class='block mb-1 text-sm font-normal text-dark-grey'>Time</label>
+						<label class='block mb-1 text-sm font-normal text-dark-grey'>
+							{t('TIME_ENTRY_START')}
+						</label>
 						<TimePicker
+							bindValue={hoursRange.start.value}
 							onBlur$={(e: FocusEvent) => {
 								const value = (e.target as HTMLInputElement).value;
 
 								const hours = convertTimeToDecimal(value);
-								hoursSig.value = hours;
+								hoursRange.start.value = hours;
+
+								if (hoursSig.value) {
+									hoursRange.end.value = hours + hoursSig.value;
+								}
 							}}
-							bindValue={hoursSig.value}
 						/>
 					</div>
 
 					<div>
-						<label class='block mb-1 text-sm font-normal text-dark-grey'>Start</label>
-						<TimePicker onBlur$={(_: FocusEvent) => {}} />
-					</div>
+						<label class='block mb-1 text-sm font-normal text-dark-grey'>
+							{t('TIME_ENTRY_END')}
+						</label>
+						<TimePicker
+							bindValue={hoursRange.end.value}
+							onBlur$={(e: FocusEvent) => {
+								const value = (e.target as HTMLInputElement).value;
 
-					<div>
-						<label class='block mb-1 text-sm font-normal text-dark-grey'>End</label>
-						<TimePicker onBlur$={(_: FocusEvent) => {}} />
+								const hours = convertTimeToDecimal(value);
+								hoursRange.end.value = hours;
+
+								if (hoursRange.start.value) {
+									hoursSig.value = hours - hoursRange.start.value;
+								}
+							}}
+						/>
 					</div>
 				</div>
 

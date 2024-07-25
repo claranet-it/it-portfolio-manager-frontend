@@ -109,5 +109,7 @@
 	"REGISTRY_CREATE_MESSAGE": "The #type will be created!",
 	"EDIT_TIME_ENTRY": "Edit time",
 	"DESCRIPTION_LABEL": "Description",
-	"DESCRIPTION_INSER_LABEL": "Insert description..."
+	"DESCRIPTION_INSER_LABEL": "Insert description...",
+	"TIME_ENTRY_START": "Start",
+	"TIME_ENTRY_END": "End"
 }

@@ -10,6 +10,7 @@ export type TimeEntry = {
 	task: Task;
 	hours: number;
 	startHour?: string;
+	endHour?: string;
 	description?: string;
 	isUnsaved?: boolean;
 };
