@@ -1,6 +1,7 @@
-import { Slot, component$, useContext } from '@builder.io/qwik';
+import { Slot, component$, useContext, useTask$ } from '@builder.io/qwik';
 import { ToastEvent } from '@models/event';
 import { AppContext } from 'src/app';
+import { addHttpErrorListener } from 'src/network/httpResponseHandler';
 import { useNotification } from '../hooks/useNotification';
 import { Route } from '../router';
 import { Header } from './Header';
@@ -8,8 +9,14 @@ import { LoadingSpinner } from './LoadingSpinner';
 import { Toast } from './Toast';
 
 export const Layout = component$<{ currentRoute: Exclude<Route, 'auth'> }>(({ currentRoute }) => {
-	const { eventsList, removeEvent } = useNotification();
+	const { eventsList, removeEvent, addEvent } = useNotification();
 	const appStore = useContext(AppContext);
+
+	useTask$(() => {
+		return addHttpErrorListener(async ({ message }) => {
+			addEvent({ type: 'danger', message, autoclose: true });
+		});
+	});
 
 	return (
 		<div class='h-screen flex flex-col'>
