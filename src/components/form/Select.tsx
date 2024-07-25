@@ -60,7 +60,7 @@ export const Select = component$<selectInterface>(
 
 		useVisibleTask$(({ track }) => {
 			track(value);
-			onChange$ && onChange$();
+			onChange$ && onChange$(value.value);
 		});
 
 		// Set menu width as initial button width

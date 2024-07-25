@@ -111,5 +111,8 @@
 	"DESCRIPTION_LABEL": "Description",
 	"DESCRIPTION_INSER_LABEL": "Insert description...",
 	"TIME_ENTRY_START": "Start",
-	"TIME_ENTRY_END": "End"
+	"TIME_ENTRY_END": "End",
+	"SEARCH": "Search...",
+	"SELECT_PROJECT_PLACEHOLDER": "Select a project",
+	"SELECT_TASK_PLACEHOLDER": "Select a task"
 }

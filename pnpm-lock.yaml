@@ -26,9 +26,6 @@ dependencies:
   flowbite:
     specifier: ^2.3.0
     version: 2.3.0
-  moment:
-    specifier: ^2.30.1
-    version: 2.30.1
 
 devDependencies:
   '@testing-library/jest-dom':
@@ -1700,10 +1697,6 @@ packages:
       pkg-types: 1.1.0
       ufo: 1.5.3
     dev: true
-
-  /moment@2.30.1:
-    resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
-    dev: false
 
   /mrmime@2.0.0:
     resolution: {integrity: sha512-eu38+hdgojoyq63s+yTpN4XMBdt5l8HhMhc4VKLO9KM5caLIBvUm4thi7fFaxyTmCKeNnXZ5pAlBwCUnhA09uw==}
