@@ -26,7 +26,7 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 		const formattedDate = formatDateString(day.date);
 		const hours = entry ? timeEntriesState[entry.hours]?.[formattedDate] || 0 : 0;
 		const { weekend } = day;
-		const tdClass = `py-3 px-4 text-center border border-surface-50 ${weekend ? 'bg-danger-light' : ''}`;
+		const tdClass = `relative py-3 px-4 text-center border border-surface-50 ${weekend ? 'bg-danger-light' : ''}`;
 
 		const destriptionSig = useSignal(entry?.description ?? '');
 		const hoursSig = useSignal(entry?.hours ?? 0);
@@ -82,6 +82,12 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 					}}
 					bindValue={entry ? entry.hours : hours}
 				/>
+
+				{startSig.value !== 0 && endSig.value !== 0 && (
+					<p class='text-xs font-normal text-darkgray-400 absolute mt-1 w-[calc(100%-2rem)] text-nowrap'>
+						{getFormattedHours(startSig.value)} - {getFormattedHours(endSig.value)}
+					</p>
+				)}
 
 				{entry && (
 					<Modal key={id} state={modalState}>
