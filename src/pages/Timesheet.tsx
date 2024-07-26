@@ -7,7 +7,7 @@ import { DataRange } from 'src/components/form/DataRange';
 import { NewTaskForm } from 'src/components/form/NewTaskForm';
 import { NewProjectOverlayModal } from 'src/components/modals/newProjectOverlayModal';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
-import { Modal } from '../components/Modal';
+import { Modal } from '../components/modals/Modal';
 import { t } from '../locale/labels';
 
 export const Timesheet = component$(() => {

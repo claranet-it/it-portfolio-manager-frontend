@@ -9,10 +9,13 @@ export type TimeEntry = {
 	project: Project;
 	task: Task;
 	hours: number;
+	startHour?: string;
+	endHour?: string;
+	description?: string;
 	isUnsaved?: boolean;
 };
 
-export type TimeEntryObject = Omit<TimeEntry, 'company'>;
+export type TimeEntryObject = Omit<TimeEntry, 'company' | 'isUnsaved'>;
 
 export type TimeEntryRow = {
 	[project: string]: TimeEntry[];

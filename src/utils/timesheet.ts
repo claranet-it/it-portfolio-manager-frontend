@@ -35,3 +35,18 @@ export const isEqualEntries = (entryA: TimeEntry, entryB: TimeEntry): Boolean =>
 		entryA.task === entryB.task
 	);
 };
+
+export const isEqualEntriesDeep = (entryA: TimeEntry, entryB: TimeEntry): Boolean => {
+	return isEqualEntries(entryA, entryB) && entryA.date === entryB.date;
+};
+
+export const getEndHour = (startHour: number, endHour: number, hours: number) => {
+	if (startHour === 0 || endHour === 0) {
+		return endHour;
+	}
+	if (startHour + hours === endHour) {
+		return endHour;
+	}
+
+	return startHour + hours;
+};

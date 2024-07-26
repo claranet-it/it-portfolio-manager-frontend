@@ -5,7 +5,7 @@ import { t } from '../../locale/labels';
 import { TimeEntry, TimeEntryObject } from '../../models/timeEntry';
 import { deleteTimeEntry, getTimeEntries, postTimeEntries } from '../../services/timeSheet';
 import { formatDateString } from '../../utils/dates';
-import { isEqualEntries } from '../../utils/timesheet';
+import { isEqualEntries, isEqualEntriesDeep } from '../../utils/timesheet';
 import { useNotification } from '../useNotification';
 
 export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
@@ -33,8 +33,20 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 				state.dataTimeEntries = timeEntries;
 			} else {
 				timeEntries.map((entry) => {
-					if (!state.dataTimeEntries.some((_entry) => isEqualEntries(_entry, entry))) {
+					const index = state.dataTimeEntries.findIndex((_entry) =>
+						isEqualEntriesDeep(_entry, entry)
+					);
+
+					if (index === -1) {
 						state.dataTimeEntries.push(entry);
+					} else {
+						state.dataTimeEntries[index] = {
+							...state.dataTimeEntries[index],
+							hours: entry.hours,
+							description: entry.description,
+							startHour: entry.startHour,
+							endHour: entry.endHour,
+						};
 					}
 				});
 			}

@@ -1,4 +1,4 @@
-import { $, Signal, Slot, component$, useStore, useTask$ } from '@builder.io/qwik';
+import { $, Signal, Slot, component$, useComputed$, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { format } from 'date-fns';
 import { useTimeEntries } from '../hooks/timesheet/useTimeEntries';
@@ -6,15 +6,14 @@ import { t } from '../locale/labels';
 import { Day, TimeEntry, TimeEntryObject, TimeEntryRow } from '../models/timeEntry';
 import { formatDateString } from '../utils/dates';
 import {
-	convertTimeToDecimal,
 	getFormattedHours,
 	getTotalHours,
 	getTotalHoursPerRows,
 	getlHoursPerProject,
 } from '../utils/timesheet';
-import { TimePicker } from './form/TimePicker';
 import { getIcon } from './icons';
 import { Modal } from './modals/Modal';
+import { TimeEntryElement } from './TimeEntryElement';
 
 interface TimeSheetTableProps {
 	newTimeEntry: Signal<TimeEntry | undefined>;
@@ -67,8 +66,6 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			await loadTimeEntries(from, to, true);
 		});
 
-		const { dataTimeEntries } = state;
-
 		const getTotalPerDay = (timeEntries: TimeEntry[]) => {
 			return getFormattedHours(getTotalHours(getlHoursPerProject(timeEntries)));
 		};
@@ -81,16 +78,18 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			return getFormattedHours(getTotalHoursPerRows(hours));
 		};
 
-		const groupedByProject = dataTimeEntries.reduce<TimeEntryRow>((acc, entry) => {
-			const key = `${entry.customer}-${entry.project}-${entry.task}`;
+		const groupedByProject = useComputed$(() => {
+			return state.dataTimeEntries.reduce<TimeEntryRow>((acc, entry) => {
+				const key = `${entry.customer}-${entry.project}-${entry.task}`;
 
-			if (!acc[key]) {
-				acc[key] = [];
-			}
+				if (!acc[key]) {
+					acc[key] = [];
+				}
 
-			acc[key].push(entry);
-			return acc;
-		}, {});
+				acc[key].push(entry);
+				return acc;
+			}, {});
+		});
 
 		const extractFirstEntryDetails = (entries: TimeEntry[]) => {
 			if (entries.length === 0) return {};
@@ -135,7 +134,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						</tr>
 					</thead>
 					<tbody>
-						{Object.entries(groupedByProject).map(([_, entries], key) => {
+						{Object.entries(groupedByProject.value).map(([_, entries], key) => {
 							const { customer, project, task } = extractFirstEntryDetails(entries);
 							return (
 								<tr key={key} class='bg-white border-b'>
@@ -157,38 +156,24 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 									</th>
 									{days.value.map((day, index) => {
 										const formattedDate = formatDateString(day.date);
-										const key = `${index}-${formattedDate}`;
 										const entry = entries.find((e) => e.date === formattedDate);
-										const hours = entry
-											? timeEntriesState[entry.hours]?.[formattedDate] || 0
-											: 0;
-										const { weekend } = day;
-										1;
-
-										const tdClass = `py-3 px-4 text-center border border-surface-50 ${weekend ? 'bg-danger-light' : ''}`;
+										const {
+											hours = 0,
+											startHour = '0',
+											endHour = '0',
+										} = entry || {};
+										const key = `${index}-${formattedDate}-${hours}-${startHour}-${endHour}`;
 
 										return (
-											<td key={key} class={tdClass}>
-												<TimePicker
-													onBlur$={(e: FocusEvent) => {
-														const value = (e.target as HTMLInputElement)
-															.value;
-														const hours = convertTimeToDecimal(value);
-														handleTimeChange({
-															project,
-															date: formattedDate,
-															hours,
-															customer,
-															task,
-														} as TimeEntryObject);
-													}}
-													bindValue={
-														entry
-															? getFormattedHours(entry.hours)
-															: getFormattedHours(hours)
-													}
-												/>
-											</td>
+											<TimeEntryElement
+												key={key}
+												id={key}
+												day={day}
+												entry={entry}
+												entryInfo={{ customer, project, task }}
+												handleTimeChange={handleTimeChange}
+												timeEntriesState={timeEntriesState}
+											/>
 										);
 									})}
 									<td class='py-3 px-4 text-center border border-surface-50'>
@@ -229,7 +214,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								>
 									<span class='text-base font-bold'>
 										{getTotalPerDay(
-											dataTimeEntries.filter(
+											state.dataTimeEntries.filter(
 												(t) => t.date === formatDateString(day.date)
 											)
 										)}
@@ -238,7 +223,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 							))}
 							<td class='px-6 py-4 text-right border border-surface-50' colSpan={2}>
 								<span class='text-base font-bold'>
-									{getTotal(dataTimeEntries.map((item) => item.hours))}
+									{getTotal(state.dataTimeEntries.map((item) => item.hours))}
 								</span>
 							</td>
 						</tr>
