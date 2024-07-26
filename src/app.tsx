@@ -10,9 +10,10 @@ import {
 import { AppStore } from '@models/configurations';
 import { initFlowbite } from 'flowbite';
 import { Layout } from './components/Layout';
+import { addHttpErrorListener } from './network/httpResponseHandler';
 import { routes, useRouter } from './router';
 import { getConfiguration } from './services/configuration';
-import { getAuthToken } from './utils/token';
+import { getAuthToken, removeAuthToken } from './utils/token';
 
 const {
 	VITE_AUTH_DOMAIN: domain,
@@ -65,6 +66,15 @@ export const App = component$(() => {
 			const configuration = await getConfiguration();
 			appStore.configuration = configuration;
 		}
+	});
+
+	useTask$(() => {
+		return addHttpErrorListener(async ({ status }) => {
+			if (status !== 401) return;
+
+			await removeAuthToken();
+			window.location.replace('auth?msg=401');
+		});
 	});
 
 	return currentRouteSignal.value === 'auth' ? (

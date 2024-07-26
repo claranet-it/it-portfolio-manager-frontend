@@ -1,5 +1,5 @@
 import { getAuthToken } from '../utils/token';
-import { httpStatusHandler } from './httpsStatusHandler';
+import { httpResponseHandler } from './httpResponseHandler';
 
 type HttpMethods = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -18,8 +18,8 @@ const executeRequest = async (path: string, method: HttpMethods = 'GET', body?: 
 		headers,
 		body: JSON.stringify(body),
 	};
-	const reqeust = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${path}`, options);
-	return await httpStatusHandler(reqeust);
+	const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${path}`, options);
+	return await httpResponseHandler(response);
 };
 
 export const getHttpResponse = async <Response>(
