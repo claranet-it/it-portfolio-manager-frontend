@@ -60,7 +60,7 @@
 	"THIS_WEEK": "This week",
 	"CLIENT": "Client",
 	"TASK": "Task",
-	"clear_filter_label": "Clear filter",
+	"clear_filter_label": "Clear",
 	"INSERT_NEW_PROJECT_TITLE_MODAL": "Insert new project",
 	"INSERT_NEW_PROJECT_MESSAGE_MODAL": "Do you confirm the insertion of the new project?",
 	"INSERT_NEW_PROJECT_SUCCESS_MESSAGE": "#customer - #project - #task has been added",

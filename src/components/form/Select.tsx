@@ -1,4 +1,12 @@
-import { $, QRL, Signal, component$, useComputed$, useVisibleTask$ } from '@builder.io/qwik';
+import {
+	$,
+	QRL,
+	Signal,
+	component$,
+	useComputed$,
+	useSignal,
+	useVisibleTask$,
+} from '@builder.io/qwik';
 import { t } from '../../locale/labels';
 
 interface selectInterface {
@@ -16,26 +24,29 @@ interface selectInterface {
 
 export const Select = component$<selectInterface>(
 	({ id, label, value, options, size, placeholder, onChange$, disabled, invalid, hidden }) => {
+		const buttonRef = useSignal<HTMLElement>();
+		const menuRef = useSignal<HTMLElement>();
+
+		const updateMenuWidth = $(() => {
+			const buttonWidth = buttonRef.value ? buttonRef.value.offsetWidth : 0;
+			if (menuRef.value !== undefined && buttonWidth !== 0)
+				menuRef.value.style.width = `${buttonWidth}px`;
+		});
+
 		const closeDropdown = $(() => {
-			const button = document.getElementById('select-button-' + id);
-			button?.click();
+			buttonRef.value?.click();
 		});
 
 		const clearValue = $(() => {
 			value.value = '';
 			closeDropdown();
+			updateMenuWidth();
 		});
 
 		const updateValue = $((_value: string) => {
 			value.value = _value;
 			closeDropdown();
-		});
-
-		const updateMenuWidth = $(() => {
-			const button = document.getElementById('select-button-' + id);
-			const menu = document.getElementById('select-dropdown-' + id);
-			const buttonWidth = button ? button.offsetWidth : 0;
-			if (menu !== null && buttonWidth !== 0) menu.style.width = `${buttonWidth}px`;
+			updateMenuWidth();
 		});
 
 		const labelStyle = useComputed$(() => {
@@ -66,7 +77,7 @@ export const Select = component$<selectInterface>(
 		// Set menu width as initial button width
 		useVisibleTask$(({ track }) => {
 			track(() => hidden);
-			setTimeout(updateMenuWidth, 600);
+			setTimeout(updateMenuWidth, 6000);
 		});
 
 		// Change menu width on resize page
@@ -80,6 +91,7 @@ export const Select = component$<selectInterface>(
 				<label class={`block text-sm font-normal ${labelStyle.value}`}>{label}</label>
 
 				<button
+					ref={buttonRef}
 					id={'select-button-' + id}
 					disabled={disabled}
 					data-dropdown-toggle={'select-dropdown-' + id}
@@ -110,6 +122,7 @@ export const Select = component$<selectInterface>(
 
 				{/* <!-- Dropdown menu --> */}
 				<div
+					ref={menuRef}
 					id={'select-dropdown-' + id}
 					style={{ width: '100%' }}
 					class={`z-10 hidden ${sizeStyle.value} bg-white divide-y divide-gray-100 rounded-md shadow`}

@@ -30,7 +30,6 @@ export const NewProjectOverlayModal = component$(() => {
 			{modalVisible.value && (
 				<div
 					id='default-modal'
-					aria-hidden='true'
 					class={`${modalStyle.value} overflow-y-auto overflow-x-hidden top-0 left-0 z-50 m-0 flex justify-center items-center w-full h-full bg-black-trasparent`}
 					style={{ position: 'fixed' }}
 				>

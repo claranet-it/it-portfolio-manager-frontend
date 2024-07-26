@@ -44,29 +44,33 @@ export const NewTaskForm = component$<NewTaskForm>(
 		return (
 			<>
 				<div class='p-4 bg-white-100 rounded-md shadow w-96'>
+					<div class='flex items-center justify-between  border-b border-gray-200 py-2 mb-2'>
+						<h3 class='text-2xl font-bold text-dark-grey'>
+							{t('add_new_project_label')}
+						</h3>
+					</div>
+
 					<form class='space-y-3' onSubmit$={handleSubmit}>
-						<div>
-							<Autocomplete
-								id={UUID()}
-								label={t('CUSTOMER_LABEL')}
-								selected={customerSelected}
-								data={dataCustomersSig}
-								placeholder={t('SEARCH')}
-								required
-								onChange$={onChangeCustomer}
-							/>
-						</div>
-						<div>
-							<Select
-								id={UUID()}
-								label={t('PROJECT_LABEL')}
-								placeholder={t('SELECT_PROJECT_PLACEHOLDER')}
-								value={projectSelected}
-								options={dataProjectsSig}
-								disabled={!projectEnableSig.value}
-								onChange$={onChangeProject}
-							/>
-						</div>
+						<Autocomplete
+							id={UUID()}
+							label={t('CUSTOMER_LABEL')}
+							selected={customerSelected}
+							data={dataCustomersSig}
+							placeholder={t('SEARCH')}
+							required
+							onChange$={onChangeCustomer}
+						/>
+
+						<Select
+							id={UUID()}
+							label={t('PROJECT_LABEL')}
+							placeholder={t('SELECT_PROJECT_PLACEHOLDER')}
+							value={projectSelected}
+							options={dataProjectsSig}
+							disabled={!projectEnableSig.value}
+							onChange$={onChangeProject}
+							size='auto'
+						/>
 
 						<Select
 							id={UUID()}
