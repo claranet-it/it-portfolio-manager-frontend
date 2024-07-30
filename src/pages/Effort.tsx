@@ -108,7 +108,7 @@ export const Effort = component$(() => {
 	});
 
 	return (
-		<div class='px-6 pt-5 w-full space-y-5'>
+		<div class='w-full space-y-5 px-6 pt-5'>
 			<Filters
 				selectedCrew={selectedCrewSig}
 				selectedName={selectedNameSig}

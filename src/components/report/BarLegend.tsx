@@ -15,7 +15,7 @@ const BarLegend = component$<BarLegendProps>(({ elements }) => {
 	const elementsList = Object.entries(elements);
 
 	return (
-		<div class='w-full flex flex-row bg-surface-20'>
+		<div class='flex w-full flex-row bg-surface-20'>
 			{elementsList.map(
 				([type, value], key) => value > 0 && <Bar key={key} type={type} value={value} />
 			)}
@@ -48,7 +48,7 @@ const Bar = component$<BarProps>(({ type, value }) => {
 		<div
 			ref={refBar}
 			style={{ width: `${value}%` }}
-			class={`h-7 align-center ${color.bgColor}`}
+			class={`align-center h-7 ${color.bgColor}`}
 		>
 			<span
 				ref={refSpan}

@@ -48,7 +48,7 @@ export const Registry = component$(() => {
 	const buttonList = $((props: Buttons) => {
 		return (
 			<div
-				class={`${props.type !== 'task' ? 'w-full mr-4' : ''} flex flex-row justify-between items-center`}
+				class={`${props.type !== 'task' ? 'mr-4 w-full' : ''} flex flex-row items-center justify-between`}
 			>
 				{props.mainData}{' '}
 				<div class='flex flex-row gap-4'>
@@ -119,7 +119,7 @@ export const Registry = component$(() => {
 
 			return (
 				<>
-					<div class='flex flex-row justify-between items-center mb-4'>
+					<div class='mb-4 flex flex-row items-center justify-between'>
 						<h2 class={'font-semibold'}>{t('REGISTRY_TASKS_LABEL')}</h2>
 					</div>
 					<Accordion
@@ -149,7 +149,7 @@ export const Registry = component$(() => {
 
 			return (
 				<>
-					<div class='flex flex-row justify-between items-center mb-4'>
+					<div class='mb-4 flex flex-row items-center justify-between'>
 						<h2 class={'font-semibold'}>{t('REGISTRY_PROJECTS_LABEL')}</h2>
 					</div>
 					<Accordion
@@ -180,9 +180,9 @@ export const Registry = component$(() => {
 
 	return (
 		<>
-			<div class='w-full px-6 pt-2.5 space-y-3 mb-32'>
-				<div class='flex sm:flex-col md:flex-row lg:flex-row  sm:space-y-3 md:justify-between lg:justify-between'>
-					<h1 class='text-2xl font-bold text-darkgray-900 me-4'>
+			<div class='mb-32 w-full space-y-3 px-6 pt-2.5'>
+				<div class='flex sm:flex-col sm:space-y-3 md:flex-row md:justify-between lg:flex-row lg:justify-between'>
+					<h1 class='me-4 text-2xl font-bold text-darkgray-900'>
 						{t('REGISTRY_PAGE_TITLE')}
 					</h1>
 					<NewProjectOverlayModal q:slot='newProject'>
@@ -211,7 +211,7 @@ export const Registry = component$(() => {
 			</div>
 
 			<Modal state={alertMessageState}>
-				<p q:slot='modalBody' class='text-base leading-relaxed text-dark-gray'>
+				<p q:slot='modalBody' class='text-dark-gray text-base leading-relaxed'>
 					{alertMessageState.message}
 				</p>
 			</Modal>

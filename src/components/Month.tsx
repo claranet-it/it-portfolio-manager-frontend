@@ -7,13 +7,13 @@ export const Month = component$<{
 	onChange$: QRL<(month: TMonth) => Promise<void>>;
 }>(({ month, onChange$ }) => {
 	return (
-		<div class='flex-col border-r-2 border-t-2 border-red-600 w-[390px]'>
+		<div class='w-[390px] flex-col border-r-2 border-t-2 border-red-600'>
 			<div class='flex'>
-				<div class='flex-col m-2'>
+				<div class='m-2 flex-col'>
 					<div>{t('confirmedEffort')}</div>
 					<input
 						type='number'
-						class='border-2 border-black w-[50px] h-8 mt-2'
+						class='mt-2 h-8 w-[50px] border-2 border-black'
 						value={month.confirmedEffort}
 						min={0}
 						max={100}
@@ -25,11 +25,11 @@ export const Month = component$<{
 						}}
 					/>
 				</div>
-				<div class='flex-col m-2'>
+				<div class='m-2 flex-col'>
 					<div>{t('tentativeEffort')}</div>
 					<input
 						type='number'
-						class='border-2 border-black w-[50px] h-8 mt-2'
+						class='mt-2 h-8 w-[50px] border-2 border-black'
 						value={month.tentativeEffort}
 						min={0}
 						max={100}
@@ -41,11 +41,11 @@ export const Month = component$<{
 						}}
 					/>
 				</div>
-				<div class='flex-col m-2'>
+				<div class='m-2 flex-col'>
 					<div>{t('note')}</div>
 					<input
 						type='text'
-						class='border-2 border-black w-[200px] h-8 mt-2'
+						class='mt-2 h-8 w-[200px] border-2 border-black'
 						value={month.notes}
 						onChange$={(_, { value }) => {
 							onChange$({

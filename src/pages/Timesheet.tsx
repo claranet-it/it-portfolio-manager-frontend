@@ -23,8 +23,8 @@ export const Timesheet = component$(() => {
 
 	return (
 		<>
-			<div class='w-full px-6 pt-2.5 space-y-6'>
-				<div class='flex sm:flex-col md:flex-row lg:flex-row md:items-end md:justify-between lg:items-end lg:justify-between'>
+			<div class='w-full space-y-6 px-6 pt-2.5'>
+				<div class='flex sm:flex-col md:flex-row md:items-end md:justify-between lg:flex-row lg:items-end lg:justify-between'>
 					<h1 class='text-2xl font-bold text-darkgray-900'>
 						{t('TIMESHEET_PAGE_TITLE')}
 					</h1>
@@ -53,7 +53,7 @@ export const Timesheet = component$(() => {
 			</div>
 
 			<Modal state={alertMessageState}>
-				<p q:slot='modalBody' class='text-base leading-relaxed text-dark-gray'>
+				<p q:slot='modalBody' class='text-dark-gray text-base leading-relaxed'>
 					{alertMessageState.message}
 				</p>
 			</Modal>

@@ -7,9 +7,9 @@ interface ToogleSwitchProps {
 
 export const ToggleSwitch = component$<ToogleSwitchProps>(({ isChecked, label }) => {
 	return (
-		<label class='flex items-left cursor-pointer'>
-			<input type='checkbox' value='' class='sr-only peer' bind:checked={isChecked} />
-			<div class="relative min-w-11 max-w-11 h-6 bg-gray-200  rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full  after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all  peer-checked:bg-clara-red"></div>
+		<label class='items-left flex cursor-pointer'>
+			<input type='checkbox' value='' class='peer sr-only' bind:checked={isChecked} />
+			<div class="peer relative h-6 min-w-11 max-w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-clara-red peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full"></div>
 			<span class='ms-3 text-sm font-medium text-gray-900'>{label}</span>
 		</label>
 	);

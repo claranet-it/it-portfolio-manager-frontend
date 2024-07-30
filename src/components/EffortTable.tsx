@@ -30,13 +30,13 @@ export const EffortTable = component$<EffortTableInterface>(
 			<div class='space-y-1'>
 				<h1 class='text-2xl font-bold text-darkgray-900'>{t('effort_table_title')}</h1>
 
-				<table class='w-full effort-table-min-w table-left-sticky text-sm text-left rtl:text-right'>
+				<table class='effort-table-min-w table-left-sticky w-full text-left text-sm rtl:text-right'>
 					{/** Table header */}
-					<thead class='text-xs text-gray-700 bg-surface-20'>
-						<tr class='border-t border-b border-surface-50'>
+					<thead class='bg-surface-20 text-xs text-gray-700'>
+						<tr class='border-b border-t border-surface-50'>
 							<th
 								scope='col'
-								class='text-base font-bold text-darkgray-900 content-start px-4 py-3 border-r border-l border-surface-50 bg-surface-20'
+								class='content-start border-l border-r border-surface-50 bg-surface-20 px-4 py-3 text-base font-bold text-darkgray-900'
 							>
 								{t('average')}
 							</th>
@@ -44,7 +44,7 @@ export const EffortTable = component$<EffortTableInterface>(
 								<th
 									key={index}
 									scope='col'
-									class='font-normal px-4 py-3 border-r border-l border-surface-50'
+									class='border-l border-r border-surface-50 px-4 py-3 font-normal'
 								>
 									<div class='flow-col space-y-1'>
 										<h3 class='text-base font-bold text-darkgray-900'>
@@ -62,7 +62,7 @@ export const EffortTable = component$<EffortTableInterface>(
 												<input
 													type='number'
 													id={'confirmed' + index}
-													class='bg-surface-20 border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
+													class='block w-full rounded-md border border-darkgray-500 bg-surface-20 p-2.5 text-sm text-gray-900'
 													value={
 														averageEffortByMonth.value[monthYear]
 															.confirmedEffort
@@ -81,7 +81,7 @@ export const EffortTable = component$<EffortTableInterface>(
 												<input
 													type='number'
 													id={'tentative' + index}
-													class='bg-surface-20 border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
+													class='block w-full rounded-md border border-darkgray-500 bg-surface-20 p-2.5 text-sm text-gray-900'
 													value={
 														averageEffortByMonth.value[monthYear]
 															.tentativeEffort
@@ -105,7 +105,7 @@ export const EffortTable = component$<EffortTableInterface>(
 															averageEffortByMonth.value[monthYear]
 																.totalEffort ?? 0
 														) +
-														' border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
+														' block w-full rounded-md border border-darkgray-500 p-2.5 text-sm text-gray-900'
 													}
 													value={
 														averageEffortByMonth.value[monthYear]
@@ -128,13 +128,13 @@ export const EffortTable = component$<EffortTableInterface>(
 							return (
 								<tr
 									key={userKey}
-									class='bg-white border-b border-t border-surface-50 even:bg-surface-5 odd:bg-white'
+									class='border-b border-t border-surface-50 bg-white odd:bg-white even:bg-surface-5'
 								>
-									<td class='px-4 py-3 border-r border-l border-surface-50 content-start'>
+									<td class='content-start border-l border-r border-surface-50 px-4 py-3'>
 										<div class='flow-col'>
 											<h3 class='text-xl font-bold text-dark-grey'>
 												{data.isCompany && (
-													<span class='inline-block mr-1 align-middle -translate-y-0.5'>
+													<span class='mr-1 inline-block -translate-y-0.5 align-middle'>
 														{data.isCompany && getIcon('UserGroup')}
 													</span>
 												)}
@@ -147,7 +147,7 @@ export const EffortTable = component$<EffortTableInterface>(
 									</td>
 									{effort.map((month, efforKey) => (
 										<td
-											class='px-4 py-3 border-r border-l border-surface-50'
+											class='border-l border-r border-surface-50 px-4 py-3'
 											key={efforKey}
 										>
 											<div class='grid grid-cols-2 gap-2'>
@@ -163,7 +163,7 @@ export const EffortTable = component$<EffortTableInterface>(
 														type='number'
 														id={'confirmed' + efforKey}
 														class={
-															'border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
+															'block w-full rounded-md border border-darkgray-500 p-2.5 text-sm text-gray-900'
 														}
 														value={month.confirmedEffort}
 														onChange$={async (event, { value }) => {
@@ -201,7 +201,7 @@ export const EffortTable = component$<EffortTableInterface>(
 														type='number'
 														id={'tentative_' + efforKey}
 														class={
-															'border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
+															'block w-full rounded-md border border-darkgray-500 p-2.5 text-sm text-gray-900'
 														}
 														value={month.tentativeEffort}
 														onChange$={async (event, { value }) => {
@@ -243,7 +243,7 @@ export const EffortTable = component$<EffortTableInterface>(
 																	'effort_table_in_note'
 																)}
 																class={
-																	'border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
+																	'block w-full rounded-md border border-darkgray-500 p-2.5 text-sm text-gray-900'
 																}
 																value={month.notes}
 																onChange$={(event, { value }) => {
