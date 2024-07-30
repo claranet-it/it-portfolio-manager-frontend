@@ -21,27 +21,27 @@ export const DataRange = component$<DataRangeProps>(({ from, to, nextAction, pre
 			</label>
 			<div class='flex flex-row space-x-2'>
 				<div class='relative'>
-					<div class='absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-dark-grey'>
+					<div class='pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5 text-dark-grey'>
 						{getIcon('Calendar')}
 					</div>
 					<input
 						type='text'
 						id='input-group-1'
 						disabled
-						class='bg-white w-60 border border-darkgray-500 text-dark-grey text-sm rounded-md block w-full min-w-56 px-2.5 py-2.5 ps-8'
+						class='block w-60 w-full min-w-56 rounded-md border border-darkgray-500 bg-white px-2.5 py-2.5 ps-8 text-sm text-dark-grey'
 						value={currenDataRange.value}
 					/>
 				</div>
 
 				<button
 					onClick$={prevAction}
-					class='border border-darkgray-500 rounded-md text-dark-grey py-2 px-3'
+					class='rounded-md border border-darkgray-500 px-3 py-2 text-dark-grey'
 				>
 					{getIcon('ArrowLeft')}
 				</button>
 				<button
 					onClick$={nextAction}
-					class='border border-darkgray-500 rounded-md text-dark-grey py-2 px-3'
+					class='rounded-md border border-darkgray-500 px-3 py-2 text-dark-grey'
 				>
 					{getIcon('ArrowRight')}
 				</button>

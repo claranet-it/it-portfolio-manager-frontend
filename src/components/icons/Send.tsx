@@ -3,7 +3,7 @@ import { component$ } from '@builder.io/qwik';
 export const Send = component$(() => {
 	return (
 		<svg
-			class='w-5 h-5 rotate-90 rtl:-rotate-90'
+			class='h-5 w-5 rotate-90 rtl:-rotate-90'
 			aria-hidden='true'
 			xmlns='http://www.w3.org/2000/svg'
 			fill='currentColor'

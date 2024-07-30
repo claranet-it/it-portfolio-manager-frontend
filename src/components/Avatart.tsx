@@ -26,12 +26,12 @@ export const Avatar = component$<AvatarProps>(({ user }) => {
 			<img
 				src={user.picture}
 				alt={t('profile_picture')}
-				class='w-6 h-auto rounded-full aspect-squar'
+				class='aspect-squar h-auto w-6 rounded-full'
 			/>
 		);
 
 	return (
-		<svg height='24' width='24' class='rounded-full aspect-squar'>
+		<svg height='24' width='24' class='aspect-squar rounded-full'>
 			<rect fill='#C8D2D8' x='0' y='0' height='24' width='24'></rect>
 			<text fill='#4C4C58' font-size='11' text-anchor='middle' x='12' y='16'>
 				{getInitials(user.name)}

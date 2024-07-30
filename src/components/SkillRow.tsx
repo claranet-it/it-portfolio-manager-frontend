@@ -20,13 +20,13 @@ export const SkillRow = component$(
 				class='flex items-start justify-between rounded-lg border border-darkgray-200 px-3 py-3'
 			>
 				<div class='flex items-center justify-center space-x-2'>
-					<span class='text-darkgray-900 text-2xl skill-icon'>
+					<span class='skill-icon text-2xl text-darkgray-900'>
 						{getIcon(props.skill.skill)}
 					</span>
 
 					<div class='flex flex-col'>
-						<h2 class='text-darkgray-900 font-bold text-xl'>{mainTitleSkill}</h2>
-						<h3 class='text-darkgray-900 font-normal text-sm'>{subTitleSkill}</h3>
+						<h2 class='text-xl font-bold text-darkgray-900'>{mainTitleSkill}</h2>
+						<h3 class='text-sm font-normal text-darkgray-900'>{subTitleSkill}</h3>
 					</div>
 				</div>
 				<div class='ml-4 text-center'>

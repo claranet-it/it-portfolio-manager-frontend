@@ -95,14 +95,14 @@ export const Select = component$<selectInterface>(
 					id={'select-button-' + id}
 					disabled={disabled}
 					data-dropdown-toggle={'select-dropdown-' + id}
-					class={`w-full  border ${buttonStyle.value} text-sm font-normal rounded-md block w-full p-2.5 inline-flex flex-row justify-between align-middle`}
+					class={`w-full border ${buttonStyle.value} block inline-flex w-full flex-row justify-between rounded-md p-2.5 align-middle text-sm font-normal`}
 					type='button'
 				>
 					<span class={(!value.value && 'text-darkgray-500') + ' truncate'}>
 						{value.value || placeholder}
 					</span>
 					<svg
-						class='w-2.5 h-2.5 m-[5px] text-darkgray-700'
+						class='text-darkgray-700 m-[5px] h-2.5 w-2.5'
 						aria-hidden='true'
 						xmlns='http://www.w3.org/2000/svg'
 						fill='none'
@@ -118,14 +118,14 @@ export const Select = component$<selectInterface>(
 					</svg>
 				</button>
 
-				{invalid && <p class='text-red-500 text-xs mt-1'>{t('REQUIRED_FIELD_LABEL')}</p>}
+				{invalid && <p class='mt-1 text-xs text-red-500'>{t('REQUIRED_FIELD_LABEL')}</p>}
 
 				{/* <!-- Dropdown menu --> */}
 				<div
 					ref={menuRef}
 					id={'select-dropdown-' + id}
 					style={{ width: '100%' }}
-					class={`z-10 hidden ${sizeStyle.value} bg-white divide-y divide-gray-100 rounded-md shadow`}
+					class={`z-10 hidden ${sizeStyle.value} divide-y divide-gray-100 rounded-md bg-white shadow`}
 				>
 					<ul
 						class='max-h-96 overflow-y-auto py-2 text-sm text-gray-700'
@@ -150,11 +150,11 @@ export const Select = component$<selectInterface>(
 					{/* Select options */}
 					{value.value && (
 						<div
-							class='px-4 py-2 flex flex-row hover:bg-gray-100 space-x-1 cursor-pointer'
+							class='flex cursor-pointer flex-row space-x-1 px-4 py-2 hover:bg-gray-100'
 							onClick$={() => clearValue()}
 						>
 							<svg
-								class='w-3 h-3 my-[5px] text-clara-red'
+								class='my-[5px] h-3 w-3 text-clara-red'
 								aria-hidden='true'
 								xmlns='http://www.w3.org/2000/svg'
 								fill='none'
@@ -168,7 +168,7 @@ export const Select = component$<selectInterface>(
 									d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'
 								/>
 							</svg>
-							<a href='#' class='block text-sm text-clara-red '>
+							<a href='#' class='block text-sm text-clara-red'>
 								{t('clear_filter_label')}
 							</a>
 						</div>

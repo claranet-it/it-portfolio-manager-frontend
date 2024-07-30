@@ -19,20 +19,20 @@ export const Layout = component$<{ currentRoute: Exclude<Route, 'auth'> }>(({ cu
 	});
 
 	return (
-		<div class='h-screen flex flex-col'>
+		<div class='flex h-screen flex-col'>
 			{appStore.isLoading && (
-				<div class='fixed t-0 l-0 w-full h-full bg-darkgray-900/30 flex z-50 items-center justify-center'>
+				<div class='t-0 l-0 fixed z-50 flex h-full w-full items-center justify-center bg-darkgray-900/30'>
 					{<LoadingSpinner />}
 				</div>
 			)}
 
 			<Header currentRoute={currentRoute} />
 
-			<div class='w-full grow flex justify-end'>
+			<div class='flex w-full grow justify-end'>
 				<Slot />
 
 				{/* Toast message area  */}
-				<div class='fixed t-0 l-0 pr-2 pt-2 flex flex-col justify-end items-end space-y-2'>
+				<div class='t-0 l-0 fixed flex flex-col items-end justify-end space-y-2 pr-2 pt-2'>
 					{eventsList.map((event: ToastEvent, key) => {
 						return (
 							<Toast

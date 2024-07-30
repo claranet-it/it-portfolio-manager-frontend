@@ -79,14 +79,14 @@ export const Autocomplete = component$<AutocompleteInterface>(
 				)}
 				<div class='relative w-full'>
 					{/* Search icon */}
-					<div class='absolute inset-y-0 start-0 flex items-center ps-3 text-gray-500 pointer-events-none'>
+					<div class='pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3 text-gray-500'>
 						{getIcon('Search')}
 					</div>
 
 					<input
 						type='text'
 						id={AUTOCOMPLETE_FIELD_ID}
-						class={`block w-full p-2 ps-10 text-sm ${textColor.value} border rounded-md ${borderBgColor.value} pr-5 truncate`}
+						class={`block w-full p-2 ps-10 text-sm ${textColor.value} rounded-md border ${borderBgColor.value} truncate pr-5`}
 						placeholder={placeholder}
 						autoComplete='off'
 						bind:value={selected}
@@ -98,7 +98,7 @@ export const Autocomplete = component$<AutocompleteInterface>(
 					{/* Clear icon */}
 					{selected.value !== '' && (
 						<div
-							class={`absolute inset-y-0 end-2 flex items-center ps-3 ${textColor.value} text-base cursor-pointer`}
+							class={`absolute inset-y-0 end-2 flex items-center ps-3 ${textColor.value} cursor-pointer text-base`}
 							onClick$={clearText}
 						>
 							{getIcon('Clear')}
@@ -109,10 +109,10 @@ export const Autocomplete = component$<AutocompleteInterface>(
 				<div
 					id={AUTOCOMPLETE_RESULTS_ID}
 					style={resultsStyle}
-					class='absolute flex flex-col z-10 w-full bg-white-100 border border-surface-90 rounded-md divide-y shadow'
+					class='absolute z-10 flex w-full flex-col divide-y rounded-md border border-surface-90 bg-white-100 shadow'
 				>
 					<ul
-						class='w-full max-h-96 overflow-y-auto py-2 text-sm text-gray-700'
+						class='max-h-96 w-full overflow-y-auto py-2 text-sm text-gray-700'
 						aria-labelledby={AUTOCOMPLETE_RESULTS_ID}
 					>
 						{results.value.map((result, index) => (
