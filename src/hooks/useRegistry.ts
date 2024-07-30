@@ -277,7 +277,7 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 			props.type == 'customer'
 				? props.customer
 				: props.type == 'project'
-					? props.project
+					? props.project.name
 					: props.task;
 
 		showAlert(

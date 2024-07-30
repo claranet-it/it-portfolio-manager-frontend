@@ -49,7 +49,7 @@ const modalBuilder = (
 				props.type == 'customer'
 					? props.customer
 					: props.type == 'project'
-						? props.project
+						? props.project.name
 						: props.task,
 		}),
 	};

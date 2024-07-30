@@ -1,4 +1,4 @@
-import { $, QRL, Signal, component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { $, QRL, Signal, component$, useVisibleTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { initFlowbite } from 'flowbite';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
@@ -7,7 +7,6 @@ import { TimeEntry } from '../../models/timeEntry';
 import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
 import { Autocomplete } from './Autocomplete';
-import { Select } from './Select';
 
 interface NewProjectFormProp {
 	timeEntry: Signal<TimeEntry | undefined>;
@@ -25,13 +24,8 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			customerSelected,
 			projectSelected,
 			taskSelected,
-			projectTypeSelected,
-			projectTypeInvalid,
-			projectTypeEnabled,
-			projectEnableSig,
 			taskEnableSig,
 			onChangeCustomer,
-			onChangeProject,
 			clearForm,
 			handleSubmit,
 		} = useNewTimeEntry(timeEntry, alertMessageState, onCancel$, allowNewEntry);
@@ -44,8 +38,6 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			clearForm();
 			onCancel$ && onCancel$();
 		});
-
-		const projectTypeList = useSignal(['billable', 'non-billable', 'slack-time', 'absence']);
 
 		return (
 			<>
@@ -72,7 +64,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								)}
 						</div>
 						<div>
-							<Autocomplete
+							{/* <Autocomplete
 								id={UUID()}
 								label={t('PROJECT_LABEL')}
 								selected={projectSelected}
@@ -81,9 +73,10 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								required
 								disabled={!projectEnableSig.value}
 								onChange$={onChangeProject}
-							/>
+							/> */}
+
 							{!dataProjectsSig.value.includes(projectSelected.value) &&
-								projectSelected.value !== '' &&
+								projectSelected.value.name !== '' &&
 								allowNewEntry && (
 									<p class='text-xs mt-1 text-gray-500 dark:text-gray-400'>
 										{tt('REGISTRY_CREATE_MESSAGE', {
@@ -93,7 +86,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								)}
 						</div>
 
-						<Select
+						{/* <Select
 							hidden={
 								!(
 									allowNewEntry &&
@@ -106,10 +99,10 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 							label='Project Type'
 							placeholder='Select Project Type'
 							value={projectTypeSelected}
-							options={projectTypeList}
+							options={useSignal(projectTypeList);}
 							invalid={projectTypeInvalid.value}
 							size='auto'
-						/>
+						/> */}
 
 						<Autocomplete
 							id={UUID()}

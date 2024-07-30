@@ -114,5 +114,10 @@
 	"TIME_ENTRY_END": "End",
 	"SEARCH": "Search...",
 	"SELECT_PROJECT_PLACEHOLDER": "Select a project",
-	"SELECT_TASK_PLACEHOLDER": "Select a task"
+	"SELECT_TASK_PLACEHOLDER": "Select a task",
+	"NOTE_LABEL": "note",
+	"PROJECT_BILLABLE_LABEL": "billable",
+	"PROJECT_NON_BILLABLE_LABEL": "non billable",
+	"PROJECT_SLACKTIME_LABEL": "slack time",
+	"PROJECT_ABSENCE_LABEL": "absence"
 }

@@ -14,7 +14,7 @@ export const getProductivity = async (
 ): Promise<ReportProductivityItem[]> => {
 	let params = `from=${from}&to=${to}`;
 	if (customer !== '') params = params.concat(`&customer=${customer}`);
-	if (project !== '') params = params.concat(`&project=${project}`);
+	if (project.name !== '') params = params.concat(`&project=${project}`);
 	if (task !== '') params = params.concat(`&task=${task}`);
 	if (name !== '') params = params.concat(`&name=${name}`);
 

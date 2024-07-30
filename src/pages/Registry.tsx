@@ -50,7 +50,7 @@ export const Registry = component$(() => {
 			<div
 				class={`${props.type !== 'task' ? 'w-full mr-4' : ''} flex flex-row justify-between items-center`}
 			>
-				{props.mainData}{' '}
+				{`${props.mainData}`}{' '}
 				<div class='flex flex-row gap-4'>
 					{!['customer', 'task'].includes(props.type) && (
 						<Button

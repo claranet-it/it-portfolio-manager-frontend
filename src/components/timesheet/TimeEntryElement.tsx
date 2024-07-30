@@ -7,9 +7,9 @@ import { Day, TimeEntry, TimeEntryObject } from '@models/timeEntry';
 import { t } from 'src/locale/labels';
 import { formatDateString } from 'src/utils/dates';
 import { convertTimeToDecimal, getEndHour, getFormattedHours } from 'src/utils/timesheet';
-import { EditTimeEntryForm } from './form/editTimeEntryForm';
-import { TimePicker } from './form/TimePicker';
-import { Modal } from './modals/Modal';
+import { EditTimeEntryForm } from '../form/editTimeEntryForm';
+import { TimePicker } from '../form/TimePicker';
+import { Modal } from '../modals/Modal';
 
 interface TimeEntryElementProps {
 	id: string;

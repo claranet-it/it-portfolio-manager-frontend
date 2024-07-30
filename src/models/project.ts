@@ -3,4 +3,6 @@ export type Project = {
 	type: ProjectType;
 };
 
-export type ProjectType = 'billable' | 'non-billable' | 'slack-time' | 'absence' | '';
+export const projectTypeList = ['billable', 'non-billable', 'slack-time', 'absence', ''] as const;
+
+export type ProjectType = (typeof projectTypeList)[number];

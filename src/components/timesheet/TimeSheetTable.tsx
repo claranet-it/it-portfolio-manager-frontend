@@ -1,18 +1,18 @@
 import { $, Signal, Slot, component$, useComputed$, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { format } from 'date-fns';
-import { useTimeEntries } from '../hooks/timesheet/useTimeEntries';
-import { t } from '../locale/labels';
-import { Day, TimeEntry, TimeEntryObject, TimeEntryRow } from '../models/timeEntry';
-import { formatDateString } from '../utils/dates';
+import { useTimeEntries } from '../../hooks/timesheet/useTimeEntries';
+import { t } from '../../locale/labels';
+import { Day, TimeEntry, TimeEntryObject, TimeEntryRow } from '../../models/timeEntry';
+import { formatDateString } from '../../utils/dates';
 import {
 	getFormattedHours,
 	getTotalHours,
 	getTotalHoursPerRows,
 	getlHoursPerProject,
-} from '../utils/timesheet';
-import { getIcon } from './icons';
-import { Modal } from './modals/Modal';
+} from '../../utils/timesheet';
+import { getIcon } from '../icons';
+import { Modal } from '../modals/Modal';
 import { TimeEntryElement } from './TimeEntryElement';
 
 interface TimeSheetTableProps {
