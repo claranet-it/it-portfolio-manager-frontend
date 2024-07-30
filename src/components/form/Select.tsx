@@ -25,13 +25,6 @@ interface selectInterface {
 export const Select = component$<selectInterface>(
 	({ id, label, value, options, size, placeholder, onChange$, disabled, invalid, hidden }) => {
 		const buttonRef = useSignal<HTMLElement>();
-		const menuRef = useSignal<HTMLElement>();
-
-		const updateMenuWidth = $(() => {
-			const buttonWidth = buttonRef.value ? buttonRef.value.offsetWidth : 0;
-			if (menuRef.value !== undefined && buttonWidth !== 0)
-				menuRef.value.style.width = `${buttonWidth}px`;
-		});
 
 		const closeDropdown = $(() => {
 			buttonRef.value?.click();
@@ -40,13 +33,11 @@ export const Select = component$<selectInterface>(
 		const clearValue = $(() => {
 			value.value = '';
 			closeDropdown();
-			updateMenuWidth();
 		});
 
 		const updateValue = $((_value: string) => {
 			value.value = _value;
 			closeDropdown();
-			updateMenuWidth();
 		});
 
 		const labelStyle = useComputed$(() => {
@@ -74,20 +65,8 @@ export const Select = component$<selectInterface>(
 			onChange$ && onChange$(value.value);
 		});
 
-		// Set menu width as initial button width
-		useVisibleTask$(({ track }) => {
-			track(() => hidden);
-			setTimeout(updateMenuWidth, 6000);
-		});
-
-		// Change menu width on resize page
-		useVisibleTask$(({ cleanup }) => {
-			window.addEventListener('resize', updateMenuWidth);
-			cleanup(() => window.removeEventListener('resize', updateMenuWidth));
-		});
-
 		return (
-			<form class={`w-full ${sizeStyle.value} ${hidden ? 'hidden' : 'block'}`}>
+			<form class={`w-full ${sizeStyle.value} ${hidden ? 'hidden' : 'block'} relative`}>
 				<label class={`block text-sm font-normal ${labelStyle.value}`}>{label}</label>
 
 				<button
@@ -95,7 +74,7 @@ export const Select = component$<selectInterface>(
 					id={'select-button-' + id}
 					disabled={disabled}
 					data-dropdown-toggle={'select-dropdown-' + id}
-					class={`w-full  border ${buttonStyle.value} text-sm font-normal rounded-md block w-full p-2.5 inline-flex flex-row justify-between align-middle`}
+					class={`w-full border ${buttonStyle.value} text-sm font-normal rounded-md w-full p-2.5 inline-flex flex-row justify-between align-middle`}
 					type='button'
 				>
 					<span class={(!value.value && 'text-darkgray-500') + ' truncate'}>
@@ -122,7 +101,6 @@ export const Select = component$<selectInterface>(
 
 				{/* <!-- Dropdown menu --> */}
 				<div
-					ref={menuRef}
 					id={'select-dropdown-' + id}
 					style={{ width: '100%' }}
 					class={`z-10 hidden ${sizeStyle.value} bg-white divide-y divide-gray-100 rounded-md shadow`}
