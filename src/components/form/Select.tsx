@@ -66,7 +66,7 @@ export const Select = component$<selectInterface>(
 		});
 
 		return (
-			<form class={`w-full ${sizeStyle.value} ${hidden ? 'hidden' : 'block'} relative`}>
+			<form class={['w-full relative', sizeStyle.value, hidden ? 'hidden' : 'block']}>
 				<label class={`block text-sm font-normal ${labelStyle.value}`}>{label}</label>
 
 				<button
@@ -74,10 +74,13 @@ export const Select = component$<selectInterface>(
 					id={'select-button-' + id}
 					disabled={disabled}
 					data-dropdown-toggle={'select-dropdown-' + id}
-					class={`w-full border ${buttonStyle.value} text-sm font-normal rounded-md w-full p-2.5 inline-flex flex-row justify-between align-middle`}
+					class={[
+						'w-full border text-sm font-normal rounded-md p-2.5 inline-flex flex-row justify-between align-middle',
+						buttonStyle.value,
+					]}
 					type='button'
 				>
-					<span class={(!value.value && 'text-darkgray-500') + ' truncate'}>
+					<span class={['truncate', !value.value && 'text-darkgray-500']}>
 						{value.value || placeholder}
 					</span>
 					<svg
@@ -99,16 +102,12 @@ export const Select = component$<selectInterface>(
 
 				{invalid && <p class='text-red-500 text-xs mt-1'>{t('REQUIRED_FIELD_LABEL')}</p>}
 
-				{/* <!-- Dropdown menu --> */}
+				{/* Dropdown menu */}
 				<div
 					id={'select-dropdown-' + id}
-					style={{ width: '100%' }}
-					class={`z-10 hidden ${sizeStyle.value} bg-white divide-y divide-gray-100 rounded-md shadow`}
+					class={'z-10 w-full hidden bg-white divide-y divide-gray-100 rounded-md shadow'}
 				>
-					<ul
-						class='max-h-96 overflow-y-auto py-2 text-sm text-gray-700'
-						aria-labelledby='dropdownDefaultButton'
-					>
+					<ul class='max-h-96 overflow-y-auto py-2 text-sm text-gray-700'>
 						{options?.value.map((option, index) => (
 							<li
 								key={index}
@@ -125,7 +124,7 @@ export const Select = component$<selectInterface>(
 							</li>
 						))}
 					</ul>
-					{/* Select options */}
+					{/* Clear value button */}
 					{value.value && (
 						<div
 							class='px-4 py-2 flex flex-row hover:bg-gray-100 space-x-1 cursor-pointer'
