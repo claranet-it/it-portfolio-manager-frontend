@@ -37,10 +37,10 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		const handleTimeChange = $((timeEntryObject: TimeEntryObject) => {
 			const { project, date, hours } = timeEntryObject;
 
-			if (!timeEntriesState[project]) {
-				timeEntriesState[project] = {};
+			if (!timeEntriesState[project.name]) {
+				timeEntriesState[project.name] = {};
 			}
-			timeEntriesState[project][date] = hours;
+			timeEntriesState[project.name][date] = hours;
 
 			updateTimeEntries(timeEntryObject);
 		});
@@ -147,7 +147,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 												{`${t('CLIENT')}: ${customer}`}
 											</h4>
 											<h4 class='text-base font-bold text-dark-grey'>
-												{project}
+												{project?.name}
 											</h4>
 											<h4 class='text-sm font-normal text-dark-gray-900'>
 												{`${t('TASK')}: ${task}`}

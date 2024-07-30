@@ -1,5 +1,8 @@
 import { $, component$, QRL, useSignal, useStore } from '@builder.io/qwik';
+import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
+import { Project } from '@models/project';
+import { Task } from '@models/task';
 import { Day, TimeEntry, TimeEntryObject } from '@models/timeEntry';
 import { t } from 'src/locale/labels';
 import { formatDateString } from 'src/utils/dates';
@@ -15,9 +18,9 @@ interface TimeEntryElementProps {
 	timeEntriesState: Record<string, Record<string, number>>;
 	handleTimeChange: QRL<(timeEntryObject: TimeEntryObject) => void>;
 	entryInfo: {
-		customer: string | undefined;
-		project: string | undefined;
-		task: string | undefined;
+		customer: Customer | undefined;
+		project: Project | undefined;
+		task: Task | undefined;
 	};
 }
 

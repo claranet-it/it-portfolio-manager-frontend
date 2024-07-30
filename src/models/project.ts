@@ -1,3 +1,6 @@
-export type Project = string;
+export type Project = {
+	name: string;
+	type: ProjectType;
+};
 
-export type ProjectType = string;
+export type ProjectType = 'billable' | 'non-billable' | 'slack-time' | 'absence' | '';
