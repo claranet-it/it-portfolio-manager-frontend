@@ -124,7 +124,6 @@ export const Registry = component$(() => {
 					</div>
 					<Accordion
 						nested
-						loading={tasks.length === 0}
 						cards={tasks.map((task) => ({
 							opened: true,
 							body: buttonList({
@@ -154,7 +153,6 @@ export const Registry = component$(() => {
 					</div>
 					<Accordion
 						nested
-						loading={projects.length === 0}
 						cards={projects.map((project) => ({
 							title: buttonList({
 								type: 'project',

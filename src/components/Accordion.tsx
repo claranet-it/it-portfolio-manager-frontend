@@ -91,14 +91,24 @@ export const Accordion = component$<AccordionProps>(({ cards, nested, loading })
 				</div>
 			) : (
 				<>
-					{cards.map((card, index) => (
-						<AccordionCard
-							card={card}
-							index={index}
-							total={cards.length}
-							nested={nested}
-						/>
-					))}
+					{cards.length !== 0 ? (
+						cards.map((card, index) => (
+							<AccordionCard
+								card={card}
+								index={index}
+								total={cards.length}
+								nested={nested}
+							/>
+						))
+					) : (
+						<div>
+							<div
+								class={`p-5 border border-b-1 border-gray-200 dark:border-gray-700 dark:bg-gray-900 text-gray-400`}
+							>
+								Empty
+							</div>
+						</div>
+					)}
 				</>
 			)}
 		</div>
