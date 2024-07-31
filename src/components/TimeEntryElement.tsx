@@ -42,8 +42,14 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 				endSig.value = entry?.endHour ? convertTimeToDecimal(entry.endHour) : 0;
 			}),
 			onConfirm$: $(() => {
+				const confirmationEntry = entry ?? {
+					customer: entryInfo.customer,
+					project: entryInfo.project,
+					task: entryInfo.task,
+					date: formattedDate,
+				};
 				handleTimeChange({
-					...entry,
+					...confirmationEntry,
 					hours: hoursSig.value,
 					description: destriptionSig.value,
 					startHour: getFormattedHours(startSig.value),
@@ -89,7 +95,7 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 					</p>
 				)}
 
-				{entry && (
+				{modalState.isVisible && (
 					<Modal key={id} state={modalState}>
 						<EditTimeEntryForm
 							destriptionSig={destriptionSig}
