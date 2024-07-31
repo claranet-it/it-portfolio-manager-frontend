@@ -1,5 +1,6 @@
 import { $, Signal, Slot, component$, useComputed$, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { ProjectType } from '@models/project';
 import { format } from 'date-fns';
 import { useTimeEntries } from '../../hooks/timesheet/useTimeEntries';
 import { t } from '../../locale/labels';
@@ -7,6 +8,7 @@ import { Day, TimeEntry, TimeEntryObject, TimeEntryRow } from '../../models/time
 import { formatDateString } from '../../utils/dates';
 import {
 	getFormattedHours,
+	getLegendProjectCateogriesProp,
 	getTotalHours,
 	getTotalHoursPerRows,
 	getlHoursPerProject,
@@ -97,6 +99,11 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			return { customer, project, task };
 		};
 
+		const getProjectColor = (type: ProjectType) => {
+			const color = 'shadow-' + getLegendProjectCateogriesProp(type).bgColor;
+			return color;
+		};
+
 		return (
 			<div class='relative overflow-x-auto'>
 				<table class='w-full'>
@@ -140,7 +147,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								<tr key={key} class='bg-white border-b'>
 									<th
 										scope='row'
-										class='px-6 py-4 font-medium text-left border border-surface-50 whitespace-wrap'
+										class={`px-6 py-4 font-medium text-left border border-surface-50 shadow-inset-leftBorder ${getProjectColor(project?.type ?? '')} whitespace-wrap`}
 									>
 										<div class='flex flex-col'>
 											<h4 class='text-sm font-normal text-darkgray-500'>

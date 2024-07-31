@@ -57,31 +57,31 @@ export const getLegendProjectCateogriesProp = (type: string): ProjectCategoryPro
 		case 'absence': {
 			return {
 				label: t('PROJECT_ABSENCE_LABEL'),
-				bgColor: 'bg-pink-1',
+				bgColor: 'pink-1',
 			};
 		}
 		case 'slack-time': {
 			return {
 				label: t('PROJECT_SLACKTIME_LABEL'),
-				bgColor: 'bg-yellow-100',
+				bgColor: 'yellow-100',
 			};
 		}
 		case 'billable': {
 			return {
 				label: t('PROJECT_BILLABLE_LABEL'),
-				bgColor: 'bg-green-500',
+				bgColor: 'green-500',
 			};
 		}
 		case 'non-billable': {
 			return {
 				label: t('PROJECT_NON_BILLABLE_LABEL'),
-				bgColor: 'bg-green-200',
+				bgColor: 'green-200',
 			};
 		}
 		default: {
 			return {
 				label: '',
-				bgColor: '',
+				bgColor: 'trasparent-color',
 			};
 		}
 	}

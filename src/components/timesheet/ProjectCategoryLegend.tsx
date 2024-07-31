@@ -27,7 +27,7 @@ export const ProjectCategoryLegend = component$(() => {
 				{categories.map((category) => (
 					<span class='flex items-center text-xs font-normal text-dark-grey me-3'>
 						<span
-							class={`flex w-2.5 h-2.5 ${category.color} rounded-full me-1.5 flex-shrink-0`}
+							class={`flex w-2.5 h-2.5 bg-${category.color} rounded-full me-1.5 flex-shrink-0`}
 						></span>
 						{category.label}
 					</span>

@@ -43,7 +43,11 @@ module.exports = {
 			md: { min: '768px', max: '1296px' },
 			lg: { min: '1296px' },
 		},
-		extend: {},
+		extend: {
+			boxShadow: {
+				'inset-leftBorder': 'inset 6px 0px 0px 0px trasparent',
+			},
+		},
 	},
 	plugins: [require('flowbite/plugin')],
 };
