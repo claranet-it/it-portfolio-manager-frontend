@@ -2,7 +2,7 @@ import { $, component$, Slot, useComputed$, useSignal } from '@builder.io/qwik';
 import { t } from 'src/locale/labels';
 import { getIcon } from '../icons';
 
-export const NewProjectOverlayModal = component$(() => {
+export const NewProjectModal = component$(() => {
 	const modalVisible = useSignal(false);
 
 	const modalToggle = $(() => {
