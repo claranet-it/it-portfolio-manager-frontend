@@ -100,8 +100,8 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		};
 
 		const getProjectColor = (type: ProjectType) => {
-			const color = 'shadow-' + getLegendProjectCateogriesProp(type).bgColor;
-			return color;
+			const color = getLegendProjectCateogriesProp(type).bgColor;
+			return `shadow-${color}`;
 		};
 
 		return (
