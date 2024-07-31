@@ -114,5 +114,6 @@
 	"TIME_ENTRY_END": "End",
 	"SEARCH": "Search...",
 	"SELECT_PROJECT_PLACEHOLDER": "Select a project",
-	"SELECT_TASK_PLACEHOLDER": "Select a task"
+	"SELECT_TASK_PLACEHOLDER": "Select a task",
+	"ADD_NEW_TIME_ENTRY": "New entry"
 }
