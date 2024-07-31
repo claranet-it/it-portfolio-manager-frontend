@@ -14,7 +14,9 @@ const getMyCompanyEffort = async (
 	months: number = 3,
 	company: string = 'it'
 ): Promise<EffortMatrix> =>
-	getHttpResponse<EffortMatrix>(`effort/next?months=${months}&company=${company}`);
+	getHttpResponse<EffortMatrix>(
+		`effort/next?months=${months}&company=${encodeURIComponent(company)}`
+	);
 
 const getNetowrkingEffort = async (
 	months: number = 3,
@@ -22,7 +24,7 @@ const getNetowrkingEffort = async (
 ): Promise<EffortMatrix> => {
 	try {
 		let response = await getHttpResponse<EffortMatrix>(
-			`networking/effort/next?months=${months}&company=${company}`
+			`networking/effort/next?months=${months}&company=${encodeURIComponent(company)}`
 		);
 
 		// Reassigning duplicate items based on company skills
