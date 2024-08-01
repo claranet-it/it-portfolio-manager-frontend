@@ -22,12 +22,23 @@ const executeRequest = async (path: string, method: HttpMethods = 'GET', body?: 
 	return await httpResponseHandler(response);
 };
 
+const requestPath = (path: { path: string; params?: Record<string, string> } | string) => {
+	if (typeof path === 'string') {
+		return path;
+	}
+
+	const { path: basePath, params } = path;
+	const queryString = params ? `?${new URLSearchParams(params).toString()}` : '';
+
+	return `${basePath}${queryString}`;
+};
+
 export const getHttpResponse = async <Response>(
-	path: string,
+	path: { path: string; params?: Record<string, string> } | string,
 	method?: HttpMethods,
 	body?: Object
 ): Promise<Response> => {
-	const response = await executeRequest(path, method, body);
+	const response = await executeRequest(requestPath(path), method, body);
 	return await response?.json();
 };
 

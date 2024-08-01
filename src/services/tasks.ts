@@ -8,7 +8,14 @@ export const getTasks = async (
 	customer: Customer,
 	project: Project
 ): Promise<Task[]> =>
-	getHttpResponse<Task[]>(`task/task?company=${company}&customer=${customer}&project=${project}`);
+	getHttpResponse<Task[]>({
+		path: `task/task`,
+		params: {
+			company,
+			customer,
+			project,
+		},
+	});
 
 export const saveTask = async (
 	company: string = 'it',
