@@ -101,7 +101,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 
 		const fistBodyColumnStyle = (type: ProjectType) => {
 			const color = getProjectCateogriesProp(type).borderColor;
-			return `px-6 py-4 font-medium text-left border border-surface-50  whitespace-wrap shadow-inset-leftBorder ${color}`;
+			return `px-6 py-4 font-medium text-left border border-surface-50 whitespace-wrap shadow-inset-leftBorder ${color}`;
 		};
 
 		return (

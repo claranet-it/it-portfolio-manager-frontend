@@ -17,17 +17,20 @@ type Buttons =
 	| {
 			type: 'project';
 			customer: Customer;
+			label: string;
 			mainData: Project;
 	  }
 	| {
 			type: 'task';
 			customer: Customer;
+			label: string;
 			mainData: string;
 			customerIndex: number;
 			projectIndex: number;
 	  }
 	| {
 			type: 'customer';
+			label: string;
 			mainData: Customer;
 	  };
 
@@ -50,7 +53,7 @@ export const Registry = component$(() => {
 			<div
 				class={`${props.type !== 'task' ? 'w-full mr-4' : ''} flex flex-row justify-between items-center`}
 			>
-				{`${props.mainData}`}{' '}
+				{`${props.label}`}{' '}
 				<div class='flex flex-row gap-4'>
 					{!['customer', 'task'].includes(props.type) && (
 						<Button
@@ -130,6 +133,7 @@ export const Registry = component$(() => {
 							body: buttonList({
 								type: 'task',
 								customer,
+								label: task,
 								projectIndex,
 								customerIndex,
 								mainData: task,
@@ -159,6 +163,7 @@ export const Registry = component$(() => {
 							title: buttonList({
 								type: 'project',
 								customer,
+								label: project.projectName.name,
 								mainData: project.projectName,
 							}),
 							opened:
@@ -199,6 +204,7 @@ export const Registry = component$(() => {
 						cards={data.map((data) => ({
 							title: buttonList({
 								type: 'customer',
+								label: data.customer,
 								mainData: data.customer,
 							}),
 							opened: selected.getCustomer.value.includes(data.customer),

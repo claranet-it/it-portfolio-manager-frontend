@@ -29,7 +29,7 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 		const formattedDate = formatDateString(day.date);
 		const hours = entry ? timeEntriesState[entry.hours]?.[formattedDate] || 0 : 0;
 		const { weekend } = day;
-		const tdClass = `relative py-3 px-4 text-center border border-surface-50 ${weekend ? 'bg-surface-20' : ''}`;
+		const tdClass = `relative py-3 px-4 text-center border border-surface-70 ${weekend ? 'bg-surface-5' : ''}`;
 
 		const destriptionSig = useSignal(entry?.description ?? '');
 		const hoursSig = useSignal(entry?.hours ?? 0);
