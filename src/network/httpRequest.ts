@@ -22,13 +22,29 @@ const executeRequest = async (path: string, method: HttpMethods = 'GET', body?: 
 	return await httpResponseHandler(response);
 };
 
+const encodeParams = (params?: Record<string, string>): Record<string, string> => {
+	if (!params) {
+		return {};
+	}
+
+	const encodedParams: Record<string, string> = {};
+
+	for (const key in params) {
+		if (params.hasOwnProperty(key)) {
+			encodedParams[key] = encodeURIComponent(params[key]);
+		}
+	}
+
+	return encodedParams;
+};
+
 const requestPath = (path: { path: string; params?: Record<string, string> } | string) => {
 	if (typeof path === 'string') {
 		return path;
 	}
 
 	const { path: basePath, params } = path;
-	const queryString = params ? `?${new URLSearchParams(params).toString()}` : '';
+	const queryString = params ? `?${new URLSearchParams(encodeParams(params)).toString()}` : '';
 
 	return `${basePath}${queryString}`;
 };
