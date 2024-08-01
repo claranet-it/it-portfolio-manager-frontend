@@ -5,7 +5,6 @@ import { getIcon } from '../icons';
 interface TimePickerProps {
 	bindValue?: number | undefined;
 	onClick$?: QRL;
-	disableOnClick?: boolean;
 	onChange$?: QRL;
 	onBlur$?: QRL;
 	required?: boolean;

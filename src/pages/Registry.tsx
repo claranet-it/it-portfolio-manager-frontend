@@ -1,4 +1,4 @@
-import { $, component$, Signal, useStore } from '@builder.io/qwik';
+import { $, component$, Signal, useSignal, useStore } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { Project } from '@models/project';
@@ -9,7 +9,7 @@ import { Input } from 'src/components/form/Input';
 import { NewProjectForm } from 'src/components/form/NewProjectForm';
 import { getIcon } from 'src/components/icons';
 import { Modal } from 'src/components/modals/Modal';
-import { NewProjectOverlayModal } from 'src/components/modals/newProjectOverlayModal';
+import { NewProjectModal } from 'src/components/modals/NewProjectModal';
 import { useRegistry } from 'src/hooks/useRegistry';
 import { t } from 'src/locale/labels';
 
@@ -32,12 +32,16 @@ type Buttons =
 	  };
 
 export const Registry = component$(() => {
+	const showNewProjectModal = useSignal(false);
 	const alertMessageState = useStore<ModalState>({});
 	const editMessageState = useStore<ModalState>({});
 
-	const newProjectCancelAction = $(() => {
-		const button = document.getElementById('open-new-project-bt');
-		button?.click();
+	const showNewProjectModalAction = $(() => {
+		showNewProjectModal.value = true;
+	});
+
+	const hideNewProjectModalAction = $(() => {
+		showNewProjectModal.value = false;
 	});
 
 	const { data, loading, trackValue, handlers, selected } = useRegistry(
@@ -183,14 +187,28 @@ export const Registry = component$(() => {
 					<h1 class='text-2xl font-bold text-darkgray-900 me-4'>
 						{t('REGISTRY_PAGE_TITLE')}
 					</h1>
-					<NewProjectOverlayModal q:slot='newProject'>
+					<div class='w-full flex flex-row'>
+						<button
+							id='open-new-project-bt'
+							onClick$={showNewProjectModalAction}
+							type='button'
+						>
+							<div class='flex flex-row space-x-1 content text-clara-red'>
+								<span class='text-xl content-center'>{getIcon('Add')}</span>
+								<span class='text-base font-bold content-center'>
+									{t('add_new_project_label')}
+								</span>
+							</div>
+						</button>
+					</div>
+					<NewProjectModal show={showNewProjectModal.value} q:slot='newProject'>
 						<NewProjectForm
 							timeEntry={trackValue as Signal<TimeEntry>}
 							alertMessageState={alertMessageState}
-							onCancel$={newProjectCancelAction}
+							onCancel$={hideNewProjectModalAction}
 							allowNewEntry={true}
 						/>
-					</NewProjectOverlayModal>
+					</NewProjectModal>
 				</div>
 				<div class={`${loading ? 'animate-pulse' : ''}`}>
 					<Accordion
