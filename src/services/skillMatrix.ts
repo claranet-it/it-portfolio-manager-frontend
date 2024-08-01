@@ -17,9 +17,12 @@ export const getCompanySkills = async (company: string = 'it'): Promise<SkillMat
 
 export const getNetworkingSkills = async (company: string = 'it'): Promise<SkillMatrix> => {
 	try {
-		let response = await getHttpResponse<SkillMatrix>(
-			`networking/skills?company=${encodeURIComponent(company)}`
-		);
+		let response = await getHttpResponse<SkillMatrix>({
+			path: `networking/skills`,
+			params: {
+				company,
+			},
+		});
 		response = response.map((el) => {
 			const [[companyName, _]] = Object.entries(el);
 			el[companyName].isCompany = true;

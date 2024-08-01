@@ -12,11 +12,15 @@ export const getProductivity = async (
 	from: string,
 	to: string
 ): Promise<ReportProductivityItem[]> => {
-	let params = `from=${from}&to=${to}`;
-	if (customer !== '') params = params.concat(`&customer=${encodeURIComponent(customer)}`);
-	if (project !== '') params = params.concat(`&project=${encodeURIComponent(project)}`);
-	if (task !== '') params = params.concat(`&task=${encodeURIComponent(task)}`);
-	if (name !== '') params = params.concat(`&name=${encodeURIComponent(name)}`);
-
-	return getHttpResponse<ReportProductivityItem[]>(`report/productivity?${params}`);
+	return getHttpResponse<ReportProductivityItem[]>({
+		path: `report/productivity`,
+		params: {
+			from,
+			to,
+			...(customer !== '' && { params: customer }),
+			...(project !== '' && { project: project }),
+			...(task !== '' && { task: task }),
+			...(name !== '' && { name: name }),
+		},
+	});
 };
