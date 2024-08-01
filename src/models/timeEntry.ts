@@ -30,4 +30,5 @@ export type Day = {
 export type ProjectCategoryProp = {
 	label: string;
 	bgColor: string;
+	borderColor: string;
 };

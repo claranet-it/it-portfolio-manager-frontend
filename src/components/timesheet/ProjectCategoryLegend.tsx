@@ -1,14 +1,14 @@
 import { component$ } from '@builder.io/qwik';
 import { projectTypeList } from '@models/project';
 import { t } from 'src/locale/labels';
-import { getLegendProjectCateogriesProp } from 'src/utils/timesheet';
+import { getProjectCateogriesProp } from 'src/utils/timesheet';
 import { getIcon } from '../icons';
 
 export const ProjectCategoryLegend = component$(() => {
 	const categories = projectTypeList
 		.filter((category) => category != '')
 		.map((category) => {
-			const prop = getLegendProjectCateogriesProp(category);
+			const prop = getProjectCateogriesProp(category);
 
 			const obj = {
 				label: prop.label,

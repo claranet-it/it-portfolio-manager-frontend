@@ -8,7 +8,7 @@ import { Day, TimeEntry, TimeEntryObject, TimeEntryRow } from '../../models/time
 import { formatDateString } from '../../utils/dates';
 import {
 	getFormattedHours,
-	getLegendProjectCateogriesProp,
+	getProjectCateogriesProp,
 	getTotalHours,
 	getTotalHoursPerRows,
 	getlHoursPerProject,
@@ -99,9 +99,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			return { customer, project, task };
 		};
 
-		const getProjectColor = (type: ProjectType) => {
-			const color = getLegendProjectCateogriesProp(type).bgColor;
-			return `shadow-${color}`;
+		const fistBodyColumnStyle = (type: ProjectType) => {
+			const color = getProjectCateogriesProp(type).borderColor;
+			return `px-6 py-4 font-medium text-left border border-surface-50  whitespace-wrap shadow-inset-leftBorder ${color}`;
 		};
 
 		return (
@@ -147,7 +147,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								<tr key={key} class='bg-white border-b'>
 									<th
 										scope='row'
-										class={`px-6 py-4 font-medium text-left border border-surface-50 shadow-inset-leftBorder ${getProjectColor(project?.type ?? '')} whitespace-wrap`}
+										class={fistBodyColumnStyle(project?.type ?? '')}
 									>
 										<div class='flex flex-col'>
 											<h4 class='text-sm font-normal text-darkgray-500'>

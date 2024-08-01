@@ -45,7 +45,7 @@ module.exports = {
 		},
 		extend: {
 			boxShadow: {
-				'inset-leftBorder': 'inset 6px 0px 0px 0px trasparent',
+				'inset-leftBorder': 'inset 6px 0px 0px 0px',
 			},
 		},
 	},
