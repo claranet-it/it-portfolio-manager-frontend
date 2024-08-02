@@ -99,6 +99,7 @@
 	"EXISTING_REGISTRY_ELEMENT_LABEL": "The value you have entered is the same as the current one.",
 	"EXISTING_ENTITY_TITLE": "Entity already exists",
 	"EXISTING_ENTITY_MESSAGE": "Cannot create duplicate",
+	"EMPTY_PROJECT_TYPE_MESSAGE": "Please, select project type",
 	"CANNOT_CREATE_ENTITY_TITLE": "Cannot create",
 	"CANNOT_CREATE_ENTITY_MESSAGE": "Cannot create new element",
 	"REQUIRED_FIELD_LABEL": "This field is required",

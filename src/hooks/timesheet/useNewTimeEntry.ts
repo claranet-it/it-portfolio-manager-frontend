@@ -35,12 +35,13 @@ export const useNewTimeEntry = (
 	const dataProjectsSig = useSignal<Project[]>([]);
 	const dataTaksSign = useSignal<Task[]>([]);
 
+	const initCustomer: Customer = '';
 	const initProject: Project = { name: '', type: '' };
+	const initTaskt: Task = '';
 
 	const customerSelected = useSignal<Customer>('');
 	const projectSelected = useSignal<Project>(initProject);
 	const taskSelected = useSignal<Task>('');
-	//const projectTypeSelected = useSignal<ProjectType>('');
 	const projectTypeInvalid = useSignal<boolean>(false);
 	const projectTypeEnabled = useStore<{
 		newCustomer: boolean;
@@ -70,30 +71,37 @@ export const useNewTimeEntry = (
 
 	const onChangeCustomer = $(async (value: string) => {
 		projectSelected.value = initProject;
+		taskSelected.value = initTaskt;
 		if (value != '') {
 			dataProjectsSig.value = await getProjects('it', value);
 			projectEnableSig.value = true;
 		} else {
+			projectTypeEnabled.newProject = false;
+			projectTypeEnabled.newCustomer = false;
 			projectEnableSig.value = false;
+			taskEnableSig.value = false;
 		}
+
 		handleProjectTypeEnabled(value);
 	});
 
 	const onChangeProject = $(async (value: Project) => {
-		taskSelected.value = '';
-		if (value != undefined) {
-			dataTaksSign.value = await getTasks('it', customerSelected.value, value);
-			taskEnableSig.value = true;
-		} else {
-			taskEnableSig.value = false;
+		if (customerSelected.value != '') {
+			taskSelected.value = initTaskt;
+			if (value.name != '') {
+				dataTaksSign.value = await getTasks('it', customerSelected.value, value);
+				taskEnableSig.value = true;
+			} else {
+				taskEnableSig.value = false;
+			}
+			handleProjectTypeEnabled(undefined, value);
 		}
-		handleProjectTypeEnabled(undefined, value);
 	});
 
 	const clearForm = $(() => {
-		customerSelected.value = '';
+		customerSelected.value = initCustomer;
 		projectSelected.value = initProject;
-		taskSelected.value = '';
+		taskSelected.value = initTaskt;
 		projectTypeEnabled.newCustomer = false;
 		projectTypeEnabled.newProject = false;
 	});
@@ -175,6 +183,15 @@ export const useNewTimeEntry = (
 
 			if (projectSelected.value.name === '' && isProjectTypeEnabled) {
 				projectTypeInvalid.value = true;
+				return;
+			}
+
+			if (projectSelected.value.type === '' && isProjectTypeEnabled) {
+				showAlert({
+					title: t('INSERT_NEW_PROJECT_TITLE_MODAL'),
+					message: t('EMPTY_PROJECT_TYPE_MESSAGE'),
+					cancelLabel: t('ACTION_CANCEL'),
+				});
 				return;
 			}
 

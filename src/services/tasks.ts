@@ -21,6 +21,6 @@ export const saveTask = async (
 	checkHttpResponseStatus(`task/task`, 200, 'POST', {
 		company: company,
 		customer: customer,
-		project: project.name,
+		project: project,
 		task: task,
 	});
