@@ -24,7 +24,7 @@ interface TimeEntryElementProps {
 export const TimeEntryElement = component$<TimeEntryElementProps>(
 	({ id, day, entry, timeEntriesState, handleTimeChange, entryInfo }) => {
 		const formattedDate = formatDateString(day.date);
-		const hours = entry ? timeEntriesState[entry.hours]?.[formattedDate] || 0 : 0;
+		const hours = entry ? timeEntriesState[entry.project]?.[formattedDate] || 0 : 0;
 		const { weekend } = day;
 		const tdClass = `relative py-3 px-4 text-center border border-surface-50 ${weekend ? 'bg-surface-20' : ''}`;
 
@@ -84,6 +84,7 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 							description: destriptionSig.value,
 							customer: entryInfo.customer,
 							task: entryInfo.task,
+							index: entry?.index,
 						} as TimeEntryObject);
 					}}
 					bindValue={entry ? entry.hours : hours}

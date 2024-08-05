@@ -5,7 +5,7 @@ import { t } from '../../locale/labels';
 import { TimeEntry, TimeEntryObject } from '../../models/timeEntry';
 import { deleteTimeEntry, getTimeEntries, postTimeEntries } from '../../services/timeSheet';
 import { formatDateString } from '../../utils/dates';
-import { isEqualEntries, isEqualEntriesDeep } from '../../utils/timesheet';
+import { isEqualEntries } from '../../utils/timesheet';
 import { useNotification } from '../useNotification';
 
 export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
@@ -32,22 +32,41 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 			if (state.dataTimeEntries.length === 0 || reset) {
 				state.dataTimeEntries = timeEntries;
 			} else {
+				const indexedEntries = state.dataTimeEntries.map((_entry, index) => ({
+					index: index,
+					entry: _entry,
+				}));
+
 				timeEntries.map((entry) => {
-					const index = state.dataTimeEntries.findIndex((_entry) =>
-						isEqualEntriesDeep(_entry, entry)
+					const existingEntries = indexedEntries.filter((_entry) =>
+						isEqualEntries(_entry.entry, entry)
 					);
 
-					if (index === -1) {
+					if (existingEntries.length === 0) {
 						state.dataTimeEntries.push(entry);
-					} else {
-						state.dataTimeEntries[index] = {
-							...state.dataTimeEntries[index],
-							hours: entry.hours,
-							description: entry.description,
-							startHour: entry.startHour,
-							endHour: entry.endHour,
-						};
 					}
+
+					existingEntries.some((_existingEntry) => {
+						if (
+							_existingEntry.entry.index !== undefined &&
+							_existingEntry.entry.index === entry.index
+						) {
+							state.dataTimeEntries[_existingEntry.index] = {
+								...state.dataTimeEntries[_existingEntry.index],
+								hours: entry.hours,
+								description: entry.description,
+								startHour: entry.startHour,
+								endHour: entry.endHour,
+							};
+
+							return true;
+						} else {
+							if (_existingEntry.entry.date === '') {
+								state.dataTimeEntries[_existingEntry.index] = entry;
+							}
+							return true;
+						}
+					});
 				});
 			}
 			appStore.isLoading = false;
@@ -76,8 +95,8 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 	});
 
 	const deleteProjectEntries = $((entry: TimeEntry) => {
-		const erasableEntries = state.dataTimeEntries.filter((_entry) =>
-			isEqualEntries(_entry, entry)
+		const erasableEntries = state.dataTimeEntries.filter(
+			(_entry) => isEqualEntries(_entry, entry) && _entry.index === entry.index
 		);
 		try {
 			appStore.isLoading = true;
@@ -86,7 +105,7 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 			});
 			// Remove deleted item
 			state.dataTimeEntries = state.dataTimeEntries.filter(
-				(_entry) => !isEqualEntries(_entry, entry)
+				(_entry) => !(isEqualEntries(_entry, entry) && _entry.index === entry.index)
 			);
 			appStore.isLoading = false;
 			addEvent({
