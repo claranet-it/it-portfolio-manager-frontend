@@ -22,7 +22,8 @@ export const saveTask = async (
 	customer: Customer,
 	project: Project,
 	task: Task,
-	projectType?: ProjectType
+	projectType?: ProjectType,
+	index?: number
 ): Promise<boolean> =>
 	checkHttpResponseStatus(`task/task`, 200, 'POST', {
 		company: company,
@@ -30,4 +31,5 @@ export const saveTask = async (
 		project: project,
 		task: task,
 		projectType: projectType,
+		index: index,
 	});

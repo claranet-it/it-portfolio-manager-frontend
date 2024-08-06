@@ -13,6 +13,7 @@ export type TimeEntry = {
 	endHour?: string;
 	description?: string;
 	isUnsaved?: boolean;
+	index?: number;
 };
 
 export type TimeEntryObject = Omit<TimeEntry, 'company' | 'isUnsaved'>;

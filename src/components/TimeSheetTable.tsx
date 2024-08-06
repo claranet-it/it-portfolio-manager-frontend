@@ -80,7 +80,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 
 		const groupedByProject = useComputed$(() => {
 			return state.dataTimeEntries.reduce<TimeEntryRow>((acc, entry) => {
-				const key = `${entry.customer}-${entry.project}-${entry.task}`;
+				const key = `${entry.customer}-${entry.project}-${entry.task}-${entry.index}`;
 
 				if (!acc[key]) {
 					acc[key] = [];
@@ -161,8 +161,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 											hours = 0,
 											startHour = '0',
 											endHour = '0',
+											index: entryIndex = undefined,
 										} = entry || {};
-										const key = `${index}-${formattedDate}-${hours}-${startHour}-${endHour}`;
+										const key = `${index}-${formattedDate}-${hours}-${startHour}-${endHour}-${entryIndex}`;
 
 										return (
 											<TimeEntryElement
@@ -170,7 +171,11 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 												id={key}
 												day={day}
 												entry={entry}
-												entryInfo={{ customer, project, task }}
+												entryInfo={{
+													customer,
+													project,
+													task,
+												}}
 												handleTimeChange={handleTimeChange}
 												timeEntriesState={timeEntriesState}
 											/>
@@ -207,20 +212,22 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 									{t('TIMESHEET_TABLE_TOTAL_FOOTER_LABLE')}
 								</h3>
 							</th>
-							{days.value.map((day, key) => (
-								<td
-									key={key}
-									class='px-6 py-4 text-center border border-surface-50'
-								>
-									<span class='text-base font-bold'>
-										{getTotalPerDay(
-											state.dataTimeEntries.filter(
-												(t) => t.date === formatDateString(day.date)
-											)
-										)}
-									</span>
-								</td>
-							))}
+							{days.value.map((day, key) => {
+								return (
+									<td
+										key={key}
+										class='px-6 py-4 text-center border border-surface-50'
+									>
+										<span class='text-base font-bold'>
+											{getTotalPerDay(
+												state.dataTimeEntries.filter(
+													(t) => t.date === formatDateString(day.date)
+												)
+											)}
+										</span>
+									</td>
+								);
+							})}
 							<td class='px-6 py-4 text-right border border-surface-50' colSpan={2}>
 								<span class='text-base font-bold'>
 									{getTotal(state.dataTimeEntries.map((item) => item.hours))}
