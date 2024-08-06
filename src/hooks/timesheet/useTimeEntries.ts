@@ -51,20 +51,33 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 							_existingEntry.entry.index !== undefined &&
 							_existingEntry.entry.index === entry.index
 						) {
-							state.dataTimeEntries[_existingEntry.index] = {
-								...state.dataTimeEntries[_existingEntry.index],
-								hours: entry.hours,
-								description: entry.description,
-								startHour: entry.startHour,
-								endHour: entry.endHour,
-							};
-
-							return true;
-						} else {
-							if (_existingEntry.entry.date === '') {
+							if (
+								_existingEntry.entry.date === '' &&
+								_existingEntry.entry.isUnsaved === true
+							) {
 								state.dataTimeEntries[_existingEntry.index] = entry;
+								return true;
 							}
-							return true;
+
+							if (_existingEntry.entry.date === entry.date) {
+								state.dataTimeEntries[_existingEntry.index] = {
+									...state.dataTimeEntries[_existingEntry.index],
+									hours: entry.hours,
+									description: entry.description,
+									startHour: entry.startHour,
+									endHour: entry.endHour,
+								};
+
+								return true;
+							}
+						} else {
+							if (
+								_existingEntry.entry.date === '' &&
+								_existingEntry.entry.isUnsaved === true
+							) {
+								state.dataTimeEntries[_existingEntry.index] = entry;
+								return true;
+							}
 						}
 					});
 				});
