@@ -36,7 +36,6 @@ const modalBuilder = (
 		return {
 			isVisible: true,
 			title: tt('REGISTRY_EDIT_TITLE', { type: props.type }),
-			message: 'Some projects of the customer may not be updated because already assigned.',
 		};
 	}
 

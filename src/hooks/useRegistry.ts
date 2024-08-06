@@ -320,7 +320,7 @@ export const useRegistry = (alertMessageState: ModalState, editMessageState: Mod
 				}
 			})
 		);
-		editMessageState.body = true;
+		//editMessageState.body = true;
 	});
 
 	const handleDelete = $((props: RegistryHandler) => {
