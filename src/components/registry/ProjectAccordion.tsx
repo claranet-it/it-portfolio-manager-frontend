@@ -5,7 +5,7 @@ import { Project } from '@models/project';
 import { useNotification } from 'src/hooks/useNotification';
 import { useProjects } from 'src/hooks/useProjects';
 import { useTasks } from 'src/hooks/useTasks';
-import { t } from 'src/locale/labels';
+import { t, tt } from 'src/locale/labels';
 import { Button } from '../Button';
 import { EditProjectForm } from '../form/editProjectFrom';
 import { LoadingSpinnerInline } from '../LoadingSpinnerInline';
@@ -24,7 +24,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 		const visibleBody = useSignal(false);
 		const { addEvent } = useNotification();
 		const { tasks, fetchTasks, isLoading } = useTasks();
-		const { updateProject } = useProjects();
+		const { updateProject, removeProject } = useProjects();
 
 		const name = useSignal(project.name);
 		const type = useSignal(project.type);
@@ -59,6 +59,26 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 			confirmLabel: t('ACTION_CONFIRM'),
 		});
 
+		const projectDeleteModalState = useStore<ModalState>({
+			title: t('PROEJCT_DELETE_TITLE'),
+			message: tt('PROJECT_DELETE_MESSAGE', {
+				name: project.name,
+			}),
+			onCancel$: $(() => {}),
+			onConfirm$: $(async () => {
+				if (await removeProject(customer, project)) {
+					refresh && refresh();
+					addEvent({
+						type: 'success',
+						message: t('EDIT_PROJECT_SUCCESS_MESSAGE'),
+						autoclose: true,
+					});
+				}
+			}),
+			cancelLabel: t('ACTION_CANCEL'),
+			confirmLabel: t('ACTION_CONFIRM'),
+		});
+
 		const openBody = $(() => {
 			visibleBody.value = !visibleBody.value;
 			if (visibleBody.value) fetchTasks(customer, project);
@@ -74,7 +94,10 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 						</div>
 
 						<div class='flex flex-row gap-3'>
-							<Button variant={'outline'} onClick$={() => {}}>
+							<Button
+								variant={'outline'}
+								onClick$={() => (projectDeleteModalState.isVisible = true)}
+							>
 								{t('ACTION_DELETE')}
 							</Button>
 
@@ -102,6 +125,8 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 				<Modal state={projectModalState}>
 					<EditProjectForm name={name} type={type} plannedHours={plannedHours} />
 				</Modal>
+
+				<Modal state={projectDeleteModalState} />
 			</>
 		);
 	}

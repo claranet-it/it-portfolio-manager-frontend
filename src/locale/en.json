@@ -125,5 +125,7 @@
 	"EDIT_PROJECT": "Edit project",
 	"PROJECT_TYPE_LABEL": "Project type",
 	"PROJECT_TYPE_PLACEHOLDER": "Select project type",
-	"NAME_LABEL": "Name"
+	"NAME_LABEL": "Name",
+	"PROEJCT_DELETE_TITLE": "Delete project",
+	"PROJECT_DELETE_MESSAGE": "Are you sure you want to delete #name?"
 }
