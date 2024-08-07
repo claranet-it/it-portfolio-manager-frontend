@@ -121,5 +121,9 @@
 	"PROJECT_BILLABLE_LABEL": "billable",
 	"PROJECT_NON_BILLABLE_LABEL": "non billable",
 	"PROJECT_SLACKTIME_LABEL": "slack time",
-	"PROJECT_ABSENCE_LABEL": "absence"
+	"PROJECT_ABSENCE_LABEL": "absence",
+	"EDIT_PROJECT": "Edit project",
+	"PROJECT_TYPE_LABEL": "Project type",
+	"PROJECT_TYPE_PLACEHOLDER": "Select project type",
+	"NAME_LABEL": "Name"
 }

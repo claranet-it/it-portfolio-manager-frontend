@@ -28,6 +28,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 
 		const name = useSignal(project.name);
 		const type = useSignal(project.type);
+		const plannedHours = useSignal(project.plannedHours);
 
 		const initFormSignals = $(() => {
 			name.value = project.name;
@@ -35,12 +36,16 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 		});
 
 		const projectModalState = useStore<ModalState>({
-			title: 'Edit project',
+			title: t('EDIT_PROJECT'),
 			onCancel$: $(() => {
 				initFormSignals();
 			}),
 			onConfirm$: $(async () => {
-				const editedProject = { name: name.value, type: type.value };
+				const editedProject = {
+					name: name.value,
+					type: type.value,
+					plannedHours: plannedHours.value,
+				};
 				if (await updateProject(customer, project, editedProject)) {
 					refresh && refresh();
 					addEvent({
@@ -95,7 +100,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 				</div>
 
 				<Modal state={projectModalState}>
-					<EditProjectForm name={name} type={type} />
+					<EditProjectForm name={name} type={type} plannedHours={plannedHours} />
 				</Modal>
 			</>
 		);
