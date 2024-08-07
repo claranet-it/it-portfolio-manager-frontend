@@ -25,8 +25,6 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 	({ id, day, entry, timeEntriesState, handleTimeChange, entryInfo }) => {
 		const formattedDate = formatDateString(day.date);
 		const hours = entry ? timeEntriesState[entry.project]?.[formattedDate] || 0 : 0;
-		const { weekend } = day;
-		const tdClass = `relative py-3 px-4 text-center border border-surface-50 ${weekend ? 'bg-surface-20' : ''}`;
 
 		const destriptionSig = useSignal(entry?.description ?? '');
 		const hoursSig = useSignal(entry?.hours ?? 0);
@@ -61,7 +59,7 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 		});
 
 		return (
-			<td class={tdClass}>
+			<>
 				<TimePicker
 					onClick$={() => {
 						modalState.isVisible = true;
@@ -112,7 +110,7 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 						/>
 					</Modal>
 				)}
-			</td>
+			</>
 		);
 	}
 );

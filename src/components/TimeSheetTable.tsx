@@ -11,6 +11,7 @@ import {
 	getTotalHoursPerRows,
 	getlHoursPerProject,
 } from '../utils/timesheet';
+import { Button } from './Button';
 import { getIcon } from './icons';
 import { Modal } from './modals/Modal';
 import { TimeEntryElement } from './TimeEntryElement';
@@ -63,7 +64,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		useTask$(async ({ track }) => {
 			track(() => from.value);
 			track(() => to.value);
-			await loadTimeEntries(from, to, true);
+			await loadTimeEntries(from, to);
 		});
 
 		const getTotalPerDay = (timeEntries: TimeEntry[]) => {
@@ -80,7 +81,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 
 		const groupedByProject = useComputed$(() => {
 			return state.dataTimeEntries.reduce<TimeEntryRow>((acc, entry) => {
-				const key = `${entry.customer}-${entry.project}-${entry.task}-${entry.index}`;
+				const key = `${entry.customer}-${entry.project}-${entry.task}`;
 
 				if (!acc[key]) {
 					acc[key] = [];
@@ -154,31 +155,82 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 											</h4>
 										</div>
 									</th>
-									{days.value.map((day, index) => {
+									{days.value.map((day) => {
 										const formattedDate = formatDateString(day.date);
-										const entry = entries.find((e) => e.date === formattedDate);
-										const {
-											hours = 0,
-											startHour = '0',
-											endHour = '0',
-											index: entryIndex = undefined,
-										} = entry || {};
-										const key = `${index}-${formattedDate}-${hours}-${startHour}-${endHour}-${entryIndex}`;
+										const dailyEntries = entries.filter(
+											(e) => e.date === formattedDate
+										);
+
+										const dEntries: Array<TimeEntry | undefined> =
+											dailyEntries.length ? dailyEntries : [undefined];
+
+										const { weekend } = day;
+										const tdClass = `relative py-3 px-4 text-center border border-surface-50 ${weekend ? 'bg-surface-20' : ''}`;
 
 										return (
-											<TimeEntryElement
-												key={key}
-												id={key}
-												day={day}
-												entry={entry}
-												entryInfo={{
-													customer,
-													project,
-													task,
-												}}
-												handleTimeChange={handleTimeChange}
-												timeEntriesState={timeEntriesState}
-											/>
+											<td key={formattedDate} class={tdClass}>
+												{dEntries.map((dEntry, index) => {
+													const {
+														hours = 0,
+														startHour = '0',
+														endHour = '0',
+														index: entryIndex = undefined,
+													} = dEntry || {};
+													const key = `${index}-${hours}-${startHour}-${endHour}-${entryIndex}`;
+													const hasButton =
+														index === dEntries.length - 1 &&
+														hours !== 0;
+
+													return (
+														<div class={`flex flex-row`}>
+															<div
+																class={`mr-2 ${index === dEntries.length - 1 ? '' : 'mb-2'}`}
+															>
+																<TimeEntryElement
+																	key={key}
+																	id={key}
+																	day={day}
+																	entry={dEntry}
+																	entryInfo={{
+																		customer,
+																		project,
+																		task,
+																	}}
+																	handleTimeChange={
+																		handleTimeChange
+																	}
+																	timeEntriesState={
+																		timeEntriesState
+																	}
+																/>
+															</div>
+															{hasButton && (
+																<Button
+																	variant={'link'}
+																	size={'small'}
+																	onClick$={() =>
+																		(newTimeEntry.value = {
+																			date: formattedDate,
+																			company: 'it',
+																			customer:
+																				customer || '',
+																			project: project || '',
+																			task: task || '',
+																			hours: 0,
+																			isUnsaved: true,
+																			index:
+																				(entryIndex ?? 0) +
+																				1,
+																		})
+																	}
+																>
+																	{getIcon('Add')}
+																</Button>
+															)}
+														</div>
+													);
+												})}
+											</td>
 										);
 									})}
 									<td class='py-3 px-4 text-center border border-surface-50'>
