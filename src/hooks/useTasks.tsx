@@ -1,10 +1,12 @@
-import { $, useSignal } from '@builder.io/qwik';
+import { $, useContext, useSignal } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
-import { getTasks } from 'src/services/tasks';
+import { AppContext } from 'src/app';
+import { editTask, getTasks } from 'src/services/tasks';
 
 export const useTasks = () => {
+	const appStore = useContext(AppContext);
 	const isLoading = useSignal<Boolean>(false);
 	const tasks = useSignal<Task[]>([]);
 
@@ -15,5 +17,14 @@ export const useTasks = () => {
 		isLoading.value = false;
 	});
 
-	return { tasks, fetchTasks, isLoading };
+	const updateTask = $(
+		async (customer: Customer, project: Project, task: Task, editedTask: Task) => {
+			appStore.isLoading = true;
+			const response = await editTask(customer, project, task, editedTask);
+			appStore.isLoading = false;
+			return response;
+		}
+	);
+
+	return { tasks, fetchTasks, isLoading, updateTask };
 };

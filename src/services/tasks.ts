@@ -24,3 +24,16 @@ export const saveTask = async (
 		project: project,
 		task: task,
 	});
+
+export const editTask = async (
+	customer: Customer,
+	project: Project,
+	task: Task,
+	editedTask: Task
+) =>
+	checkHttpResponseStatus('task/task', 200, 'PUT', {
+		customer: customer,
+		project: project,
+		task: task,
+		newTask: editedTask,
+	});

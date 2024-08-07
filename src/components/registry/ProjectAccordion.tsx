@@ -117,7 +117,9 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 				<div class={visibleBody.value && !isLoading.value ? '' : 'hidden'}>
 					<div class='p-5 border border-b-0 border-gray-200 dark:border-gray-700'>
 						{tasks.value.map((task) => {
-							return <TaskAccordion task={task} />;
+							return (
+								<TaskAccordion customer={customer} project={project} task={task} />
+							);
 						})}
 					</div>
 				</div>
