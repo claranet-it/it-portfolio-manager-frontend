@@ -1,4 +1,4 @@
-import { $, component$, useSignal, useStore } from '@builder.io/qwik';
+import { $, component$, QRL, useSignal, useStore } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { useProjects } from 'src/hooks/useProjects';
@@ -11,9 +11,10 @@ import { ProjectAccordion } from './ProjectAccordion';
 
 interface CustomerAccordionProps {
 	customer: Customer;
+	refresh?: QRL;
 }
 
-export const CustomerAccordion = component$<CustomerAccordionProps>(({ customer }) => {
+export const CustomerAccordion = component$<CustomerAccordionProps>(({ customer, refresh }) => {
 	const { projects, fetchProjects, isLoading } = useProjects();
 	const visibleBody = useSignal(false);
 
@@ -28,7 +29,6 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(({ customer 
 	const openBody = $(() => {
 		visibleBody.value = !visibleBody.value;
 		if (visibleBody.value) fetchProjects(customer);
-		console.log(isLoading.value);
 	});
 
 	return (
@@ -60,7 +60,13 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(({ customer 
 				<div class='p-5 border border-gray-200'>
 					<div id='accordion-nested-collapse' data-accordion='collapse'>
 						{projects.value.map((project) => {
-							return <ProjectAccordion customer={customer} project={project} />;
+							return (
+								<ProjectAccordion
+									customer={customer}
+									project={project}
+									refresh={refresh}
+								/>
+							);
 						})}
 					</div>
 				</div>

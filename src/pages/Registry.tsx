@@ -1,6 +1,15 @@
-import { $, component$, useComputed$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
+import {
+	$,
+	component$,
+	useContext,
+	useSignal,
+	useStore,
+	useTask$,
+	useVisibleTask$,
+} from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { TimeEntry } from '@models/timeEntry';
+import { AppContext } from 'src/app';
 import { NewProjectForm } from 'src/components/form/NewProjectForm';
 import { Modal } from 'src/components/modals/Modal';
 import { NewProjectOverlayModal } from 'src/components/modals/newProjectOverlayModal';
@@ -9,9 +18,9 @@ import { useCustomers } from 'src/hooks/useCustomers';
 import { t } from 'src/locale/labels';
 
 export const Registry = component$(() => {
+	const appStore = useContext(AppContext);
 	const alertMessageState = useStore<ModalState>({});
-
-	const { customers, isLoading: customerLoading, fetchCustomers } = useCustomers();
+	const { customers, isLoading, fetchCustomers } = useCustomers();
 
 	const newProjectCancelAction = $(() => {
 		const button = document.getElementById('open-new-project-bt');
@@ -19,9 +28,13 @@ export const Registry = component$(() => {
 	});
 
 	const update = useSignal<TimeEntry>();
+	const refresh = $(async () => {
+		await fetchCustomers();
+	});
 
-	const generalLoading = useComputed$(() => {
-		return customerLoading.value;
+	useVisibleTask$(({ track }) => {
+		track(() => isLoading.value);
+		appStore.isLoading = isLoading.value;
 	});
 
 	useTask$(async ({ track }) => {
@@ -45,12 +58,11 @@ export const Registry = component$(() => {
 						/>
 					</NewProjectOverlayModal>
 				</div>
-				<div class={`${generalLoading.value ? 'animate-pulse' : ''}`}>
-					<div id='accordion-nested-parent' data-accordion='collapse'>
-						{customers.value.map((customer) => {
-							return <CustomerAccordion customer={customer} />;
-						})}
-					</div>
+
+				<div id='accordion-nested-parent' data-accordion='collapse'>
+					{customers.value.map((customer) => (
+						<CustomerAccordion customer={customer} refresh={refresh} />
+					))}
 				</div>
 			</div>
 
