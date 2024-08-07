@@ -66,6 +66,7 @@
 	"INSERT_NEW_PROJECT_SUCCESS_MESSAGE": "#customer - #project - #task has been added",
 	"ACTION_CONFIRM": "Confirm",
 	"ACTION_CANCEL": "Cancel",
+	"ACTION_DELETE": "Delete",
 	"CLARANET_CREDITS": "Made by",
 	"LOGIN_TITLE": "Login with",
 	"UNAUTHORIZED": "Unauthorized, please try again",
