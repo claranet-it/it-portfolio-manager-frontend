@@ -52,8 +52,11 @@ export const ProductivityTable = component$<ProductivityTableProps>(({ results, 
 				</thead>
 				<tbody>
 					{results.value.length > 0 &&
-						results.value.map((result) => (
-							<tr class='bg-white border-b even:bg-surface-5 odd:bg-white'>
+						results.value.map((result, index) => (
+							<tr
+								key={`${index}-${result.totalProductivity}-${result.totalTracked}-${result.workedHours}`}
+								class='bg-white border-b even:bg-surface-5 odd:bg-white'
+							>
 								<td class='min-w-52 w-52 py-3 px-4 text-left border border-surface-50'>
 									<div class='flex sm:flex-col md:flex-row lg:flex-row sm:space-y-1 md:space-x-1.5 lg:space-x-1.5 text-left'>
 										{result.user.name !== '' && <Avatar user={result.user} />}

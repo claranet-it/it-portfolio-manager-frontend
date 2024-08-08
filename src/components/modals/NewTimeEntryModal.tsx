@@ -2,7 +2,7 @@ import { $, component$, Slot, useComputed$, useSignal } from '@builder.io/qwik';
 import { t } from 'src/locale/labels';
 import { getIcon } from '../icons';
 
-export const NewProjectOverlayModal = component$(() => {
+export const NewTimeEntryModal = component$(() => {
 	const modalVisible = useSignal(false);
 
 	const modalToggle = $(() => {
@@ -22,7 +22,7 @@ export const NewProjectOverlayModal = component$(() => {
 					<div class='flex flex-row space-x-1 content text-clara-red'>
 						<span class='text-xl content-center'>{getIcon('Add')}</span>
 						<span class='text-base font-bold content-center'>
-							{t('add_new_project_label')}
+							{t('ADD_NEW_TIME_ENTRY')}
 						</span>
 					</div>
 				</button>

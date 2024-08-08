@@ -9,7 +9,6 @@ import {
 	useTask$,
 } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
-import { format } from 'date-fns';
 import { t, tt } from '../../locale/labels';
 import { Customer } from '../../models/customer';
 import { Project } from '../../models/project';
@@ -123,7 +122,7 @@ export const useNewTimeEntry = (
 		} else {
 			// add new timeEntry to store
 			newTimeEntry.value = {
-				date: format(new Date(), 'yyyy-MM-dd'),
+				date: '',
 				company: 'it', //TODO: Replace with the company value
 				customer: customerSelected.value,
 				project: projectSelected.value,

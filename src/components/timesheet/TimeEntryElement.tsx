@@ -27,7 +27,7 @@ interface TimeEntryElementProps {
 export const TimeEntryElement = component$<TimeEntryElementProps>(
 	({ id, day, entry, timeEntriesState, handleTimeChange, entryInfo }) => {
 		const formattedDate = formatDateString(day.date);
-		const hours = entry ? timeEntriesState[entry.hours]?.[formattedDate] || 0 : 0;
+		const hours = entry ? timeEntriesState[entry.project.name]?.[formattedDate] || 0 : 0;
 		const { weekend } = day;
 		const tdClass = `relative py-3 px-4 text-center border border-surface-70 ${weekend ? 'bg-surface-5' : ''}`;
 
@@ -45,8 +45,14 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 				endSig.value = entry?.endHour ? convertTimeToDecimal(entry.endHour) : 0;
 			}),
 			onConfirm$: $(() => {
+				const confirmationEntry = entry ?? {
+					customer: entryInfo.customer,
+					project: entryInfo.project,
+					task: entryInfo.task,
+					date: formattedDate,
+				};
 				handleTimeChange({
-					...entry,
+					...confirmationEntry,
 					hours: hoursSig.value,
 					description: destriptionSig.value,
 					startHour: getFormattedHours(startSig.value),
@@ -81,6 +87,7 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 							description: destriptionSig.value,
 							customer: entryInfo.customer,
 							task: entryInfo.task,
+							index: entry?.index,
 						} as TimeEntryObject);
 					}}
 					bindValue={entry ? entry.hours : hours}
@@ -92,7 +99,7 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 					</p>
 				)}
 
-				{entry && (
+				{modalState.isVisible && (
 					<Modal key={id} state={modalState}>
 						<EditTimeEntryForm
 							destriptionSig={destriptionSig}

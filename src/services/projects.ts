@@ -3,7 +3,13 @@ import { Project } from '@models/project';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
 export const getProjects = async (company: string = 'it', customer: Customer): Promise<Project[]> =>
-	getHttpResponse<Project[]>(`task/project?company=${company}&customer=${customer}`);
+	getHttpResponse<Project[]>({
+		path: `task/project`,
+		params: {
+			company,
+			customer,
+		},
+	});
 
 export const deleteProject = async (customer: Customer, project: Project) =>
 	checkHttpResponseStatus('task/customer-project', 200, 'DELETE', {

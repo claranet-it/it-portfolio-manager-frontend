@@ -8,21 +8,28 @@ export const getTasks = async (
 	customer: Customer,
 	project: Project
 ): Promise<Task[]> =>
-	getHttpResponse<Task[]>(
-		`task/task?company=${company}&customer=${customer}&project=${project.name}`
-	);
+	getHttpResponse<Task[]>({
+		path: `task/task`,
+		params: {
+			company,
+			customer,
+			project: project.name,
+		},
+	});
 
 export const saveTask = async (
 	company: string = 'it',
 	customer: Customer,
 	project: Project,
-	task: Task
+	task: Task,
+	index?: number
 ): Promise<boolean> =>
 	checkHttpResponseStatus(`task/task`, 200, 'POST', {
 		company: company,
 		customer: customer,
 		project: project,
 		task: task,
+		index: index,
 	});
 
 export const editTask = async (

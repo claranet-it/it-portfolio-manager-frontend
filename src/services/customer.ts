@@ -3,7 +3,12 @@ import { Project } from '@models/project';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
 export const getCustomers = async (company: string = 'it'): Promise<Customer[]> =>
-	getHttpResponse<Customer[]>(`task/customer?company=${company}`);
+	getHttpResponse<Customer[]>({
+		path: `task/customer`,
+		params: {
+			company,
+		},
+	});
 
 export const editCustomer = async (
 	customer: Customer,

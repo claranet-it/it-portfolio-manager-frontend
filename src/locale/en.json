@@ -126,5 +126,6 @@
 	"EDIT_CUSTOMER": "Edit customer",
 	"CUSTOMER_DELETE_TITLE": "Delete customer",
 	"CUSTOMER_DELETE_MESSAGE": "Are you sure you want to delete #name?",
-	"REGISTRY_CREATE_MESSAGE": "The #type will be created!"
+	"REGISTRY_CREATE_MESSAGE": "The #type will be created!",
+	"ADD_NEW_TIME_ENTRY": "New entry"
 }

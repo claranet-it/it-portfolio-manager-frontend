@@ -12,7 +12,7 @@ import { TimeEntry } from '@models/timeEntry';
 import { AppContext } from 'src/app';
 import { NewProjectForm } from 'src/components/form/NewProjectForm';
 import { Modal } from 'src/components/modals/Modal';
-import { NewProjectOverlayModal } from 'src/components/modals/newProjectOverlayModal';
+import { NewTimeEntryModal } from 'src/components/modals/NewTimeEntryModal';
 import { CustomerAccordion } from 'src/components/registry/CustomerAccordion';
 import { useCustomers } from 'src/hooks/useCustomers';
 import { t } from 'src/locale/labels';
@@ -49,14 +49,15 @@ export const Registry = component$(() => {
 					<h1 class='text-2xl font-bold text-darkgray-900 me-4'>
 						{t('REGISTRY_PAGE_TITLE')}
 					</h1>
-					<NewProjectOverlayModal q:slot='newProject'>
+
+					<NewTimeEntryModal q:slot='newProject'>
 						<NewProjectForm
 							timeEntry={update}
 							alertMessageState={alertMessageState}
 							onCancel$={newProjectCancelAction}
 							allowNewEntry={true}
 						/>
-					</NewProjectOverlayModal>
+					</NewTimeEntryModal>
 				</div>
 
 				<div id='accordion-nested-parent' data-accordion='collapse'>
