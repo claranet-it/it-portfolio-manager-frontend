@@ -98,6 +98,21 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			return { customer, project, task };
 		};
 
+		const setNewTimeEntry = $(
+			(date: string, customer?: string, project?: string, task?: string, index?: number) => {
+				newTimeEntry.value = {
+					date: date,
+					company: 'it',
+					customer: customer || '',
+					project: project || '',
+					task: task || '',
+					hours: 0,
+					isUnsaved: true,
+					index: (index ?? 0) + 1,
+				};
+			}
+		);
+
 		return (
 			<div class='relative overflow-x-auto'>
 				<table class='w-full'>
@@ -164,8 +179,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 										const dEntries: Array<TimeEntry | undefined> =
 											dailyEntries.length ? dailyEntries : [undefined];
 
-										const { weekend } = day;
-										const tdClass = `relative py-3 px-4 text-center border border-surface-50 ${weekend ? 'bg-surface-20' : ''}`;
+										const tdClass = `relative py-3 px-4 text-center border border-surface-50 ${day.weekend ? 'bg-surface-20' : ''}`;
 
 										return (
 											<td key={formattedDate} class={tdClass}>
@@ -177,14 +191,13 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 														index: entryIndex = undefined,
 													} = dEntry || {};
 													const key = `${index}-${hours}-${startHour}-${endHour}-${entryIndex}`;
-													const hasButton =
-														index === dEntries.length - 1 &&
-														hours !== 0;
+													const isLastEntry =
+														index === dEntries.length - 1;
 
 													return (
 														<div class={`flex flex-row`}>
 															<div
-																class={`mr-2 ${index === dEntries.length - 1 ? '' : 'mb-2'}`}
+																class={`mr-2 ${isLastEntry ? '' : 'mb-2'}`}
 															>
 																<TimeEntryElement
 																	key={key}
@@ -204,24 +217,18 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																	}
 																/>
 															</div>
-															{hasButton && (
+															{isLastEntry && hours !== 0 && (
 																<Button
 																	variant={'link'}
 																	size={'small'}
 																	onClick$={() =>
-																		(newTimeEntry.value = {
-																			date: formattedDate,
-																			company: 'it',
-																			customer:
-																				customer || '',
-																			project: project || '',
-																			task: task || '',
-																			hours: 0,
-																			isUnsaved: true,
-																			index:
-																				(entryIndex ?? 0) +
-																				1,
-																		})
+																		setNewTimeEntry(
+																			formattedDate,
+																			customer,
+																			project,
+																			task,
+																			entryIndex
+																		)
 																	}
 																>
 																	{getIcon('Add')}
