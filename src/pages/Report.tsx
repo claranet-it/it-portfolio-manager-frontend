@@ -17,7 +17,7 @@ export const Report = component$(() => {
 	const { from, to, nextWeek, prevWeek } = useGetTimeSheetDays();
 
 	const selectedCustomerSig = useSignal<Customer>('');
-	const selectedProjectSig = useSignal<Project>({ name: '', type: '' });
+	const selectedProjectSig = useSignal<Project>({ name: '', type: '', plannedHours: 0 });
 	const selectedTaskSig = useSignal<Task>('');
 	const selectedNameSig = useSignal<string>('');
 	const ref = useSignal<HTMLElement>();

@@ -36,7 +36,7 @@ export const useNewTimeEntry = (
 	const dataTaksSign = useSignal<Task[]>([]);
 
 	const initCustomer: Customer = '';
-	const initProject: Project = { name: '', type: '' };
+	const initProject: Project = { name: '', type: '', plannedHours: 0 };
 	const initTaskt: Task = '';
 
 	const customerSelected = useSignal<Customer>('');

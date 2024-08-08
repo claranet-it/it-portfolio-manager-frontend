@@ -90,11 +90,6 @@
 	"LOADING_LABEL": "Loading...",
 	"PRODUCTIVITY_DESCRIPTION_TEXT": "The productivity percentage is the sum of billable hours and non-billable but functional hours",
 	"GENERIC_BE_ERROR": "Something went wrog, please contact support.",
-	"REGISTRY_PROJECTS_LABEL": "Projects",
-	"REGISTRY_TASKS_LABEL": "Tasks",
-	"REGISTRY_EDIT_TITLE": "Edit #type",
-	"REGISTRY_DELETE_TITLE": "Delete",
-	"REGISTRY_DELETE_MESSAGE": "Are you sure you want to delete #type #value?",
 	"EDIT_PROJECT_SUCCESS_MESSAGE": "Project has been updated successfully",
 	"EDIT_TASK_SUCCESS_MESSAGE": "Task has been updated successfully",
 	"EDIT_CUSTOMER_SUCCESS_MESSAGE": "Customer has been updated successfully",
@@ -108,11 +103,6 @@
 	"CANNOT_CREATE_ENTITY_TITLE": "Cannot create",
 	"CANNOT_CREATE_ENTITY_MESSAGE": "Cannot create new element",
 	"REQUIRED_FIELD_LABEL": "This field is required",
-	"REGISTRY_CUSTOMER_EDIT_FAILURE_MESSAGE": "Customer couldn't be edited! #fail / #total projects are already assigned!",
-	"REGISTRY_CUSTOMER_EDIT_SUCCESS_MESSAGE": "Customer edited successfully! #success / #total projects were edited!",
-	"REGISTRY_CUSTOMER_EDIT_PARTIAL_MESSAGE": "Edit partially completed! Success: #success Failure: #fail",
-	"REGISTRY_CUSTOMER_EDIT_ERROR_MESSAGE": "There was an error while editing the customer!",
-	"REGISTRY_CREATE_MESSAGE": "The #type will be created!",
 	"EDIT_TIME_ENTRY": "Edit time",
 	"DESCRIPTION_LABEL": "Description",
 	"DESCRIPTION_INSER_LABEL": "Insert description...",
@@ -135,5 +125,6 @@
 	"TASK_EDIT_TITLE": "Edit task",
 	"EDIT_CUSTOMER": "Edit customer",
 	"CUSTOMER_DELETE_TITLE": "Delete customer",
-	"CUSTOMER_DELETE_MESSAGE": "Are you sure you want to delete #name?"
+	"CUSTOMER_DELETE_MESSAGE": "Are you sure you want to delete #name?",
+	"REGISTRY_CREATE_MESSAGE": "The #type will be created!"
 }
