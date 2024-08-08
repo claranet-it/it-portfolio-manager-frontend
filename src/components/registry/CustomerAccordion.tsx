@@ -1,9 +1,13 @@
 import { $, component$, QRL, useSignal, useStore } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
+import { useCustomers } from 'src/hooks/useCustomers';
+import { useNotification } from 'src/hooks/useNotification';
 import { useProjects } from 'src/hooks/useProjects';
-import { t } from 'src/locale/labels';
+import { t, tt } from 'src/locale/labels';
 import { Button } from '../Button';
+import { EditCustomerForm } from '../form/editCustomerFrom';
+import { getIcon } from '../icons';
 import { LoadingSpinnerInline } from '../LoadingSpinnerInline';
 import { Modal } from '../modals/Modal';
 import { AccordionOpenButton } from './AccordionOpenButton';
@@ -15,13 +19,51 @@ interface CustomerAccordionProps {
 }
 
 export const CustomerAccordion = component$<CustomerAccordionProps>(({ customer, refresh }) => {
+	const { addEvent } = useNotification();
+	const { updateCustomer, removeCustomer } = useCustomers();
 	const { projects, fetchProjects, isLoading } = useProjects();
 	const visibleBody = useSignal(false);
 
+	const name = useSignal(customer);
+
+	const initFormSignals = $(() => {
+		name.value = customer;
+	});
+
 	const customerModalState = useStore<ModalState>({
-		title: 'Edit customer',
-		onCancel$: $(() => {}),
-		onConfirm$: $(() => {}),
+		title: t('EDIT_CUSTOMER'),
+		onCancel$: $(() => {
+			initFormSignals();
+		}),
+		onConfirm$: $(async () => {
+			if (await updateCustomer(customer, name.value)) {
+				refresh && refresh();
+				addEvent({
+					type: 'success',
+					message: t('EDIT_CUSTOMER_SUCCESS_MESSAGE'),
+					autoclose: true,
+				});
+			}
+		}),
+		cancelLabel: t('ACTION_CANCEL'),
+		confirmLabel: t('ACTION_CONFIRM'),
+	});
+
+	const customerDeleteModalState = useStore<ModalState>({
+		title: t('CUSTOMER_DELETE_TITLE'),
+		message: tt('CUSTOMER_DELETE_MESSAGE', {
+			name: customer,
+		}),
+		onConfirm$: $(async () => {
+			if (await removeCustomer(customer)) {
+				refresh && refresh();
+				addEvent({
+					type: 'success',
+					message: t('DELETE_CUSTOMER_SUCCESS_MESSAGE'),
+					autoclose: true,
+				});
+			}
+		}),
 		cancelLabel: t('ACTION_CANCEL'),
 		confirmLabel: t('ACTION_CONFIRM'),
 	});
@@ -39,15 +81,18 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(({ customer,
 						<span>{customer}</span> {isLoading.value && <LoadingSpinnerInline />}
 					</div>
 					<div class='flex flex-row gap-3'>
-						<Button variant={'outline'} onClick$={() => {}}>
-							{t('ACTION_DELETE')}
+						<Button
+							variant={'outline'}
+							onClick$={() => (customerDeleteModalState.isVisible = true)}
+						>
+							{getIcon('Bin')}
 						</Button>
 
 						<Button
 							variant={'outline'}
 							onClick$={() => (customerModalState.isVisible = true)}
 						>
-							{t('edit')}
+							{getIcon('Edit')}
 						</Button>
 
 						<AccordionOpenButton onClick$={openBody} accordionState={visibleBody} />
@@ -73,8 +118,10 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(({ customer,
 			</div>
 
 			<Modal state={customerModalState}>
-				<p>{customer}</p>
+				<EditCustomerForm name={name} />
 			</Modal>
+
+			<Modal state={customerDeleteModalState} />
 		</>
 	);
 });

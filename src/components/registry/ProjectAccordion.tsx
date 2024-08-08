@@ -8,6 +8,7 @@ import { useTasks } from 'src/hooks/useTasks';
 import { t, tt } from 'src/locale/labels';
 import { Button } from '../Button';
 import { EditProjectForm } from '../form/editProjectFrom';
+import { getIcon } from '../icons';
 import { LoadingSpinnerInline } from '../LoadingSpinnerInline';
 import { Modal } from '../modals/Modal';
 import { AccordionOpenButton } from './AccordionOpenButton';
@@ -64,13 +65,12 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 			message: tt('PROJECT_DELETE_MESSAGE', {
 				name: project.name,
 			}),
-			onCancel$: $(() => {}),
 			onConfirm$: $(async () => {
 				if (await removeProject(customer, project)) {
 					refresh && refresh();
 					addEvent({
 						type: 'success',
-						message: t('EDIT_PROJECT_SUCCESS_MESSAGE'),
+						message: t('DELETE_PROJECT_SUCCESS_MESSAGE'),
 						autoclose: true,
 					});
 				}
@@ -98,14 +98,14 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 								variant={'outline'}
 								onClick$={() => (projectDeleteModalState.isVisible = true)}
 							>
-								{t('ACTION_DELETE')}
+								{getIcon('Bin')}
 							</Button>
 
 							<Button
 								variant={'outline'}
 								onClick$={() => (projectModalState.isVisible = true)}
 							>
-								{t('edit')}
+								{getIcon('Edit')}
 							</Button>
 
 							<AccordionOpenButton onClick$={openBody} accordionState={visibleBody} />

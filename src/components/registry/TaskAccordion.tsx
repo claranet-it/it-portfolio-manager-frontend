@@ -8,6 +8,7 @@ import { useTasks } from 'src/hooks/useTasks';
 import { t } from 'src/locale/labels';
 import { Button } from '../Button';
 import { EditTaskForm } from '../form/editTaskFrom';
+import { getIcon } from '../icons';
 import { Modal } from '../modals/Modal';
 
 interface TaskAccordionProps {
@@ -54,14 +55,14 @@ export const TaskAccordion = component$<TaskAccordionProps>(
 					</div>
 					<div class='flex flex-row gap-3'>
 						{/* <Button variant={'outline'} onClick$={() => {}}>
-						{t('ACTION_DELETE')}
+						{getIcon('Bin')}
 					</Button> */}
 
 						<Button
 							variant={'outline'}
 							onClick$={() => (taskModalState.isVisible = true)}
 						>
-							{t('edit')}
+							{getIcon('Edit')}
 						</Button>
 					</div>
 				</div>

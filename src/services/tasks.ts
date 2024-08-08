@@ -33,7 +33,7 @@ export const editTask = async (
 ) =>
 	checkHttpResponseStatus('task/task', 200, 'PUT', {
 		customer: customer,
-		project: project,
+		project: project.name,
 		task: task,
 		newTask: editedTask,
 	});

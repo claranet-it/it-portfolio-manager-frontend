@@ -6,9 +6,9 @@ export const getProjects = async (company: string = 'it', customer: Customer): P
 	getHttpResponse<Project[]>(`task/project?company=${company}&customer=${customer}`);
 
 export const deleteProject = async (customer: Customer, project: Project) =>
-	checkHttpResponseStatus('task/customer-project', 204, 'DELETE', {
+	checkHttpResponseStatus('task/customer-project', 200, 'DELETE', {
 		customer: customer,
-		project: project,
+		project: project.name,
 		inactive: true,
 	});
 
