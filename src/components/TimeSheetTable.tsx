@@ -6,6 +6,7 @@ import { t } from '../locale/labels';
 import { Day, TimeEntry, TimeEntryObject, TimeEntryRow } from '../models/timeEntry';
 import { formatDateString } from '../utils/dates';
 import {
+	convertTimeToDecimal,
 	getFormattedHours,
 	getTotalHours,
 	getTotalHoursPerRows,
@@ -172,9 +173,23 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 									</th>
 									{days.value.map((day) => {
 										const formattedDate = formatDateString(day.date);
-										const dailyEntries = entries.filter(
-											(e) => e.date === formattedDate
-										);
+										const dailyEntries = entries
+											.filter((e) => e.date === formattedDate)
+											.sort((a, b) => {
+												if (a.startHour && b.startHour) {
+													if (
+														convertTimeToDecimal(a.startHour) <
+														convertTimeToDecimal(b.startHour)
+													)
+														return -1;
+													if (
+														convertTimeToDecimal(a.startHour) >
+														convertTimeToDecimal(b.startHour)
+													)
+														return 1;
+												}
+												return 0;
+											});
 
 										const dEntries: Array<TimeEntry | undefined> =
 											dailyEntries.length ? dailyEntries : [undefined];
@@ -195,10 +210,15 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 														index === dEntries.length - 1;
 
 													return (
-														<div class={`flex flex-row`}>
-															<div
-																class={`mr-2 ${isLastEntry ? '' : 'mb-2'}`}
-															>
+														<div
+															class={
+																(dEntries.length !== 1 ||
+																	(dEntries.length === 1 &&
+																		hours !== 0)) &&
+																`flex flex-row justify-between gap-2`
+															}
+														>
+															<div class={isLastEntry ? '' : 'mb-2'}>
 																<TimeEntryElement
 																	key={key}
 																	id={key}

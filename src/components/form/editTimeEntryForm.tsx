@@ -44,6 +44,11 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 							onBlur$={(e: FocusEvent) => {
 								const value = (e.target as HTMLInputElement).value;
 
+								if (value === '') {
+									hoursRange.start.value = 0;
+									return;
+								}
+
 								const hours = convertTimeToDecimal(value);
 								hoursRange.start.value = hours;
 
@@ -62,6 +67,11 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 							bindValue={hoursRange.end.value}
 							onBlur$={(e: FocusEvent) => {
 								const value = (e.target as HTMLInputElement).value;
+
+								if (value === '') {
+									hoursRange.start.value = 0;
+									return;
+								}
 
 								const hours = convertTimeToDecimal(value);
 								hoursRange.end.value = hours;
