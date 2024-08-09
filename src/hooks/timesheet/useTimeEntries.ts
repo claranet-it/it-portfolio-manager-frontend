@@ -19,7 +19,7 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 
 	const { addEvent } = useNotification();
 
-	const loadTimeEntries = $(async (from: Signal<Date>, to: Signal<Date>, reset?: boolean) => {
+	const loadTimeEntries = $(async (from: Signal<Date>, to: Signal<Date>) => {
 		state.from = from;
 		state.to = to;
 		try {
@@ -29,59 +29,8 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 				formatDateString(to.value)
 			);
 
-			if (state.dataTimeEntries.length === 0 || reset) {
-				state.dataTimeEntries = timeEntries;
-			} else {
-				const indexedEntries = state.dataTimeEntries.map((_entry, index) => ({
-					index: index,
-					entry: _entry,
-				}));
+			state.dataTimeEntries = timeEntries;
 
-				timeEntries.map((entry) => {
-					const existingEntries = indexedEntries.filter((_entry) =>
-						isEqualEntries(_entry.entry, entry)
-					);
-
-					if (existingEntries.length === 0) {
-						state.dataTimeEntries.push(entry);
-					}
-
-					existingEntries.some((_existingEntry) => {
-						if (
-							_existingEntry.entry.index !== undefined &&
-							_existingEntry.entry.index === entry.index
-						) {
-							if (
-								_existingEntry.entry.date === '' &&
-								_existingEntry.entry.isUnsaved === true
-							) {
-								state.dataTimeEntries[_existingEntry.index] = entry;
-								return true;
-							}
-
-							if (_existingEntry.entry.date === entry.date) {
-								state.dataTimeEntries[_existingEntry.index] = {
-									...state.dataTimeEntries[_existingEntry.index],
-									hours: entry.hours,
-									description: entry.description,
-									startHour: entry.startHour,
-									endHour: entry.endHour,
-								};
-
-								return true;
-							}
-						} else {
-							if (
-								_existingEntry.entry.date === '' &&
-								_existingEntry.entry.isUnsaved === true
-							) {
-								state.dataTimeEntries[_existingEntry.index] = entry;
-								return true;
-							}
-						}
-					});
-				});
-			}
 			appStore.isLoading = false;
 		} catch (err) {
 			state.error = (err as Error).message;

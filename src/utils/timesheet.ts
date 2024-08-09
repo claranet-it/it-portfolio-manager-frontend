@@ -40,13 +40,28 @@ export const isEqualEntriesDeep = (entryA: TimeEntry, entryB: TimeEntry): Boolea
 	return isEqualEntries(entryA, entryB) && entryA.date === entryB.date;
 };
 
-export const getEndHour = (startHour: number, endHour: number, hours: number) => {
-	if (startHour === 0 || endHour === 0) {
-		return endHour;
-	}
-	if (startHour + hours === endHour) {
-		return endHour;
+export const getComputedHours = (startHour: number, endHour: number, hours: number) => {
+	if (startHour !== 0 && endHour !== 0) {
+		if (startHour + hours === endHour) {
+			return {
+				startHour,
+				endHour,
+				hours,
+			};
+		}
+
+		if (startHour > endHour || hours > endHour - startHour) {
+			return {
+				startHour,
+				endHour: startHour + hours,
+				hours: hours,
+			};
+		}
 	}
 
-	return startHour + hours;
+	return {
+		startHour: 0,
+		endHour: 0,
+		hours,
+	};
 };
