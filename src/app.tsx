@@ -18,9 +18,11 @@ import { getAuthToken, removeAuthToken } from './utils/token';
 const {
 	VITE_AUTH_DOMAIN: domain,
 	VITE_AUTH_CLIENTID: clientId,
-	VITE_AUTH_REDIRECT_URI: redirect_uri,
 	VITE_AUTH_AUDIENCE: audience,
 } = import.meta.env;
+
+const redirect_uri = window.location.origin;
+
 export const auth0 = new Auth0Client({
 	domain,
 	clientId,

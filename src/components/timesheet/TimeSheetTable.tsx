@@ -1,18 +1,21 @@
 import { $, Signal, Slot, component$, useComputed$, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
-import { ProjectType } from '@models/project';
+import { Project, ProjectType } from '@models/project';
 import { format } from 'date-fns';
 import { useTimeEntries } from '../../hooks/timesheet/useTimeEntries';
 import { t } from '../../locale/labels';
 import { Day, TimeEntry, TimeEntryObject, TimeEntryRow } from '../../models/timeEntry';
 import { formatDateString } from '../../utils/dates';
 import {
+	convertTimeToDecimal,
 	getFormattedHours,
 	getProjectCateogriesProp,
 	getTotalHours,
 	getTotalHoursPerRows,
 	getlHoursPerProject,
 } from '../../utils/timesheet';
+
+import { Button } from '../Button';
 import { getIcon } from '../icons';
 import { Modal } from '../modals/Modal';
 import { TimeEntryElement } from './TimeEntryElement';
@@ -65,7 +68,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		useTask$(async ({ track }) => {
 			track(() => from.value);
 			track(() => to.value);
-			await loadTimeEntries(from, to, true);
+			await loadTimeEntries(from, to);
 		});
 
 		const getTotalPerDay = (timeEntries: TimeEntry[]) => {
@@ -82,7 +85,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 
 		const groupedByProject = useComputed$(() => {
 			return state.dataTimeEntries.reduce<TimeEntryRow>((acc, entry) => {
-				const key = `${entry.customer}-${entry.project}-${entry.task}-${entry.index}`;
+				const key = `${entry.customer}-${entry.project}-${entry.task}`;
 
 				if (!acc[key]) {
 					acc[key] = [];
@@ -98,6 +101,21 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			const { customer, project, task } = entries[0];
 			return { customer, project, task };
 		};
+
+		const setNewTimeEntry = $(
+			(date: string, customer?: string, project?: Project, task?: string, index?: number) => {
+				newTimeEntry.value = {
+					date: date,
+					company: 'it',
+					customer: customer || '',
+					project: project || { name: '', type: '', plannedHours: 0 },
+					task: task || '',
+					hours: 0,
+					isUnsaved: true,
+					index: (index ?? 0) + 1,
+				};
+			}
+		);
 
 		const fistBodyColumnStyle = (type: ProjectType) => {
 			const color = getProjectCateogriesProp(type).borderColor;
@@ -161,31 +179,91 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 											</h4>
 										</div>
 									</th>
-									{days.value.map((day, index) => {
+									{days.value.map((day) => {
 										const formattedDate = formatDateString(day.date);
-										const entry = entries.find((e) => e.date === formattedDate);
-										const {
-											hours = 0,
-											startHour = '0',
-											endHour = '0',
-											index: entryIndex = undefined,
-										} = entry || {};
-										const key = `${index}-${formattedDate}-${hours}-${startHour}-${endHour}-${entryIndex}`;
+										const dailyEntries = entries
+											.filter((e) => e.date === formattedDate)
+											.sort((a, b) => {
+												if (a.startHour && b.startHour) {
+													return (
+														convertTimeToDecimal(a.startHour) -
+														convertTimeToDecimal(b.startHour)
+													);
+												}
+												return 0;
+											});
+
+										const dEntries: Array<TimeEntry | undefined> =
+											dailyEntries.length ? dailyEntries : [undefined];
+
+										const tdClass = `relative py-3 px-4 text-center border border-surface-50 ${day.weekend ? 'bg-surface-20' : ''}`;
 
 										return (
-											<TimeEntryElement
-												key={key}
-												id={key}
-												day={day}
-												entry={entry}
-												entryInfo={{
-													customer,
-													project,
-													task,
-												}}
-												handleTimeChange={handleTimeChange}
-												timeEntriesState={timeEntriesState}
-											/>
+											<td key={formattedDate} class={tdClass}>
+												{dEntries.map((dEntry, index) => {
+													const {
+														hours = undefined,
+														startHour = '0',
+														endHour = '0',
+														index: entryIndex = undefined,
+													} = dEntry || {};
+													const key = `${index}-${hours}-${startHour}-${endHour}-${entryIndex}`;
+													const isLastEntry =
+														index === dEntries.length - 1;
+
+													return (
+														<div
+															class={
+																(dEntries.length !== 1 ||
+																	(dEntries.length === 1 &&
+																		hours !== 0)) &&
+																`flex flex-row justify-center gap-2`
+															}
+														>
+															<div class={isLastEntry ? '' : 'mb-2'}>
+																<TimeEntryElement
+																	key={key}
+																	id={key}
+																	day={day}
+																	entry={dEntry}
+																	entryInfo={{
+																		customer,
+																		project,
+																		task,
+																	}}
+																	handleTimeChange={
+																		handleTimeChange
+																	}
+																	timeEntriesState={
+																		timeEntriesState
+																	}
+																/>
+															</div>
+															{isLastEntry && hours !== 0 && (
+																<Button
+																	style={{
+																		position: 'absolute',
+																		right: '0px',
+																	}}
+																	variant={'link'}
+																	size={'small'}
+																	onClick$={() =>
+																		setNewTimeEntry(
+																			formattedDate,
+																			customer,
+																			project,
+																			task,
+																			entryIndex
+																		)
+																	}
+																>
+																	{getIcon('Add')}
+																</Button>
+															)}
+														</div>
+													);
+												})}
+											</td>
 										);
 									})}
 									<td class='py-3 px-4 text-center border border-surface-50'>
