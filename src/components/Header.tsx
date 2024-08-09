@@ -11,7 +11,7 @@ type MenuRoutes = Exclude<Route, 'auth'>;
 
 const MENU = ['effort', 'profile', 'skills', 'timesheet', 'report', 'search'] as const;
 
-const { VITE_AUTH_REDIRECT_URI: redirect_uri } = import.meta.env;
+const redirect_uri = window.location.origin;
 
 export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }) => {
 	return (
