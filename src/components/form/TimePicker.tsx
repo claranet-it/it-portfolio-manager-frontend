@@ -1,4 +1,4 @@
-import { QRL, component$, useComputed$, useSignal } from '@builder.io/qwik';
+import { $, QRL, component$, useComputed$, useSignal } from '@builder.io/qwik';
 import { getFormattedHours } from 'src/utils/timesheet';
 import { getIcon } from '../icons';
 
@@ -12,13 +12,21 @@ interface TimePickerProps {
 }
 
 export const TimePicker = component$<TimePickerProps>(
-	({ bindValue = 0, onClick$, onChange$, onBlur$, required, disabled }) => {
-		const signalValue = useSignal(getFormattedHours(bindValue));
+	({ bindValue = undefined, onClick$, onChange$, onBlur$, required, disabled }) => {
+		const signalValue = useSignal(bindValue !== undefined ? getFormattedHours(bindValue) : '');
 		const style = useComputed$(() => {
 			return disabled
 				? 'bg-darkgray-50 text-darkgray-300 border-darkgray-100'
 				: 'bg-white-100  text-dark-grey border-darkgray-500';
 		});
+
+		const onFocusIn = $(() =>
+			signalValue.value === '' ? (signalValue.value = '00:00') : null
+		);
+
+		const onFocusOut = $(() =>
+			signalValue.value === '00:00' ? (signalValue.value = '') : null
+		);
 
 		return (
 			<div class='relative m-auto text-center max-w-20'>
@@ -38,6 +46,8 @@ export const TimePicker = component$<TimePickerProps>(
 					bind:value={signalValue}
 					onChange$={onChange$}
 					onBlur$={onBlur$}
+					onFocusIn$={onFocusIn}
+					onFocusOut$={onFocusOut}
 					disabled={disabled}
 					required={required}
 				/>

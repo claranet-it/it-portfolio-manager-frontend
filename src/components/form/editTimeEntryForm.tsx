@@ -52,7 +52,7 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 								const hours = convertTimeToDecimal(value);
 								hoursRange.start.value = hours;
 
-								if (hoursSig.value) {
+								if (hoursSig.value && hoursSig.value > 0) {
 									hoursRange.end.value = hours + hoursSig.value;
 								}
 							}}
@@ -76,7 +76,7 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 								const hours = convertTimeToDecimal(value);
 								hoursRange.end.value = hours;
 
-								if (hoursRange.start.value) {
+								if (hoursRange.start.value && hoursRange.start.value > 0) {
 									hoursSig.value = hours - hoursRange.start.value;
 								}
 							}}

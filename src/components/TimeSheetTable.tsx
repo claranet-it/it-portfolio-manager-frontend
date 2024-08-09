@@ -177,16 +177,10 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 											.filter((e) => e.date === formattedDate)
 											.sort((a, b) => {
 												if (a.startHour && b.startHour) {
-													if (
-														convertTimeToDecimal(a.startHour) <
+													return (
+														convertTimeToDecimal(a.startHour) -
 														convertTimeToDecimal(b.startHour)
-													)
-														return -1;
-													if (
-														convertTimeToDecimal(a.startHour) >
-														convertTimeToDecimal(b.startHour)
-													)
-														return 1;
+													);
 												}
 												return 0;
 											});
@@ -200,7 +194,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 											<td key={formattedDate} class={tdClass}>
 												{dEntries.map((dEntry, index) => {
 													const {
-														hours = 0,
+														hours = undefined,
 														startHour = '0',
 														endHour = '0',
 														index: entryIndex = undefined,

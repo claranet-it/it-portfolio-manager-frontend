@@ -3,7 +3,7 @@ import { ModalState } from '@models/modalState';
 import { Day, TimeEntry, TimeEntryObject } from '@models/timeEntry';
 import { t } from 'src/locale/labels';
 import { formatDateString } from 'src/utils/dates';
-import { convertTimeToDecimal, getEndHour, getFormattedHours } from 'src/utils/timesheet';
+import { convertTimeToDecimal, getComputedHours, getFormattedHours } from 'src/utils/timesheet';
 import { EditTimeEntryForm } from './form/editTimeEntryForm';
 import { TimePicker } from './form/TimePicker';
 import { Modal } from './modals/Modal';
@@ -24,7 +24,7 @@ interface TimeEntryElementProps {
 export const TimeEntryElement = component$<TimeEntryElementProps>(
 	({ id, day, entry, timeEntriesState, handleTimeChange, entryInfo }) => {
 		const formattedDate = formatDateString(day.date);
-		const hours = entry ? timeEntriesState[entry.project]?.[formattedDate] || 0 : 0;
+		const hours = entry ? timeEntriesState[entry.project]?.[formattedDate] || 0 : undefined;
 
 		const destriptionSig = useSignal(entry?.description ?? '');
 		const hoursSig = useSignal(entry?.hours ?? 0);
@@ -58,33 +58,35 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 			confirmLabel: t('ACTION_CONFIRM'),
 		});
 
+		const handleBlur = $((e: FocusEvent) => {
+			const value = (e.target as HTMLInputElement).value;
+			hoursSig.value = convertTimeToDecimal(value);
+			const {
+				hours: cHours,
+				startHour: cStart,
+				endHour: cEnd,
+			} = getComputedHours(startSig.value, endSig.value, hoursSig.value);
+
+			handleTimeChange({
+				project: entryInfo.project,
+				date: formattedDate,
+				hours: cHours,
+				startHour: getFormattedHours(cStart),
+				endHour: getFormattedHours(cEnd),
+				description: destriptionSig.value,
+				customer: entryInfo.customer,
+				task: entryInfo.task,
+				index: entry?.index,
+			} as TimeEntryObject);
+		});
+
 		return (
 			<>
 				<TimePicker
 					onClick$={() => {
 						modalState.isVisible = true;
 					}}
-					onBlur$={(e: FocusEvent) => {
-						const value = (e.target as HTMLInputElement).value;
-						const hours = convertTimeToDecimal(value);
-						hoursSig.value = hours;
-						const computedEnd = getEndHour(startSig.value, endSig.value, hours);
-						if (computedEnd !== endSig.value) {
-							endSig.value = computedEnd;
-						}
-
-						handleTimeChange({
-							project: entryInfo.project,
-							date: formattedDate,
-							hours,
-							startHour: getFormattedHours(startSig.value),
-							endHour: getFormattedHours(endSig.value),
-							description: destriptionSig.value,
-							customer: entryInfo.customer,
-							task: entryInfo.task,
-							index: entry?.index,
-						} as TimeEntryObject);
-					}}
+					onBlur$={handleBlur}
 					bindValue={entry ? entry.hours : hours}
 				/>
 
