@@ -28,11 +28,11 @@ export const useCustomers = () => {
 	const updateCustomer = $(async (customer: Customer, editedCusteomr: Customer) => {
 		appStore.isLoading = true;
 		const projectList = await getProjects('it', customer);
-		projectList.forEach(
-			async (project) => await updateProjectCustomer(customer, editedCusteomr, project)
-		);
+		const results = projectList.map(async (project) => {
+			return await updateProjectCustomer(customer, editedCusteomr, project);
+		});
 		appStore.isLoading = false;
-		return true;
+		return results.includes(Promise.resolve(false));
 	});
 
 	const removeProjectCustomer = $(async (customer: Customer, project: Project) => {
@@ -43,9 +43,11 @@ export const useCustomers = () => {
 	const removeCustomer = $(async (customer: Customer) => {
 		appStore.isLoading = true;
 		const projectList = await getProjects('it', customer);
-		projectList.forEach(async (project) => await removeProjectCustomer(customer, project));
+		const results = projectList.map(async (project) => {
+			return await removeProjectCustomer(customer, project);
+		});
 		appStore.isLoading = false;
-		return true;
+		return results.includes(Promise.resolve(false));
 	});
 
 	return { customers, isLoading, fetchCustomers, updateCustomer, removeCustomer };
