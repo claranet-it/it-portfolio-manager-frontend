@@ -239,6 +239,10 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 															</div>
 															{isLastEntry && hours !== 0 && (
 																<Button
+																	style={{
+																		position: 'absolute',
+																		right: '0px',
+																	}}
 																	variant={'link'}
 																	size={'small'}
 																	onClick$={() =>
