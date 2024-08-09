@@ -215,7 +215,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																(dEntries.length !== 1 ||
 																	(dEntries.length === 1 &&
 																		hours !== 0)) &&
-																`flex flex-row justify-between gap-2`
+																`flex flex-row justify-center gap-2`
 															}
 														>
 															<div class={isLastEntry ? '' : 'mb-2'}>
