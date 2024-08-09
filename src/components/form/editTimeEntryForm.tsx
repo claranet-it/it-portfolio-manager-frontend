@@ -30,7 +30,7 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 						{formatDateString(date, true)}
 					</h4>
 					<h4 class='text-sm font-normal text-darkgray-500'>{`${t('CLIENT')}: ${customer}`}</h4>
-					<h4 class='text-base font-bold text-dark-grey'>{project}</h4>
+					<h4 class='text-base font-bold text-dark-grey'>{project?.name}</h4>
 					<h4 class='text-sm font-normal text-dark-gray-900'>{`${t('TASK')}: ${task}`}</h4>
 				</div>
 

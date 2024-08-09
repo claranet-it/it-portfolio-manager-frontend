@@ -1,20 +1,23 @@
 import { $, Signal, Slot, component$, useComputed$, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { Project, ProjectType } from '@models/project';
 import { format } from 'date-fns';
-import { useTimeEntries } from '../hooks/timesheet/useTimeEntries';
-import { t } from '../locale/labels';
-import { Day, TimeEntry, TimeEntryObject, TimeEntryRow } from '../models/timeEntry';
-import { formatDateString } from '../utils/dates';
+import { useTimeEntries } from '../../hooks/timesheet/useTimeEntries';
+import { t } from '../../locale/labels';
+import { Day, TimeEntry, TimeEntryObject, TimeEntryRow } from '../../models/timeEntry';
+import { formatDateString } from '../../utils/dates';
 import {
 	convertTimeToDecimal,
 	getFormattedHours,
+	getProjectCateogriesProp,
 	getTotalHours,
 	getTotalHoursPerRows,
 	getlHoursPerProject,
-} from '../utils/timesheet';
-import { Button } from './Button';
-import { getIcon } from './icons';
-import { Modal } from './modals/Modal';
+} from '../../utils/timesheet';
+
+import { Button } from '../Button';
+import { getIcon } from '../icons';
+import { Modal } from '../modals/Modal';
 import { TimeEntryElement } from './TimeEntryElement';
 
 interface TimeSheetTableProps {
@@ -39,10 +42,10 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		const handleTimeChange = $((timeEntryObject: TimeEntryObject) => {
 			const { project, date, hours } = timeEntryObject;
 
-			if (!timeEntriesState[project]) {
-				timeEntriesState[project] = {};
+			if (!timeEntriesState[project.name]) {
+				timeEntriesState[project.name] = {};
 			}
-			timeEntriesState[project][date] = hours;
+			timeEntriesState[project.name][date] = hours;
 
 			updateTimeEntries(timeEntryObject);
 		});
@@ -100,12 +103,12 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		};
 
 		const setNewTimeEntry = $(
-			(date: string, customer?: string, project?: string, task?: string, index?: number) => {
+			(date: string, customer?: string, project?: Project, task?: string, index?: number) => {
 				newTimeEntry.value = {
 					date: date,
 					company: 'it',
 					customer: customer || '',
-					project: project || '',
+					project: project || { name: '', type: '', plannedHours: 0 },
 					task: task || '',
 					hours: 0,
 					isUnsaved: true,
@@ -113,6 +116,11 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 				};
 			}
 		);
+
+		const fistBodyColumnStyle = (type: ProjectType) => {
+			const color = getProjectCateogriesProp(type).borderColor;
+			return `px-6 py-4 font-medium text-left border border-surface-50 whitespace-wrap shadow-inset-leftBorder ${color}`;
+		};
 
 		return (
 			<div class='relative overflow-x-auto'>
@@ -157,14 +165,14 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								<tr key={key} class='bg-white border-b'>
 									<th
 										scope='row'
-										class='px-6 py-4 font-medium text-left border border-surface-50 whitespace-wrap'
+										class={fistBodyColumnStyle(project?.type ?? '')}
 									>
 										<div class='flex flex-col'>
 											<h4 class='text-sm font-normal text-darkgray-500'>
 												{`${t('CLIENT')}: ${customer}`}
 											</h4>
 											<h4 class='text-base font-bold text-dark-grey'>
-												{project}
+												{project?.name}
 											</h4>
 											<h4 class='text-sm font-normal text-dark-gray-900'>
 												{`${t('TASK')}: ${task}`}

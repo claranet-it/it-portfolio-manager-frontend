@@ -40,13 +40,14 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 
 	const updateTimeEntries = $(async (timeEntry: TimeEntryObject) => {
 		try {
-			await postTimeEntries(timeEntry);
-			addEvent({
-				message: t('EFFORT_SUCCESSFULLY_UPDATED'),
-				type: 'success',
-				autoclose: true,
-			});
-			loadTimeEntries(state.from, state.to);
+			if (await postTimeEntries(timeEntry)) {
+				addEvent({
+					message: t('EFFORT_SUCCESSFULLY_UPDATED'),
+					type: 'success',
+					autoclose: true,
+				});
+				loadTimeEntries(state.from, state.to);
+			}
 		} catch (error) {
 			const { message } = error as Error;
 			addEvent({

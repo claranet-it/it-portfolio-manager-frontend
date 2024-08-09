@@ -1,5 +1,5 @@
 import { Customer } from '@models/customer';
-import { Project, ProjectType } from '@models/project';
+import { Project } from '@models/project';
 import { Task } from '@models/task';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
@@ -13,7 +13,7 @@ export const getTasks = async (
 		params: {
 			company,
 			customer,
-			project,
+			project: project.name,
 		},
 	});
 
@@ -22,7 +22,6 @@ export const saveTask = async (
 	customer: Customer,
 	project: Project,
 	task: Task,
-	projectType?: ProjectType,
 	index?: number
 ): Promise<boolean> =>
 	checkHttpResponseStatus(`task/task`, 200, 'POST', {
@@ -30,6 +29,18 @@ export const saveTask = async (
 		customer: customer,
 		project: project,
 		task: task,
-		projectType: projectType,
 		index: index,
+	});
+
+export const editTask = async (
+	customer: Customer,
+	project: Project,
+	task: Task,
+	editedTask: Task
+) =>
+	checkHttpResponseStatus('task/task', 200, 'PUT', {
+		customer: customer,
+		project: project.name,
+		task: task,
+		newTask: editedTask,
 	});

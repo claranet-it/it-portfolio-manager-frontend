@@ -1,4 +1,5 @@
-import { TimeEntry } from '../models/timeEntry';
+import { t } from 'src/locale/labels';
+import { ProjectCategoryProp, TimeEntry } from '../models/timeEntry';
 
 export const getTotalHours = (hours: number[]) => {
 	return hours.length > 0 ? hours.reduce((total, amount) => total + amount) : 0;
@@ -64,4 +65,44 @@ export const getComputedHours = (startHour: number, endHour: number, hours: numb
 		endHour: 0,
 		hours,
 	};
+};
+
+export const getProjectCateogriesProp = (type: string): ProjectCategoryProp => {
+	switch (type) {
+		case 'absence': {
+			return {
+				label: t('PROJECT_ABSENCE_LABEL'),
+				bgColor: 'pink-1',
+				borderColor: 'shadow-pink-1',
+			};
+		}
+		case 'slack-time': {
+			return {
+				label: t('PROJECT_SLACKTIME_LABEL'),
+				bgColor: 'yellow-100',
+				borderColor: 'shadow-yellow-100',
+			};
+		}
+		case 'billable': {
+			return {
+				label: t('PROJECT_BILLABLE_LABEL'),
+				bgColor: 'green-500',
+				borderColor: 'shadow-green-500',
+			};
+		}
+		case 'non-billable': {
+			return {
+				label: t('PROJECT_NON_BILLABLE_LABEL'),
+				bgColor: 'green-200',
+				borderColor: 'shadow-green-200',
+			};
+		}
+		default: {
+			return {
+				label: '',
+				bgColor: 'trasparent-color',
+				borderColor: 'shadow-trasparent-color',
+			};
+		}
+	}
 };

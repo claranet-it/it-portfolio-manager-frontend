@@ -1,12 +1,15 @@
 import { $, component$, QRL, useSignal, useStore } from '@builder.io/qwik';
+import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
+import { Project } from '@models/project';
+import { Task } from '@models/task';
 import { Day, TimeEntry, TimeEntryObject } from '@models/timeEntry';
 import { t } from 'src/locale/labels';
 import { formatDateString } from 'src/utils/dates';
 import { convertTimeToDecimal, getComputedHours, getFormattedHours } from 'src/utils/timesheet';
-import { EditTimeEntryForm } from './form/editTimeEntryForm';
-import { TimePicker } from './form/TimePicker';
-import { Modal } from './modals/Modal';
+import { EditTimeEntryForm } from '../form/editTimeEntryForm';
+import { TimePicker } from '../form/TimePicker';
+import { Modal } from '../modals/Modal';
 
 interface TimeEntryElementProps {
 	id: string;
@@ -15,16 +18,16 @@ interface TimeEntryElementProps {
 	timeEntriesState: Record<string, Record<string, number>>;
 	handleTimeChange: QRL<(timeEntryObject: TimeEntryObject) => void>;
 	entryInfo: {
-		customer: string | undefined;
-		project: string | undefined;
-		task: string | undefined;
+		customer: Customer | undefined;
+		project: Project | undefined;
+		task: Task | undefined;
 	};
 }
 
 export const TimeEntryElement = component$<TimeEntryElementProps>(
 	({ id, day, entry, timeEntriesState, handleTimeChange, entryInfo }) => {
 		const formattedDate = formatDateString(day.date);
-		const hours = entry ? timeEntriesState[entry.project]?.[formattedDate] || 0 : undefined;
+		const hours = entry ? timeEntriesState[entry.project.name]?.[formattedDate] || 0 : 0;
 
 		const destriptionSig = useSignal(entry?.description ?? '');
 		const hoursSig = useSignal(entry?.hours ?? 0);

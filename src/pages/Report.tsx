@@ -1,4 +1,7 @@
 import { component$, useSignal } from '@builder.io/qwik';
+import { Customer } from '@models/customer';
+import { Project } from '@models/project';
+import { Task } from '@models/task';
 import { Button } from 'src/components/Button';
 import { DataRange } from 'src/components/form/DataRange';
 import { getIcon } from 'src/components/icons';
@@ -13,9 +16,9 @@ import { handlePrint } from 'src/utils/handlePrint';
 export const Report = component$(() => {
 	const { from, to, nextWeek, prevWeek } = useGetTimeSheetDays();
 
-	const selectedCustomerSig = useSignal<string>('');
-	const selectedProjectSig = useSignal<string>('');
-	const selectedTaskSig = useSignal<string>('');
+	const selectedCustomerSig = useSignal<Customer>('');
+	const selectedProjectSig = useSignal<Project>({ name: '', type: '', plannedHours: 0 });
+	const selectedTaskSig = useSignal<Task>('');
 	const selectedNameSig = useSignal<string>('');
 	const ref = useSignal<HTMLElement>();
 
