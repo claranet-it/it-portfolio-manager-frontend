@@ -116,5 +116,6 @@
 	"SEARCH": "Search...",
 	"SELECT_PROJECT_PLACEHOLDER": "Select a project",
 	"SELECT_TASK_PLACEHOLDER": "Select a task",
-	"ADD_NEW_TIME_ENTRY": "New entry"
+	"ADD_NEW_TIME_ENTRY": "New entry",
+	"CHART_HOURS_LABEL": "hours"
 }
