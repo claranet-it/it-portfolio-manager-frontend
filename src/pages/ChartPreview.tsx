@@ -1,7 +1,8 @@
-import { component$ } from '@builder.io/qwik';
+import { $, component$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
 import { ColumnChartSeries } from '@models/report';
 import { ColumnChart } from 'src/components/charts/ColumnChart';
 import { DonutChart } from 'src/components/charts/DonutChart';
+import { ReportList } from 'src/components/report/ReportList';
 
 export const ChartPreview = component$(() => {
 	const dataDonut = {
@@ -92,8 +93,49 @@ export const ChartPreview = component$(() => {
 		},
 	];
 
+	const listData = useStore([
+		{
+			projectType: 'slackTime',
+			label: 'Attività amministrative e legali - Functional',
+			hours: 345,
+			percentage: 23,
+		},
+		{
+			projectType: 'absence',
+			label: 'Holiday - Absence',
+			hours: 40,
+			percentage: 24,
+		},
+		{
+			projectType: 'billable',
+			label: 'CLT-0509/24 - Massive Dynamic - Rinnovo 2024',
+			hours: 4999,
+			percentage: 24,
+		},
+	]);
+
+	const dataLeft = useSignal(9);
+
+	const loadMoreListAction = $(() => {
+		if (dataLeft.value === 0) return;
+
+		[...Array(1)].map((_) => {
+			listData.push(...listData);
+		});
+		dataLeft.value = dataLeft.value - 3;
+	});
+
+	useTask$(() => {
+		[...Array(2)].map((_) => {
+			listData.push(...listData);
+		});
+	});
+
 	return (
 		<div class='w-full flex flex-col p-1 text-center items-center'>
+			<h1 class='text-2xl'>Report list</h1>
+			<ReportList data={listData} loadMoreAction={loadMoreListAction} dataLeft={dataLeft} />
+
 			<h1 class='text-2xl'>Donut</h1>
 			<div class='w-full flex flex-row justify-between'>
 				<DonutChart
