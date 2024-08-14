@@ -110,10 +110,9 @@ export const ColumnChart = component$<ColumnChartProps>(({ series }) => {
 
 	useVisibleTask$(async ({ track }) => {
 		track(() => series);
-		track(() => options.value);
-
 		const chart = new ApexCharts(ref.value, options.value);
 		chart.render();
+		return () => chart.destroy();
 	});
 
 	return <div ref={ref} class='w-full py-6' />;

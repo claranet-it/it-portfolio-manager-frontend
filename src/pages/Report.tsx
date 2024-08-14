@@ -1,4 +1,4 @@
-import { component$, useSignal } from '@builder.io/qwik';
+import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { RepotTab } from '@models/report';
@@ -8,6 +8,8 @@ import { DataRange } from 'src/components/form/DataRange';
 import { getIcon } from 'src/components/icons';
 import { ProductivityLegend } from 'src/components/report/ProductivityLegend';
 import { ProductivityTable } from 'src/components/report/ProductivityTable';
+import { ProjectReportDetails } from 'src/components/report/ProjectReportDetails';
+import { ProjectReportPreview } from 'src/components/report/ProjectReportPreview';
 import { ReportFilters } from 'src/components/report/ReportFilters';
 import { useProductivity } from 'src/hooks/report/useProductivity';
 import { useReportProject } from 'src/hooks/report/useReportProject';
@@ -18,14 +20,17 @@ import { handlePrint } from 'src/utils/handlePrint';
 export const Report = component$(() => {
 	const { from, to, nextWeek, prevWeek } = useGetTimeSheetDays();
 
+	const defaultProjectFilterValue = { name: '', type: '', plannedHours: 0 } as Project;
+
 	const selectedCustomerSig = useSignal<Customer>('');
-	const selectedProjectSig = useSignal<Project>({ name: '', type: '', plannedHours: 0 });
+	const selectedProjectSig = useSignal<Project>(defaultProjectFilterValue);
 	const selectedTaskSig = useSignal<Task>('');
 	const selectedNameSig = useSignal<string>('');
 	const ref = useSignal<HTMLElement>();
 	const selectedTab = useSignal<RepotTab>('project');
+	const showProjectsDetails = useSignal(false);
 
-	const { results } = useProductivity(
+	const { results: productivityResults } = useProductivity(
 		selectedCustomerSig,
 		selectedProjectSig,
 		selectedTaskSig,
@@ -35,7 +40,19 @@ export const Report = component$(() => {
 		selectedTab
 	);
 
-	const {} = useReportProject(from, to, selectedTab);
+	const { results: projectResults } = useReportProject(from, to, selectedTab);
+
+	useVisibleTask$(({ track }) => {
+		track(() => selectedCustomerSig.value);
+		track(() => selectedProjectSig.value);
+		track(() => selectedTaskSig.value);
+		track(() => selectedNameSig.value);
+		showProjectsDetails.value =
+			selectedCustomerSig.value !== '' ||
+			selectedProjectSig.value !== defaultProjectFilterValue ||
+			selectedTaskSig.value !== '' ||
+			selectedNameSig.value !== '';
+	});
 
 	return (
 		<div class='w-full px-6 pt-2.5 space-y-6'>
@@ -108,14 +125,20 @@ export const Report = component$(() => {
 								</span>
 							</Button>
 						</div>
-						<ProductivityTable results={results} ref={ref} />
+						<ProductivityTable results={productivityResults} ref={ref} />
 					</div>
 					<div
 						class='hidden flex flex-col  gap-6'
 						id='projects'
 						role='tabpanel'
 						aria-labelledby='projects-tab'
-					></div>
+					>
+						{showProjectsDetails.value ? (
+							<ProjectReportDetails data={projectResults.data} from={from} to={to} />
+						) : (
+							<ProjectReportPreview />
+						)}
+					</div>
 				</div>
 			</div>
 		</div>

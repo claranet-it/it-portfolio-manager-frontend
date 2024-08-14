@@ -1,18 +1,21 @@
-import { $, Signal, useSignal, useStore, useTask$ } from '@builder.io/qwik';
+import { $, Signal, useContext, useStore, useTask$ } from '@builder.io/qwik';
 import { ReportTimeEntry, RepotTab } from '@models/report';
+import { AppContext } from 'src/app';
 import { getReportTimeEntry } from 'src/services/report';
 import { formatDateString } from 'src/utils/dates';
 
 export const useReportProject = (from: Signal, to: Signal, tab: Signal<RepotTab>) => {
-	const isLoading = useSignal(false);
-	const results = useStore<ReportTimeEntry[]>([]);
+	const appStore = useContext(AppContext);
+	const results = useStore<{ data: ReportTimeEntry[] }>({ data: [] });
 
 	const featchProjets = $(async () => {
-		isLoading.value = true;
-		results.push(
-			...(await getReportTimeEntry(formatDateString(from.value), formatDateString(to.value)))
+		appStore.isLoading = true;
+
+		results.data = await getReportTimeEntry(
+			formatDateString(from.value),
+			formatDateString(to.value)
 		);
-		isLoading.value = false;
+		appStore.isLoading = false;
 	});
 
 	useTask$(({ track }) => {
@@ -22,5 +25,5 @@ export const useReportProject = (from: Signal, to: Signal, tab: Signal<RepotTab>
 		tab.value === 'project' && featchProjets();
 	});
 
-	return { results, isLoading };
+	return { results };
 };
