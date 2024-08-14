@@ -1,4 +1,5 @@
 import { $, component$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
+import { ProjectType } from '@models/project';
 import { ColumnChartSeries } from '@models/report';
 import { ColumnChart } from 'src/components/charts/ColumnChart';
 import { DonutChart } from 'src/components/charts/DonutChart';
@@ -9,13 +10,13 @@ export const ChartPreview = component$(() => {
 		series: [76, 96, 140, 58, 80, 159, 151],
 		type: [
 			'absence',
-			'slackTime',
-			'billableProductivity',
-			'nonBillableProductivity',
-			'slackTime',
-			'nonBillableProductivity',
-			'billableProductivity',
-		],
+			'slack-time',
+			'billable',
+			'non-billable',
+			'slack-time',
+			'non-billable',
+			'billable',
+		] as ProjectType[],
 		labels: [
 			'Holiday - Absence',
 			'Onboarding / CLT Meet - Companys functional productivity',
@@ -29,7 +30,7 @@ export const ChartPreview = component$(() => {
 
 	const dataDonutOneType = {
 		series: [134],
-		type: ['absence'],
+		type: ['absence'] as ProjectType[],
 		labels: ['Holiday - Absence'],
 	};
 
@@ -60,7 +61,7 @@ export const ChartPreview = component$(() => {
 		},
 		{
 			label: 'Slack time',
-			type: 'slackTime',
+			type: 'slack-time',
 			data: [
 				{ x: '2024-08-01', y: 20 },
 				{ x: '2024-08-02', y: 50 },
@@ -95,19 +96,19 @@ export const ChartPreview = component$(() => {
 
 	const listData = useStore([
 		{
-			projectType: 'slackTime',
+			projectType: 'slack-time' as ProjectType,
 			label: 'Attività amministrative e legali - Functional',
 			hours: 345,
 			percentage: 23,
 		},
 		{
-			projectType: 'absence',
+			projectType: 'absence' as ProjectType,
 			label: 'Holiday - Absence',
 			hours: 40,
 			percentage: 24,
 		},
 		{
-			projectType: 'billable',
+			projectType: 'billable' as ProjectType,
 			label: 'CLT-0509/24 - Massive Dynamic - Rinnovo 2024',
 			hours: 4999,
 			percentage: 24,
