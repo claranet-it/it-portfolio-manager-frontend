@@ -1,3 +1,4 @@
+import { ProjectType } from './project';
 import { User } from './user';
 
 export type ReportProductivityItem = {
@@ -17,4 +18,13 @@ export type TotalTracked = {
 export type BarLegendColor = {
 	fontColor: string;
 	bgColor: string;
+};
+
+export type ColumnChartSeries = {
+	type: ProjectType;
+	label: string;
+	data: {
+		x: string; // date string YYYY-MM-DD
+		y: number; // hours
+	}[];
 };
