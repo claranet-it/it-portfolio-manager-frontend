@@ -1,6 +1,7 @@
 import { component$, useSignal } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
+import { RepotTab } from '@models/report';
 import { Task } from '@models/task';
 import { Button } from 'src/components/Button';
 import { DataRange } from 'src/components/form/DataRange';
@@ -9,6 +10,7 @@ import { ProductivityLegend } from 'src/components/report/ProductivityLegend';
 import { ProductivityTable } from 'src/components/report/ProductivityTable';
 import { ReportFilters } from 'src/components/report/ReportFilters';
 import { useProductivity } from 'src/hooks/report/useProductivity';
+import { useReportProject } from 'src/hooks/report/useReportProject';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
 import { t } from 'src/locale/labels';
 import { handlePrint } from 'src/utils/handlePrint';
@@ -21,6 +23,7 @@ export const Report = component$(() => {
 	const selectedTaskSig = useSignal<Task>('');
 	const selectedNameSig = useSignal<string>('');
 	const ref = useSignal<HTMLElement>();
+	const selectedTab = useSignal<RepotTab>('project');
 
 	const { results } = useProductivity(
 		selectedCustomerSig,
@@ -28,8 +31,11 @@ export const Report = component$(() => {
 		selectedTaskSig,
 		selectedNameSig,
 		from,
-		to
+		to,
+		selectedTab
 	);
+
+	const {} = useReportProject(from, to, selectedTab);
 
 	return (
 		<div class='w-full px-6 pt-2.5 space-y-6'>
@@ -60,12 +66,27 @@ export const Report = component$(() => {
 						<li class='me-2' role='productivity'>
 							<button
 								class='inline-block p-4 border-b-2 text-dark-grey hover:border-dark-grey'
+								id='projects-tab'
+								data-tabs-target='#projects'
+								type='button'
+								role='tab'
+								aria-controls='projects'
+								aria-selected='false'
+								onClick$={() => (selectedTab.value = 'project')}
+							>
+								{t('PROJECTS_LABEL')}
+							</button>
+						</li>
+						<li class='me-2' role='productivity'>
+							<button
+								class='inline-block p-4 border-b-2 text-dark-grey hover:border-dark-grey'
 								id='productivity-tab'
 								data-tabs-target='#productivity'
 								type='button'
 								role='tab'
 								aria-controls='productivity'
 								aria-selected='false'
+								onClick$={() => (selectedTab.value = 'productivity')}
 							>
 								{t('PRODUCTIVITY_LABEL')}
 							</button>
@@ -89,6 +110,12 @@ export const Report = component$(() => {
 						</div>
 						<ProductivityTable results={results} ref={ref} />
 					</div>
+					<div
+						class='hidden flex flex-col  gap-6'
+						id='projects'
+						role='tabpanel'
+						aria-labelledby='projects-tab'
+					></div>
 				</div>
 			</div>
 		</div>

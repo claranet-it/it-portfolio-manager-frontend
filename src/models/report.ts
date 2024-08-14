@@ -1,4 +1,5 @@
 import { ProjectType } from './project';
+import { TimeEntry } from './timeEntry';
 import { User } from './user';
 
 export type ReportProductivityItem = {
@@ -28,3 +29,10 @@ export type ColumnChartSeries = {
 		y: number; // hours
 	}[];
 };
+
+export type ReportTimeEntry = Omit<TimeEntry, 'isUndaved' | 'index'> & {
+	email: string;
+	crew: string;
+};
+
+export type RepotTab = 'project' | 'productivity';

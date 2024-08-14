@@ -1,7 +1,7 @@
 import { $, Signal, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
-import { ReportProductivityItem } from '@models/report';
+import { ReportProductivityItem, RepotTab } from '@models/report';
 import { Task } from '@models/task';
 import { AppContext } from 'src/app';
 import { getProductivity } from 'src/services/report';
@@ -14,7 +14,8 @@ export const useProductivity = (
 	task: Signal<Task>,
 	name: Signal<String>,
 	from: Signal<Date>,
-	to: Signal<Date>
+	to: Signal<Date>,
+	tab: Signal<RepotTab>
 ) => {
 	const appStore = useContext(AppContext);
 	const results = useSignal<ReportProductivityItem[]>([]);
@@ -45,7 +46,8 @@ export const useProductivity = (
 		track(() => nameDebunce.value);
 		track(() => from.value);
 		track(() => to.value);
-		loadProductivityResults();
+		track(() => tab.value);
+		tab.value === 'productivity' && loadProductivityResults();
 	});
 
 	return { loadProductivityResults, results };
