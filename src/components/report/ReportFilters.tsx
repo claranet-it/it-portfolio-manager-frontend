@@ -1,4 +1,7 @@
-import { Signal, component$, useComputed$ } from '@builder.io/qwik';
+import { Signal, component$, useComputed$, useSignal } from '@builder.io/qwik';
+import { Customer } from '@models/customer';
+import { Project } from '@models/project';
+import { Task } from '@models/task';
 import { t } from 'src/locale/labels';
 import { getCustomers } from 'src/services/customer';
 import { getProjects } from 'src/services/projects';
@@ -7,21 +10,25 @@ import { Input } from '../form/Input';
 import { Select } from '../form/Select';
 
 export const ReportFilters = component$<{
-	selectedCustomer: Signal<string>;
-	selectedProject: Signal<string>;
-	selectedTask: Signal<string>;
+	selectedCustomer: Signal<Customer>;
+	selectedProject: Signal<Project>;
+	selectedTask: Signal<Task>;
 	selectedName: Signal<string>;
 }>(({ selectedCustomer, selectedProject, selectedTask, selectedName }) => {
 	const customerSig = useComputed$(async () => {
 		return await getCustomers();
 	});
 
+	const _projectSelected = useSignal(selectedProject.value.name);
+
 	const projectSig = useComputed$(async () => {
-		return selectedCustomer.value != '' ? await getProjects('it', selectedCustomer.value) : [];
+		return selectedCustomer.value != ''
+			? (await getProjects('it', selectedCustomer.value)).map((project) => project.name)
+			: [];
 	});
 
 	const taskSig = useComputed$(async () => {
-		return selectedProject.value != ''
+		return selectedProject.value.name != ''
 			? await getTasks('it', selectedCustomer.value, selectedProject.value)
 			: [];
 	});
@@ -35,7 +42,7 @@ export const ReportFilters = component$<{
 				value={selectedCustomer}
 				options={customerSig}
 				onChange$={() => {
-					selectedProject.value = '';
+					_projectSelected.value = '';
 				}}
 			/>
 
@@ -43,7 +50,7 @@ export const ReportFilters = component$<{
 				id='filter-project'
 				label={t('PROJECT_LABEL')}
 				placeholder={t('select_empty_label')}
-				value={selectedProject}
+				value={_projectSelected}
 				options={projectSig}
 				disabled={!selectedCustomer.value}
 				onChange$={() => {

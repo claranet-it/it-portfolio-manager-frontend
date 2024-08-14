@@ -1,0 +1,45 @@
+import { $, component$, Signal, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { ProjectType } from '@models/project';
+import { initFlowbite } from 'flowbite';
+import { t } from 'src/locale/labels';
+import { UUID } from 'src/utils/uuid';
+import { Input } from './Input';
+import { Select } from './Select';
+
+interface EditProjectFormProps {
+	name: Signal<string>;
+	type: Signal<ProjectType>;
+	plannedHours: Signal<number>;
+}
+
+export const EditProjectForm = component$<EditProjectFormProps>(({ name, type, plannedHours }) => {
+	const _projectTypeOptions = useSignal(['billable', 'non-billable', 'slack-time', 'absence']);
+
+	const _onChangeTypeProject = $(async (value: string) => {
+		type.value = value as ProjectType;
+	});
+
+	const _projectTypeSelected = useSignal(type.value);
+
+	useVisibleTask$(() => {
+		initFlowbite();
+	});
+
+	return (
+		<form class='space-y-3'>
+			<Input label={t('NAME_LABEL')} bindValue={name} />
+
+			<Select
+				id={UUID()}
+				label={t('PROJECT_TYPE_LABEL')}
+				placeholder={t('PROJECT_TYPE_PLACEHOLDER')}
+				value={_projectTypeSelected}
+				options={_projectTypeOptions}
+				size='auto'
+				onChange$={_onChangeTypeProject}
+			/>
+
+			<Input label='Planned hours' bindValue={plannedHours as unknown as Signal<string>} />
+		</form>
+	);
+});

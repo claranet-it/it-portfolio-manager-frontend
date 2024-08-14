@@ -1,12 +1,15 @@
 import { $, component$, QRL, useSignal, useStore } from '@builder.io/qwik';
+import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
+import { Project } from '@models/project';
+import { Task } from '@models/task';
 import { Day, TimeEntry, TimeEntryObject } from '@models/timeEntry';
 import { t } from 'src/locale/labels';
 import { formatDateString } from 'src/utils/dates';
-import { convertTimeToDecimal, getEndHour, getFormattedHours } from 'src/utils/timesheet';
-import { EditTimeEntryForm } from './form/editTimeEntryForm';
-import { TimePicker } from './form/TimePicker';
-import { Modal } from './modals/Modal';
+import { convertTimeToDecimal, getComputedHours, getFormattedHours } from 'src/utils/timesheet';
+import { EditTimeEntryForm } from '../form/editTimeEntryForm';
+import { TimePicker } from '../form/TimePicker';
+import { Modal } from '../modals/Modal';
 
 interface TimeEntryElementProps {
 	id: string;
@@ -15,18 +18,16 @@ interface TimeEntryElementProps {
 	timeEntriesState: Record<string, Record<string, number>>;
 	handleTimeChange: QRL<(timeEntryObject: TimeEntryObject) => void>;
 	entryInfo: {
-		customer: string | undefined;
-		project: string | undefined;
-		task: string | undefined;
+		customer: Customer | undefined;
+		project: Project | undefined;
+		task: Task | undefined;
 	};
 }
 
 export const TimeEntryElement = component$<TimeEntryElementProps>(
 	({ id, day, entry, timeEntriesState, handleTimeChange, entryInfo }) => {
 		const formattedDate = formatDateString(day.date);
-		const hours = entry ? timeEntriesState[entry.project]?.[formattedDate] || 0 : 0;
-		const { weekend } = day;
-		const tdClass = `relative py-3 px-4 text-center border border-surface-50 ${weekend ? 'bg-surface-20' : ''}`;
+		const hours = entry ? timeEntriesState[entry.project.name]?.[formattedDate] || 0 : 0;
 
 		const destriptionSig = useSignal(entry?.description ?? '');
 		const hoursSig = useSignal(entry?.hours ?? 0);
@@ -60,38 +61,40 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 			confirmLabel: t('ACTION_CONFIRM'),
 		});
 
+		const handleBlur = $((e: FocusEvent) => {
+			const value = (e.target as HTMLInputElement).value;
+			hoursSig.value = convertTimeToDecimal(value);
+			const {
+				hours: cHours,
+				startHour: cStart,
+				endHour: cEnd,
+			} = getComputedHours(startSig.value, endSig.value, hoursSig.value);
+
+			handleTimeChange({
+				project: entryInfo.project,
+				date: formattedDate,
+				hours: cHours,
+				startHour: getFormattedHours(cStart),
+				endHour: getFormattedHours(cEnd),
+				description: destriptionSig.value,
+				customer: entryInfo.customer,
+				task: entryInfo.task,
+				index: entry?.index,
+			} as TimeEntryObject);
+		});
+
 		return (
-			<td class={tdClass}>
+			<>
 				<TimePicker
 					onClick$={() => {
 						modalState.isVisible = true;
 					}}
-					onBlur$={(e: FocusEvent) => {
-						const value = (e.target as HTMLInputElement).value;
-						const hours = convertTimeToDecimal(value);
-						hoursSig.value = hours;
-						const computedEnd = getEndHour(startSig.value, endSig.value, hours);
-						if (computedEnd !== endSig.value) {
-							endSig.value = computedEnd;
-						}
-
-						handleTimeChange({
-							project: entryInfo.project,
-							date: formattedDate,
-							hours,
-							startHour: getFormattedHours(startSig.value),
-							endHour: getFormattedHours(endSig.value),
-							description: destriptionSig.value,
-							customer: entryInfo.customer,
-							task: entryInfo.task,
-							index: entry?.index,
-						} as TimeEntryObject);
-					}}
+					onBlur$={handleBlur}
 					bindValue={entry ? entry.hours : hours}
 				/>
 
 				{startSig.value !== 0 && endSig.value !== 0 && (
-					<p class='text-xs font-normal text-darkgray-400 absolute mt-1 w-[calc(100%-2rem)] text-nowrap'>
+					<p class='text-xs font-normal text-darkgray-400 mt-1 text-nowrap'>
 						{getFormattedHours(startSig.value)} - {getFormattedHours(endSig.value)}
 					</p>
 				)}
@@ -112,7 +115,7 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 						/>
 					</Modal>
 				)}
-			</td>
+			</>
 		);
 	}
 );

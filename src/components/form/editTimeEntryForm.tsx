@@ -30,7 +30,7 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 						{formatDateString(date, true)}
 					</h4>
 					<h4 class='text-sm font-normal text-darkgray-500'>{`${t('CLIENT')}: ${customer}`}</h4>
-					<h4 class='text-base font-bold text-dark-grey'>{project}</h4>
+					<h4 class='text-base font-bold text-dark-grey'>{project?.name}</h4>
 					<h4 class='text-sm font-normal text-dark-gray-900'>{`${t('TASK')}: ${task}`}</h4>
 				</div>
 
@@ -44,10 +44,15 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 							onBlur$={(e: FocusEvent) => {
 								const value = (e.target as HTMLInputElement).value;
 
+								if (value === '') {
+									hoursRange.start.value = 0;
+									return;
+								}
+
 								const hours = convertTimeToDecimal(value);
 								hoursRange.start.value = hours;
 
-								if (hoursSig.value) {
+								if (hoursSig.value && hoursSig.value > 0) {
 									hoursRange.end.value = hours + hoursSig.value;
 								}
 							}}
@@ -63,10 +68,15 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 							onBlur$={(e: FocusEvent) => {
 								const value = (e.target as HTMLInputElement).value;
 
+								if (value === '') {
+									hoursRange.start.value = 0;
+									return;
+								}
+
 								const hours = convertTimeToDecimal(value);
 								hoursRange.end.value = hours;
 
-								if (hoursRange.start.value) {
+								if (hoursRange.start.value && hoursRange.start.value > 0) {
 									hoursSig.value = hours - hoursRange.start.value;
 								}
 							}}

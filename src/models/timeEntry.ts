@@ -27,3 +27,9 @@ export type Day = {
 	date: Date;
 	weekend: boolean;
 };
+
+export type ProjectCategoryProp = {
+	label: string;
+	bgColor: string;
+	borderColor: string;
+};

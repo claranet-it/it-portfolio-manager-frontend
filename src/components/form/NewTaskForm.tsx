@@ -1,4 +1,12 @@
-import { $, QRL, Signal, component$, useVisibleTask$ } from '@builder.io/qwik';
+import {
+	$,
+	QRL,
+	Signal,
+	component$,
+	useComputed$,
+	useSignal,
+	useVisibleTask$,
+} from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { initFlowbite } from 'flowbite';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
@@ -41,6 +49,20 @@ export const NewTaskForm = component$<NewTaskForm>(
 			onCancel$ && onCancel$();
 		});
 
+		const _projectSelected = useSignal(projectSelected.value.name);
+
+		const _projectOptions = useComputed$(() => {
+			return dataProjectsSig.value.map((project) => project.name);
+		});
+
+		const _onChangeProject = $(async (value: string) => {
+			const project = dataProjectsSig.value.find((project) => project.name === value);
+			if (project) {
+				projectSelected.value = project;
+				onChangeProject(project);
+			}
+		});
+
 		return (
 			<>
 				<div class='p-4 bg-white-100 rounded-md shadow w-96'>
@@ -65,10 +87,10 @@ export const NewTaskForm = component$<NewTaskForm>(
 							id={UUID()}
 							label={t('PROJECT_LABEL')}
 							placeholder={t('SELECT_PROJECT_PLACEHOLDER')}
-							value={projectSelected}
-							options={dataProjectsSig}
+							value={_projectSelected}
+							options={_projectOptions}
 							disabled={!projectEnableSig.value}
-							onChange$={onChangeProject}
+							onChange$={_onChangeProject}
 							size='auto'
 						/>
 

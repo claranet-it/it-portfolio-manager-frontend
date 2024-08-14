@@ -13,5 +13,10 @@ export const getTimeEntries = async (from: string, to: string): Promise<TimeEntr
 export const deleteTimeEntry = async (entry: TimeEntry): Promise<Boolean> =>
 	checkHttpResponseStatus(`time-entry/mine`, 200, 'DELETE', entry);
 
-export const postTimeEntries = async (timeEntry: TimeEntryObject): Promise<boolean> =>
-	checkHttpResponseStatus('time-entry/mine', 204, 'POST', timeEntry);
+export const postTimeEntries = async (timeEntry: TimeEntryObject): Promise<boolean> => {
+	const _timeEntry = {
+		...timeEntry,
+		project: timeEntry.project.name,
+	};
+	return checkHttpResponseStatus('time-entry/mine', 204, 'POST', _timeEntry);
+};
