@@ -1,4 +1,4 @@
-import { $, component$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
+import { component$, useStore, useTask$ } from '@builder.io/qwik';
 import { ProjectType } from '@models/project';
 import { ColumnChartSeries } from '@models/report';
 import { ColumnChart } from 'src/components/charts/ColumnChart';
@@ -115,17 +115,6 @@ export const ChartPreview = component$(() => {
 			percentage: 24,
 		},
 	]);
-
-	const dataLeft = useSignal(9);
-
-	const loadMoreListAction = $(() => {
-		if (dataLeft.value === 0) return;
-
-		[...Array(1)].map((_) => {
-			listData.push(...listData);
-		});
-		dataLeft.value = dataLeft.value - 3;
-	});
 
 	useTask$(() => {
 		[...Array(2)].map((_) => {
