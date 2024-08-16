@@ -18,7 +18,7 @@ export const getProductivity = async (
 		params: {
 			from,
 			to,
-			...(customer !== '' && { params: customer }),
+			...(customer !== '' && { customer: customer }),
 			...(project.name !== '' && { project: project.name }),
 			...(task !== '' && { task: task }),
 			...(name !== '' && { name: name }),

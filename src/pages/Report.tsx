@@ -15,16 +15,15 @@ import { useProductivity } from 'src/hooks/report/useProductivity';
 import { useReportProject } from 'src/hooks/report/useReportProject';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
 import { t } from 'src/locale/labels';
+import { INIT_PROJECT_VALUE } from 'src/utils/constants';
 import { handlePrint } from 'src/utils/handlePrint';
 
 export const Report = component$(() => {
 	const { from, to, nextWeek, prevWeek } = useGetTimeSheetDays();
 
-	const defaultProjectFilterValue = { name: '', type: '', plannedHours: 0 } as Project;
-
 	const selectedCustomerSig = useSignal<Customer>('');
-	const selectedProjectSig = useSignal<Project>(defaultProjectFilterValue);
-	const selectedTaskSig = useSignal<Task>('');
+	const selectedProjectSig = useSignal<Project>(INIT_PROJECT_VALUE);
+	const selectedTaskSig = useSignal<Task>('' as Task);
 	const selectedNameSig = useSignal<string>('');
 	const ref = useSignal<HTMLElement>();
 	const selectedTab = useSignal<RepotTab>('project');
@@ -40,7 +39,15 @@ export const Report = component$(() => {
 		selectedTab
 	);
 
-	const { results: projectResults } = useReportProject(from, to, selectedTab);
+	const { results: projectResults } = useReportProject(
+		selectedCustomerSig,
+		selectedProjectSig,
+		selectedTaskSig,
+		selectedNameSig,
+		from,
+		to,
+		selectedTab
+	);
 
 	useVisibleTask$(({ track }) => {
 		track(() => selectedCustomerSig.value);
@@ -49,7 +56,7 @@ export const Report = component$(() => {
 		track(() => selectedNameSig.value);
 		showProjectsDetails.value =
 			selectedCustomerSig.value !== '' ||
-			selectedProjectSig.value !== defaultProjectFilterValue ||
+			selectedProjectSig.value !== INIT_PROJECT_VALUE ||
 			selectedTaskSig.value !== '' ||
 			selectedNameSig.value !== '';
 	});
@@ -125,7 +132,7 @@ export const Report = component$(() => {
 								</span>
 							</Button>
 						</div>
-						<ProductivityTable results={productivityResults} ref={ref} />
+						<ProductivityTable results={productivityResults.data} ref={ref} />
 					</div>
 					<div
 						class='hidden flex flex-col  gap-6'

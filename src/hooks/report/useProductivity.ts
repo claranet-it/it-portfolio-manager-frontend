@@ -1,10 +1,11 @@
-import { $, Signal, useContext, useSignal, useTask$ } from '@builder.io/qwik';
+import { $, Signal, useContext, useStore, useTask$ } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { ReportProductivityItem, RepotTab } from '@models/report';
 import { Task } from '@models/task';
 import { AppContext } from 'src/app';
 import { getProductivity } from 'src/services/report';
+import { INIT_PROJECT_VALUE } from 'src/utils/constants';
 import { formatDateString } from 'src/utils/dates';
 import { useDebounce } from '../useDebounce';
 
@@ -18,13 +19,13 @@ export const useProductivity = (
 	tab: Signal<RepotTab>
 ) => {
 	const appStore = useContext(AppContext);
-	const results = useSignal<ReportProductivityItem[]>([]);
+	const results = useStore<{ data: ReportProductivityItem[] }>({ data: [] });
 	const nameDebunce = useDebounce(name, 300);
 
-	const loadProductivityResults = $(async () => {
+	const featchProductivityResults = $(async () => {
 		appStore.isLoading = true;
 		try {
-			results.value = await getProductivity(
+			results.data = await getProductivity(
 				customer.value,
 				project.value,
 				task.value,
@@ -39,7 +40,15 @@ export const useProductivity = (
 		appStore.isLoading = false;
 	});
 
-	useTask$(({ track }) => {
+	const fetchValidation = $((): boolean => {
+		if (project.value !== INIT_PROJECT_VALUE && customer.value === '') return false;
+
+		if (tab.value !== 'productivity') return false;
+
+		return true;
+	});
+
+	useTask$(async ({ track }) => {
 		track(() => customer.value);
 		track(() => project.value);
 		track(() => task.value);
@@ -47,8 +56,8 @@ export const useProductivity = (
 		track(() => from.value);
 		track(() => to.value);
 		track(() => tab.value);
-		tab.value === 'productivity' && loadProductivityResults();
+		(await fetchValidation()) && featchProductivityResults();
 	});
 
-	return { loadProductivityResults, results };
+	return { results };
 };
