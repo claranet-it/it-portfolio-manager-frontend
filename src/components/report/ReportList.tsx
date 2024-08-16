@@ -1,4 +1,4 @@
-import { component$, QRL, Signal } from '@builder.io/qwik';
+import { $, component$, useComputed$, useSignal } from '@builder.io/qwik';
 import { ProjectType } from '@models/project';
 import { tt } from 'src/locale/labels';
 import { getLegendBarColor } from 'src/utils/report';
@@ -6,18 +6,31 @@ import { getFormattedHours } from 'src/utils/timesheet';
 import { Button } from '../Button';
 
 interface ReportListProps {
-	loadMoreAction: QRL;
-	data: { projectType: ProjectType; label: string; hours: number; percentage: number }[];
-	dataLeft: Signal<number>;
+	resultsPerPage: number;
+	data: { type: ProjectType; label: string; hours: number; percentage: number }[];
 }
 
-export const ReportList = component$<ReportListProps>(({ loadMoreAction, data, dataLeft }) => {
+export const ReportList = component$<ReportListProps>(({ data, resultsPerPage }) => {
+	const dataSig = useComputed$(() => {
+		return data;
+	});
+
+	const offset = useSignal(resultsPerPage);
+
+	const loadMore = $(() => {
+		offset.value += resultsPerPage;
+	});
+
+	const dataLeft = useComputed$(() => {
+		return dataSig.value.length - offset.value;
+	});
+
 	return (
 		<div class='w-full divide-y divide-surface-70'>
-			<div class='h-96 flex flex-col text-dark-grey overflow-auto'>
-				{data.map((item) => (
+			<div class='max-h-80 flex flex-col text-dark-grey overflow-auto'>
+				{dataSig.value.slice(0, offset.value).map((item) => (
 					<Row
-						projectType={item.projectType}
+						projectType={item.type}
 						label={item.label}
 						hours={item.hours}
 						percentage={item.percentage}
@@ -25,11 +38,13 @@ export const ReportList = component$<ReportListProps>(({ loadMoreAction, data, d
 				))}
 			</div>
 
-			<div class='w-full'>
-				<Button variant={'link'} onClick$={loadMoreAction}>
-					{tt('REPORT_LIST_LOAD_MORE_BUTTON', { left: dataLeft.value.toString() })}
-				</Button>
-			</div>
+			{dataLeft.value > 0 && (
+				<div class='w-full text-center'>
+					<Button variant={'link'} onClick$={loadMore}>
+						{tt('REPORT_LIST_LOAD_MORE_BUTTON', { left: dataLeft.value.toString() })}
+					</Button>
+				</div>
+			)}
 		</div>
 	);
 });

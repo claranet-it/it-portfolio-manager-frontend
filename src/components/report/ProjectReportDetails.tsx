@@ -1,9 +1,15 @@
 import { component$, Signal, useComputed$ } from '@builder.io/qwik';
 import { ReportTimeEntry } from '@models/report';
 import { t } from 'src/locale/labels';
-import { columnChartSeriesAdapter, donutChartGroupByProjectsAdapter } from 'src/utils/chart';
+import {
+	columnChartSeriesAdapter,
+	donutChartGroupByProjectsAdapter,
+	listGroupByProjectsAdapter,
+} from 'src/utils/chart';
+import { REPORT_LIST_RESULTS_PER_PAGE } from 'src/utils/constants';
 import { ColumnChart } from '../charts/ColumnChart';
 import { DonutChart } from '../charts/DonutChart';
+import { ReportList } from './ReportList';
 
 interface ProjectReportDetailsProps {
 	data: ReportTimeEntry[];
@@ -20,18 +26,35 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(({ dat
 		return donutChartGroupByProjectsAdapter(data);
 	});
 
+	const listGroupByProjectSeries = useComputed$(() => {
+		return listGroupByProjectsAdapter(data);
+	});
+
 	return (
 		<div class='flex flex-col p-3 divide-y divide-surface-70'>
 			<ColumnChart series={daysSeries.value} />
 
-			<div class='flex sm:flex-col md:flex-row lg:flex-row py-6'>
-				<h3 class='text-xl font-bold text-dark-grey'>{t('PROJECT_LABEL')}</h3>
+			<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
+				<div class='flex-none'>
+					<h3 class='text-xl font-bold text-dark-grey'>{t('PROJECT_LABEL')}</h3>
+				</div>
 
-				<DonutChart
-					series={groupByProjectSeries.value.series}
-					types={groupByProjectSeries.value.types}
-					labels={groupByProjectSeries.value.labels}
-				/>
+				<div class='flex-1 items-center text-center'>
+					<div class='max-w-lg'>
+						<DonutChart
+							series={groupByProjectSeries.value.series}
+							types={groupByProjectSeries.value.types}
+							labels={groupByProjectSeries.value.labels}
+						/>
+					</div>
+				</div>
+
+				<div class='sm:w-full flex-1 '>
+					<ReportList
+						data={listGroupByProjectSeries.value}
+						resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
+					/>
+				</div>
 			</div>
 		</div>
 	);

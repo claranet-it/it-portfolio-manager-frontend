@@ -1,5 +1,6 @@
 import { ProjectType } from '@models/project';
 import { ColumnChartSeries, DonutChartSeries, ReportTimeEntry } from '@models/report';
+import { TimeEntry } from '@models/timeEntry';
 import { formatDateString, getDaysInRange } from './dates';
 import { getProjectCateogriesProp } from './timesheet';
 
@@ -64,4 +65,49 @@ export const donutChartGroupByProjectsAdapter = (data: ReportTimeEntry[]): Donut
 		types: projectListType,
 		labels: projectListLabels,
 	};
+};
+
+export const listGroupByProjectsAdapter = (
+	data: ReportTimeEntry[]
+): {
+	type: ProjectType;
+	label: string;
+	hours: number;
+	percentage: number;
+}[] => {
+	const totalHours = data.reduce((prev: number, entry: TimeEntry) => {
+		prev = prev + entry.hours;
+		return prev;
+	}, 0);
+
+	const projectList = data.reduce(
+		(
+			prev: Record<
+				string,
+				{ hours: number; type: ProjectType; label: string; percentage: number }
+			>,
+			entry: ReportTimeEntry
+		) => {
+			if (prev[entry.project.name]) {
+				const hours = prev[entry.project.name].hours + entry.hours;
+				prev[entry.project.name].hours = hours;
+				prev[entry.project.name].type = entry.project.type;
+				prev[entry.project.name].label = entry.project.name;
+				prev[entry.project.name].percentage = Number(
+					((hours / totalHours) * 100).toFixed(2)
+				);
+			} else {
+				prev[entry.project.name] = {
+					hours: entry.hours,
+					type: entry.project.type,
+					label: entry.project.name,
+					percentage: Number(((entry.hours / totalHours) * 100).toFixed(2)),
+				};
+			}
+			return prev;
+		},
+		{}
+	);
+
+	return Object.values(projectList);
 };

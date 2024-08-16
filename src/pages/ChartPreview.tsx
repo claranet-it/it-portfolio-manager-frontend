@@ -4,6 +4,7 @@ import { ColumnChartSeries } from '@models/report';
 import { ColumnChart } from 'src/components/charts/ColumnChart';
 import { DonutChart } from 'src/components/charts/DonutChart';
 import { ReportList } from 'src/components/report/ReportList';
+import { REPORT_LIST_RESULTS_PER_PAGE } from 'src/utils/constants';
 
 export const ChartPreview = component$(() => {
 	const dataDonut = {
@@ -96,19 +97,19 @@ export const ChartPreview = component$(() => {
 
 	const listData = useStore([
 		{
-			projectType: 'slack-time' as ProjectType,
+			type: 'slack-time' as ProjectType,
 			label: 'Attività amministrative e legali - Functional',
 			hours: 345,
 			percentage: 23,
 		},
 		{
-			projectType: 'absence' as ProjectType,
+			type: 'absence' as ProjectType,
 			label: 'Holiday - Absence',
 			hours: 40,
 			percentage: 24,
 		},
 		{
-			projectType: 'billable' as ProjectType,
+			type: 'billable' as ProjectType,
 			label: 'CLT-0509/24 - Massive Dynamic - Rinnovo 2024',
 			hours: 4999,
 			percentage: 24,
@@ -135,7 +136,7 @@ export const ChartPreview = component$(() => {
 	return (
 		<div class='w-full flex flex-col p-1 text-center items-center'>
 			<h1 class='text-2xl'>Report list</h1>
-			<ReportList data={listData} loadMoreAction={loadMoreListAction} dataLeft={dataLeft} />
+			<ReportList data={listData} resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE} />
 
 			<h1 class='text-2xl'>Donut</h1>
 			<div class='w-full flex flex-row justify-between'>

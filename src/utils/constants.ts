@@ -16,3 +16,5 @@ export const KEYBOARD_ENTER = 'Enter';
 export const SELF_TOAST_CLOSING_TIME = 5000; // 5sec
 
 export const INIT_PROJECT_VALUE = { name: '', type: '', plannedHours: 0 } as Project;
+
+export const REPORT_LIST_RESULTS_PER_PAGE = 10;

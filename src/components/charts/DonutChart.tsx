@@ -94,5 +94,5 @@ export const DonutChart = component$<DonutChartProps>(({ series, types, labels }
 		return () => chart.destroy();
 	});
 
-	return <div ref={ref} class='w-[32rem] py-6' />;
+	return <div ref={ref} class='w-full' />;
 });
