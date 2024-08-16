@@ -91,6 +91,7 @@ export const DonutChart = component$<DonutChartProps>(({ series, types, labels }
 
 		const chart = new ApexCharts(ref.value, options.value);
 		chart.render();
+		return () => chart.destroy();
 	});
 
 	return <div ref={ref} class='w-[32rem] py-6' />;

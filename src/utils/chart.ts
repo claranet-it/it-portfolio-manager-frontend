@@ -1,5 +1,5 @@
 import { ProjectType } from '@models/project';
-import { ColumnChartSeries, ReportTimeEntry } from '@models/report';
+import { ColumnChartSeries, DonutChartSeries, ReportTimeEntry } from '@models/report';
 import { formatDateString, getDaysInRange } from './dates';
 import { getProjectCateogriesProp } from './timesheet';
 
@@ -35,4 +35,33 @@ export const columnChartSeriesAdapter = (
 	});
 
 	return series;
+};
+
+export const donutChartGroupByProjectsAdapter = (data: ReportTimeEntry[]): DonutChartSeries => {
+	const projectList = data.reduce(
+		(
+			prev: Record<string, { totalHours: number; type: ProjectType }>,
+			entry: ReportTimeEntry
+		) => {
+			if (prev[entry.project.name]) {
+				prev[entry.project.name].totalHours =
+					prev[entry.project.name].totalHours + entry.hours;
+				prev[entry.project.name].type = entry.project.type;
+			} else {
+				prev[entry.project.name] = { totalHours: entry.hours, type: entry.project.type };
+			}
+			return prev;
+		},
+		{}
+	);
+
+	const projectListhours = Object.values(projectList).map((project) => project.totalHours);
+	const projectListType = Object.values(projectList).map((project) => project.type);
+	const projectListLabels = Object.keys(projectList);
+
+	return {
+		series: projectListhours,
+		types: projectListType,
+		labels: projectListLabels,
+	};
 };

@@ -30,6 +30,12 @@ export type ColumnChartSeries = {
 	}[];
 };
 
+export type DonutChartSeries = {
+	series: number[];
+	types: ProjectType[];
+	labels: string[];
+};
+
 export type ReportTimeEntry = Omit<TimeEntry, 'isUndaved' | 'index'> & {
 	email: string;
 	crew: string;
