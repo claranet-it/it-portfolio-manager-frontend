@@ -32,7 +32,7 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(({ dat
 
 	return (
 		<div class='flex flex-col p-3 divide-y divide-surface-70'>
-			<ColumnChart series={daysSeries.value} />
+			<ColumnChart data={daysSeries} />
 
 			<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
 				<div class='flex-none'>
@@ -41,17 +41,13 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(({ dat
 
 				<div class='flex-1 items-center text-center'>
 					<div class='max-w-lg'>
-						<DonutChart
-							series={groupByProjectSeries.value.series}
-							types={groupByProjectSeries.value.types}
-							labels={groupByProjectSeries.value.labels}
-						/>
+						<DonutChart data={groupByProjectSeries} />
 					</div>
 				</div>
 
 				<div class='sm:w-full flex-1 '>
 					<ReportList
-						data={listGroupByProjectSeries.value}
+						data={listGroupByProjectSeries}
 						resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
 					/>
 				</div>

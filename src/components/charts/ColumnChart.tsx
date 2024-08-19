@@ -1,4 +1,4 @@
-import { component$, useComputed$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { component$, Signal, useComputed$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { ColumnChartSeries } from '@models/report';
 import ApexCharts from 'apexcharts';
 import { format } from 'node_modules/date-fns';
@@ -6,15 +6,15 @@ import { getHexFromType } from 'src/utils/report';
 import { getFormattedHours } from 'src/utils/timesheet';
 
 interface ColumnChartProps {
-	series: ColumnChartSeries[];
+	data: Signal<ColumnChartSeries[]>;
 }
 
-export const ColumnChart = component$<ColumnChartProps>(({ series }) => {
+export const ColumnChart = component$<ColumnChartProps>(({ data }) => {
 	const ref = useSignal<HTMLElement>();
 
 	const options = useComputed$(() => {
 		return {
-			series: series.map((item) => {
+			series: data.value.map((item) => {
 				return {
 					name: item.label,
 					color: getHexFromType(item.type),
@@ -109,7 +109,7 @@ export const ColumnChart = component$<ColumnChartProps>(({ series }) => {
 	});
 
 	useVisibleTask$(async ({ track }) => {
-		track(() => series);
+		track(() => data.value);
 		const chart = new ApexCharts(ref.value, options.value);
 		chart.render();
 		return () => chart.destroy();

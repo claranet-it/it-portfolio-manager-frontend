@@ -1,5 +1,5 @@
-import { $, component$, useComputed$, useSignal } from '@builder.io/qwik';
-import { ProjectType } from '@models/project';
+import { $, component$, Signal, useComputed$, useSignal } from '@builder.io/qwik';
+import { ReportRow } from '@models/report';
 import { tt } from 'src/locale/labels';
 import { getLegendBarColor } from 'src/utils/report';
 import { getFormattedHours } from 'src/utils/timesheet';
@@ -7,14 +7,10 @@ import { Button } from '../Button';
 
 interface ReportListProps {
 	resultsPerPage: number;
-	data: { type: ProjectType; label: string; hours: number; percentage: number }[];
+	data: Signal<ReportRow[]>;
 }
 
 export const ReportList = component$<ReportListProps>(({ data, resultsPerPage }) => {
-	const dataSig = useComputed$(() => {
-		return data;
-	});
-
 	const offset = useSignal(resultsPerPage);
 
 	const loadMore = $(() => {
@@ -22,19 +18,14 @@ export const ReportList = component$<ReportListProps>(({ data, resultsPerPage })
 	});
 
 	const dataLeft = useComputed$(() => {
-		return dataSig.value.length - offset.value;
+		return data.value.length - offset.value;
 	});
 
 	return (
 		<div class='w-full divide-y divide-surface-70'>
 			<div class='max-h-80 flex flex-col text-dark-grey overflow-auto'>
-				{dataSig.value.slice(0, offset.value).map((item) => (
-					<Row
-						projectType={item.type}
-						label={item.label}
-						hours={item.hours}
-						percentage={item.percentage}
-					/>
+				{data.value.slice(0, offset.value).map((item) => (
+					<Row data={item} />
 				))}
 			</div>
 
@@ -50,14 +41,11 @@ export const ReportList = component$<ReportListProps>(({ data, resultsPerPage })
 });
 
 interface RowProps {
-	projectType: ProjectType;
-	label: string;
-	hours: number;
-	percentage: number;
+	data: ReportRow;
 }
 
-const Row = component$<RowProps>(({ projectType, label, hours, percentage }) => {
-	const typeColor = getLegendBarColor(projectType);
+const Row = component$<RowProps>(({ data }) => {
+	const typeColor = getLegendBarColor(data.type);
 
 	return (
 		<div class='flex flex-row justify-stretch gap-6 p-0.5'>
@@ -66,14 +54,16 @@ const Row = component$<RowProps>(({ projectType, label, hours, percentage }) => 
 					<span
 						class={`flex w-2.5 h-2.5 ${typeColor.bgColor} rounded-full me-1.5 flex-shrink-0`}
 					></span>
-					<span class='text-sm font-normal text-dark-grey'>{label}</span>
+					<span class='text-sm font-normal text-dark-grey'>{data.label}</span>
 				</div>
 			</div>
 			<div class='flex-none w-18 text-right'>
-				<span class='text-sm font-normal text-dark-grey'>{getFormattedHours(hours)} h</span>
+				<span class='text-sm font-normal text-dark-grey'>
+					{getFormattedHours(data.hours)} h
+				</span>
 			</div>
 			<div class='flex-none w-18 text-right'>
-				<span class='text-xs font-normal text-dark-grey'>{percentage}%</span>
+				<span class='text-xs font-normal text-dark-grey'>{data.percentage}%</span>
 			</div>
 		</div>
 	);

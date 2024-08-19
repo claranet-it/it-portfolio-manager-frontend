@@ -26,7 +26,7 @@ export const useReportProject = (
 	const setFilters = $(async (data: ReportTimeEntry[]) => {
 		let results = data;
 
-		if (customer.value) {
+		if (customer.value != '') {
 			results = results.filter((entry) => entry.customer === customer.value);
 		}
 

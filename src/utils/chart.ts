@@ -108,6 +108,5 @@ export const listGroupByProjectsAdapter = (
 		},
 		{}
 	);
-
 	return Object.values(projectList);
 };

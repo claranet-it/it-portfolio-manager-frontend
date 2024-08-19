@@ -42,3 +42,10 @@ export type ReportTimeEntry = Omit<TimeEntry, 'isUndaved' | 'index'> & {
 };
 
 export type RepotTab = 'project' | 'productivity';
+
+export type ReportRow = {
+	type: ProjectType;
+	label: string;
+	hours: number;
+	percentage: number;
+};
