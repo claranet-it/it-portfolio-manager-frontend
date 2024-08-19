@@ -155,7 +155,22 @@ export const Report = component$(() => {
 								/>
 							</div>
 						) : (
-							<ProjectReportPreview />
+							<div class='flex flex-col gap-6'>
+								<h3 class='text-base font-bold text-dark-grey'>
+									{t('TIMESHEET_TABLE_PROJECT_COL_LABEL')}
+								</h3>
+								<ReportHeader
+									data={projectResults.data}
+									showTopCustomer
+									showTopProject
+								/>
+
+								<ProjectReportPreview
+									data={projectResults.data}
+									from={from}
+									to={to}
+								/>
+							</div>
 						)}
 					</div>
 				</div>

@@ -237,6 +237,36 @@ export const getReportBillableHours = (data: ReportTimeEntry[]): number => {
 	}, 0);
 };
 
+export const getTopProject = (data: ReportTimeEntry[]): string => {
+	const projectList = data.reduce((prev: Record<string, number>, time: ReportTimeEntry) => {
+		if (prev[time.project.name]) {
+			prev[time.project.name] = prev[time.project.name] + time.hours;
+		} else {
+			prev[time.project.name] = time.hours;
+		}
+		return prev;
+	}, {});
+
+	return Object.keys(projectList).reduce((maxKey, key) => {
+		return projectList[key] > (projectList[maxKey] ?? -Infinity) ? key : maxKey;
+	}, '');
+};
+
+export const getTopCustomer = (data: ReportTimeEntry[]): string => {
+	const projectList = data.reduce((prev: Record<string, number>, time: ReportTimeEntry) => {
+		if (prev[time.customer]) {
+			prev[time.customer] = prev[time.customer] + time.hours;
+		} else {
+			prev[time.customer] = time.hours;
+		}
+		return prev;
+	}, {});
+
+	return Object.keys(projectList).reduce((maxKey, key) => {
+		return projectList[key] > (projectList[maxKey] ?? -Infinity) ? key : maxKey;
+	}, '');
+};
+
 const generateHexColor = (input: string): string | null => {
 	// Extract usable characters from the input: only hex characters (0-9, a-f, A-F)
 	let usableInput = input.replace(/[^0-9a-fA-F]/g, '');
