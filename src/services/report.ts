@@ -4,6 +4,7 @@ import { ReportProductivityItem, ReportTimeEntry } from '@models/report';
 import { Task } from '@models/task';
 import { TimeEntry } from '@models/timeEntry';
 import { getHttpResponse } from 'src/network/httpRequest';
+import { UUID } from 'src/utils/uuid';
 
 export const getProductivity = async (
 	customer: Customer,
@@ -53,6 +54,7 @@ export const getReportTimeEntry = async (from: string, to: string): Promise<Repo
 				plannedHours: entry.plannedHours,
 				type: entry.projectType,
 			},
+			email: entry.email === '' ? UUID() : entry.email,
 		};
 	});
 };

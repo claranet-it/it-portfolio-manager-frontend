@@ -4,7 +4,9 @@ import { t } from 'src/locale/labels';
 import {
 	columnChartSeriesAdapter,
 	donutChartGroupByProjectsAdapter,
+	donutChartGroupByUsesAdapter,
 	listGroupByProjectsAdapter,
+	listGroupByUsersAdapter,
 } from 'src/utils/chart';
 import { REPORT_LIST_RESULTS_PER_PAGE } from 'src/utils/constants';
 import { ColumnChart } from '../charts/ColumnChart';
@@ -21,13 +23,23 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(({ dat
 	const daysSeries = useComputed$(() => {
 		return columnChartSeriesAdapter(data, from.value, to.value);
 	});
-
+	// ____ PROJECTS _____ //
 	const groupByProjectSeries = useComputed$(() => {
 		return donutChartGroupByProjectsAdapter(data);
 	});
 
 	const listGroupByProjectSeries = useComputed$(() => {
 		return listGroupByProjectsAdapter(data);
+	});
+
+	// ____ USERS _____ //
+
+	const groupByUserSeries = useComputed$(() => {
+		return donutChartGroupByUsesAdapter(data);
+	});
+
+	const listGroupByUserSeries = useComputed$(() => {
+		return listGroupByUsersAdapter(data);
 	});
 
 	return (
@@ -48,6 +60,25 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(({ dat
 				<div class='sm:w-full flex-1 '>
 					<ReportList
 						data={listGroupByProjectSeries}
+						resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
+					/>
+				</div>
+			</div>
+
+			<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
+				<div class='flex-none'>
+					<h3 class='text-xl font-bold text-dark-grey'>{t('USER_LABEL')}</h3>
+				</div>
+
+				<div class='flex-1 items-center text-center'>
+					<div class='max-w-lg'>
+						<DonutChart data={groupByUserSeries} />
+					</div>
+				</div>
+
+				<div class='sm:w-full flex-1 '>
+					<ReportList
+						data={listGroupByUserSeries}
 						resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
 					/>
 				</div>

@@ -52,6 +52,7 @@ const Row = component$<RowProps>(({ data }) => {
 			<div class='flex-1 text-left'>
 				<div class='flex flex-row gap-1 items-center'>
 					<span
+						style={data.color ? { backgroundColor: data.color } : {}}
 						class={`flex w-2.5 h-2.5 ${typeColor.bgColor} rounded-full me-1.5 flex-shrink-0`}
 					></span>
 					<span class='text-sm font-normal text-dark-grey'>{data.label}</span>

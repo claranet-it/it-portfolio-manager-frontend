@@ -16,10 +16,16 @@ export const DonutChart = component$<DonutChartProps>(({ data }) => {
 		return data.value.series.reduce((a, b) => a + b, 0);
 	});
 
+	const colors = useComputed$(() => {
+		if (data.value.colors) return data.value.colors;
+
+		return data.value.types?.map((type) => getHexFromType(type));
+	});
+
 	const options = useComputed$(() => {
 		return {
 			series: data.value.series,
-			colors: data.value.types?.map((type) => getHexFromType(type)),
+			colors: colors.value,
 			chart: {
 				type: 'donut',
 			},

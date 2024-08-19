@@ -34,6 +34,7 @@ export type DonutChartSeries = {
 	series: number[];
 	types: ProjectType[];
 	labels: string[];
+	colors?: string[];
 };
 
 export type ReportTimeEntry = Omit<TimeEntry, 'isUndaved' | 'index'> & {
@@ -47,5 +48,6 @@ export type ReportRow = {
 	type: ProjectType;
 	label: string;
 	hours: number;
+	color?: string;
 	percentage: number;
 };
