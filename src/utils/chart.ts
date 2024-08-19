@@ -102,6 +102,41 @@ export const donutChartGroupByUsesAdapter = (data: ReportTimeEntry[]): DonutChar
 	};
 };
 
+export const donutChartGroupByTaskAdapter = (data: ReportTimeEntry[]): DonutChartSeries => {
+	const taskList = data.reduce(
+		(
+			prev: Record<string, { totalHours: number; type: ProjectType; color?: string }>,
+			entry: ReportTimeEntry
+		) => {
+			if (prev[entry.task]) {
+				prev[entry.task].totalHours = prev[entry.task].totalHours + entry.hours;
+				prev[entry.task].type = entry.project.type;
+				prev[entry.task].color = generateHexColor(entry.task) ?? '#000';
+			} else {
+				prev[entry.task] = {
+					totalHours: entry.hours,
+					type: entry.project.type,
+					color: generateHexColor(entry.task) ?? '#000',
+				};
+			}
+			return prev;
+		},
+		{}
+	);
+
+	const taskListhours = Object.values(taskList).map((task) => task.totalHours);
+	const taskListType = Object.values(taskList).map((task) => task.type);
+	const taskListColors = Object.values(taskList).map((task) => task.color!);
+	const taskListLabels = Object.keys(taskList);
+
+	return {
+		series: taskListhours,
+		types: taskListType,
+		labels: taskListLabels,
+		colors: taskListColors,
+	};
+};
+
 export const listGroupByProjectsAdapter = (data: ReportTimeEntry[]): ReportRow[] => {
 	const totalHours = data.reduce((prev: number, entry: TimeEntry) => {
 		prev = prev + entry.hours;
@@ -157,26 +192,41 @@ export const listGroupByUsersAdapter = (data: ReportTimeEntry[]): ReportRow[] =>
 	return Object.values(usersList);
 };
 
+export const listGroupByTaskAdapter = (data: ReportTimeEntry[]): ReportRow[] => {
+	const totalHours = data.reduce((prev: number, entry: TimeEntry) => {
+		prev = prev + entry.hours;
+		return prev;
+	}, 0);
+
+	const taskList = data.reduce((prev: Record<string, ReportRow>, entry: ReportTimeEntry) => {
+		if (prev[entry.task]) {
+			const hours = prev[entry.task].hours + entry.hours;
+			prev[entry.task].hours = hours;
+			prev[entry.task].type = entry.project.type;
+			prev[entry.task].label = entry.task;
+			prev[entry.task].color = generateHexColor(entry.task) ?? '#000';
+			prev[entry.task].percentage = Number(((hours / totalHours) * 100).toFixed(2));
+		} else {
+			prev[entry.task] = {
+				hours: entry.hours,
+				type: entry.project.type,
+				label: entry.task,
+				color: generateHexColor(entry.task) ?? '#000',
+				percentage: Number(((entry.hours / totalHours) * 100).toFixed(2)),
+			};
+		}
+		return prev;
+	}, {});
+
+	return Object.values(taskList);
+};
+
 const generateHexColor = (input: string): string | null => {
-	const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input);
-	const isUUID = /^[0-9a-fA-F]{16}$/.test(input);
+	// Extract usable characters from the input: only hex characters (0-9, a-f, A-F)
+	let usableInput = input.replace(/[^0-9a-fA-F]/g, '');
 
-	if (!isEmail && !isUUID) {
-		return null; // Return null if input is neither a valid email nor a UUID
-	}
-
-	// Extract usable characters from the input
-	let usableInput: string;
-
-	if (isEmail) {
-		usableInput = input.replace(/[^0-9a-fA-F]/g, ''); // Remove non-hex characters from the email
-	} else if (isUUID) {
-		usableInput = input; // Use the UUID directly since it's already hex characters
-	} else {
-		return null; // Just a safeguard, although this case should be covered by earlier checks
-	}
-
-	usableInput = usableInput.slice(0, 6); // Trim to the first 6 characters
+	// Trim to the first 6 characters, if necessary
+	usableInput = usableInput.slice(0, 6);
 
 	// If the result is less than 6 characters, pad with '0'
 	let hexColor = usableInput.padEnd(6, '0');

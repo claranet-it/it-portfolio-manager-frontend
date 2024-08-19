@@ -4,8 +4,10 @@ import { t } from 'src/locale/labels';
 import {
 	columnChartSeriesAdapter,
 	donutChartGroupByProjectsAdapter,
+	donutChartGroupByTaskAdapter,
 	donutChartGroupByUsesAdapter,
 	listGroupByProjectsAdapter,
+	listGroupByTaskAdapter,
 	listGroupByUsersAdapter,
 } from 'src/utils/chart';
 import { REPORT_LIST_RESULTS_PER_PAGE } from 'src/utils/constants';
@@ -42,9 +44,21 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(({ dat
 		return listGroupByUsersAdapter(data);
 	});
 
+	// ____ TASK _____ //
+
+	const groupByTaskSeries = useComputed$(() => {
+		return donutChartGroupByTaskAdapter(data);
+	});
+
+	const listGroupByTaskSeries = useComputed$(() => {
+		return listGroupByTaskAdapter(data);
+	});
+
 	return (
 		<div class='flex flex-col p-3 divide-y divide-surface-70'>
 			<ColumnChart data={daysSeries} />
+
+			{/* ____ PROJECTS _____  */}
 
 			<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
 				<div class='flex-none'>
@@ -65,6 +79,8 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(({ dat
 				</div>
 			</div>
 
+			{/* ____ USERS _____  */}
+
 			<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
 				<div class='flex-none'>
 					<h3 class='text-xl font-bold text-dark-grey'>{t('USER_LABEL')}</h3>
@@ -79,6 +95,27 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(({ dat
 				<div class='sm:w-full flex-1 '>
 					<ReportList
 						data={listGroupByUserSeries}
+						resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
+					/>
+				</div>
+			</div>
+
+			{/* ____ TASK _____  */}
+
+			<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
+				<div class='flex-none'>
+					<h3 class='text-xl font-bold text-dark-grey'>{t('TASK_LABEL')}</h3>
+				</div>
+
+				<div class='flex-1 items-center text-center'>
+					<div class='max-w-lg'>
+						<DonutChart data={groupByTaskSeries} />
+					</div>
+				</div>
+
+				<div class='sm:w-full flex-1 '>
+					<ReportList
+						data={listGroupByTaskSeries}
 						resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
 					/>
 				</div>
