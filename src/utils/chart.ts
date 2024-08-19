@@ -221,6 +221,22 @@ export const listGroupByTaskAdapter = (data: ReportTimeEntry[]): ReportRow[] => 
 	return Object.values(taskList);
 };
 
+export const getReportTotalHours = (data: ReportTimeEntry[]): number => {
+	return data.reduce((prev: number, time: ReportTimeEntry) => {
+		prev = prev + time.hours;
+		return prev;
+	}, 0);
+};
+
+export const getReportBillableHours = (data: ReportTimeEntry[]): number => {
+	return data.reduce((prev: number, time: ReportTimeEntry) => {
+		if (time.project.type === 'billable') {
+			prev = prev + time.hours;
+		}
+		return prev;
+	}, 0);
+};
+
 const generateHexColor = (input: string): string | null => {
 	// Extract usable characters from the input: only hex characters (0-9, a-f, A-F)
 	let usableInput = input.replace(/[^0-9a-fA-F]/g, '');

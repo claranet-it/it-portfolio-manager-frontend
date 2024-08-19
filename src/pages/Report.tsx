@@ -11,6 +11,7 @@ import { ProductivityTable } from 'src/components/report/ProductivityTable';
 import { ProjectReportDetails } from 'src/components/report/ProjectReportDetails';
 import { ProjectReportPreview } from 'src/components/report/ProjectReportPreview';
 import { ReportFilters } from 'src/components/report/ReportFilters';
+import { ReportHeader } from 'src/components/report/ReportHeader';
 import { useProductivity } from 'src/hooks/report/useProductivity';
 import { useReportProject } from 'src/hooks/report/useReportProject';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
@@ -141,7 +142,18 @@ export const Report = component$(() => {
 						aria-labelledby='projects-tab'
 					>
 						{showProjectsDetails.value ? (
-							<ProjectReportDetails data={projectResults.data} from={from} to={to} />
+							<div class='flex flex-col gap-0'>
+								<ReportHeader
+									customer={selectedCustomerSig}
+									data={projectResults.data}
+								/>
+
+								<ProjectReportDetails
+									data={projectResults.data}
+									from={from}
+									to={to}
+								/>
+							</div>
 						) : (
 							<ProjectReportPreview />
 						)}
