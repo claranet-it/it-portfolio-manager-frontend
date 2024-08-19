@@ -60,66 +60,75 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(({ dat
 
 			{/* ____ PROJECTS _____  */}
 
-			<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
-				<div class='flex-none'>
-					<h3 class='text-xl font-bold text-dark-grey'>{t('PROJECT_LABEL')}</h3>
-				</div>
+			{groupByProjectSeries.value.series.length > 0 &&
+				listGroupByProjectSeries.value.length > 0 && (
+					<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
+						<div class='flex-none'>
+							<h3 class='text-xl font-bold text-dark-grey'>{t('PROJECT_LABEL')}</h3>
+						</div>
 
-				<div class='flex-1 items-center text-center'>
-					<div class='max-w-lg'>
-						<DonutChart data={groupByProjectSeries} />
+						<div class='flex-1 items-center text-center'>
+							<div class='max-w-lg'>
+								<DonutChart data={groupByProjectSeries} />
+							</div>
+						</div>
+
+						<div class='sm:w-full flex-1 '>
+							<ReportList
+								data={listGroupByProjectSeries}
+								resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
+							/>
+						</div>
 					</div>
-				</div>
-
-				<div class='sm:w-full flex-1 '>
-					<ReportList
-						data={listGroupByProjectSeries}
-						resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
-					/>
-				</div>
-			</div>
+				)}
 
 			{/* ____ USERS _____  */}
 
-			<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
-				<div class='flex-none'>
-					<h3 class='text-xl font-bold text-dark-grey'>{t('USER_LABEL')}</h3>
-				</div>
+			{groupByUserSeries.value.series.length > 0 &&
+				listGroupByUserSeries.value.length > 0 && (
+					<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
+						<div class='flex-none'>
+							<h3 class='text-xl font-bold text-dark-grey'>{t('USER_LABEL')}</h3>
+						</div>
 
-				<div class='flex-1 items-center text-center'>
-					<div class='max-w-lg'>
-						<DonutChart data={groupByUserSeries} />
+						<div class='flex-1 items-center text-center'>
+							<div class='max-w-lg'>
+								<DonutChart data={groupByUserSeries} />
+							</div>
+						</div>
+
+						<div class='sm:w-full flex-1 '>
+							<ReportList
+								data={listGroupByUserSeries}
+								resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
+							/>
+						</div>
 					</div>
-				</div>
-
-				<div class='sm:w-full flex-1 '>
-					<ReportList
-						data={listGroupByUserSeries}
-						resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
-					/>
-				</div>
-			</div>
+				)}
 
 			{/* ____ TASK _____  */}
 
-			<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
-				<div class='flex-none'>
-					<h3 class='text-xl font-bold text-dark-grey'>{t('TASK_LABEL')}</h3>
-				</div>
+			{groupByTaskSeries.value.series.length > 0 &&
+				listGroupByTaskSeries.value.length > 0 && (
+					<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
+						<div class='flex-none'>
+							<h3 class='text-xl font-bold text-dark-grey'>{t('TASK_LABEL')}</h3>
+						</div>
 
-				<div class='flex-1 items-center text-center'>
-					<div class='max-w-lg'>
-						<DonutChart data={groupByTaskSeries} />
+						<div class='flex-1 items-center text-center'>
+							<div class='max-w-lg'>
+								<DonutChart data={groupByTaskSeries} />
+							</div>
+						</div>
+
+						<div class='sm:w-full flex-1 '>
+							<ReportList
+								data={listGroupByTaskSeries}
+								resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
+							/>
+						</div>
 					</div>
-				</div>
-
-				<div class='sm:w-full flex-1 '>
-					<ReportList
-						data={listGroupByTaskSeries}
-						resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
-					/>
-				</div>
-			</div>
+				)}
 		</div>
 	);
 });
