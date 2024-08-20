@@ -1,6 +1,7 @@
-import { Signal, component$, useComputed$, useContext } from '@builder.io/qwik';
+import { $, Signal, component$, useComputed$, useContext } from '@builder.io/qwik';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
+import { Button } from './Button';
 import { Input } from './form/Input';
 import { Select } from './form/Select';
 import { ToggleSwitch } from './form/ToggleSwitch';
@@ -31,6 +32,14 @@ export const Filters = component$<{
 					return result;
 				}, []);
 		return skills;
+	});
+
+	const clearFilters = $(() => {
+		selectedServiceLine.value = '';
+		selectedCrew.value = '';
+		selectedSkill && (selectedSkill.value = '');
+		selectedName.value = '';
+		onlyCompany && (onlyCompany.value = false);
 	});
 
 	return (
@@ -76,6 +85,12 @@ export const Filters = component$<{
 					<ToggleSwitch isChecked={onlyCompany} label={t('SHOW_ONLY_COMPANY_LABEL')} />
 				</div>
 			)}
+
+			<div class='flex items-end'>
+				<Button variant={'outline'} size={'small'} onClick$={clearFilters}>
+					Clear filters
+				</Button>
+			</div>
 		</div>
 	);
 });

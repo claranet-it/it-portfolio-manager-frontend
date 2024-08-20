@@ -7,6 +7,7 @@ import { getCustomers } from 'src/services/customer';
 import { getProjects } from 'src/services/projects';
 import { getTasks } from 'src/services/tasks';
 import { INIT_PROJECT_VALUE } from 'src/utils/constants';
+import { Button } from '../Button';
 import { Input } from '../form/Input';
 import { Select } from '../form/Select';
 
@@ -56,8 +57,15 @@ export const ReportFilters = component$<{
 			: [];
 	});
 
+	const clearFilters = $(() => {
+		selectedCustomer.value = '';
+		selectedProject.value = INIT_PROJECT_VALUE;
+		selectedTask.value = '';
+		selectedName.value = '';
+	});
+
 	return (
-		<div class='w-full flex sm:flex-col m-0 justify-self-start sm:space-y-2 md:space-x-2 lg:space-x-2'>
+		<div class='w-full flex sm:flex-col m-0 justify-self-start sm:space-y-2 md:space-x-2 lg:space-x-2 gap-1'>
 			<Select
 				id='filer-customer'
 				label={t('CUSTOMER_LABEL')}
@@ -92,6 +100,12 @@ export const ReportFilters = component$<{
 				bindValue={selectedName}
 				placeholder={t('input_empty_label')}
 			/>
+
+			<div class='flex items-end'>
+				<Button variant={'outline'} size={'small'} onClick$={clearFilters}>
+					Clear filters
+				</Button>
+			</div>
 		</div>
 	);
 });

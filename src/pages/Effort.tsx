@@ -109,6 +109,8 @@ export const Effort = component$(() => {
 
 	return (
 		<div class='px-6 pt-5 w-full space-y-5'>
+			<h1 class='text-2xl font-bold text-darkgray-900 me-4'>{t('EFFORT_PAGE_TITLE')}</h1>
+
 			<Filters
 				selectedCrew={selectedCrewSig}
 				selectedName={selectedNameSig}

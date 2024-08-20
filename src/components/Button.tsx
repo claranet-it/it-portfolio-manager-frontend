@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes, Slot, component$ } from '@builder.io/qwik';
 import { cva, type VariantProps } from 'class-variance-authority';
 
-const buttonVariants = cva('py-2 px-4 rounded-md font-bold text-base', {
+const buttonVariants = cva('py-2 px-4 rounded-md font-bold text-base text-nowrap', {
 	variants: {
 		variant: {
 			primary: 'bg-clara-red text-white-100',
