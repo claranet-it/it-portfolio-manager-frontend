@@ -1,3 +1,5 @@
+import { Project } from '@models/project';
+
 export const AUTH_TOKEN_KEY = 'auth_token';
 export const CHATBOT_COOKIE_KEY = 'token';
 
@@ -12,3 +14,7 @@ export const SEARCH_TEXT_AREA_ROWS = 3;
 export const KEYBOARD_ENTER = 'Enter';
 
 export const SELF_TOAST_CLOSING_TIME = 5000; // 5sec
+
+export const INIT_PROJECT_VALUE = { name: '', type: '', plannedHours: 0 } as Project;
+
+export const REPORT_LIST_RESULTS_PER_PAGE = 10;

@@ -6,7 +6,7 @@ import { getIcon } from '../icons';
 import { BarLegend } from './BarLegend';
 
 interface ProductivityTableProps {
-	results: Signal<ReportProductivityItem[]>;
+	results: ReportProductivityItem[];
 	ref: Signal<HTMLElement | undefined>;
 }
 
@@ -51,8 +51,8 @@ export const ProductivityTable = component$<ProductivityTableProps>(({ results, 
 					</tr>
 				</thead>
 				<tbody>
-					{results.value.length > 0 &&
-						results.value.map((result, index) => (
+					{results &&
+						results.map((result, index) => (
 							<tr
 								key={`${index}-${result.totalProductivity}-${result.totalTracked}-${result.workedHours}`}
 								class='bg-white border-b even:bg-surface-5 odd:bg-white'

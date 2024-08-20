@@ -1,14 +1,15 @@
-import { $, component$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
+import { component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { ProjectType } from '@models/project';
-import { ColumnChartSeries } from '@models/report';
+import { ColumnChartSeries, DonutChartSeries } from '@models/report';
 import { ColumnChart } from 'src/components/charts/ColumnChart';
 import { DonutChart } from 'src/components/charts/DonutChart';
 import { ReportList } from 'src/components/report/ReportList';
+import { REPORT_LIST_RESULTS_PER_PAGE } from 'src/utils/constants';
 
 export const ChartPreview = component$(() => {
-	const dataDonut = {
+	const dataDonut = useSignal<DonutChartSeries>({
 		series: [76, 96, 140, 58, 80, 159, 151],
-		type: [
+		types: [
 			'absence',
 			'slack-time',
 			'billable',
@@ -26,15 +27,15 @@ export const ChartPreview = component$(() => {
 			'Presales - Companys functional productivity',
 			'Attività amministrative e legali - Functional',
 		],
-	};
+	});
 
-	const dataDonutOneType = {
+	const dataDonutOneType = useSignal<DonutChartSeries>({
 		series: [134],
-		type: ['absence'] as ProjectType[],
+		types: ['absence'] as ProjectType[],
 		labels: ['Holiday - Absence'],
-	};
+	});
 
-	const dataColumn: ColumnChartSeries[] = [
+	const dataColumn = useSignal<ColumnChartSeries[]>([
 		{
 			label: 'Billable',
 			type: 'billable',
@@ -71,9 +72,9 @@ export const ChartPreview = component$(() => {
 				{ x: '2024-08-06', y: 200 },
 			],
 		},
-	];
+	]);
 
-	const dataColumnOneType: ColumnChartSeries[] = [
+	const dataColumnOneType = useSignal<ColumnChartSeries[]>([
 		{
 			label: 'Billable',
 			type: 'billable',
@@ -92,70 +93,51 @@ export const ChartPreview = component$(() => {
 				{ x: '2024-08-11', y: 0 },
 			],
 		},
-	];
+	]);
 
-	const listData = useStore([
+	const listData = useSignal([
 		{
-			projectType: 'slack-time' as ProjectType,
+			type: 'slack-time' as ProjectType,
 			label: 'Attività amministrative e legali - Functional',
 			hours: 345,
 			percentage: 23,
 		},
 		{
-			projectType: 'absence' as ProjectType,
+			type: 'absence' as ProjectType,
 			label: 'Holiday - Absence',
 			hours: 40,
 			percentage: 24,
 		},
 		{
-			projectType: 'billable' as ProjectType,
+			type: 'billable' as ProjectType,
 			label: 'CLT-0509/24 - Massive Dynamic - Rinnovo 2024',
 			hours: 4999,
 			percentage: 24,
 		},
 	]);
 
-	const dataLeft = useSignal(9);
-
-	const loadMoreListAction = $(() => {
-		if (dataLeft.value === 0) return;
-
-		[...Array(1)].map((_) => {
-			listData.push(...listData);
-		});
-		dataLeft.value = dataLeft.value - 3;
-	});
-
 	useTask$(() => {
 		[...Array(2)].map((_) => {
-			listData.push(...listData);
+			listData.value.push(...listData.value);
 		});
 	});
 
 	return (
 		<div class='w-full flex flex-col p-1 text-center items-center'>
 			<h1 class='text-2xl'>Report list</h1>
-			<ReportList data={listData} loadMoreAction={loadMoreListAction} dataLeft={dataLeft} />
+			<ReportList data={listData} resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE} />
 
 			<h1 class='text-2xl'>Donut</h1>
 			<div class='w-full flex flex-row justify-between'>
-				<DonutChart
-					series={dataDonut.series}
-					types={dataDonut.type}
-					labels={dataDonut.labels}
-				/>
+				<DonutChart data={dataDonut} />
 
-				<DonutChart
-					series={dataDonutOneType.series}
-					types={dataDonutOneType.type}
-					labels={dataDonutOneType.labels}
-				/>
+				<DonutChart data={dataDonutOneType} />
 			</div>
 
 			<h1 class='text-2xl'>Column chart</h1>
-			<ColumnChart series={dataColumn} />
+			<ColumnChart data={dataColumn} />
 
-			<ColumnChart series={dataColumnOneType} />
+			<ColumnChart data={dataColumnOneType} />
 		</div>
 	);
 });

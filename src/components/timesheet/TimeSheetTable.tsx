@@ -129,7 +129,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						<tr>
 							<th scope='col' class='px-6 text-left border border-surface-70'>
 								<h3 class='text-base text-dark-grey'>
-									{t('TIMESHEET_TABLE_PROJECT_COL_LABLE')}
+									{t('TIMESHEET_TABLE_PROJECT_COL_LABEL')}
 								</h3>
 							</th>
 							{days.value.map((day, key) => (
@@ -148,12 +148,12 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 							))}
 							<th scope='col' class='py-3 px-4 border border-surface-70'>
 								<h3 class='text-base font-bold'>
-									{t('TIMESHEET_TABLE_TOTAL_COL_LABLE')}
+									{t('TIMESHEET_TABLE_TOTAL_COL_LABEL')}
 								</h3>
 							</th>
 							<th scope='col' class='py-3 px-4 border border-surface-70'>
 								<h3 class='text-base font-bold'>
-									{t('TIMESHEET_TABLE_ACTIONS_COL_LABLE')}
+									{t('TIMESHEET_TABLE_ACTIONS_COL_LABEL')}
 								</h3>
 							</th>
 						</tr>
@@ -294,7 +294,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								class='px-6 py-4 text-left text-base border border-surface-50'
 							>
 								<h3 class='text-base font-bold text-dark-grey'>
-									{t('TIMESHEET_TABLE_TOTAL_FOOTER_LABLE')}
+									{t('TIMESHEET_TABLE_TOTAL_FOOTER_LABEL')}
 								</h3>
 							</th>
 							{days.value.map((day, key) => {

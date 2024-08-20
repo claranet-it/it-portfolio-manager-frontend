@@ -1,25 +1,31 @@
-import { component$, useComputed$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { ProjectType } from '@models/project';
+import { component$, Signal, useComputed$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { DonutChartSeries } from '@models/report';
 import ApexCharts from 'apexcharts';
 import { t } from 'src/locale/labels';
 import { getHexFromType } from 'src/utils/report';
 import { getFormattedHours } from 'src/utils/timesheet';
 
 interface DonutChartProps {
-	series: number[];
-	types?: ProjectType[];
-	labels: string[];
+	data: Signal<DonutChartSeries>;
 }
 
-export const DonutChart = component$<DonutChartProps>(({ series, types, labels }) => {
+export const DonutChart = component$<DonutChartProps>(({ data }) => {
 	const ref = useSignal<HTMLElement>();
 
-	const totalHours = series.reduce((a, b) => a + b, 0);
+	const totalHours = useComputed$(() => {
+		return data.value.series.reduce((a, b) => a + b, 0);
+	});
+
+	const colors = useComputed$(() => {
+		if (data.value.colors) return data.value.colors;
+
+		return data.value.types?.map((type) => getHexFromType(type));
+	});
 
 	const options = useComputed$(() => {
 		return {
-			series: series,
-			colors: types?.map((type) => getHexFromType(type)),
+			series: data.value.series,
+			colors: colors.value,
 			chart: {
 				type: 'donut',
 			},
@@ -64,7 +70,7 @@ export const DonutChart = component$<DonutChartProps>(({ series, types, labels }
 					},
 				},
 			},
-			labels: labels,
+			labels: data.value.labels,
 			dataLabels: {
 				enabled: false,
 			},
@@ -75,7 +81,8 @@ export const DonutChart = component$<DonutChartProps>(({ series, types, labels }
 				labels: {
 					formatter: (_: string, opts: any) => {
 						const index = opts.seriesIndex;
-						const percentage = ((series[index] / totalHours) * 100).toFixed(2) + '%';
+						const percentage =
+							((data.value.series[index] / totalHours.value) * 100).toFixed(2) + '%';
 						return percentage;
 					},
 				},
@@ -84,14 +91,15 @@ export const DonutChart = component$<DonutChartProps>(({ series, types, labels }
 	});
 
 	useVisibleTask$(async ({ track }) => {
-		track(() => series);
-		track(() => types);
-		track(() => labels);
+		track(() => data.value.series);
+		track(() => data.value.types);
+		track(() => data.value.labels);
 		track(() => options.value);
 
 		const chart = new ApexCharts(ref.value, options.value);
 		chart.render();
+		return () => chart.destroy();
 	});
 
-	return <div ref={ref} class='w-[32rem] py-6' />;
+	return <div ref={ref} class='w-full' />;
 });
