@@ -26,9 +26,12 @@ export const Report = component$(() => {
 	const selectedProjectSig = useSignal<Project>(INIT_PROJECT_VALUE);
 	const selectedTaskSig = useSignal<Task>('' as Task);
 	const selectedNameSig = useSignal<string>('');
-	const ref = useSignal<HTMLElement>();
 	const selectedTab = useSignal<RepotTab>('project');
 	const showProjectsDetails = useSignal(false);
+
+	const productivityTableRef = useSignal<HTMLElement>();
+	const projectReportDetailsRef = useSignal<HTMLElement>();
+	const projectReportPreviewRef = useSignal<HTMLElement>();
 
 	const { results: productivityResults } = useProductivity(
 		selectedCustomerSig,
@@ -134,13 +137,19 @@ export const Report = component$(() => {
 					>
 						<div class='flex sm:flex-col md:flex-row lg:flex-row md:justify-between lg:justify-between'>
 							<ProductivityLegend />
-							<Button variant={'link'} onClick$={() => handlePrint(ref)}>
+							<Button
+								variant={'link'}
+								onClick$={() => handlePrint(productivityTableRef)}
+							>
 								<span class='inline-flex items-end gap-1'>
 									{getIcon('Downlaod')} Download report
 								</span>
 							</Button>
 						</div>
-						<ProductivityTable results={productivityResults.data} ref={ref} />
+						<ProductivityTable
+							results={productivityResults.data}
+							ref={productivityTableRef}
+						/>
 					</div>
 					<div
 						class='hidden flex flex-col  gap-6'
@@ -151,11 +160,13 @@ export const Report = component$(() => {
 						{showProjectsDetails.value ? (
 							<div class='flex flex-col gap-0'>
 								<ReportHeader
+									printableComponent={projectReportDetailsRef}
 									customer={selectedCustomerSig}
 									data={projectResults.data}
 								/>
 
 								<ProjectReportDetails
+									ref={projectReportDetailsRef}
 									data={projectResults.data}
 									from={from}
 									to={to}
@@ -167,12 +178,14 @@ export const Report = component$(() => {
 									{t('TIMESHEET_TABLE_PROJECT_COL_LABEL')}
 								</h3>
 								<ReportHeader
+									printableComponent={projectReportPreviewRef}
 									data={projectResults.data}
 									showTopCustomer
 									showTopProject
 								/>
 
 								<ProjectReportPreview
+									ref={projectReportPreviewRef}
 									data={projectResults.data}
 									from={from}
 									to={to}
