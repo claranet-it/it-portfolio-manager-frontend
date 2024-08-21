@@ -20,7 +20,7 @@ import { INIT_PROJECT_VALUE } from 'src/utils/constants';
 import { handlePrint } from 'src/utils/handlePrint';
 
 export const Report = component$(() => {
-	const { from, to, nextWeek, prevWeek } = useGetTimeSheetDays();
+	const { from, to, nextWeek, prevWeek, currentWeek } = useGetTimeSheetDays();
 
 	const selectedCustomerSig = useSignal<Customer>('');
 	const selectedProjectSig = useSignal<Project>(INIT_PROJECT_VALUE);
@@ -66,7 +66,15 @@ export const Report = component$(() => {
 		<div class='w-full px-6 pt-2.5 space-y-6'>
 			<div class='flex sm:flex-col md:flex-row lg:flex-row justify-between gap-2'>
 				<h1 class='text-2xl font-bold text-darkgray-900 me-4'>{t('REPORT_PAGE_TITLE')}</h1>
-				<DataRange from={from} to={to} nextAction={nextWeek} prevAction={prevWeek} />
+
+				<div class='flex flex-row gap-2'>
+					<DataRange from={from} to={to} nextAction={nextWeek} prevAction={prevWeek} />
+					<div class='flex items-end'>
+						<Button variant={'outline'} onClick$={currentWeek}>
+							{t('THIS_WEEK')}
+						</Button>
+					</div>
+				</div>
 			</div>
 
 			<ReportFilters

@@ -29,6 +29,14 @@ input[type='time']::-webkit-calendar-picker-indicator {
 	-webkit-appearance: none;
 }
 
+.datepicker-picker .selected {
+	@apply bg-clara-red;
+}
+
+.datepicker-picker {
+	box-shadow: none;
+}
+
 @media screen {
 	.table-left-sticky th:first-child {
 		@apply sticky left-1;

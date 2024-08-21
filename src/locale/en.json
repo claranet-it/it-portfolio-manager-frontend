@@ -135,5 +135,9 @@
 	"CHART_HOURS_LABEL": "hours",
 	"REPORT_LIST_LOAD_MORE_BUTTON": "Load more (#left left)",
 	"TOP_PROJECT_LABEL": "Top project",
-	"TOTAL_TIME_LABEL": "Total time"
+	"TOTAL_TIME_LABEL": "Total time",
+	"DATARANGE_SELECT_TIME_LABEL": "Select time period",
+	"DATARANGE_START_LABEL": "Select data start",
+	"DATARANGE_END_LABEL": "Select data end",
+	"DATARANGE_TOO_LONG": "Time period selected is too long!"
 }
