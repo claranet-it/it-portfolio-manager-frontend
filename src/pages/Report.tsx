@@ -6,6 +6,7 @@ import { Task } from '@models/task';
 import { Button } from 'src/components/Button';
 import { DataRange } from 'src/components/form/DataRange';
 import { getIcon } from 'src/components/icons';
+import { GroupByList } from 'src/components/report/GropuByList';
 import { ProductivityLegend } from 'src/components/report/ProductivityLegend';
 import { ProductivityTable } from 'src/components/report/ProductivityTable';
 import { ProjectReportDetails } from 'src/components/report/ProjectReportDetails';
@@ -171,6 +172,8 @@ export const Report = component$(() => {
 									from={from}
 									to={to}
 								/>
+
+								<GroupByList data={projectResults.data} />
 							</div>
 						) : (
 							<div class='flex flex-col gap-6'>
