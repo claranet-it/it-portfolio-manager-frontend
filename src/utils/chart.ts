@@ -267,6 +267,39 @@ export const getTopCustomer = (data: ReportTimeEntry[]): string => {
 	}, '');
 };
 
+type GroupByListRow = {
+	title: string;
+	duration: number;
+};
+
+export type GroupByKeys = keyof ReportTimeEntry;
+
+export const groupBy = (data: ReportTimeEntry[], groupKey: GroupByKeys): GroupByListRow[] => {
+	const groupedResult = data.reduce(
+		(prev: Record<string, GroupByListRow>, time: ReportTimeEntry) => {
+			let key;
+			if (typeof time[groupKey] === 'object') {
+				key = time[groupKey]['name'] as string;
+			} else {
+				key = time[groupKey] as string;
+			}
+
+			if (prev[key]) {
+				prev[key].duration = prev[key].duration + time.hours;
+			} else {
+				prev[key] = {
+					title: key,
+					duration: time.hours,
+				};
+			}
+			return prev;
+		},
+		{}
+	);
+
+	return Object.values(groupedResult);
+};
+
 const generateHexColor = (input: string): string | null => {
 	// Extract usable characters from the input: only hex characters (0-9, a-f, A-F)
 	let usableInput = input.replace(/[^0-9a-fA-F]/g, '');
