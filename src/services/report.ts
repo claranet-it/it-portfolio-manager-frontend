@@ -38,7 +38,7 @@ type getTimeEntryResponse = Omit<TimeEntry, 'isUndaved' | 'index' | 'project'> &
 
 export const getReportTimeEntry = async (from: string, to: string): Promise<ReportTimeEntry[]> => {
 	const response = await getHttpResponse<getTimeEntryResponse[]>({
-		path: `time-entry/time-report`,
+		path: `report/time-entries`,
 		params: {
 			from,
 			to,
