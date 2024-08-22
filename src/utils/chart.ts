@@ -1,5 +1,13 @@
 import { ProjectType } from '@models/project';
-import { ColumnChartSeries, DonutChartSeries, ReportRow, ReportTimeEntry } from '@models/report';
+import {
+	ColumnChartSeries,
+	DonutChartSeries,
+	GroupByKeys,
+	GroupByListRow,
+	ReportRow,
+	ReportTimeEntry,
+	ReportWhere,
+} from '@models/report';
 import { TimeEntry } from '@models/timeEntry';
 import { formatDateString, getDaysInRange } from './dates';
 import { getProjectCateogriesProp } from './timesheet';
@@ -267,40 +275,36 @@ export const getTopCustomer = (data: ReportTimeEntry[]): string => {
 	}, '');
 };
 
-type GroupByListRow = {
-	title: string;
-	duration: number;
+export const groupBy = (
+	data: ReportTimeEntry[],
+	key: GroupByKeys,
+	where?: ReportWhere
+): GroupByListRow[] => {
+	const results = data.reduce((prev: Record<string, GroupByListRow>, time: ReportTimeEntry) => {
+		if (where != undefined && time[where?.key] !== where.value) return prev;
+
+		let _key;
+		if (typeof time[key] === 'object') {
+			_key = time[key]['name'] as string;
+		} else {
+			_key = time[key] as string;
+		}
+
+		if (prev[_key]) {
+			prev[_key].duration = prev[_key].duration + time.hours;
+		} else {
+			prev[_key] = {
+				title: _key,
+				duration: time.hours,
+			};
+		}
+		return prev;
+	}, {});
+
+	return Object.values(results);
 };
 
-export type GroupByKeys = keyof ReportTimeEntry;
-
-export const groupBy = (data: ReportTimeEntry[], groupKey: GroupByKeys): GroupByListRow[] => {
-	const groupedResult = data.reduce(
-		(prev: Record<string, GroupByListRow>, time: ReportTimeEntry) => {
-			let key;
-			if (typeof time[groupKey] === 'object') {
-				key = time[groupKey]['name'] as string;
-			} else {
-				key = time[groupKey] as string;
-			}
-
-			if (prev[key]) {
-				prev[key].duration = prev[key].duration + time.hours;
-			} else {
-				prev[key] = {
-					title: key,
-					duration: time.hours,
-				};
-			}
-			return prev;
-		},
-		{}
-	);
-
-	return Object.values(groupedResult);
-};
-
-const generateHexColor = (input: string): string | null => {
+export const generateHexColor = (input: string): string | null => {
 	// Extract usable characters from the input: only hex characters (0-9, a-f, A-F)
 	let usableInput = input.replace(/[^0-9a-fA-F]/g, '');
 

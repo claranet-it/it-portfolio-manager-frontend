@@ -7,6 +7,7 @@ import {
 	useSignal,
 	useVisibleTask$,
 } from '@builder.io/qwik';
+import { initFlowbite } from 'flowbite';
 import { t } from '../../locale/labels';
 
 interface selectInterface {
@@ -65,6 +66,10 @@ export const Select = component$<selectInterface>(
 			onChange$ && onChange$(value.value);
 		});
 
+		useVisibleTask$(() => {
+			initFlowbite();
+		});
+
 		return (
 			<form class={['w-full relative', sizeStyle.value, hidden ? 'hidden' : 'block']}>
 				<label class={`block text-sm font-normal ${labelStyle.value}`}>{label}</label>
@@ -115,12 +120,7 @@ export const Select = component$<selectInterface>(
 									updateValue(option);
 								}}
 							>
-								<a
-									href='#'
-									class='block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
-								>
-									{option}
-								</a>
+								<span class='block px-4 py-2 hover:bg-gray-100'>{option}</span>
 							</li>
 						))}
 					</ul>
@@ -145,9 +145,9 @@ export const Select = component$<selectInterface>(
 									d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'
 								/>
 							</svg>
-							<a href='#' class='block text-sm text-clara-red '>
+							<span class='block text-sm text-clara-red '>
 								{t('clear_filter_label')}
-							</a>
+							</span>
 						</div>
 					)}
 				</div>
