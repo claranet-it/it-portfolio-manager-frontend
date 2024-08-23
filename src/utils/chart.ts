@@ -282,16 +282,17 @@ const groupByKeys = async (
 	keys: GroupByKeys[],
 	level: number
 ): Promise<ReportGroupedData[]> => {
-	const key = keys[level];
+	const key: GroupByKeys = keys[level];
 
 	// Group the data by the current key
 	const grouped: { [key: string]: ReportGroupedData } = {};
 
 	data.forEach(async (entry) => {
-		let groupKey;
+		let groupKey: string;
 
 		if (typeof entry[key] === 'object') {
-			groupKey = entry[key]['name'];
+			const obj = entry[key] as { name: string };
+			groupKey = obj?.['name'];
 		} else {
 			groupKey = entry[key] as string;
 		}
