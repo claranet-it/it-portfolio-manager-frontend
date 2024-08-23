@@ -30,6 +30,7 @@ export const DonutChart = component$<DonutChartProps>(({ data }) => {
 				type: 'donut',
 			},
 			stroke: {
+				show: false,
 				colors: ['white'],
 				lineCap: '',
 			},
