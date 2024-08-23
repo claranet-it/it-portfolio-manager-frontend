@@ -142,5 +142,7 @@
 	"DATARANGE_END_LABEL": "Select data end",
 	"DATARANGE_TOO_LONG": "Time period selected is too long!",
 	"GROUP_BY_LABEL": "Group by",
-	"DATE_LABEL": "Date"
+	"DATE_LABEL": "Date",
+	"NONE_LABEL": "(none)",
+	"EMPTY_LABEL": "(empty)"
 }

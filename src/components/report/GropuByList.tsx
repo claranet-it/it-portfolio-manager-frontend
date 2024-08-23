@@ -1,8 +1,9 @@
-import { $, component$, Signal, useComputed$, useSignal } from '@builder.io/qwik';
+import { component$, Signal, useSignal } from '@builder.io/qwik';
 import { Project } from '@models/project';
-import { GroupByKeys, ReportTimeEntry } from '@models/report';
+import { ReportTimeEntry } from '@models/report';
+import { useGroupList } from 'src/hooks/report/useGroupList';
 import { t } from 'src/locale/labels';
-import { getReportTotalHours, groupBy } from 'src/utils/chart';
+import { getReportTotalHours } from 'src/utils/chart';
 import { getFormattedHours } from 'src/utils/timesheet';
 import { UUID } from 'src/utils/uuid';
 import { Select } from '../form/Select';
@@ -13,39 +14,44 @@ interface GroupByListProps {
 }
 
 export const GroupByList = component$<GroupByListProps>(({ project, data }) => {
-	const groupKeys = useSignal(['project', 'task', 'name', 'date', 'description', '']);
-
-	const selectOptions = useSignal([
-		t('PROJECT_LABEL'),
-		t('TASK_LABEL'),
-		t('USER_LABEL'),
-		t('DATE_LABEL'),
-		t('DESCRIPTION_LABEL'),
-		'',
-	]);
-
-	const valueSelected = useSignal<string>(t('TASK_LABEL'));
-	const valueSelectedValue = useSignal<GroupByKeys>('task');
-
-	const groupedBy = useComputed$(() => {
-		return groupBy(data, valueSelectedValue.value);
-	});
-
-	const onChangeGroup = $(() => {
-		const index = selectOptions.value.indexOf(valueSelected.value);
-		valueSelectedValue.value = groupKeys.value[index] as GroupByKeys;
-	});
+	const {
+		results,
+		valueL1Selected,
+		valueL2Selected,
+		valueL3Selected,
+		onChangeGroupL1,
+		onChangeGroupL2,
+		onChangeGroupL3,
+		selectOptions,
+	} = useGroupList(project, data);
 
 	return (
 		<div class='border-t border-sourface-20 py-3'>
 			<div class='flex flex-row gap-2 items-center'>
 				<span>{t('GROUP_BY_LABEL')}</span>
+
 				<Select
 					id={UUID()}
-					value={valueSelected}
-					options={selectOptions}
-					onChange$={onChangeGroup}
+					value={valueL1Selected}
+					options={useSignal(selectOptions)}
+					onChange$={onChangeGroupL1}
 				/>
+
+				<Select
+					id={UUID()}
+					value={valueL2Selected}
+					options={useSignal(selectOptions)}
+					onChange$={onChangeGroupL2}
+				/>
+
+				{valueL2Selected.value != t('NONE_LABEL') && (
+					<Select
+						id={UUID()}
+						value={valueL3Selected}
+						options={useSignal(selectOptions)}
+						onChange$={onChangeGroupL3}
+					/>
+				)}
 			</div>
 
 			<div class='relative overflow-x-auto'>
@@ -65,18 +71,51 @@ export const GroupByList = component$<GroupByListProps>(({ project, data }) => {
 					</thead>
 					<tbody>
 						<tr class='bg-white border-b text-base font-bold text-dark-grey'>
-							<td class='py-4 flex-1'>{project.value.name}</td>
-							<td class='py-4 flex-auto w-64 text-right'>
+							<td class='pb-2 flex-1'>{project.value.name}</td>
+							<td class='pb-2 flex-auto w-64 text-right'>
 								{getFormattedHours(getReportTotalHours(data))} h
 							</td>
 						</tr>
-						{groupedBy.value.map((row) => (
-							<tr class='bg-white'>
-								<td class='py-4 flex-1 text-base'>{row.title}</td>
-								<td class='py-4 flex-auto w-64 text-right text-base'>
-									{getFormattedHours(row.duration)} h
-								</td>
-							</tr>
+						{/* GROUP BY L1 */}
+						{results.value.map((row) => (
+							<>
+								<tr class='bg-white'>
+									<td class='py-4 pl-4 flex-1 text-base'>
+										{row.key !== '' ? row.key : t('EMPTY_LABEL')}
+									</td>
+									<td class='py-4 flex-auto w-64 text-right text-base'>
+										{getFormattedHours(row.duration)} h
+									</td>
+								</tr>
+								{/* GROUP BY L2 */}
+								{row.subGroups?.map((level2Row) => (
+									<>
+										<tr class='bg-white'>
+											<td class='py-1 pl-12 flex-1 text-base '>
+												{level2Row.key !== ''
+													? level2Row.key
+													: t('EMPTY_LABEL')}
+											</td>
+											<td class='py-1 flex-auto w-64 text-right text-base'>
+												{getFormattedHours(level2Row.duration)} h
+											</td>
+										</tr>
+										{/* GROUP BY L3 */}
+										{level2Row.subGroups?.map((level23Row) => (
+											<tr class='bg-white'>
+												<td class='py-1 pl-20 flex-1 text-base '>
+													{level23Row.key !== ''
+														? level23Row.key
+														: t('EMPTY_LABEL')}
+												</td>
+												<td class='py-1 flex-auto w-64 text-right text-base'>
+													{getFormattedHours(level23Row.duration)} h
+												</td>
+											</tr>
+										))}
+									</>
+								))}
+							</>
 						))}
 					</tbody>
 				</table>

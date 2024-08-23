@@ -52,14 +52,10 @@ export type ReportRow = {
 	percentage: number;
 };
 
-export type GroupByListRow = {
-	title: string;
-	duration: number;
-};
-
-export type ReportWhere = {
-	key: GroupByKeys;
-	value: string;
-};
-
 export type GroupByKeys = keyof ReportTimeEntry;
+
+export type ReportGroupedData = {
+	[key: string]: any;
+	duration: number;
+	subGroups?: ReportGroupedData[];
+};

@@ -3,10 +3,9 @@ import {
 	ColumnChartSeries,
 	DonutChartSeries,
 	GroupByKeys,
-	GroupByListRow,
+	ReportGroupedData,
 	ReportRow,
 	ReportTimeEntry,
-	ReportWhere,
 } from '@models/report';
 import { TimeEntry } from '@models/timeEntry';
 import { formatDateString, getDaysInRange } from './dates';
@@ -275,33 +274,52 @@ export const getTopCustomer = (data: ReportTimeEntry[]): string => {
 	}, '');
 };
 
-export const groupBy = (
+/*
+Recursive function that groups data based on the current key
+*/
+const groupByKeys = async (
 	data: ReportTimeEntry[],
-	key: GroupByKeys,
-	where?: ReportWhere
-): GroupByListRow[] => {
-	const results = data.reduce((prev: Record<string, GroupByListRow>, time: ReportTimeEntry) => {
-		if (where != undefined && time[where?.key] !== where.value) return prev;
+	keys: GroupByKeys[],
+	level: number
+): Promise<ReportGroupedData[]> => {
+	const key = keys[level];
 
-		let _key;
-		if (typeof time[key] === 'object') {
-			_key = time[key]['name'] as string;
+	// Group the data by the current key
+	const grouped: { [key: string]: ReportGroupedData } = {};
+
+	data.forEach(async (entry) => {
+		let groupKey;
+
+		if (typeof entry[key] === 'object') {
+			groupKey = entry[key]['name'];
 		} else {
-			_key = time[key] as string;
+			groupKey = entry[key] as string;
 		}
 
-		if (prev[_key]) {
-			prev[_key].duration = prev[_key].duration + time.hours;
-		} else {
-			prev[_key] = {
-				title: _key,
-				duration: time.hours,
-			};
+		if (!grouped[groupKey]) {
+			// new elment
+			grouped[groupKey] = { key: groupKey, duration: 0, subGroups: [] };
 		}
-		return prev;
-	}, {});
 
-	return Object.values(results);
+		grouped[groupKey].duration += entry.hours;
+
+		if (keys[level + 1]) {
+			grouped[groupKey].subGroups = await groupByKeys(
+				data.filter((d) => d[key] === groupKey),
+				keys,
+				level + 1
+			);
+		}
+	});
+
+	return Promise.resolve(Object.values(grouped));
+};
+
+export const groupData = async (
+	data: ReportTimeEntry[],
+	groupBy: GroupByKeys[]
+): Promise<ReportGroupedData[]> => {
+	return groupByKeys(data, groupBy, 0);
 };
 
 export const generateHexColor = (input: string): string | null => {
