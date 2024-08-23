@@ -1,5 +1,12 @@
 import { ProjectType } from '@models/project';
-import { ColumnChartSeries, DonutChartSeries, ReportRow, ReportTimeEntry } from '@models/report';
+import {
+	ColumnChartSeries,
+	DonutChartSeries,
+	GroupByKeys,
+	ReportGroupedData,
+	ReportRow,
+	ReportTimeEntry,
+} from '@models/report';
 import { TimeEntry } from '@models/timeEntry';
 import { formatDateString, getDaysInRange } from './dates';
 import { getProjectCateogriesProp } from './timesheet';
@@ -267,7 +274,56 @@ export const getTopCustomer = (data: ReportTimeEntry[]): string => {
 	}, '');
 };
 
-const generateHexColor = (input: string): string | null => {
+/*
+Recursive function that groups data based on the current key
+*/
+const groupByKeys = async (
+	data: ReportTimeEntry[],
+	keys: GroupByKeys[],
+	level: number
+): Promise<ReportGroupedData[]> => {
+	const key: GroupByKeys = keys[level];
+
+	// Group the data by the current key
+	const grouped: { [key: string]: ReportGroupedData } = {};
+
+	data.forEach(async (entry) => {
+		let groupKey: string;
+
+		if (typeof entry[key] === 'object') {
+			const obj = entry[key] as { name: string };
+			groupKey = obj?.['name'];
+		} else {
+			groupKey = entry[key] as string;
+		}
+
+		if (!grouped[groupKey]) {
+			// new elment
+			grouped[groupKey] = { key: groupKey, duration: 0, subGroups: [] };
+		}
+
+		grouped[groupKey].duration += entry.hours;
+
+		if (keys[level + 1]) {
+			grouped[groupKey].subGroups = await groupByKeys(
+				data.filter((d) => d[key] === groupKey),
+				keys,
+				level + 1
+			);
+		}
+	});
+
+	return Promise.resolve(Object.values(grouped));
+};
+
+export const groupData = async (
+	data: ReportTimeEntry[],
+	groupBy: GroupByKeys[]
+): Promise<ReportGroupedData[]> => {
+	return groupByKeys(data, groupBy, 0);
+};
+
+export const generateHexColor = (input: string): string | null => {
 	// Extract usable characters from the input: only hex characters (0-9, a-f, A-F)
 	let usableInput = input.replace(/[^0-9a-fA-F]/g, '');
 

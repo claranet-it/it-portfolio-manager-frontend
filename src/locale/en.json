@@ -76,6 +76,7 @@
 	"PROJECT_LABEL": "Project",
 	"TASK_LABEL": "Task",
 	"USER_LABEL": "User",
+	"DURATION_LABEL": "Duration",
 	"EFFORT_PAGE_TITLE": "Effort",
 	"SKILLS_PAGE_TITLE": "Skills",
 	"TIMESHEET_PAGE_TITLE": "My timesheet",
@@ -139,5 +140,9 @@
 	"DATARANGE_SELECT_TIME_LABEL": "Select time period",
 	"DATARANGE_START_LABEL": "Select data start",
 	"DATARANGE_END_LABEL": "Select data end",
-	"DATARANGE_TOO_LONG": "Time period selected is too long!"
+	"DATARANGE_TOO_LONG": "Time period selected is too long!",
+	"GROUP_BY_LABEL": "Group by",
+	"DATE_LABEL": "Date",
+	"NONE_LABEL": "(none)",
+	"EMPTY_LABEL": "(empty)"
 }

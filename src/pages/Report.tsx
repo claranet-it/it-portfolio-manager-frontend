@@ -6,6 +6,7 @@ import { Task } from '@models/task';
 import { Button } from 'src/components/Button';
 import { DataRange } from 'src/components/form/DataRange';
 import { getIcon } from 'src/components/icons';
+import { GroupByList } from 'src/components/report/GropuByList';
 import { ProductivityLegend } from 'src/components/report/ProductivityLegend';
 import { ProductivityTable } from 'src/components/report/ProductivityTable';
 import { ProjectReportDetails } from 'src/components/report/ProjectReportDetails';
@@ -66,7 +67,7 @@ export const Report = component$(() => {
 	});
 
 	return (
-		<div class='w-full px-6 pt-2.5 space-y-6'>
+		<div class='w-full px-6 py-2.5 space-y-6'>
 			<div class='flex sm:flex-col md:flex-row lg:flex-row justify-between gap-2'>
 				<h1 class='text-2xl font-bold text-darkgray-900 me-4'>{t('REPORT_PAGE_TITLE')}</h1>
 
@@ -128,7 +129,7 @@ export const Report = component$(() => {
 						</li>
 					</ul>
 				</div>
-				<div id='report-tab-content' class='border border-surface-70 p-6'>
+				<div id='report-tab-content' class='border border-surface-70 p-6 mb-2'>
 					<div
 						class='hidden flex flex-col  gap-6'
 						id='productivity'
@@ -146,6 +147,7 @@ export const Report = component$(() => {
 								</span>
 							</Button>
 						</div>
+
 						<ProductivityTable
 							results={productivityResults.data}
 							ref={productivityTableRef}
@@ -158,7 +160,7 @@ export const Report = component$(() => {
 						aria-labelledby='projects-tab'
 					>
 						{showProjectsDetails.value ? (
-							<div class='flex flex-col gap-0'>
+							<div class='flex flex-col gap-1'>
 								<ReportHeader
 									printableComponent={projectReportDetailsRef}
 									customer={selectedCustomerSig}
@@ -171,6 +173,13 @@ export const Report = component$(() => {
 									from={from}
 									to={to}
 								/>
+
+								{selectedProjectSig.value !== INIT_PROJECT_VALUE && (
+									<GroupByList
+										project={selectedProjectSig}
+										data={projectResults.data}
+									/>
+								)}
 							</div>
 						) : (
 							<div class='flex flex-col gap-6'>
