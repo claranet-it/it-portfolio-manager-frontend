@@ -28,7 +28,7 @@ export const getProductivity = async (
 };
 
 // TODO: Remove after BE has been updated with correct project type
-type getTimeEntryResponse = Omit<TimeEntry, 'isUndaved' | 'index' | 'project'> & {
+type getTimeEntryResponse = Omit<TimeEntry, 'isUnsaved' | 'index' | 'project'> & {
 	email: string;
 	project: string;
 	projectType: ProjectType;

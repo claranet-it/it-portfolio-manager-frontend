@@ -136,6 +136,7 @@
 	"CHART_HOURS_LABEL": "hours",
 	"REPORT_LIST_LOAD_MORE_BUTTON": "Load more (#left left)",
 	"TOP_PROJECT_LABEL": "Top project",
+	"TOP_CUSTOMER_LABEL": "Top client",
 	"TOTAL_TIME_LABEL": "Total time",
 	"DATARANGE_SELECT_TIME_LABEL": "Select time period",
 	"DATARANGE_START_LABEL": "Select data start",

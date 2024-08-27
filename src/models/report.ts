@@ -37,7 +37,7 @@ export type DonutChartSeries = {
 	colors?: string[];
 };
 
-export type ReportTimeEntry = Omit<TimeEntry, 'isUndaved' | 'index'> & {
+export type ReportTimeEntry = Omit<TimeEntry, 'isUnsaved' | 'index'> & {
 	email: string;
 	crew: string;
 };

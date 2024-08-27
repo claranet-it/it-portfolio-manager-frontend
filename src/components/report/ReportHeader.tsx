@@ -62,7 +62,7 @@ export const ReportHeader = component$<ReportHeaderProps>(
 
 						{showTopCustomer && (
 							<h3 class='text-base font-normal text-dark-grey align-middle'>
-								{t('TOP_PROJECT_LABEL')}:{' '}
+								{t('TOP_CUSTOMER_LABEL')}:{' '}
 								<span class='font-bold'>{topCustomer.value}</span>
 							</h3>
 						)}
