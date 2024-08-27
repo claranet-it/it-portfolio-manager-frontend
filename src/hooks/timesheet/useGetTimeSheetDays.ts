@@ -3,8 +3,8 @@ import { Day } from '../../models/timeEntry';
 import {
 	currentWeek as currentWeekAsRange,
 	getDaysInRange,
-	nextWeek as nextWeekAsRange,
-	prevWeek as prevWeekAsRange,
+	nextRange,
+	prevRange,
 } from '../../utils/dates';
 
 export const useGetTimeSheetDays = () => {
@@ -19,14 +19,16 @@ export const useGetTimeSheetDays = () => {
 	});
 
 	const nextWeek = $(() => {
-		const range = nextWeekAsRange(from.value);
+		const daysInRange = getDaysInRange(from.value, to.value).length - 1;
+		const range = nextRange(to.value, daysInRange);
 		from.value = range.from;
 		to.value = range.to;
 		updateDays();
 	});
 
 	const prevWeek = $(() => {
-		const range = prevWeekAsRange(from.value);
+		const daysInRange = getDaysInRange(from.value, to.value).length - 1;
+		const range = prevRange(from.value, daysInRange);
 		from.value = range.from;
 		to.value = range.to;
 		updateDays();

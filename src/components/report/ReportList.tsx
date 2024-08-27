@@ -23,7 +23,7 @@ export const ReportList = component$<ReportListProps>(({ data, resultsPerPage })
 
 	return (
 		<div class='w-full divide-y divide-surface-70'>
-			<div class='max-h-80 flex flex-col text-dark-grey overflow-auto'>
+			<div class='flex flex-col text-dark-grey'>
 				{data.value
 					.sort((a, b) => (a.percentage < b.percentage ? 1 : -1))
 					.slice(0, offset.value)

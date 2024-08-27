@@ -4,9 +4,9 @@ import { TimeEntry } from '@models/timeEntry';
 import { Button } from 'src/components/Button';
 import { DataRange } from 'src/components/form/DataRange';
 import { NewTaskForm } from 'src/components/form/NewTaskForm';
+import { NewTimeEntryModal } from 'src/components/modals/NewTimeEntryModal';
 import { ProjectCategoryLegend } from 'src/components/timesheet/ProjectCategoryLegend';
 import { TimeSheetTable } from 'src/components/timesheet/TimeSheetTable';
-import { NewTimeEntryModal } from 'src/components/modals/NewTimeEntryModal';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
 import { Modal } from '../components/modals/Modal';
 import { t } from '../locale/labels';
@@ -34,10 +34,12 @@ export const Timesheet = component$(() => {
 
 					<div class='flex items-end justify-end gap-2'>
 						<DataRange
+							title={t('DATARANGE_SELECT_WEEK_LABEL')}
 							from={from}
 							to={to}
 							nextAction={nextWeek}
 							prevAction={prevWeek}
+							limitDays={7}
 						/>
 						<Button variant={'outline'} onClick$={currentWeek}>
 							{t('THIS_WEEK')}

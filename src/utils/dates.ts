@@ -71,8 +71,26 @@ export const nextWeek = (from: Date): Range => {
 	return dateToWeekRange(nextWeek);
 };
 
+export const nextRange = (from: Date, range: number = 7): Range => {
+	const nextRange = new Date(from);
+	nextRange.setDate(nextRange.getDate() + range);
+	return {
+		from: from,
+		to: nextRange,
+	};
+};
+
 export const prevWeek = (from: Date): Range => {
 	const prevWeek = new Date(from);
 	prevWeek.setDate(prevWeek.getDate() - 7);
 	return dateToWeekRange(prevWeek);
+};
+
+export const prevRange = (from: Date, range: number = 7): Range => {
+	const prevRange = new Date(from);
+	prevRange.setDate(prevRange.getDate() - range);
+	return {
+		from: prevRange,
+		to: from,
+	};
 };

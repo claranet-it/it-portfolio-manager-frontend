@@ -139,6 +139,7 @@
 	"TOP_CUSTOMER_LABEL": "Top client",
 	"TOTAL_TIME_LABEL": "Total time",
 	"DATARANGE_SELECT_TIME_LABEL": "Select time period",
+	"DATARANGE_SELECT_WEEK_LABEL": "Select week period",
 	"DATARANGE_START_LABEL": "Select data start",
 	"DATARANGE_END_LABEL": "Select data end",
 	"DATARANGE_TOO_LONG": "Time period selected is too long!",

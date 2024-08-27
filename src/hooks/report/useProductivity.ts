@@ -29,7 +29,7 @@ export const useProductivity = (
 				customer.value,
 				project.value,
 				task.value,
-				nameDebunce.value,
+				nameDebunce.value.toLowerCase(),
 				formatDateString(from.value),
 				formatDateString(to.value)
 			);
