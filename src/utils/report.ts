@@ -2,7 +2,6 @@ import { ProjectType } from '@models/project';
 import { BarLegendColor } from '@models/report';
 
 export const getLegendBarColor = (type: string | ProjectType): BarLegendColor => {
-	console.log(type);
 	switch (type) {
 		case 'absence': {
 			return {

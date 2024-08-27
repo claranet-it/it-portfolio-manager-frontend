@@ -5,7 +5,7 @@ import { AppContext } from '../app';
 import { Filters } from '../components/Filters';
 import { SkillCard } from '../components/SkillCard';
 import { SkillLegend } from '../components/SkillLegend';
-import { tt } from '../locale/labels';
+import { t, tt } from '../locale/labels';
 import { getConfiguration } from '../services/configuration';
 import { getSkills } from '../services/skillMatrix';
 
@@ -88,15 +88,17 @@ export const Skills = component$(() => {
 	return (
 		<div class='w-full flex-col pt-5 px-6 space-y-6'>
 			<div class='flex sm:flex-col md:flex-row lg:flex-row md:justify-between lg:justify-between md:space-x-5 lg:space-x-5 sm:space-y-1'>
-				<Filters
-					selectedCrew={selectedCrewSig}
-					selectedName={selectedNameSig}
-					selectedServiceLine={selectedServiceLineSig}
-					selectedSkill={selectedSkillSig}
-				/>
+				<h1 class='text-2xl font-bold text-darkgray-900 me-4'>{t('SKILLS_PAGE_TITLE')}</h1>
 
 				<SkillLegend />
 			</div>
+
+			<Filters
+				selectedCrew={selectedCrewSig}
+				selectedName={selectedNameSig}
+				selectedServiceLine={selectedServiceLineSig}
+				selectedSkill={selectedSkillSig}
+			/>
 
 			<div class='flex flex-col space-y-5'>
 				{Object.entries(tableStructure.value).map(
