@@ -39,7 +39,9 @@ export const useReportProject = (
 		}
 
 		if (nameDebunce.value) {
-			results = results.filter((entry) => entry.email.includes(nameDebunce.value));
+			results = results.filter((entry) =>
+				entry.email.includes(nameDebunce.value.toLowerCase())
+			);
 		}
 
 		return results;
