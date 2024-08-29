@@ -323,7 +323,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 										key={key}
 										class='px-6 py-4 text-center border border-surface-50'
 									>
-										<span class='text-base font-bold'>
+										<span class='flex items-center justify-center text-base font-bold'>
 											{getTotalPerDay(entriesForDay)}
 											{showAlert && (
 												<span class='text-clara-red material-symbols-outlined'>
@@ -336,7 +336,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 							})}
 
 							<td class='px-6 py-4 text-right border border-surface-50' colSpan={2}>
-								<span class='text-base font-bold'>
+								<span class='flex items-center justify-center text-base font-bold'>
 									{getTotal(weekHours)}
 									{weekHasTooManyHours(weekHours) && (
 										<span class='text-clara-red material-symbols-outlined'>
