@@ -27,6 +27,9 @@ interface TimeSheetTableProps {
 	to: Signal<Date>;
 }
 
+const HOURS_PER_DAY = 8;
+const HOURS_PER_WEEK = 8 * 5;
+
 export const TimeSheetTable = component$<TimeSheetTableProps>(
 	({ newTimeEntry, days, from, to }) => {
 		const { loadTimeEntries, state, updateTimeEntries, deleteProjectEntries } =
@@ -75,8 +78,16 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			return getFormattedHours(getTotalHours(getlHoursPerProject(timeEntries)));
 		};
 
+		const dayHasTooManyHours = (timeEntries: TimeEntry[]) => {
+			return getTotalHours(getlHoursPerProject(timeEntries)) > HOURS_PER_DAY;
+		};
+
 		const getTotal = (hours: number[]) => {
 			return getFormattedHours(getTotalHoursPerRows(hours));
+		};
+
+		const weekHasTooManyHours = (hours: number[]) => {
+			return getTotalHoursPerRows(hours) > HOURS_PER_WEEK;
 		};
 
 		const getTotalPerProject = (hours: number[]) => {
@@ -121,6 +132,8 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			const color = getProjectCateogriesProp(type).borderColor;
 			return `px-6 py-4 font-medium text-left border border-surface-50 whitespace-wrap shadow-inset-leftBorder ${color}`;
 		};
+
+		const weekHours = state.dataTimeEntries.map((item) => item.hours);
 
 		return (
 			<div class='relative overflow-x-auto'>
@@ -297,25 +310,39 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 									{t('TIMESHEET_TABLE_TOTAL_FOOTER_LABEL')}
 								</h3>
 							</th>
+
 							{days.value.map((day, key) => {
+								const entriesForDay = state.dataTimeEntries.filter(
+									(t) => t.date === formatDateString(day.date)
+								);
+
+								const showAlert = dayHasTooManyHours(entriesForDay);
+
 								return (
 									<td
 										key={key}
 										class='px-6 py-4 text-center border border-surface-50'
 									>
 										<span class='text-base font-bold'>
-											{getTotalPerDay(
-												state.dataTimeEntries.filter(
-													(t) => t.date === formatDateString(day.date)
-												)
+											{getTotalPerDay(entriesForDay)}
+											{showAlert && (
+												<span class='text-clara-red material-symbols-outlined'>
+													exclamation
+												</span>
 											)}
 										</span>
 									</td>
 								);
 							})}
+
 							<td class='px-6 py-4 text-right border border-surface-50' colSpan={2}>
 								<span class='text-base font-bold'>
-									{getTotal(state.dataTimeEntries.map((item) => item.hours))}
+									{getTotal(weekHours)}
+									{weekHasTooManyHours(weekHours) && (
+										<span class='text-clara-red material-symbols-outlined'>
+											exclamation
+										</span>
+									)}
 								</span>
 							</td>
 						</tr>
