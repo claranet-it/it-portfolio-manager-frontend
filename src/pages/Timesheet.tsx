@@ -22,6 +22,8 @@ export const Timesheet = component$(() => {
 	const newTimeEntry = useSignal<TimeEntry>();
 	const { days, from, to, nextWeek, prevWeek, currentWeek } = useGetTimeSheetDays();
 
+	const DAYS_IN_WEEK = 7;
+
 	return (
 		<>
 			<div class='w-full px-6 pt-2.5 space-y-6'>
@@ -39,7 +41,7 @@ export const Timesheet = component$(() => {
 							to={to}
 							nextAction={nextWeek}
 							prevAction={prevWeek}
-							limitDays={7}
+							limitDays={DAYS_IN_WEEK}
 						/>
 						<Button variant={'outline'} onClick$={currentWeek}>
 							{t('THIS_WEEK')}
