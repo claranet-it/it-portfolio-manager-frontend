@@ -75,8 +75,16 @@ export const DataRange = component$<DataRangeProps>(
 			) as HTMLInputElement;
 			const $endDataPickerEl = document.getElementById('endDataPicker') as HTMLInputElement;
 
-			startDataPicker.value = noSerialize(new Datepicker($startDataPickerEl, {}));
-			endDataPicker.value = noSerialize(new Datepicker($endDataPickerEl, {}));
+			startDataPicker.value = noSerialize(
+				new Datepicker($startDataPickerEl, {
+					weekStart: 1,
+				})
+			);
+			endDataPicker.value = noSerialize(
+				new Datepicker($endDataPickerEl, {
+					weekStart: 1,
+				})
+			);
 
 			startDataPicker.value?.setDate(formatDateStringMDY(from.value));
 			endDataPicker.value?.setDate(formatDateStringMDY(to.value));
