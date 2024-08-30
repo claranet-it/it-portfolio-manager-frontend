@@ -6,6 +6,8 @@ export type Range = {
 	to: Date;
 };
 
+const DAYS_IN_WEEK = 7;
+
 const getDateFromMonthYear = (monthYear: string): Date => {
 	const [month, year] = monthYear.split('_');
 	return new Date(`20${year}-${month}`);
@@ -67,12 +69,12 @@ export const currentWeek = (): Range => {
 
 export const nextWeek = (from: Date): Range => {
 	const nextWeek = new Date(from);
-	nextWeek.setDate(nextWeek.getDate() + 7);
+	nextWeek.setDate(nextWeek.getDate() + DAYS_IN_WEEK);
 	return dateToWeekRange(nextWeek);
 };
 
 export const prevWeek = (from: Date): Range => {
 	const prevWeek = new Date(from);
-	prevWeek.setDate(prevWeek.getDate() - 7);
+	prevWeek.setDate(prevWeek.getDate() - DAYS_IN_WEEK);
 	return dateToWeekRange(prevWeek);
 };
