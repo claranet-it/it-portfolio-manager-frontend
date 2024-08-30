@@ -20,7 +20,7 @@ export const Timesheet = component$(() => {
 	// Init statement to handler modal alert
 	const alertMessageState = useStore<ModalState>({});
 	const newTimeEntry = useSignal<TimeEntry>();
-	const { days, from, to, nextWeek, prevWeek, currentWeek } = useGetTimeSheetDays();
+	const { days, from, to, nextWeek, prevWeek, currentWeek, setWeek } = useGetTimeSheetDays();
 
 	const DAYS_IN_WEEK = 7;
 
@@ -42,6 +42,7 @@ export const Timesheet = component$(() => {
 							nextAction={nextWeek}
 							prevAction={prevWeek}
 							limitDays={DAYS_IN_WEEK}
+							confirmChangeRange={setWeek}
 						/>
 						<Button variant={'outline'} onClick$={currentWeek}>
 							{t('THIS_WEEK')}

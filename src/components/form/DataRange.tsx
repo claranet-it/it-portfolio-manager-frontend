@@ -24,10 +24,11 @@ interface DataRangeProps {
 	nextAction: QRL;
 	prevAction: QRL;
 	limitDays?: number;
+	confirmChangeRange?: QRL;
 }
 
 export const DataRange = component$<DataRangeProps>(
-	({ title, from, to, nextAction, prevAction, limitDays }) => {
+	({ title, from, to, nextAction, prevAction, limitDays, confirmChangeRange }) => {
 		const { addEvent } = useNotification();
 		const startDataPicker = useSignal<Datepicker>();
 		const endDataPicker = useSignal<Datepicker>();
@@ -57,6 +58,10 @@ export const DataRange = component$<DataRangeProps>(
 
 				from.value = newFrom;
 				to.value = newTo;
+
+				if (confirmChangeRange) {
+					confirmChangeRange(newFrom);
+				}
 			}),
 			cancelLabel: t('ACTION_CANCEL'),
 			confirmLabel: t('ACTION_CONFIRM'),

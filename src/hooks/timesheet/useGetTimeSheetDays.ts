@@ -2,6 +2,7 @@ import { $, useSignal, useTask$ } from '@builder.io/qwik';
 import { Day } from '../../models/timeEntry';
 import {
 	currentWeek as currentWeekAsRange,
+	dateToWeekRange,
 	getDaysInRange,
 	nextWeek as nextWeekRange,
 	prevWeek as prevWeekRange,
@@ -39,9 +40,16 @@ export const useGetTimeSheetDays = () => {
 		updateDays();
 	});
 
+	const setWeek = $((date: Date) => {
+		const range = dateToWeekRange(date);
+		from.value = range.from;
+		to.value = range.to;
+		updateDays();
+	});
+
 	useTask$(() => {
 		updateDays();
 	});
 
-	return { days, from, to, prevWeek, nextWeek, currentWeek };
+	return { days, from, to, prevWeek, nextWeek, currentWeek, setWeek };
 };

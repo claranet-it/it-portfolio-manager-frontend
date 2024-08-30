@@ -55,7 +55,7 @@ export const getDaysInRange = (from: Date, to: Date): Day[] => {
 	return days;
 };
 
-const dateToWeekRange = (date: Date): Range => {
+export const dateToWeekRange = (date: Date): Range => {
 	const from = startOfISOWeek(date);
 	const to = endOfISOWeek(date);
 	return { from, to };
