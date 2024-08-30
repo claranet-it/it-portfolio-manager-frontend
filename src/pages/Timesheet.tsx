@@ -2,8 +2,8 @@ import { $, component$, useSignal, useStore } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { TimeEntry } from '@models/timeEntry';
 import { Button } from 'src/components/Button';
-import { DataRange } from 'src/components/form/DataRange';
 import { NewTaskForm } from 'src/components/form/NewTaskForm';
+import { WeekSelector } from 'src/components/form/WeekSelector';
 import { NewTimeEntryModal } from 'src/components/modals/NewTimeEntryModal';
 import { ProjectCategoryLegend } from 'src/components/timesheet/ProjectCategoryLegend';
 import { TimeSheetTable } from 'src/components/timesheet/TimeSheetTable';
@@ -22,8 +22,6 @@ export const Timesheet = component$(() => {
 	const newTimeEntry = useSignal<TimeEntry>();
 	const { days, from, to, nextWeek, prevWeek, currentWeek, setWeek } = useGetTimeSheetDays();
 
-	const DAYS_IN_WEEK = 7;
-
 	return (
 		<>
 			<div class='w-full px-6 pt-2.5 space-y-6'>
@@ -35,13 +33,12 @@ export const Timesheet = component$(() => {
 					<ProjectCategoryLegend />
 
 					<div class='flex items-end justify-end gap-2'>
-						<DataRange
+						<WeekSelector
 							title={t('DATARANGE_SELECT_WEEK_LABEL')}
 							from={from}
 							to={to}
 							nextAction={nextWeek}
 							prevAction={prevWeek}
-							limitDays={DAYS_IN_WEEK}
 							confirmChangeRange={setWeek}
 						/>
 						<Button variant={'outline'} onClick$={currentWeek}>
