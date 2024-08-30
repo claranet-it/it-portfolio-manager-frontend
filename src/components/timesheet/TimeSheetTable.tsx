@@ -254,6 +254,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 															</div>
 															{isLastEntry && hours !== 0 && (
 																<Button
+																	tabIndex={-1}
 																	style={{
 																		position: 'absolute',
 																		right: '0px',
