@@ -15,34 +15,13 @@ export const getLegendBarColor = (type: string | ProjectType): BarLegendColor =>
 				fontColor: 'text-dark-grey',
 			};
 		}
-		case 'slackTime': {
-			// TODO: Remove it after BE has been fixed
-			return {
-				bgColor: 'bg-yellow-100',
-				fontColor: 'text-dark-grey',
-			};
-		}
 		case 'billable': {
 			return {
 				bgColor: 'bg-green-500',
 				fontColor: 'text-white-100',
 			};
 		}
-		case 'billableProductivity': {
-			// TODO: Remove it after BE has been fixed
-			return {
-				bgColor: 'bg-green-500',
-				fontColor: 'text-white-100',
-			};
-		}
 		case 'non-billable': {
-			return {
-				bgColor: 'bg-green-200',
-				fontColor: 'text-dark-grey',
-			};
-		}
-		case 'nonBillableProductivity': {
-			// TODO: Remove it after BE has been fixed
 			return {
 				bgColor: 'bg-green-200',
 				fontColor: 'text-dark-grey',
