@@ -44,15 +44,16 @@ export const NewTaskForm = component$<NewTaskForm>(
 			initFlowbite();
 		});
 
-		const _onCancel = $(() => {
-			clearForm();
-			onCancel$ && onCancel$();
-		});
-
 		const _projectSelected = useSignal(projectSelected.value.name);
 
 		const _projectOptions = useComputed$(() => {
 			return dataProjectsSig.value.map((project) => project.name);
+		});
+
+		const _onCancel = $(() => {
+			_projectSelected.value = '';
+			clearForm();
+			onCancel$ && onCancel$();
 		});
 
 		const _onChangeProject = $(async (value: string) => {
@@ -61,6 +62,12 @@ export const NewTaskForm = component$<NewTaskForm>(
 				projectSelected.value = project;
 				onChangeProject(project);
 			}
+		});
+
+		const _handleSubmit = $((event: SubmitEvent, _: HTMLFormElement) => {
+			event.preventDefault();
+			_projectSelected.value = '';
+			handleSubmit(event, _);
 		});
 
 		return (
@@ -72,7 +79,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 						</h3>
 					</div>
 
-					<form class='space-y-3' onSubmit$={handleSubmit}>
+					<form class='space-y-3' onSubmit$={_handleSubmit}>
 						<Autocomplete
 							id={UUID()}
 							label={t('CUSTOMER_LABEL')}
