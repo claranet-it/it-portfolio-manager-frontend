@@ -146,5 +146,6 @@
 	"GROUP_BY_LABEL": "Group by",
 	"DATE_LABEL": "Date",
 	"NONE_LABEL": "(none)",
-	"EMPTY_LABEL": "(empty)"
+	"EMPTY_LABEL": "(empty)",
+	"ADD_TIME_ENTRY_LABEL": "add time entry"
 }

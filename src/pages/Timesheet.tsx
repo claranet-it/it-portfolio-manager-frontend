@@ -29,21 +29,22 @@ export const Timesheet = component$(() => {
 					<h1 class='text-2xl font-bold text-darkgray-900'>
 						{t('TIMESHEET_PAGE_TITLE')}
 					</h1>
+					<div class='flex items-between items-end justify-between'>
+						<ProjectCategoryLegend />
 
-					<ProjectCategoryLegend />
-
-					<div class='flex items-end justify-end gap-2'>
-						<WeekSelector
-							title={t('DATARANGE_SELECT_WEEK_LABEL')}
-							from={from}
-							to={to}
-							nextAction={nextWeek}
-							prevAction={prevWeek}
-							confirmChangeRange={setWeek}
-						/>
-						<Button variant={'outline'} onClick$={currentWeek}>
-							{t('THIS_WEEK')}
-						</Button>
+						<div class='flex items-end justify-end gap-2'>
+							<WeekSelector
+								title={t('DATARANGE_SELECT_WEEK_LABEL')}
+								from={from}
+								to={to}
+								nextAction={nextWeek}
+								prevAction={prevWeek}
+								confirmChangeRange={setWeek}
+							/>
+							<Button variant={'outline'} onClick$={currentWeek}>
+								{t('THIS_WEEK')}
+							</Button>
+						</div>
 					</div>
 				</div>
 

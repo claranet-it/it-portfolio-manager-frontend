@@ -225,14 +225,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 														index === dEntries.length - 1;
 
 													return (
-														<div
-															class={
-																(dEntries.length !== 1 ||
-																	(dEntries.length === 1 &&
-																		hours !== 0)) &&
-																`flex flex-row justify-center gap-2`
-															}
-														>
+														<div>
 															<div class={isLastEntry ? '' : 'mb-2'}>
 																<TimeEntryElement
 																	key={key}
@@ -255,10 +248,6 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 															{isLastEntry && hours !== 0 && (
 																<Button
 																	tabIndex={-1}
-																	style={{
-																		position: 'absolute',
-																		right: '0px',
-																	}}
 																	variant={'link'}
 																	size={'small'}
 																	onClick$={() =>
@@ -271,7 +260,14 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																		)
 																	}
 																>
-																	{getIcon('Add')}
+																	<div class='flex flex-row items-center gap-1 [&_svg]:w-[10px]'>
+																		{getIcon('Add')}
+																		<span class='font-bold text-[8px]'>
+																			{t(
+																				'ADD_TIME_ENTRY_LABEL'
+																			)}
+																		</span>
+																	</div>
 																</Button>
 															)}
 														</div>

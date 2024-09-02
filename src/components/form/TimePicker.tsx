@@ -13,11 +13,13 @@ interface TimePickerProps {
 
 export const TimePicker = component$<TimePickerProps>(
 	({ bindValue = undefined, onClick$, onChange$, onBlur$, required, disabled }) => {
-		const signalValue = useSignal(bindValue !== undefined ? getFormattedHours(bindValue) : '');
+		const signalValue = useSignal(
+			bindValue !== undefined && bindValue !== 0 ? getFormattedHours(bindValue) : ''
+		);
 		const style = useComputed$(() => {
 			return disabled
 				? 'bg-darkgray-50 text-darkgray-300 border-darkgray-100'
-				: 'bg-white-100  text-dark-grey border-darkgray-500';
+				: 'bg-white-100 text-dark-grey border-darkgray-500';
 		});
 
 		const onFocusIn = $(() =>
