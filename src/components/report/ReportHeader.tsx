@@ -103,14 +103,14 @@ export const ReportHeader = component$<ReportHeaderProps>(
 					<div class='flex flex-row items-center'>
 						<Button variant={'link'} onClick$={() => handlePrint(printableComponent)}>
 							<span class='inline-flex items-start gap-1'>
-								{getIcon('Downlaod')} Download report
+								{getIcon('Downlaod')} {t('REPORT_DOWNLOAD_PDF_LABEL')}
 							</span>
 						</Button>
 
 						{from && to && (
 							<Button variant={'link'} onClick$={downloadCSV}>
 								<span class='inline-flex items-start gap-1'>
-									{getIcon('Downlaod')} Download CSV
+									{getIcon('Downlaod')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
 								</span>
 							</Button>
 						)}

@@ -147,5 +147,7 @@
 	"DATE_LABEL": "Date",
 	"NONE_LABEL": "(none)",
 	"EMPTY_LABEL": "(empty)",
-	"ADD_TIME_ENTRY_LABEL": "add time entry"
+	"ADD_TIME_ENTRY_LABEL": "add time entry",
+	"REPORT_DOWNLOAD_PDF_LABEL": "Download report",
+	"REPORT_DOWNLOAD_CSV_LABEL": "Download CSV"
 }
