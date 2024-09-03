@@ -24,19 +24,19 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 	({ hoursSig, destriptionSig, date, hoursRange, customer, project, task }) => {
 		const key = `${task}-${date}-${hoursSig.value}-${hoursRange.start.value}-${hoursRange.end.value}`;
 		return (
-			<div key={key} class='flex flex-col text-left gap-2'>
+			<div key={key} class='flex flex-col gap-2 text-left'>
 				<div class='flex flex-col border-b border-gray-200 pb-3'>
-					<h4 class='text-sm font-normal text-dark-gray-900 mb-2'>
+					<h4 class='text-dark-gray-900 mb-2 text-sm font-normal'>
 						{formatDateString(date, true)}
 					</h4>
 					<h4 class='text-sm font-normal text-darkgray-500'>{`${t('CLIENT')}: ${customer}`}</h4>
 					<h4 class='text-base font-bold text-dark-grey'>{project?.name}</h4>
-					<h4 class='text-sm font-normal text-dark-gray-900'>{`${t('TASK')}: ${task}`}</h4>
+					<h4 class='text-dark-gray-900 text-sm font-normal'>{`${t('TASK')}: ${task}`}</h4>
 				</div>
 
 				<div class='flex flex-row gap-2'>
 					<div>
-						<label class='block mb-1 text-sm font-normal text-dark-grey'>
+						<label class='mb-1 block text-sm font-normal text-dark-grey'>
 							{t('TIME_ENTRY_START')}
 						</label>
 						<TimePicker
@@ -60,7 +60,7 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 					</div>
 
 					<div>
-						<label class='block mb-1 text-sm font-normal text-dark-grey'>
+						<label class='mb-1 block text-sm font-normal text-dark-grey'>
 							{t('TIME_ENTRY_END')}
 						</label>
 						<TimePicker
@@ -86,14 +86,14 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 
 				<label
 					for='timeEntry-description'
-					class='block mb-1 text-sm font-normal text-dark-grey'
+					class='mb-1 block text-sm font-normal text-dark-grey'
 				>
 					{t('DESCRIPTION_LABEL')}
 				</label>
 				<textarea
 					id='timeEntry-description'
 					rows={4}
-					class='block py-2 px-3 w-full text-sm text-gray-900 bg-white-100 rounded-md border border-gray-500 resize-none'
+					class='block w-full resize-none rounded-md border border-gray-500 bg-white-100 px-3 py-2 text-sm text-gray-900'
 					placeholder={t('DESCRIPTION_INSER_LABEL')}
 					bind:value={destriptionSig}
 				></textarea>

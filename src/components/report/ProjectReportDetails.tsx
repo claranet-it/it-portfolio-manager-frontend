@@ -57,14 +57,14 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(
 		});
 
 		return (
-			<div class='flex flex-col p-3 divide-y divide-surface-70' ref={ref}>
+			<div class='flex flex-col divide-y divide-surface-70 p-3' ref={ref}>
 				<ColumnChart data={daysSeries} />
 
 				{/* ____ PROJECTS _____  */}
 
 				{groupByProjectSeries.value.series.length > 0 &&
 					listGroupByProjectSeries.value.length > 0 && (
-						<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
+						<div class='flex gap-1 py-6 sm:flex-col md:flex-row md:justify-between lg:flex-row lg:justify-between'>
 							<div class='flex-none'>
 								<h3 class='text-xl font-bold text-dark-grey'>
 									{t('PROJECT_LABEL')}
@@ -77,7 +77,7 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(
 								</div>
 							</div>
 
-							<div class='sm:w-full flex-1 '>
+							<div class='flex-1 sm:w-full'>
 								<ReportList
 									data={listGroupByProjectSeries}
 									resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
@@ -90,7 +90,7 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(
 
 				{groupByUserSeries.value.series.length > 0 &&
 					listGroupByUserSeries.value.length > 0 && (
-						<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
+						<div class='flex gap-1 py-6 sm:flex-col md:flex-row md:justify-between lg:flex-row lg:justify-between'>
 							<div class='flex-none'>
 								<h3 class='text-xl font-bold text-dark-grey'>{t('USER_LABEL')}</h3>
 							</div>
@@ -101,7 +101,7 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(
 								</div>
 							</div>
 
-							<div class='sm:w-full flex-1 '>
+							<div class='flex-1 sm:w-full'>
 								<ReportList
 									data={listGroupByUserSeries}
 									resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
@@ -114,7 +114,7 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(
 
 				{groupByTaskSeries.value.series.length > 0 &&
 					listGroupByTaskSeries.value.length > 0 && (
-						<div class='flex sm:flex-col md:flex-row lg:flex-row py-6 md:justify-between lg:justify-between gap-1'>
+						<div class='flex gap-1 py-6 sm:flex-col md:flex-row md:justify-between lg:flex-row lg:justify-between'>
 							<div class='flex-none'>
 								<h3 class='text-xl font-bold text-dark-grey'>{t('TASK_LABEL')}</h3>
 							</div>
@@ -125,7 +125,7 @@ export const ProjectReportDetails = component$<ProjectReportDetailsProps>(
 								</div>
 							</div>
 
-							<div class='sm:w-full flex-1 '>
+							<div class='flex-1 sm:w-full'>
 								<ReportList
 									data={listGroupByTaskSeries}
 									resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}

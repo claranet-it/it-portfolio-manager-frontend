@@ -53,20 +53,20 @@ const Row = component$<RowProps>(({ data }) => {
 	return (
 		<div class='flex flex-row justify-stretch gap-6 p-0.5'>
 			<div class='flex-1 text-left'>
-				<div class='flex flex-row gap-1 items-center'>
+				<div class='flex flex-row items-center gap-1'>
 					<span
 						style={data.color ? { backgroundColor: data.color } : {}}
-						class={`flex w-2.5 h-2.5 ${typeColor.bgColor} rounded-full me-1.5 flex-shrink-0`}
+						class={`flex h-2.5 w-2.5 ${typeColor.bgColor} me-1.5 flex-shrink-0 rounded-full`}
 					></span>
 					<span class='text-sm font-normal text-dark-grey'>{data.label}</span>
 				</div>
 			</div>
-			<div class='flex-none w-18 text-right'>
+			<div class='w-18 flex-none text-right'>
 				<span class='text-sm font-normal text-dark-grey'>
 					{getFormattedHours(data.hours)} h
 				</span>
 			</div>
-			<div class='flex-none w-18 text-right'>
+			<div class='w-18 flex-none text-right'>
 				<span class='text-xs font-normal text-dark-grey'>{data.percentage}%</span>
 			</div>
 		</div>

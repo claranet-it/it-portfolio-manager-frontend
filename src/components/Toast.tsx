@@ -42,16 +42,16 @@ export const Toast = component$<ToastProps>(({ icon, message, onClose$, autoclos
 	return (
 		<div
 			id={`toast-${ID}`}
-			class={`w-fit inline-flex flex-row space-x-2 items-center p-4 rounded-md ${styleToast.value}`}
+			class={`inline-flex w-fit flex-row items-center space-x-2 rounded-md p-4 ${styleToast.value}`}
 			role='alert'
 		>
 			{icon && <span>{icon}</span>}
 
-			<div class='text-sm font-base'>{message}</div>
+			<div class='font-base text-sm'>{message}</div>
 
 			<button
 				type='button'
-				class={`ms-auto -mx-1.5 -my-1.5 rounded-lg focus:ring-2 focus:ring-blue-400 p-1  inline-flex items-center justify-center h-8 w-8 text-darkgray-900`}
+				class={`-mx-1.5 -my-1.5 ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg p-1 text-darkgray-900 focus:ring-2 focus:ring-blue-400`}
 				onClick$={onClose$ && onClose$}
 				data-dismiss-target={`#toast-${ID}`}
 				aria-label='Close'

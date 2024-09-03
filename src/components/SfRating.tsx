@@ -14,7 +14,7 @@ export const SfRating = component$<{
 			style={{
 				cursor: onClick$ ? 'pointer' : '',
 			}}
-			class={'inline-flex items-center text-warning-500 text-base'}
+			class={'text-warning-500 inline-flex items-center text-base'}
 		>
 			{[...Array(max).keys()].map((num, i) => {
 				const currentValue = num + 1;

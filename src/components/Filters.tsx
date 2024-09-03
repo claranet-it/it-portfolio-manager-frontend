@@ -43,7 +43,7 @@ export const Filters = component$<{
 	});
 
 	return (
-		<div class='w-full flex sm:flex-col m-0 justify-self-start sm:space-y-2 md:space-x-2 lg:space-x-2'>
+		<div class='m-0 flex w-full justify-self-start sm:flex-col sm:space-y-2 md:space-x-2 lg:space-x-2'>
 			<Select
 				id='service-line'
 				label={t('service_line_label')}

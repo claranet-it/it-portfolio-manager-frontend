@@ -42,7 +42,7 @@ const AccordionCard = ({
 				<h2>
 					<button
 						type='button'
-						class={`flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-gray-200 ${borderClass} focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3`}
+						class={`flex w-full items-center justify-between border border-gray-200 p-5 font-medium text-gray-500 rtl:text-right ${borderClass} gap-3 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-gray-800`}
 						aria-expanded={card.opened}
 						onClick$={card.onTitleClick}
 						disabled={card.disabled ?? false}
@@ -69,7 +69,7 @@ const AccordionCard = ({
 			)}
 			<div class={`${card.opened ? '' : 'hidden'}`}>
 				<div
-					class={`p-5 border ${isLast ? 'border-b-1' : 'border-b-0'} border-gray-200 dark:border-gray-700 dark:bg-gray-900`}
+					class={`border p-5 ${isLast ? 'border-b-1' : 'border-b-0'} border-gray-200 dark:border-gray-700 dark:bg-gray-900`}
 				>
 					{card.body}
 				</div>
@@ -84,7 +84,7 @@ export const Accordion = component$<AccordionProps>(({ cards, nested, loading })
 			{loading ? (
 				<div>
 					<div
-						class={`animating p-5 border border-b-1 border-gray-200 dark:border-gray-700 dark:bg-gray-900 text-gray-400`}
+						class={`animating border-b-1 border border-gray-200 p-5 text-gray-400 dark:border-gray-700 dark:bg-gray-900`}
 					>
 						Loading
 					</div>
@@ -103,7 +103,7 @@ export const Accordion = component$<AccordionProps>(({ cards, nested, loading })
 					) : (
 						<div>
 							<div
-								class={`p-5 border border-b-1 border-gray-200 dark:border-gray-700 dark:bg-gray-900 text-gray-400`}
+								class={`border-b-1 border border-gray-200 p-5 text-gray-400 dark:border-gray-700 dark:bg-gray-900`}
 							>
 								Empty
 							</div>

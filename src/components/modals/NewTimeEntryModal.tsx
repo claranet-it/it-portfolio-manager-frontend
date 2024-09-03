@@ -17,11 +17,11 @@ export const NewTimeEntryModal = component$(() => {
 
 	return (
 		<>
-			<div class='w-full flex flex-row'>
+			<div class='flex w-full flex-row'>
 				<button id='open-new-project-bt' onClick$={modalToggle} type='button'>
-					<div class='flex flex-row space-x-1 content text-clara-red'>
-						<span class='text-xl content-center'>{getIcon('Add')}</span>
-						<span class='text-base font-bold content-center'>
+					<div class='content flex flex-row space-x-1 text-clara-red'>
+						<span class='content-center text-xl'>{getIcon('Add')}</span>
+						<span class='content-center text-base font-bold'>
 							{t('ADD_NEW_TIME_ENTRY')}
 						</span>
 					</div>
@@ -30,7 +30,7 @@ export const NewTimeEntryModal = component$(() => {
 			{modalVisible.value && (
 				<div
 					id='default-modal'
-					class={`${modalStyle.value} overflow-y-auto overflow-x-hidden top-0 left-0 z-50 m-0 flex justify-center items-center w-full h-full bg-black-trasparent`}
+					class={`${modalStyle.value} left-0 top-0 z-50 m-0 flex h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-black-trasparent`}
 					style={{ position: 'fixed' }}
 				>
 					<Slot />

@@ -138,9 +138,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		return (
 			<div class='relative overflow-x-auto'>
 				<table class='w-full'>
-					<thead class='text-xs text-gray-700 bg-surface-20 py-3'>
+					<thead class='bg-surface-20 py-3 text-xs text-gray-700'>
 						<tr>
-							<th scope='col' class='px-6 text-left border border-surface-70'>
+							<th scope='col' class='border border-surface-70 px-6 text-left'>
 								<h3 class='text-base text-dark-grey'>
 									{t('TIMESHEET_TABLE_PROJECT_COL_LABEL')}
 								</h3>
@@ -149,7 +149,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								<th
 									key={key}
 									scope='col'
-									class='py-3 px-4 border border-surface-70'
+									class='border border-surface-70 px-4 py-3'
 								>
 									<div class='flex flex-col text-dark-grey'>
 										<h3 class='text-base font-bold'>{day.name}</h3>
@@ -159,12 +159,12 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 									</div>
 								</th>
 							))}
-							<th scope='col' class='py-3 px-4 border border-surface-70'>
+							<th scope='col' class='border border-surface-70 px-4 py-3'>
 								<h3 class='text-base font-bold'>
 									{t('TIMESHEET_TABLE_TOTAL_COL_LABEL')}
 								</h3>
 							</th>
-							<th scope='col' class='py-3 px-4 border border-surface-70'>
+							<th scope='col' class='border border-surface-70 px-4 py-3'>
 								<h3 class='text-base font-bold'>
 									{t('TIMESHEET_TABLE_ACTIONS_COL_LABEL')}
 								</h3>
@@ -175,7 +175,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						{Object.entries(groupedByProject.value).map(([_, entries], key) => {
 							const { customer, project, task } = extractFirstEntryDetails(entries);
 							return (
-								<tr key={key} class='bg-white border-b'>
+								<tr key={key} class='border-b bg-white'>
 									<th
 										scope='row'
 										class={fistBodyColumnStyle(project?.type ?? '')}
@@ -187,7 +187,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 											<h4 class='text-base font-bold text-dark-grey'>
 												{project?.name}
 											</h4>
-											<h4 class='text-sm font-normal text-dark-gray-900'>
+											<h4 class='text-dark-gray-900 text-sm font-normal'>
 												{`${t('TASK')}: ${task}`}
 											</h4>
 										</div>
@@ -262,7 +262,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																>
 																	<div class='flex flex-row items-center gap-1 [&_svg]:w-[10px]'>
 																		{getIcon('Add')}
-																		<span class='font-bold text-[8px]'>
+																		<span class='text-[8px] font-bold'>
 																			{t(
 																				'ADD_TIME_ENTRY_LABEL'
 																			)}
@@ -276,14 +276,14 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 											</td>
 										);
 									})}
-									<td class='py-3 px-4 text-center border border-surface-50'>
+									<td class='border border-surface-50 px-4 py-3 text-center'>
 										<span class='text-base font-normal'>
 											{getTotalPerProject(
 												entries.map((entry) => entry.hours)
 											)}
 										</span>
 									</td>
-									<td class='py-3 px-4 text-center border border-surface-50'>
+									<td class='border border-surface-50 px-4 py-3 text-center'>
 										<button onClick$={() => deleteHandler(entries[0])}>
 											{getIcon('Bin')}
 										</button>
@@ -294,14 +294,14 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 					</tbody>
 					<tfoot>
 						<tr class='bg-surface-5'>
-							<td colSpan={10} class='px-6 py-4 border border-surface-50'>
+							<td colSpan={10} class='border border-surface-50 px-6 py-4'>
 								<Slot name='newProject' />
 							</td>
 						</tr>
 						<tr class='bg-surface-20'>
 							<th
 								scope='row'
-								class='px-6 py-4 text-left text-base border border-surface-50'
+								class='border border-surface-50 px-6 py-4 text-left text-base'
 							>
 								<h3 class='text-base font-bold text-dark-grey'>
 									{t('TIMESHEET_TABLE_TOTAL_FOOTER_LABEL')}
@@ -318,12 +318,12 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								return (
 									<td
 										key={key}
-										class='px-6 py-4 text-center border border-surface-50'
+										class='border border-surface-50 px-6 py-4 text-center'
 									>
 										<span class='flex items-center justify-center text-base font-bold'>
 											{getTotalPerDay(entriesForDay)}
 											{showAlert && (
-												<span class='text-clara-red material-symbols-outlined'>
+												<span class='material-symbols-outlined text-clara-red'>
 													exclamation
 												</span>
 											)}
@@ -332,11 +332,11 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								);
 							})}
 
-							<td class='px-6 py-4 text-right border border-surface-50' colSpan={2}>
+							<td class='border border-surface-50 px-6 py-4 text-right' colSpan={2}>
 								<span class='flex items-center justify-center text-base font-bold'>
 									{getTotal(weekHours)}
 									{weekHasTooManyHours(weekHours) && (
-										<span class='text-clara-red material-symbols-outlined'>
+										<span class='material-symbols-outlined text-clara-red'>
 											exclamation
 										</span>
 									)}

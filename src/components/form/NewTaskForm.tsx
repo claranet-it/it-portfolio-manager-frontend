@@ -72,8 +72,8 @@ export const NewTaskForm = component$<NewTaskForm>(
 
 		return (
 			<>
-				<div class='p-4 bg-white-100 rounded-md shadow w-96'>
-					<div class='flex items-center justify-between  border-b border-gray-200 py-2 mb-2'>
+				<div class='w-96 rounded-md bg-white-100 p-4 shadow'>
+					<div class='mb-2 flex items-center justify-between border-b border-gray-200 py-2'>
 						<h3 class='text-2xl font-bold text-dark-grey'>
 							{t('add_new_project_label')}
 						</h3>
@@ -111,7 +111,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 							size='auto'
 						/>
 
-						<div class='flex flex-row space-x-1 justify-end'>
+						<div class='flex flex-row justify-end space-x-1'>
 							{onCancel$ && (
 								<Button variant={'link'} onClick$={_onCancel}>
 									{t('ACTION_CANCEL')}

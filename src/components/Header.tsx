@@ -16,19 +16,19 @@ const redirect_uri = window.location.origin;
 export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }) => {
 	return (
 		<header>
-			<div class='md:flex lg:flex justify-between items-center bg-white border-b border-b-darkgray-300 '>
-				<div class='py-4 px-6 sm:text-center [&_svg]:sm:inline'>
+			<div class='items-center justify-between border-b border-b-darkgray-300 bg-white md:flex lg:flex'>
+				<div class='px-6 py-4 sm:text-center [&_svg]:sm:inline'>
 					{getIcon('BricklyRedLogo')}
 				</div>
 
-				<div class='pr-6 sm:w-[100%] sm:text-center sm:text-center md:flex lg:flex justify-end'>
+				<div class='justify-end pr-6 sm:w-[100%] sm:text-center md:flex lg:flex'>
 					{MENU.map((section, key) => {
 						const textColor =
 							section === currentRoute ? 'text-darkgray-500' : 'text-clara-red';
 						return (
 							<button
 								key={key}
-								class={`bg-transparent ${textColor} hover:text-red-500 font-semibold p-2 m-2 rounded border-0 min-w-[100px]`}
+								class={`bg-transparent ${textColor} m-2 min-w-[100px] rounded border-0 p-2 font-semibold hover:text-red-500`}
 								onClick$={() => {
 									navigateTo(section);
 								}}
@@ -39,7 +39,7 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 					})}
 
 					<button
-						class='bg-transparent inline-flex items-center gap-2 text-dark-grey font-semibold p-2 m-2 rounded border-0 min-w-[100px]'
+						class='m-2 inline-flex min-w-[100px] items-center gap-2 rounded border-0 bg-transparent p-2 font-semibold text-dark-grey'
 						onClick$={() => {
 							auth0.logout({
 								openUrl: async () => {

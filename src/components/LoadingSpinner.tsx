@@ -3,10 +3,10 @@ import { t } from '../locale/labels';
 
 export const LoadingSpinner = component$(() => {
 	return (
-		<div class='flex flex-col gap-3 p-3 items-center justify-center  border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700'>
+		<div class='flex flex-col items-center justify-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800'>
 			<svg
 				aria-hidden='true'
-				class=' w-8 h-8 text-gray-200 animate-spin fill-clara-red'
+				class='h-8 w-8 animate-spin fill-clara-red text-gray-200'
 				viewBox='0 0 100 101'
 				fill='none'
 				xmlns='http://www.w3.org/2000/svg'
@@ -21,8 +21,8 @@ export const LoadingSpinner = component$(() => {
 				/>
 			</svg>
 
-			<div class='px-3 py-1 text-xs font-medium leading-none text-center bg-clara-red rounded-md animate-pulse'>
-				<span class='text-white-100 text-xs'>{t('LOADING_LABEL')}</span>
+			<div class='animate-pulse rounded-md bg-clara-red px-3 py-1 text-center text-xs font-medium leading-none'>
+				<span class='text-xs text-white-100'>{t('LOADING_LABEL')}</span>
 			</div>
 		</div>
 	);

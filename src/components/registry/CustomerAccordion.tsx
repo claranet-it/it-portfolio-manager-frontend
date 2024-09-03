@@ -76,7 +76,7 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(({ customer,
 	return (
 		<>
 			<h2>
-				<div class='flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border-gray-200 rfocus:ring-4 focus:ring-gray-200   hover:bg-gray-100 gap-3'>
+				<div class='rfocus:ring-4 flex w-full items-center justify-between gap-3 border-gray-200 p-5 font-medium text-gray-500 hover:bg-gray-100 focus:ring-gray-200 rtl:text-right'>
 					<div class='flex flex-row gap-3'>
 						<span>{customer}</span> {isLoading.value && <LoadingSpinnerInline />}
 					</div>
@@ -102,7 +102,7 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(({ customer,
 
 			{/* accordion body */}
 			<div class={visibleBody.value && !isLoading.value ? '' : 'hidden'}>
-				<div class='p-5 border border-gray-200'>
+				<div class='border border-gray-200 p-5'>
 					<div id='accordion-nested-collapse' data-accordion='collapse'>
 						{projects.value.map((project) => {
 							return (

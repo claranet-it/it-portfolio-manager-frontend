@@ -5,8 +5,8 @@ import { UserProfileCard } from '../components/UserProfileCard';
 
 export const Profile = component$(() => {
 	return (
-		<div class='w-full px-6 pt-2.5 space-y-3'>
-			<div class='flex sm:flex-col md:flex-row lg:flex-row  sm:space-y-3 md:justify-between lg:justify-between'>
+		<div class='w-full space-y-3 px-6 pt-2.5'>
+			<div class='flex sm:flex-col sm:space-y-3 md:flex-row md:justify-between lg:flex-row lg:justify-between'>
 				<UserProfileCard />
 
 				<SkillLegend />

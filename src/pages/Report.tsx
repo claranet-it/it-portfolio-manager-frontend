@@ -67,9 +67,9 @@ export const Report = component$(() => {
 	});
 
 	return (
-		<div class='w-full px-6 py-2.5 space-y-6'>
-			<div class='flex sm:flex-col md:flex-row lg:flex-row justify-between gap-2'>
-				<h1 class='text-2xl font-bold text-darkgray-900 me-4'>{t('REPORT_PAGE_TITLE')}</h1>
+		<div class='w-full space-y-6 px-6 py-2.5'>
+			<div class='flex justify-between gap-2 sm:flex-col md:flex-row lg:flex-row'>
+				<h1 class='me-4 text-2xl font-bold text-darkgray-900'>{t('REPORT_PAGE_TITLE')}</h1>
 
 				<div class='flex flex-row gap-2'>
 					<DataRange from={from} to={to} nextAction={nextWeek} prevAction={prevWeek} />
@@ -92,7 +92,7 @@ export const Report = component$(() => {
 			<div class='flex flex-col space-y-3'>
 				<div class='border-b border-surface-70'>
 					<ul
-						class='flex flex-wrap -mb-px text-sm text-center'
+						class='-mb-px flex flex-wrap text-center text-sm'
 						id='default-tab'
 						data-tabs-toggle='#report-tab-content'
 						role='tablist'
@@ -101,7 +101,7 @@ export const Report = component$(() => {
 					>
 						<li class='me-2' role='productivity'>
 							<button
-								class='inline-block p-4 border-b-2 text-dark-grey hover:border-dark-grey'
+								class='inline-block border-b-2 p-4 text-dark-grey hover:border-dark-grey'
 								id='projects-tab'
 								data-tabs-target='#projects'
 								type='button'
@@ -115,7 +115,7 @@ export const Report = component$(() => {
 						</li>
 						<li class='me-2' role='productivity'>
 							<button
-								class='inline-block p-4 border-b-2 text-dark-grey hover:border-dark-grey'
+								class='inline-block border-b-2 p-4 text-dark-grey hover:border-dark-grey'
 								id='productivity-tab'
 								data-tabs-target='#productivity'
 								type='button'
@@ -129,14 +129,14 @@ export const Report = component$(() => {
 						</li>
 					</ul>
 				</div>
-				<div id='report-tab-content' class='border border-surface-70 p-6 mb-2'>
+				<div id='report-tab-content' class='mb-2 border border-surface-70 p-6'>
 					<div
-						class='hidden flex flex-col  gap-6'
+						class='flex hidden flex-col gap-6'
 						id='productivity'
 						role='tabpanel'
 						aria-labelledby='productivity-tab'
 					>
-						<div class='flex sm:flex-col md:flex-row lg:flex-row md:justify-between lg:justify-between'>
+						<div class='flex sm:flex-col md:flex-row md:justify-between lg:flex-row lg:justify-between'>
 							<ProductivityLegend />
 							<Button
 								variant={'link'}
@@ -154,7 +154,7 @@ export const Report = component$(() => {
 						/>
 					</div>
 					<div
-						class='hidden flex flex-col  gap-6'
+						class='flex hidden flex-col gap-6'
 						id='projects'
 						role='tabpanel'
 						aria-labelledby='projects-tab'

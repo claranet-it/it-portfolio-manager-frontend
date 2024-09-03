@@ -31,11 +31,11 @@ export const TimePicker = component$<TimePickerProps>(
 		);
 
 		return (
-			<div class='relative m-auto text-center max-w-20'>
+			<div class='relative m-auto max-w-20 text-center'>
 				{!disabled && (
 					<div
 						onClick$={onClick$ && onClick$}
-						class='absolute end-1 top-2.5 ml-1 flex bg-items-center cursor-pointer'
+						class='bg-items-center absolute end-1 top-2.5 ml-1 flex cursor-pointer'
 					>
 						{getIcon('V3Dots')}
 					</div>
@@ -43,7 +43,7 @@ export const TimePicker = component$<TimePickerProps>(
 				<input
 					type='time'
 					id='time'
-					class={`block w-full py-3 px-3 leading-none border text-sm rounded-md ${style.value} mr-1.5`}
+					class={`block w-full rounded-md border px-3 py-3 text-sm leading-none ${style.value} mr-1.5`}
 					min='00:00'
 					bind:value={signalValue}
 					onChange$={onChange$}

@@ -50,26 +50,26 @@ export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 	});
 
 	return (
-		<div class='flex flex-col py-3 px-4 m-1 rounded-md border border-darkgray-200 w-[288px] space-y-3'>
+		<div class='m-1 flex w-[288px] flex-col space-y-3 rounded-md border border-darkgray-200 px-4 py-3'>
 			{/* Skill name */}
-			<div class='flex flex-row item-start space-x-2'>
-				<span class='text-dark-grey skill-icon'>{getIcon(skill)}</span>
-				<h3 class='text-dark-grey text-xl font-bold'>{skill.slice(0, 20)}</h3>
+			<div class='item-start flex flex-row space-x-2'>
+				<span class='skill-icon text-dark-grey'>{getIcon(skill)}</span>
+				<h3 class='text-xl font-bold text-dark-grey'>{skill.slice(0, 20)}</h3>
 			</div>
 
 			{/* Coverage progress bar */}
-			<div class='flex flex-col item-center  justify-center w-full'>
-				<span class='text-xs font-normal text-dark-gray text-center'>
+			<div class='item-center flex w-full flex-col justify-center'>
+				<span class='text-dark-gray text-center text-xs font-normal'>
 					{t('coverage').toUpperCase()}
 				</span>
 
 				<div class='flex flex-col space-y-0'>
 					<div class='flex flex-row justify-between'>
-						<span class='text-xs font-bold font-dark-gray'>{COVERAGE_BAD_LIMIT}</span>
-						<span class='text-xs font-bold font-dark-gray'>{COVERAGE_GOOD_LIMIT}</span>
+						<span class='font-dark-gray text-xs font-bold'>{COVERAGE_BAD_LIMIT}</span>
+						<span class='font-dark-gray text-xs font-bold'>{COVERAGE_GOOD_LIMIT}</span>
 					</div>
 
-					<div class='w-full bg-gray-200 rounded-full h-1.5 mt-1'>
+					<div class='mt-1 h-1.5 w-full rounded-full bg-gray-200'>
 						<div
 							class={{
 								'h-1.5 rounded-full': true,
@@ -84,14 +84,14 @@ export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 			</div>
 
 			{/* Skill Level */}
-			<div class='w-full flex flex-row justify-between'>
-				<span class='text-xs font-normal font-dark-gray'>
+			<div class='flex w-full flex-row justify-between'>
+				<span class='font-dark-gray text-xs font-normal'>
 					{t('skill_level_label2+').toUpperCase()}
 				</span>
-				<span class='text-xs font-bold font-dark-gray'>{skillLevelSig.value}</span>
+				<span class='font-dark-gray text-xs font-bold'>{skillLevelSig.value}</span>
 			</div>
 
-			<div class='w-full flex flex-col space-y-0'>
+			<div class='flex w-full flex-col space-y-0'>
 				{skillMatrix.value
 					.sort((s1, s2) => skillComparator(s1, s2, skill))
 					.slice(0, VISIBLE_SAILORS)
@@ -99,7 +99,7 @@ export const SkillCard = component$<Props>(({ skill, skillMatrix }) => {
 						const [name, skillItem] = Object.entries(skillMatrix)[0];
 						return (
 							<div key={key} class='flex justify-between align-middle'>
-								<span class='text-sm font-normal flex flex-row gap-0.5'>
+								<span class='flex flex-row gap-0.5 text-sm font-normal'>
 									{skillItem.isCompany && getIcon('UserGroup')}
 									{name}
 								</span>

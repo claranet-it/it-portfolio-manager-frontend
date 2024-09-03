@@ -11,7 +11,7 @@ export const AccordionOpenButton = component$<AccordionOpenButtonProps>(
 			<button onClick$={onClick$}>
 				<svg
 					data-accordion-icon
-					class={`w-3 h-3 ${accordionState.value ? '' : 'rotate-180'} shrink-0`}
+					class={`h-3 w-3 ${accordionState.value ? '' : 'rotate-180'} shrink-0`}
 					aria-hidden='true'
 					xmlns='http://www.w3.org/2000/svg'
 					fill='none'

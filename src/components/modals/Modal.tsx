@@ -30,15 +30,15 @@ export const Modal = component$<ModalProps>(({ state }) => {
 	return (
 		<div
 			id='default-modal'
-			class={`${isVisible.value} overflow-y-auto overflow-x-hidden top-0 left-0 z-50 m-0 flex justify-center items-center w-full h-full bg-black-trasparent`}
+			class={`${isVisible.value} left-0 top-0 z-50 m-0 flex h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-black-trasparent`}
 		>
-			<div class='relative p-6  max-w-2xl max-h-full bg-white rounded-md shadow'>
+			<div class='relative max-h-full max-w-2xl rounded-md bg-white p-6 shadow'>
 				{/* <!-- Modal header --> */}
 				<div class='flex items-center justify-between'>
 					<h3 class='text-2xl font-bold text-dark-grey'>{state.title}</h3>
 					<button
 						type='button'
-						class='text-2xl text-clara-red inline-flex justify-center items-center'
+						class='inline-flex items-center justify-center text-2xl text-clara-red'
 						onClick$={onClose}
 					>
 						{getIcon('Close')}
@@ -46,7 +46,7 @@ export const Modal = component$<ModalProps>(({ state }) => {
 				</div>
 				{/* <!-- Modal body --> */}
 				<div
-					class={`${state.message ? 'py-4' : 'pt-0 pb-4'} space-y-4 my-4 border-b border-gray-200`}
+					class={`${state.message ? 'py-4' : 'pb-4 pt-0'} my-4 space-y-4 border-b border-gray-200`}
 				>
 					{!state.message && <Slot />}
 					{state.message && (
