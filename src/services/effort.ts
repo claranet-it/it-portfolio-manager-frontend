@@ -2,36 +2,25 @@ import { Effort, EffortMatrix } from '@models/effort';
 import { Month } from '@models/month';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
-export const getEffort = async (
-	months: number = 3,
-	company: string = 'it'
-): Promise<EffortMatrix> => [
-	...(await getMyCompanyEffort(months, company)),
-	...(await getNetowrkingEffort(months, company)),
+export const getEffort = async (months: number = 3): Promise<EffortMatrix> => [
+	...(await getMyCompanyEffort(months)),
+	...(await getNetowrkingEffort(months)),
 ];
 
-const getMyCompanyEffort = async (
-	months: number = 3,
-	company: string = 'it'
-): Promise<EffortMatrix> =>
+const getMyCompanyEffort = async (months: number = 3): Promise<EffortMatrix> =>
 	getHttpResponse<EffortMatrix>({
 		path: `effort/next`,
 		params: {
 			months: months.toString(),
-			company,
 		},
 	});
 
-const getNetowrkingEffort = async (
-	months: number = 3,
-	company: string = 'it'
-): Promise<EffortMatrix> => {
+const getNetowrkingEffort = async (months: number = 3): Promise<EffortMatrix> => {
 	try {
 		let response = await getHttpResponse<EffortMatrix>({
 			path: `networking/effort/next`,
 			params: {
 				months: months.toString(),
-				company,
 			},
 		});
 

@@ -72,7 +72,7 @@ export const useNewTimeEntry = (
 		projectSelected.value = initProject;
 		taskSelected.value = initTaskt;
 		if (value != '') {
-			dataProjectsSig.value = await getProjects('it', value);
+			dataProjectsSig.value = await getProjects(value);
 			projectEnableSig.value = true;
 		} else {
 			projectTypeEnabled.newProject = false;
@@ -88,7 +88,7 @@ export const useNewTimeEntry = (
 		if (customerSelected.value != '') {
 			taskSelected.value = initTaskt;
 			if (value.name != '') {
-				dataTaksSign.value = await getTasks('it', customerSelected.value, value);
+				dataTaksSign.value = await getTasks(customerSelected.value, value);
 				taskEnableSig.value = true;
 			} else {
 				taskEnableSig.value = false;
@@ -107,7 +107,6 @@ export const useNewTimeEntry = (
 
 	const insertNewTimeEntry = $(async () => {
 		const savingResult = await saveTask(
-			'it',
 			customerSelected.value,
 			projectSelected.value,
 			taskSelected.value

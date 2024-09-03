@@ -13,7 +13,7 @@ export const useProjects = () => {
 	const fetchProjects = $(async (customer: Customer) => {
 		projects.value = [];
 		isLoading.value = true;
-		projects.value = await getProjects(undefined, customer);
+		projects.value = await getProjects(customer);
 		isLoading.value = false;
 	});
 

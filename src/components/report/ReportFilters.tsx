@@ -25,12 +25,12 @@ export const ReportFilters = component$<{
 
 	const _projectSig = useComputed$(async () => {
 		return selectedCustomer.value != ''
-			? (await getProjects('it', selectedCustomer.value)).map((project) => project.name)
+			? (await getProjects(selectedCustomer.value)).map((project) => project.name)
 			: [];
 	});
 
 	const projectSig = useComputed$(async () => {
-		return selectedCustomer.value != '' ? await getProjects('it', selectedCustomer.value) : [];
+		return selectedCustomer.value != '' ? await getProjects(selectedCustomer.value) : [];
 	});
 
 	const onChangeCustomer = $(() => {
@@ -53,7 +53,7 @@ export const ReportFilters = component$<{
 
 	const taskSig = useComputed$(async () => {
 		return _projectSelected.value != ''
-			? await getTasks('it', selectedCustomer.value, selectedProject.value)
+			? await getTasks(selectedCustomer.value, selectedProject.value)
 			: [];
 	});
 
