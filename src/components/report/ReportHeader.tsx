@@ -1,13 +1,16 @@
-import { Signal, component$, useComputed$ } from '@builder.io/qwik';
+import { $, Signal, component$, useComputed$, useContext } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { ReportTimeEntry } from '@models/report';
+import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
+import { downloadReportCSV } from 'src/services/report';
 import {
 	getReportBillableHours,
 	getReportTotalHours,
 	getTopCustomer,
 	getTopProject,
 } from 'src/utils/chart';
+import { formatDateString } from 'src/utils/dates';
 import { handlePrint } from 'src/utils/handlePrint';
 import { getFormattedHours } from 'src/utils/timesheet';
 import { capitalizeString } from '../../utils/string';
@@ -20,10 +23,22 @@ interface ReportHeaderProps {
 	showTopCustomer?: boolean;
 	showTopProject?: boolean;
 	printableComponent: Signal<HTMLElement | undefined>;
+	from?: Signal<Date>;
+	to?: Signal<Date>;
 }
 
 export const ReportHeader = component$<ReportHeaderProps>(
-	({ customer, data, showTopCustomer = false, showTopProject = false, printableComponent }) => {
+	({
+		customer,
+		data,
+		showTopCustomer = false,
+		showTopProject = false,
+		printableComponent,
+		from,
+		to,
+	}) => {
+		const appStore = useContext(AppContext);
+
 		const totalHours = useComputed$(() => {
 			return getReportTotalHours(data);
 		});
@@ -40,6 +55,14 @@ export const ReportHeader = component$<ReportHeaderProps>(
 		const topCustomer = useComputed$(() => {
 			if (!showTopCustomer) return;
 			return getTopCustomer(data);
+		});
+
+		const downloadCSV = $(async () => {
+			if (from && to) {
+				appStore.isLoading = true;
+				await downloadReportCSV(formatDateString(from.value), formatDateString(to.value));
+				appStore.isLoading = false;
+			}
 		});
 
 		return (
@@ -83,6 +106,14 @@ export const ReportHeader = component$<ReportHeaderProps>(
 								{getIcon('Downlaod')} Download report
 							</span>
 						</Button>
+
+						{from && to && (
+							<Button variant={'link'} onClick$={downloadCSV}>
+								<span class='inline-flex items-start gap-1'>
+									{getIcon('Downlaod')} Download CSV
+								</span>
+							</Button>
+						)}
 					</div>
 				</div>
 			</div>

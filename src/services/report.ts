@@ -4,6 +4,7 @@ import { ReportProductivityItem, ReportTimeEntry } from '@models/report';
 import { Task } from '@models/task';
 import { TimeEntry } from '@models/timeEntry';
 import { getHttpResponse } from 'src/network/httpRequest';
+import { CSV_REPORT_PROJECTS_FILE_NAME } from 'src/utils/constants';
 import { UUID } from 'src/utils/uuid';
 
 export const getProductivity = async (
@@ -57,4 +58,31 @@ export const getReportTimeEntry = async (from: string, to: string): Promise<Repo
 			email: entry.email === '' ? UUID() : entry.email,
 		};
 	});
+};
+
+export const downloadReportCSV = async (from: string, to: string) => {
+	const response = await getHttpResponse<string>(
+		{
+			path: `report/time-entries`,
+			params: {
+				from,
+				to,
+				format: 'csv',
+			},
+		},
+		'GET',
+		undefined,
+		true
+	);
+
+	const blob = new Blob([response as unknown as BlobPart], { type: 'text/csv' });
+	const a = document.createElement('a');
+
+	a.download = `${CSV_REPORT_PROJECTS_FILE_NAME}_${from}_${to}.csv`;
+	a.href = URL.createObjectURL(blob);
+	a.click();
+	setTimeout(() => {
+		URL.revokeObjectURL(a.href);
+		a.remove();
+	}, 200);
 };

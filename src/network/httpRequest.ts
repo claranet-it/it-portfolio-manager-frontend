@@ -36,10 +36,11 @@ const requestPath = (path: { path: string; params?: Record<string, string> } | s
 export const getHttpResponse = async <Response>(
 	path: { path: string; params?: Record<string, string> } | string,
 	method?: HttpMethods,
-	body?: Object
+	body?: Object,
+	plain?: Boolean
 ): Promise<Response> => {
 	const response = await executeRequest(requestPath(path), method, body);
-	return await response?.json();
+	return plain ? await response?.text() : await response?.json();
 };
 
 export const checkHttpResponseStatus = async (
