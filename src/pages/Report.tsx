@@ -189,6 +189,8 @@ export const Report = component$(() => {
 								<ReportHeader
 									printableComponent={projectReportPreviewRef}
 									data={projectResults.data}
+									from={from}
+									to={to}
 									showTopCustomer
 									showTopProject
 								/>
