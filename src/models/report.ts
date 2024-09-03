@@ -10,9 +10,9 @@ export type ReportProductivityItem = {
 };
 
 export type TotalTracked = {
-	billableProductivity: number;
-	nonBillableProductivity: number;
-	slackTime: number;
+	billable: number;
+	'non-billable': number;
+	'slack-time': number;
 	absence: number;
 };
 
