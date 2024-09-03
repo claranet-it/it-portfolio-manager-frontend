@@ -87,7 +87,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 		return (
 			<>
 				<h2>
-					<div class='flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-gray-200 focus:ring-4 focus:ring-gray-200 hover:bg-gray-100 gap-3'>
+					<div class='flex w-full items-center justify-between gap-3 border border-gray-200 p-5 font-medium text-gray-500 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 rtl:text-right'>
 						<div class='flex flex-row gap-3'>
 							<span>{project.name}</span>{' '}
 							{isLoading.value && <LoadingSpinnerInline />}
@@ -115,7 +115,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 
 				{/* accordion body */}
 				<div class={visibleBody.value && !isLoading.value ? '' : 'hidden'}>
-					<div class='p-5 border border-b-0 border-gray-200 dark:border-gray-700'>
+					<div class='border border-b-0 border-gray-200 p-5 dark:border-gray-700'>
 						{tasks.value.map((task) => {
 							return (
 								<TaskAccordion customer={customer} project={project} task={task} />

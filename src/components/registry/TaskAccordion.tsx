@@ -49,7 +49,7 @@ export const TaskAccordion = component$<TaskAccordionProps>(
 
 		return (
 			<>
-				<div class='flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-gray-200 focus:ring-4 focus:ring-gray-200 gap-3'>
+				<div class='flex w-full items-center justify-between gap-3 border border-gray-200 p-5 font-medium text-gray-500 focus:ring-4 focus:ring-gray-200 rtl:text-right'>
 					<div class='flex flex-row gap-3'>
 						<span>{task}</span>
 					</div>

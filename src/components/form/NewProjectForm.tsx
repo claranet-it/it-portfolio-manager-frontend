@@ -96,7 +96,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 
 		return (
 			<>
-				<div class='p-4 bg-white-100 rounded-md shadow w-96'>
+				<div class='w-96 rounded-md bg-white-100 p-4 shadow'>
 					<form class='space-y-3' onSubmit$={handleSubmit}>
 						<div>
 							<Autocomplete
@@ -111,7 +111,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 							{!dataCustomersSig.value.includes(customerSelected.value) &&
 								customerSelected.value !== '' &&
 								allowNewEntry && (
-									<p class='text-xs mt-1 text-gray-500 dark:text-gray-400'>
+									<p class='mt-1 text-xs text-gray-500 dark:text-gray-400'>
 										{tt('REGISTRY_CREATE_MESSAGE', {
 											type: 'customer',
 										})}
@@ -133,7 +133,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 							{!dataProjectsSig.value.includes(projectSelected.value) &&
 								projectSelected.value.name !== '' &&
 								allowNewEntry && (
-									<p class='text-xs mt-1 text-gray-500 dark:text-gray-400'>
+									<p class='mt-1 text-xs text-gray-500 dark:text-gray-400'>
 										{tt('REGISTRY_CREATE_MESSAGE', {
 											type: 'project',
 										})}
@@ -170,7 +170,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 							disabled={!taskEnableSig.value}
 						/>
 
-						<div class='flex flex-row space-x-1 justify-end'>
+						<div class='flex flex-row justify-end space-x-1'>
 							{onCancel$ && (
 								<Button variant={'link'} onClick$={_onCancel}>
 									{t('ACTION_CANCEL')}

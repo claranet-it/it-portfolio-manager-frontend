@@ -94,7 +94,7 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 				/>
 
 				{startSig.value !== 0 && endSig.value !== 0 && (
-					<p class='text-xs font-normal text-darkgray-400 mt-1 text-nowrap'>
+					<p class='mt-1 text-nowrap text-xs font-normal text-darkgray-400'>
 						{getFormattedHours(startSig.value)} - {getFormattedHours(endSig.value)}
 					</p>
 				)}

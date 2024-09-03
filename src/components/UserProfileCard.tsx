@@ -57,36 +57,36 @@ export const UserProfileCard = component$(() => {
 	});
 
 	return (
-		<div class='lg:inline-flex md:inline-flex p-0 gap-3'>
-			<div class='lg:flex-none md:flex-none text-center grid content-center'>
+		<div class='gap-3 p-0 md:inline-flex lg:inline-flex'>
+			<div class='grid content-center text-center md:flex-none lg:flex-none'>
 				<img
 					src={userStore.picture}
 					alt={t('profile_picture')}
-					class='w-20 h-auto rounded-full aspect-squar sm:m-auto'
+					class='aspect-squar h-auto w-20 rounded-full sm:m-auto'
 				/>
 			</div>
 			<div class='pt-0 md:px-4 lg:px-4'>
-				<h2 class='font-semibold text-4xl text-dark-grey'>{userStore.name}</h2>
+				<h2 class='text-4xl font-semibold text-dark-grey'>{userStore.name}</h2>
 				<p class='text-base text-dark-grey'>{userStore.email.toLowerCase()}</p>
 				<p class='text-base font-bold text-dark-grey'>{userStore.place}</p>
 			</div>
 			<div class='pt-0 md:px-4 lg:px-4'>
 				{/* Crew Area */}
-				<div class='flex items-baseline mb-2'>
-					<span class='text-xs uppercase mr-1 text-dark-grey'>{t('crew')}</span>
+				<div class='mb-2 flex items-baseline'>
+					<span class='mr-1 text-xs uppercase text-dark-grey'>{t('crew')}</span>
 					<span class='text-lg font-bold text-dark-grey'>{userStore.crew || '-'}</span>
 
 					<button
 						id='triggerCrewDropdown'
 						data-dropdown-toggle='crew-dropdown'
-						class='bg-transparent inline-flex p-0 text-gray-400 font-semibold hover:text-white rounded border-0'
+						class='inline-flex rounded border-0 bg-transparent p-0 font-semibold text-gray-400 hover:text-white'
 					>
 						{getIcon('Expand')}
 					</button>
 
 					<div
 						id='crew-dropdown'
-						class='z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700'
+						class='z-10 hidden w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700'
 					>
 						<ul
 							class='py-2 text-sm text-gray-700 dark:text-gray-200'

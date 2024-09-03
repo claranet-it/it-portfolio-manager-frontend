@@ -87,12 +87,12 @@ export const WeekSelector = component$<WeekSelectorProps>(
 					</label>
 					<div class='flex flex-row space-x-2'>
 						<div class='relative'>
-							<div class='absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-dark-grey'>
+							<div class='pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5 text-dark-grey'>
 								{getIcon('Calendar')}
 							</div>
 							<div
 								onClick$={showDataSelectionModal}
-								class='bg-white w-60 border border-darkgray-500 text-dark-grey text-sm rounded-md block w-full min-w-56 px-2.5 py-2.5 ps-8 cursor-pointer'
+								class='block w-60 w-full min-w-56 cursor-pointer rounded-md border border-darkgray-500 bg-white px-2.5 py-2.5 ps-8 text-sm text-dark-grey'
 							>
 								{currenDataRange.value}
 							</div>
@@ -100,13 +100,13 @@ export const WeekSelector = component$<WeekSelectorProps>(
 
 						<button
 							onClick$={prevAction}
-							class='border border-darkgray-500 rounded-md text-dark-grey py-2 px-3'
+							class='rounded-md border border-darkgray-500 px-3 py-2 text-dark-grey'
 						>
 							{getIcon('ArrowLeft')}
 						</button>
 						<button
 							onClick$={nextAction}
-							class='border border-darkgray-500 rounded-md text-dark-grey py-2 px-3'
+							class='rounded-md border border-darkgray-500 px-3 py-2 text-dark-grey'
 						>
 							{getIcon('ArrowRight')}
 						</button>
@@ -116,7 +116,7 @@ export const WeekSelector = component$<WeekSelectorProps>(
 				<Modal state={selectDataModalState}>
 					<div class='flex flex-row [&_.next]:text-gray-300 [&_.prev]:text-gray-300'>
 						<div class='flex flex-col text-center'>
-							<h3 class='text-sm text-dark-gray-900 border-b-2 border-syrface-70 mb-1'>
+							<h3 class='text-dark-gray-900 border-syrface-70 mb-1 border-b-2 text-sm'>
 								{t('DATARANGE_START_LABEL')}
 							</h3>
 							<div id='startDataPicker'></div>

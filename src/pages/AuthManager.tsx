@@ -25,14 +25,14 @@ export const AuthManager = component$(() => {
 	});
 
 	return (
-		<div class='h-screen flex flex-col items-center justify-center bg-white-100'>
+		<div class='flex h-screen flex-col items-center justify-center bg-white-100'>
 			{isLoading.value && (
-				<div class='fixed t-0 l-0 w-full h-full bg-darkgray-900/30 flex z-50 items-center justify-center'>
+				<div class='t-0 l-0 fixed z-50 flex h-full w-full items-center justify-center bg-darkgray-900/30'>
 					{<LoadingSpinner />}
 				</div>
 			)}
 
-			<div class='fixed top-0 right-0 pr-2 pt-2 flex flex-col justify-end items-end space-y-2'>
+			<div class='fixed right-0 top-0 flex flex-col items-end justify-end space-y-2 pr-2 pt-2'>
 				{issueMessage.value && (
 					<Toast
 						type={'warning'}
@@ -44,20 +44,20 @@ export const AuthManager = component$(() => {
 			</div>
 
 			<div
-				class={`${isLoading.value ? 'hidden' : ''} w-[360px] h-[360px] flex flex-col justify-evenly p-10 rounded-[4px] bg-clara-red`}
+				class={`${isLoading.value ? 'hidden' : ''} flex h-[360px] w-[360px] flex-col justify-evenly rounded-[4px] bg-clara-red p-10`}
 			>
 				<div class='flex flex-row items-center justify-center gap-[28px] text-white-100'>
 					<BricklyLogo />
 					<BricklyNaming />
 				</div>
-				<div class='flex w-[200px] mx-auto flex-col gap-[12px] mt-3'>
-					<span class='relative text-white-100 text-base font-bold text-center'>
+				<div class='mx-auto mt-3 flex w-[200px] flex-col gap-[12px]'>
+					<span class='relative text-center text-base font-bold text-white-100'>
 						{t('LOGIN_TITLE')}
 					</span>
 					{authProviders.map((authElement) => (
 						<button
 							key={authElement.name}
-							class='bg-white-100 h-[56px] enabled:hover:bg-surface-20 flex items-center justify-center p-2.5 rounded-[4px] border border-surface-70'
+							class='flex h-[56px] items-center justify-center rounded-[4px] border border-surface-70 bg-white-100 p-2.5 enabled:hover:bg-surface-20'
 							onClick$={authElement.onClick}
 							disabled={isLoading.value}
 						>
@@ -68,7 +68,7 @@ export const AuthManager = component$(() => {
 			</div>
 
 			<div
-				class={`${isLoading.value ? 'hidden' : ''} 'h-[36px] bg-white-100 mt-[12px] text-sm font-normal text-dark-grey`}
+				class={`${isLoading.value ? 'hidden' : ''} 'h-[36px] mt-[12px] bg-white-100 text-sm font-normal text-dark-grey`}
 			>
 				{t('CLARANET_CREDITS')}{' '}
 				<a style={{ 'text-decoration': 'underline' }} href='https://www.claranet.com/it'>

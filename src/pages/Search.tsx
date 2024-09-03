@@ -49,12 +49,12 @@ export const Search = component$(() => {
 	});
 
 	return (
-		<div class='w-full flex flex-col'>
+		<div class='flex w-full flex-col'>
 			{/* <!-- Chat Messages --> */}
-			<div class='flex-grow sm:px-8 md:px-36 lg:px-56 py-2 h-1 overflow-y-auto'>
+			<div class='h-1 flex-grow overflow-y-auto py-2 sm:px-8 md:px-36 lg:px-56'>
 				{chatStore.length === 0 && (
-					<div class='flex-grow h-full content-center'>
-						<h1 class='text-center text-2xl text-darkgray-900 font-bold'>
+					<div class='h-full flex-grow content-center'>
+						<h1 class='text-center text-2xl font-bold text-darkgray-900'>
 							{t('how_can_help')}
 						</h1>
 					</div>
@@ -62,10 +62,10 @@ export const Search = component$(() => {
 
 				{chatStore.map(({ answer, question }, index) => (
 					<section key={index}>
-						<div class='flex flex-col leading-1.5 p-4 my-2 border-gray-200 bg-red-100 rounded-s-xl rounded-ee-xl w-3/4 whitespace-pre-line ml-auto'>
+						<div class='leading-1.5 my-2 ml-auto flex w-3/4 flex-col whitespace-pre-line rounded-s-xl rounded-ee-xl border-gray-200 bg-red-100 p-4'>
 							<p class='text-sm font-normal text-gray-900'>{question}</p>
 						</div>
-						<div class='flex flex-col leading-1.5 p-4 my-2 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl w-3/4 whitespace-pre-line'>
+						<div class='leading-1.5 my-2 flex w-3/4 flex-col whitespace-pre-line rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4'>
 							<p class='text-sm font-normal text-gray-900'>{answer}</p>
 						</div>
 					</section>
@@ -73,19 +73,19 @@ export const Search = component$(() => {
 			</div>
 
 			{/* Chat Input */}
-			<div class='sm:px-8 md:px-36 lg:px-56 py-2 bg-gray-200 item-center'>
+			<div class='item-center bg-gray-200 py-2 sm:px-8 md:px-36 lg:px-56'>
 				<form
 					onSubmit$={() => {
 						onSubmit();
 					}}
 					preventdefault:submit
 				>
-					<div class='flex flex-row align-middle space-x-3'>
+					<div class='flex flex-row space-x-3 align-middle'>
 						<textarea
 							disabled={loadingSig.value}
 							id='chat'
 							rows={SEARCH_TEXT_AREA_ROWS}
-							class='block w-full text-sm text-gray-900 bg-white rounded-md border border-gray-300'
+							class='block w-full rounded-md border border-gray-300 bg-white text-sm text-gray-900'
 							placeholder={t('search_placeholder')}
 							bind:value={searchValueSig}
 							onKeyDown$={onPressEnter}
@@ -94,7 +94,7 @@ export const Search = component$(() => {
 						<button
 							id='search_button'
 							type='submit'
-							class='block justify-center  text-red-600 cursor-pointer text-center'
+							class='block cursor-pointer justify-center text-center text-red-600'
 							disabled={!searchValueSig.value || loadingSig.value}
 						>
 							{getIcon('Send')}

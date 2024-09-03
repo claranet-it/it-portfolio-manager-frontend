@@ -27,17 +27,17 @@ export const SkillMatrix = component$(() => {
 	});
 
 	return (
-		<div class='flex sm: flex-col md:flex-row lg:flex-row sm:space-y-4 md:space-x-5 lg:space-x-5'>
+		<div class='sm: flex flex-col sm:space-y-4 md:flex-row md:space-x-5 lg:flex-row lg:space-x-5'>
 			{Object.entries(skillsMineSig.value).map(([category, skills], key) => (
 				<div key={key} class='flex-1'>
 					{/* title label area  */}
-					<div key={key} class='items-center justify-center w-full mb-1'>
-						<span class='text-2xl text-dark-grey font-bold sm:mt-2'>
+					<div key={key} class='mb-1 w-full items-center justify-center'>
+						<span class='text-2xl font-bold text-dark-grey sm:mt-2'>
 							{tt('my_type_skill', { skillType: category })}
 						</span>
 					</div>
 					{/* Skill list area  */}
-					<div class='flex flex-col justify-content place-content-evenly space-y-1'>
+					<div class='justify-content flex flex-col place-content-evenly space-y-1'>
 						{skills.map((skill, key) => (
 							<SkillRow
 								key={key}

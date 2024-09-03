@@ -40,7 +40,7 @@ export const Input = component$<inputInterface>(
 					placeholder={placeholder}
 					class={
 						bgColor +
-						' border border-darkgray-500 text-gray-900 text-sm rounded-md block w-full p-2.5'
+						' block w-full rounded-md border border-darkgray-500 p-2.5 text-sm text-gray-900'
 					}
 					bind:value={_bindValue}
 					value={value}

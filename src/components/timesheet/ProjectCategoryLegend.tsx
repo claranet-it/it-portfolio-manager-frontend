@@ -19,21 +19,21 @@ export const ProjectCategoryLegend = component$(() => {
 
 	return (
 		<div class='flex flex-row'>
-			<div class='flex sm:flex-col md:flex-row lg:flex-row text-dark-grey'>
-				<span class='flex items-center text-xs font-normal text-dark-grey me-1'>
+			<div class='flex text-dark-grey sm:flex-col md:flex-row lg:flex-row'>
+				<span class='me-1 flex items-center text-xs font-normal text-dark-grey'>
 					{t('LEGEND_LABEL').toUpperCase()}
 				</span>
 
 				{categories.map((category) => (
-					<span class='flex items-center text-xs font-normal text-dark-grey me-3'>
+					<span class='me-3 flex items-center text-xs font-normal text-dark-grey'>
 						<span
-							class={`flex w-2.5 h-2.5 bg-${category.color} rounded-full me-1.5 flex-shrink-0`}
+							class={`flex h-2.5 w-2.5 bg-${category.color} me-1.5 flex-shrink-0 rounded-full`}
 						></span>
 						{category.label}
 					</span>
 				))}
 
-				<span class='flex items-center text-xs font-normal text-dark-grey me-3'>
+				<span class='me-3 flex items-center text-xs font-normal text-dark-grey'>
 					{getIcon('V3Dots')}
 					{t('NOTE_LABEL')}
 				</span>

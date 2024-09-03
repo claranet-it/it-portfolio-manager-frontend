@@ -44,9 +44,9 @@ export const Registry = component$(() => {
 
 	return (
 		<>
-			<div class='w-full px-6 pt-2.5 space-y-3 mb-32'>
-				<div class='flex sm:flex-col md:flex-row lg:flex-row  sm:space-y-3 md:justify-between lg:justify-between'>
-					<h1 class='text-2xl font-bold text-darkgray-900 me-4'>
+			<div class='mb-32 w-full space-y-3 px-6 pt-2.5'>
+				<div class='flex sm:flex-col sm:space-y-3 md:flex-row md:justify-between lg:flex-row lg:justify-between'>
+					<h1 class='me-4 text-2xl font-bold text-darkgray-900'>
 						{t('REGISTRY_PAGE_TITLE')}
 					</h1>
 
@@ -68,7 +68,7 @@ export const Registry = component$(() => {
 			</div>
 
 			<Modal state={alertMessageState}>
-				<p q:slot='modalBody' class='text-base leading-relaxed text-dark-gray'>
+				<p q:slot='modalBody' class='text-dark-gray text-base leading-relaxed'>
 					{alertMessageState.message}
 				</p>
 			</Modal>

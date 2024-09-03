@@ -67,31 +67,31 @@ export const ReportHeader = component$<ReportHeaderProps>(
 
 		return (
 			<div class='flex flex-col gap-6'>
-				{customer && <h3 class='font-bold text-base text-dark-grey'>{customer.value}</h3>}
+				{customer && <h3 class='text-base font-bold text-dark-grey'>{customer.value}</h3>}
 
-				<div class='w-full flex flex-row justify-between align-middle'>
+				<div class='flex w-full flex-row justify-between align-middle'>
 					<div class='flex flex-row items-center gap-5'>
-						<h3 class='text-base font-normal text-dark-grey align-middle'>
+						<h3 class='align-middle text-base font-normal text-dark-grey'>
 							{t('TOTAL_TIME_LABEL')}:{' '}
 							<span class='font-bold'>{getFormattedHours(totalHours.value)} h</span>
 						</h3>
 
 						{showTopProject && (
-							<h3 class='text-base font-normal text-dark-grey align-middle'>
+							<h3 class='align-middle text-base font-normal text-dark-grey'>
 								{t('TOP_PROJECT_LABEL')}:{' '}
 								<span class='font-bold'>{topProject.value}</span>
 							</h3>
 						)}
 
 						{showTopCustomer && (
-							<h3 class='text-base font-normal text-dark-grey align-middle'>
+							<h3 class='align-middle text-base font-normal text-dark-grey'>
 								{t('TOP_CUSTOMER_LABEL')}:{' '}
 								<span class='font-bold'>{topCustomer.value}</span>
 							</h3>
 						)}
 
 						{!(showTopCustomer || showTopProject) && (
-							<h3 class='text-base font-normal text-dark-grey align-middle'>
+							<h3 class='align-middle text-base font-normal text-dark-grey'>
 								{capitalizeString(t('PROJECT_BILLABLE_LABEL'))}:
 								<span class='font-bold'>
 									{getFormattedHours(billableHours.value)} h

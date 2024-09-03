@@ -5,7 +5,7 @@ export const SfIconStarFilled = component$<{ onClick$: QRL }>(({ onClick$ }) => 
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
 			viewBox='0 0 24 24'
-			class='inline-block fill-clara-red w-6 h-6 w-[1.5em] h-[1.5em]'
+			class='inline-block h-6 h-[1.5em] w-6 w-[1.5em] fill-clara-red'
 			preventdefault:click
 			onClick$={onClick$}
 		>

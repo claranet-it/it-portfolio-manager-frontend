@@ -123,12 +123,12 @@ export const ChartPreview = component$(() => {
 	});
 
 	return (
-		<div class='w-full flex flex-col p-1 text-center items-center'>
+		<div class='flex w-full flex-col items-center p-1 text-center'>
 			<h1 class='text-2xl'>Report list</h1>
 			<ReportList data={listData} resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE} />
 
 			<h1 class='text-2xl'>Donut</h1>
-			<div class='w-full flex flex-row justify-between'>
+			<div class='flex w-full flex-row justify-between'>
 				<DonutChart data={dataDonut} />
 
 				<DonutChart data={dataDonutOneType} />

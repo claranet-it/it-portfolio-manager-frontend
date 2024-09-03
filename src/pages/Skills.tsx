@@ -86,9 +86,9 @@ export const Skills = component$(() => {
 	});
 
 	return (
-		<div class='w-full flex-col pt-5 px-6 space-y-6'>
-			<div class='flex sm:flex-col md:flex-row lg:flex-row md:justify-between lg:justify-between md:space-x-5 lg:space-x-5 sm:space-y-1'>
-				<h1 class='text-2xl font-bold text-darkgray-900 me-4'>{t('SKILLS_PAGE_TITLE')}</h1>
+		<div class='w-full flex-col space-y-6 px-6 pt-5'>
+			<div class='flex sm:flex-col sm:space-y-1 md:flex-row md:justify-between md:space-x-5 lg:flex-row lg:justify-between lg:space-x-5'>
+				<h1 class='me-4 text-2xl font-bold text-darkgray-900'>{t('SKILLS_PAGE_TITLE')}</h1>
 
 				<SkillLegend />
 			</div>
