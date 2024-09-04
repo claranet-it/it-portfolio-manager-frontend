@@ -16,6 +16,7 @@ import {
 } from '../../utils/timesheet';
 
 import { Task } from '@models/task';
+import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
 import { Button } from '../Button';
 import { getIcon } from '../icons';
 import { Modal } from '../modals/Modal';
@@ -120,8 +121,8 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 					date: date,
 					company: 'it',
 					customer: customer || '',
-					project: project || { name: '', type: '', plannedHours: 0 },
-					task: task || { name: '', plannedHours: 0, completed: false },
+					project: project || INIT_PROJECT_VALUE,
+					task: task || INIT_TASK_VALUE,
 					hours: 0,
 					isUnsaved: true,
 					index: (index ?? 0) + 1,

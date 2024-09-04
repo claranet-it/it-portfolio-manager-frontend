@@ -17,7 +17,7 @@ import { useProductivity } from 'src/hooks/report/useProductivity';
 import { useReportProject } from 'src/hooks/report/useReportProject';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
 import { t } from 'src/locale/labels';
-import { INIT_PROJECT_VALUE } from 'src/utils/constants';
+import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
 import { handlePrint } from 'src/utils/handlePrint';
 
 export const Report = component$(() => {
@@ -25,7 +25,7 @@ export const Report = component$(() => {
 
 	const selectedCustomerSig = useSignal<Customer>('');
 	const selectedProjectSig = useSignal<Project>(INIT_PROJECT_VALUE);
-	const selectedTaskSig = useSignal<Task>({ name: '', plannedHours: 0, completed: false });
+	const selectedTaskSig = useSignal<Task>(INIT_TASK_VALUE);
 	const selectedNameSig = useSignal<string>('');
 	const selectedTab = useSignal<RepotTab>('project');
 	const showProjectsDetails = useSignal(false);

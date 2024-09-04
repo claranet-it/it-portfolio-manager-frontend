@@ -9,6 +9,7 @@ import {
 	useTask$,
 } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
 import { t, tt } from '../../locale/labels';
 import { Customer } from '../../models/customer';
 import { Project } from '../../models/project';
@@ -35,16 +36,10 @@ export const useNewTimeEntry = (
 	const dataTasksSign = useSignal<Task[]>([]);
 
 	const initCustomer: Customer = '';
-	const initProject: Project = { name: '', type: '', plannedHours: 0 };
-	const initTaskt: Task = {
-		name: '',
-		plannedHours: 0,
-		completed: false,
-	};
 
 	const customerSelected = useSignal<Customer>('');
-	const projectSelected = useSignal<Project>(initProject);
-	const taskSelected = useSignal<Task>(initTaskt);
+	const projectSelected = useSignal<Project>(INIT_PROJECT_VALUE);
+	const taskSelected = useSignal<Task>(INIT_TASK_VALUE);
 	const projectTypeInvalid = useSignal<boolean>(false);
 	const projectTypeEnabled = useStore<{
 		newCustomer: boolean;
@@ -58,7 +53,7 @@ export const useNewTimeEntry = (
 		if (customer !== undefined) {
 			if (customer === '' || dataCustomersSig.value.includes(customer)) {
 				projectTypeEnabled.newCustomer = false;
-				projectSelected.value = initProject;
+				projectSelected.value = INIT_PROJECT_VALUE;
 			} else {
 				projectTypeEnabled.newCustomer = true;
 			}
@@ -73,8 +68,8 @@ export const useNewTimeEntry = (
 	});
 
 	const onChangeCustomer = $(async (value: string) => {
-		projectSelected.value = initProject;
-		taskSelected.value = initTaskt;
+		projectSelected.value = INIT_PROJECT_VALUE;
+		taskSelected.value = INIT_TASK_VALUE;
 		if (value != '') {
 			dataProjectsSig.value = await getProjects(value);
 			projectEnableSig.value = true;
@@ -90,7 +85,7 @@ export const useNewTimeEntry = (
 
 	const onChangeProject = $(async (value: Project) => {
 		if (customerSelected.value != '') {
-			taskSelected.value = initTaskt;
+			taskSelected.value = INIT_TASK_VALUE;
 			if (value.name != '') {
 				dataTasksSign.value = await getTasks(customerSelected.value, value);
 				taskEnableSig.value = true;
@@ -103,8 +98,8 @@ export const useNewTimeEntry = (
 
 	const clearForm = $(() => {
 		customerSelected.value = initCustomer;
-		projectSelected.value = initProject;
-		taskSelected.value = initTaskt;
+		projectSelected.value = INIT_PROJECT_VALUE;
+		taskSelected.value = INIT_TASK_VALUE;
 		projectTypeEnabled.newCustomer = false;
 		projectTypeEnabled.newProject = false;
 	});
