@@ -27,7 +27,7 @@ export const useCustomers = () => {
 
 	const updateCustomer = $(async (customer: Customer, editedCusteomr: Customer) => {
 		appStore.isLoading = true;
-		const projectList = await getProjects('it', customer);
+		const projectList = await getProjects(customer);
 		const results = projectList.map(async (project) => {
 			return await updateProjectCustomer(customer, editedCusteomr, project);
 		});
@@ -42,7 +42,7 @@ export const useCustomers = () => {
 
 	const removeCustomer = $(async (customer: Customer) => {
 		appStore.isLoading = true;
-		const projectList = await getProjects('it', customer);
+		const projectList = await getProjects(customer);
 		const results = projectList.map(async (project) => {
 			return await removeProjectCustomer(customer, project);
 		});

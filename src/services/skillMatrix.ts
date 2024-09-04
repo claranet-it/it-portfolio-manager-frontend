@@ -7,21 +7,18 @@ export const getSkillMatrixMine = async (): Promise<Skill[]> =>
 export const pathSkillMatrixMine = async (skill: Skill): Promise<boolean> =>
 	checkHttpResponseStatus('skill-matrix/mine', 204, 'PATCH', skill);
 
-export const getSkills = async (company: string = 'it'): Promise<SkillMatrix> => [
-	...(await getCompanySkills(company)),
-	...(await getNetworkingSkills(company)),
+export const getSkills = async (): Promise<SkillMatrix> => [
+	...(await getCompanySkills()),
+	...(await getNetworkingSkills()),
 ];
 
-export const getCompanySkills = async (company: string = 'it'): Promise<SkillMatrix> =>
-	getHttpResponse<SkillMatrix>(`skill-matrix?company=${encodeURIComponent(company)}`);
+export const getCompanySkills = async (): Promise<SkillMatrix> =>
+	getHttpResponse<SkillMatrix>(`skill-matrix`);
 
-export const getNetworkingSkills = async (company: string = 'it'): Promise<SkillMatrix> => {
+export const getNetworkingSkills = async (): Promise<SkillMatrix> => {
 	try {
 		let response = await getHttpResponse<SkillMatrix>({
 			path: `networking/skills`,
-			params: {
-				company,
-			},
 		});
 		response = response.map((el) => {
 			const [[companyName, _]] = Object.entries(el);

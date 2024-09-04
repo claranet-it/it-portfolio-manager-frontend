@@ -13,7 +13,7 @@ export const useTasks = () => {
 	const fetchTasks = $(async (customer: Customer, project: Project) => {
 		tasks.value = [];
 		isLoading.value = true;
-		tasks.value = await getTasks(undefined, customer, project);
+		tasks.value = await getTasks(customer, project);
 		isLoading.value = false;
 	});
 
