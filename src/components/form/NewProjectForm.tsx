@@ -30,7 +30,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 		const {
 			dataCustomersSig,
 			dataProjectsSig,
-			dataTaksSign,
+			dataTasksSign,
 			customerSelected,
 			projectSelected,
 			projectEnableSig,
@@ -61,9 +61,14 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 		});
 
 		const _projectSelected = useSignal(projectSelected.value.name);
+		const _taskSelected = useSignal(taskSelected.value.name);
 
 		const _projectOptions = useComputed$(() => {
 			return dataProjectsSig.value.map((project) => project.name);
+		});
+
+		const _dataTasksSign = useComputed$(() => {
+			return dataTasksSign.value.map((dataTasks) => dataTasks.name);
 		});
 
 		const _onChangeProject = $(async (value: string) => {
@@ -163,8 +168,8 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 						<Autocomplete
 							id={UUID()}
 							label={t('TASK_LABEL')}
-							selected={taskSelected}
-							data={dataTaksSign}
+							selected={_taskSelected}
+							data={_dataTasksSign}
 							placeholder='Search...'
 							required
 							disabled={!taskEnableSig.value}

@@ -1,6 +1,5 @@
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
-import { Task } from '@models/task';
 import { describe, expect, it } from 'vitest';
 import {
 	convertTimeToDecimal,
@@ -18,7 +17,11 @@ describe('Hours Timesheet', () => {
 				company: '',
 				customer: '' as Customer,
 				project: { name: '', type: 'billable' } as Project,
-				task: '' as Task,
+				task: {
+					name: '',
+					plannedHours: 0,
+					completed: false,
+				},
 				hours: 0,
 			},
 			{
@@ -26,7 +29,11 @@ describe('Hours Timesheet', () => {
 				company: '',
 				customer: '' as Customer,
 				project: { name: '', type: 'billable' } as Project,
-				task: '' as Task,
+				task: {
+					name: '',
+					plannedHours: 0,
+					completed: false,
+				},
 				hours: 6,
 			},
 		];

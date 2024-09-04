@@ -22,10 +22,10 @@ export const TaskAccordion = component$<TaskAccordionProps>(
 	({ customer, project, task, refresh }) => {
 		const { updateTask } = useTasks();
 		const { addEvent } = useNotification();
-		const name = useSignal(task);
+		const taskName = useSignal(task.name);
 
 		const initFormSignals = $(() => {
-			name.value = task;
+			taskName.value = task.name;
 		});
 
 		const taskModalState = useStore<ModalState>({
@@ -34,7 +34,7 @@ export const TaskAccordion = component$<TaskAccordionProps>(
 				initFormSignals();
 			}),
 			onConfirm$: $(async () => {
-				if (await updateTask(customer, project, task, name.value)) {
+				if (await updateTask(customer, project, task.name, taskName.value)) {
 					refresh && refresh();
 					addEvent({
 						type: 'success',
@@ -51,7 +51,7 @@ export const TaskAccordion = component$<TaskAccordionProps>(
 			<>
 				<div class='flex w-full items-center justify-between gap-3 border border-gray-200 p-5 font-medium text-gray-500 focus:ring-4 focus:ring-gray-200 rtl:text-right'>
 					<div class='flex flex-row gap-3'>
-						<span>{task}</span>
+						<span>{task.name}</span>
 					</div>
 					<div class='flex flex-row gap-3'>
 						{/* <Button variant={'outline'} onClick$={() => {}}>
@@ -68,7 +68,7 @@ export const TaskAccordion = component$<TaskAccordionProps>(
 				</div>
 
 				<Modal state={taskModalState}>
-					<EditTaskForm name={name} />
+					<EditTaskForm name={taskName} />
 				</Modal>
 			</>
 		);

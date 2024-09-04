@@ -32,15 +32,19 @@ export const useNewTimeEntry = (
 	});
 
 	const dataProjectsSig = useSignal<Project[]>([]);
-	const dataTaksSign = useSignal<Task[]>([]);
+	const dataTasksSign = useSignal<Task[]>([]);
 
 	const initCustomer: Customer = '';
 	const initProject: Project = { name: '', type: '', plannedHours: 0 };
-	const initTaskt: Task = '';
+	const initTaskt: Task = {
+		name: '',
+		plannedHours: 0,
+		completed: false,
+	};
 
 	const customerSelected = useSignal<Customer>('');
 	const projectSelected = useSignal<Project>(initProject);
-	const taskSelected = useSignal<Task>('');
+	const taskSelected = useSignal<Task>(initTaskt);
 	const projectTypeInvalid = useSignal<boolean>(false);
 	const projectTypeEnabled = useStore<{
 		newCustomer: boolean;
@@ -88,7 +92,7 @@ export const useNewTimeEntry = (
 		if (customerSelected.value != '') {
 			taskSelected.value = initTaskt;
 			if (value.name != '') {
-				dataTaksSign.value = await getTasks(customerSelected.value, value);
+				dataTasksSign.value = await getTasks(customerSelected.value, value);
 				taskEnableSig.value = true;
 			} else {
 				taskEnableSig.value = false;
@@ -109,7 +113,7 @@ export const useNewTimeEntry = (
 		const savingResult = await saveTask(
 			customerSelected.value,
 			projectSelected.value,
-			taskSelected.value
+			taskSelected.value.name
 		);
 
 		if (!savingResult) {
@@ -135,7 +139,7 @@ export const useNewTimeEntry = (
 				message: tt('INSERT_NEW_PROJECT_SUCCESS_MESSAGE', {
 					customer: customerSelected.value,
 					project: projectSelected.value?.name ?? '',
-					task: taskSelected.value,
+					task: taskSelected.value.name,
 				}),
 				autoclose: true,
 			});
@@ -151,7 +155,7 @@ export const useNewTimeEntry = (
 				dataProjectsSig.value.find(
 					(project) => project.name === projectSelected.value.name
 				) &&
-				dataTaksSign.value.find((task) => task === taskSelected.value)
+				dataTasksSign.value.find((task) => task === taskSelected.value)
 		);
 	};
 
@@ -224,7 +228,7 @@ export const useNewTimeEntry = (
 	return {
 		dataCustomersSig,
 		dataProjectsSig,
-		dataTaksSign,
+		dataTasksSign,
 		customerSelected,
 		projectSelected,
 		taskSelected,

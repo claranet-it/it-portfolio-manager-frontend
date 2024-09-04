@@ -25,7 +25,7 @@ export const Report = component$(() => {
 
 	const selectedCustomerSig = useSignal<Customer>('');
 	const selectedProjectSig = useSignal<Project>(INIT_PROJECT_VALUE);
-	const selectedTaskSig = useSignal<Task>('' as Task);
+	const selectedTaskSig = useSignal<Task>({ name: '', plannedHours: 0, completed: false });
 	const selectedNameSig = useSignal<string>('');
 	const selectedTab = useSignal<RepotTab>('project');
 	const showProjectsDetails = useSignal(false);
@@ -62,7 +62,7 @@ export const Report = component$(() => {
 		showProjectsDetails.value =
 			selectedCustomerSig.value !== '' ||
 			selectedProjectSig.value !== INIT_PROJECT_VALUE ||
-			selectedTaskSig.value !== '' ||
+			selectedTaskSig.value.name !== '' ||
 			selectedNameSig.value !== '';
 	});
 

@@ -33,7 +33,7 @@ export const isEqualEntries = (entryA: TimeEntry, entryB: TimeEntry): Boolean =>
 	return (
 		entryA.customer === entryB.customer &&
 		entryA.project === entryB.project &&
-		entryA.task === entryB.task
+		entryA.task.name === entryB.task.name
 	);
 };
 
