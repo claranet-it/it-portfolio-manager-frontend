@@ -245,7 +245,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																	}
 																/>
 															</div>
-															{isLastEntry && hours !== 0 && (
+															{isLastEntry && hours && (
 																<Button
 																	tabIndex={-1}
 																	variant={'link'}
