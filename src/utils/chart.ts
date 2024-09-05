@@ -115,15 +115,15 @@ export const donutChartGroupByTaskAdapter = (data: ReportTimeEntry[]): DonutChar
 			prev: Record<string, { totalHours: number; type: ProjectType; color?: string }>,
 			entry: ReportTimeEntry
 		) => {
-			if (prev[entry.task]) {
-				prev[entry.task].totalHours = prev[entry.task].totalHours + entry.hours;
-				prev[entry.task].type = entry.project.type;
-				prev[entry.task].color = generateHexColor(entry.task) ?? '#000';
+			if (prev[entry.task.name]) {
+				prev[entry.task.name].totalHours = prev[entry.task.name].totalHours + entry.hours;
+				prev[entry.task.name].type = entry.project.type;
+				prev[entry.task.name].color = generateHexColor(entry.task.name) ?? '#000';
 			} else {
-				prev[entry.task] = {
+				prev[entry.task.name] = {
 					totalHours: entry.hours,
 					type: entry.project.type,
-					color: generateHexColor(entry.task) ?? '#000',
+					color: generateHexColor(entry.task.name) ?? '#000',
 				};
 			}
 			return prev;
@@ -206,19 +206,19 @@ export const listGroupByTaskAdapter = (data: ReportTimeEntry[]): ReportRow[] => 
 	}, 0);
 
 	const taskList = data.reduce((prev: Record<string, ReportRow>, entry: ReportTimeEntry) => {
-		if (prev[entry.task]) {
-			const hours = prev[entry.task].hours + entry.hours;
-			prev[entry.task].hours = hours;
-			prev[entry.task].type = entry.project.type;
-			prev[entry.task].label = entry.task;
-			prev[entry.task].color = generateHexColor(entry.task) ?? '#000';
-			prev[entry.task].percentage = Number(((hours / totalHours) * 100).toFixed(2));
+		if (prev[entry.task.name]) {
+			const hours = prev[entry.task.name].hours + entry.hours;
+			prev[entry.task.name].hours = hours;
+			prev[entry.task.name].type = entry.project.type;
+			prev[entry.task.name].label = entry.task.name;
+			prev[entry.task.name].color = generateHexColor(entry.task.name) ?? '#000';
+			prev[entry.task.name].percentage = Number(((hours / totalHours) * 100).toFixed(2));
 		} else {
-			prev[entry.task] = {
+			prev[entry.task.name] = {
 				hours: entry.hours,
 				type: entry.project.type,
-				label: entry.task,
-				color: generateHexColor(entry.task) ?? '#000',
+				label: entry.task.name,
+				color: generateHexColor(entry.task.name) ?? '#000',
 				percentage: Number(((entry.hours / totalHours) * 100).toFixed(2)),
 			};
 		}

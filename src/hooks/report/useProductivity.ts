@@ -28,7 +28,7 @@ export const useProductivity = (
 			results.data = await getProductivity(
 				customer.value,
 				project.value,
-				task.value,
+				task.value.name,
 				nameDebunce.value.toLowerCase(),
 				formatDateString(from.value),
 				formatDateString(to.value)
@@ -51,7 +51,7 @@ export const useProductivity = (
 	useTask$(async ({ track }) => {
 		track(() => customer.value);
 		track(() => project.value);
-		track(() => task.value);
+		track(() => task.value.name);
 		track(() => nameDebunce.value);
 		track(() => from.value);
 		track(() => to.value);

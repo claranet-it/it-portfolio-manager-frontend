@@ -28,7 +28,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 		const {
 			dataCustomersSig,
 			dataProjectsSig,
-			dataTaksSign,
+			dataTasksSign,
 			customerSelected,
 			projectSelected,
 			taskSelected,
@@ -44,7 +44,13 @@ export const NewTaskForm = component$<NewTaskForm>(
 			initFlowbite();
 		});
 
+		const _taskSelected = useSignal(taskSelected.value.name);
+
 		const _projectSelected = useSignal(projectSelected.value.name);
+
+		const _dataTasksSign = useComputed$(() => {
+			return dataTasksSign.value.map((dataTasks) => dataTasks.name);
+		});
 
 		const _projectOptions = useComputed$(() => {
 			return dataProjectsSig.value.map((project) => project.name);
@@ -68,6 +74,13 @@ export const NewTaskForm = component$<NewTaskForm>(
 			event.preventDefault();
 			_projectSelected.value = '';
 			handleSubmit(event, _);
+		});
+
+		const _onChangeTask = $(async (value: string) => {
+			const task = dataTasksSign.value.find((task) => task.name === value);
+			if (task) {
+				taskSelected.value = task;
+			}
 		});
 
 		return (
@@ -106,8 +119,9 @@ export const NewTaskForm = component$<NewTaskForm>(
 							disabled={!taskEnableSig.value}
 							label={t('TASK_LABEL')}
 							placeholder={t('SELECT_TASK_PLACEHOLDER')}
-							value={taskSelected}
-							options={dataTaksSign}
+							value={_taskSelected}
+							options={_dataTasksSign}
+							onChange$={_onChangeTask}
 							size='auto'
 						/>
 

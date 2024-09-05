@@ -18,7 +18,7 @@ export const useTasks = () => {
 	});
 
 	const updateTask = $(
-		async (customer: Customer, project: Project, task: Task, editedTask: Task) => {
+		async (customer: Customer, project: Project, task: string, editedTask: string) => {
 			appStore.isLoading = true;
 			const response = await editTask(customer, project, task, editedTask);
 			appStore.isLoading = false;

@@ -9,6 +9,7 @@ import {
 	useTask$,
 } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
 import { t, tt } from '../../locale/labels';
 import { Customer } from '../../models/customer';
 import { Project } from '../../models/project';
@@ -32,15 +33,13 @@ export const useNewTimeEntry = (
 	});
 
 	const dataProjectsSig = useSignal<Project[]>([]);
-	const dataTaksSign = useSignal<Task[]>([]);
+	const dataTasksSign = useSignal<Task[]>([]);
 
 	const initCustomer: Customer = '';
-	const initProject: Project = { name: '', type: '', plannedHours: 0 };
-	const initTaskt: Task = '';
 
 	const customerSelected = useSignal<Customer>('');
-	const projectSelected = useSignal<Project>(initProject);
-	const taskSelected = useSignal<Task>('');
+	const projectSelected = useSignal<Project>(INIT_PROJECT_VALUE);
+	const taskSelected = useSignal<Task>(INIT_TASK_VALUE);
 	const projectTypeInvalid = useSignal<boolean>(false);
 	const projectTypeEnabled = useStore<{
 		newCustomer: boolean;
@@ -54,7 +53,7 @@ export const useNewTimeEntry = (
 		if (customer !== undefined) {
 			if (customer === '' || dataCustomersSig.value.includes(customer)) {
 				projectTypeEnabled.newCustomer = false;
-				projectSelected.value = initProject;
+				projectSelected.value = INIT_PROJECT_VALUE;
 			} else {
 				projectTypeEnabled.newCustomer = true;
 			}
@@ -69,8 +68,8 @@ export const useNewTimeEntry = (
 	});
 
 	const onChangeCustomer = $(async (value: string) => {
-		projectSelected.value = initProject;
-		taskSelected.value = initTaskt;
+		projectSelected.value = INIT_PROJECT_VALUE;
+		taskSelected.value = INIT_TASK_VALUE;
 		if (value != '') {
 			dataProjectsSig.value = await getProjects(value);
 			projectEnableSig.value = true;
@@ -86,9 +85,9 @@ export const useNewTimeEntry = (
 
 	const onChangeProject = $(async (value: Project) => {
 		if (customerSelected.value != '') {
-			taskSelected.value = initTaskt;
+			taskSelected.value = INIT_TASK_VALUE;
 			if (value.name != '') {
-				dataTaksSign.value = await getTasks(customerSelected.value, value);
+				dataTasksSign.value = await getTasks(customerSelected.value, value);
 				taskEnableSig.value = true;
 			} else {
 				taskEnableSig.value = false;
@@ -99,8 +98,8 @@ export const useNewTimeEntry = (
 
 	const clearForm = $(() => {
 		customerSelected.value = initCustomer;
-		projectSelected.value = initProject;
-		taskSelected.value = initTaskt;
+		projectSelected.value = INIT_PROJECT_VALUE;
+		taskSelected.value = INIT_TASK_VALUE;
 		projectTypeEnabled.newCustomer = false;
 		projectTypeEnabled.newProject = false;
 	});
@@ -109,7 +108,7 @@ export const useNewTimeEntry = (
 		const savingResult = await saveTask(
 			customerSelected.value,
 			projectSelected.value,
-			taskSelected.value
+			taskSelected.value.name
 		);
 
 		if (!savingResult) {
@@ -135,7 +134,7 @@ export const useNewTimeEntry = (
 				message: tt('INSERT_NEW_PROJECT_SUCCESS_MESSAGE', {
 					customer: customerSelected.value,
 					project: projectSelected.value?.name ?? '',
-					task: taskSelected.value,
+					task: taskSelected.value.name,
 				}),
 				autoclose: true,
 			});
@@ -151,7 +150,7 @@ export const useNewTimeEntry = (
 				dataProjectsSig.value.find(
 					(project) => project.name === projectSelected.value.name
 				) &&
-				dataTaksSign.value.find((task) => task === taskSelected.value)
+				dataTasksSign.value.find((task) => task === taskSelected.value)
 		);
 	};
 
@@ -224,7 +223,7 @@ export const useNewTimeEntry = (
 	return {
 		dataCustomersSig,
 		dataProjectsSig,
-		dataTaksSign,
+		dataTasksSign,
 		customerSelected,
 		projectSelected,
 		taskSelected,

@@ -15,6 +15,8 @@ import {
 	getlHoursPerProject,
 } from '../../utils/timesheet';
 
+import { Task } from '@models/task';
+import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
 import { Button } from '../Button';
 import { getIcon } from '../icons';
 import { Modal } from '../modals/Modal';
@@ -114,13 +116,13 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		};
 
 		const setNewTimeEntry = $(
-			(date: string, customer?: string, project?: Project, task?: string, index?: number) => {
+			(date: string, customer?: string, project?: Project, task?: Task, index?: number) => {
 				newTimeEntry.value = {
 					date: date,
 					company: 'it',
 					customer: customer || '',
-					project: project || { name: '', type: '', plannedHours: 0 },
-					task: task || '',
+					project: project || INIT_PROJECT_VALUE,
+					task: task || INIT_TASK_VALUE,
 					hours: 0,
 					isUnsaved: true,
 					index: (index ?? 0) + 1,
@@ -188,7 +190,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 												{project?.name}
 											</h4>
 											<h4 class='text-dark-gray-900 text-sm font-normal'>
-												{`${t('TASK')}: ${task}`}
+												{`${t('TASK')}: ${typeof task === 'string' ? task : task?.name}`}
 											</h4>
 										</div>
 									</th>

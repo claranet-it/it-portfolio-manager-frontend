@@ -22,6 +22,7 @@ export const ReportFilters = component$<{
 	});
 
 	const _projectSelected = useSignal(selectedProject.value.name);
+	const _taskSelected = useSignal(selectedTask.value.name);
 
 	const _projectSig = useComputed$(async () => {
 		return selectedCustomer.value != ''
@@ -36,7 +37,7 @@ export const ReportFilters = component$<{
 	const onChangeCustomer = $(() => {
 		_projectSelected.value = '';
 		selectedProject.value = INIT_PROJECT_VALUE;
-		selectedTask.value == '';
+		_taskSelected.value == '';
 	});
 
 	const onChangeProject = $(() => {
@@ -48,7 +49,7 @@ export const ReportFilters = component$<{
 			if (result) selectedProject.value = result;
 		}
 
-		selectedTask.value = '';
+		_taskSelected.value = '';
 	});
 
 	const taskSig = useComputed$(async () => {
@@ -57,10 +58,34 @@ export const ReportFilters = component$<{
 			: [];
 	});
 
+	const _taskSig = useComputed$(async () => {
+		return _projectSelected.value != ''
+			? (await getTasks(selectedCustomer.value, selectedProject.value)).map(
+					(task) => task.name
+				)
+			: [];
+	});
+
+	const onChangeTask = $(() => {
+		if (taskSig.value.length > 0) {
+			const result = taskSig.value.find((task) => task.name === _taskSelected.value)!;
+
+			if (result) {
+				selectedTask.value = result;
+			} else {
+				selectedTask.value = {
+					name: '',
+					completed: false,
+					plannedHours: 0,
+				};
+			}
+		}
+	});
+
 	const clearFilters = $(() => {
 		selectedCustomer.value = '';
 		selectedProject.value = INIT_PROJECT_VALUE;
-		selectedTask.value = '';
+		_taskSelected.value = '';
 		selectedName.value = '';
 	});
 
@@ -90,8 +115,9 @@ export const ReportFilters = component$<{
 				label={t('TASK_LABEL')}
 				placeholder={t('select_empty_label')}
 				disabled={_projectSelected.value === ''}
-				value={selectedTask}
-				options={taskSig}
+				value={_taskSelected}
+				options={_taskSig}
+				onChange$={onChangeTask}
 			/>
 
 			<Input

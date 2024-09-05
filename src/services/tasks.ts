@@ -15,7 +15,7 @@ export const getTasks = async (customer: Customer, project: Project): Promise<Ta
 export const saveTask = async (
 	customer: Customer,
 	project: Project,
-	task: Task,
+	task: string,
 	index?: number
 ): Promise<boolean> =>
 	checkHttpResponseStatus(`task/task`, 200, 'POST', {
@@ -28,8 +28,8 @@ export const saveTask = async (
 export const editTask = async (
 	customer: Customer,
 	project: Project,
-	task: Task,
-	editedTask: Task
+	task: string,
+	editedTask: string
 ) =>
 	checkHttpResponseStatus('task/task', 200, 'PUT', {
 		customer: customer,

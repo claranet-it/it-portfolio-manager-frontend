@@ -17,6 +17,8 @@ export const postTimeEntries = async (timeEntry: TimeEntryObject): Promise<boole
 	const _timeEntry = {
 		...timeEntry,
 		project: timeEntry.project.name,
+		task: typeof timeEntry.task === 'string' ? timeEntry.task : timeEntry.task.name,
 	};
+
 	return checkHttpResponseStatus('time-entry/mine', 204, 'POST', _timeEntry);
 };

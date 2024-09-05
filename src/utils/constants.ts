@@ -1,4 +1,5 @@
 import { Project } from '@models/project';
+import { Task } from '@models/task';
 
 export const AUTH_TOKEN_KEY = 'auth_token';
 export const CHATBOT_COOKIE_KEY = 'token';
@@ -16,6 +17,11 @@ export const KEYBOARD_ENTER = 'Enter';
 export const SELF_TOAST_CLOSING_TIME = 5000; // 5sec
 
 export const INIT_PROJECT_VALUE = { name: '', type: '', plannedHours: 0 } as Project;
+export const INIT_TASK_VALUE = {
+	name: '',
+	plannedHours: 0,
+	completed: false,
+} as Task;
 
 export const REPORT_LIST_RESULTS_PER_PAGE = 10;
 

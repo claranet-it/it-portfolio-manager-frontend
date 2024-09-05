@@ -34,8 +34,8 @@ export const useReportProject = (
 			results = results.filter((entry) => entry.project.name === project.value.name);
 		}
 
-		if (task.value != '') {
-			results = results.filter((entry) => entry.task === task.value);
+		if (task.value.name != '') {
+			results = results.filter((entry) => entry.task.name === task.value.name);
 		}
 
 		if (nameDebunce.value) {
@@ -72,7 +72,7 @@ export const useReportProject = (
 	useVisibleTask$(async ({ track }) => {
 		track(() => customer.value);
 		track(() => project.value);
-		track(() => task.value);
+		track(() => task.value.name);
 		track(() => nameDebunce.value);
 		track(() => from.value);
 		track(() => to.value);
