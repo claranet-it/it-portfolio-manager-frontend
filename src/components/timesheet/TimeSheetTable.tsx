@@ -247,31 +247,33 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																	}
 																/>
 															</div>
-															{isLastEntry && hours && (
-																<Button
-																	tabIndex={-1}
-																	variant={'link'}
-																	size={'small'}
-																	onClick$={() =>
-																		setNewTimeEntry(
-																			formattedDate,
-																			customer,
-																			project,
-																			task,
-																			entryIndex
-																		)
-																	}
-																>
-																	<div class='flex flex-row items-center gap-1 [&_svg]:w-[10px]'>
-																		{getIcon('Add')}
-																		<span class='text-[8px] font-bold'>
-																			{t(
-																				'ADD_TIME_ENTRY_LABEL'
-																			)}
-																		</span>
-																	</div>
-																</Button>
-															)}
+															{isLastEntry &&
+																hours !== 0 &&
+																hours !== undefined && (
+																	<Button
+																		tabIndex={-1}
+																		variant={'link'}
+																		size={'small'}
+																		onClick$={() =>
+																			setNewTimeEntry(
+																				formattedDate,
+																				customer,
+																				project,
+																				task,
+																				entryIndex
+																			)
+																		}
+																	>
+																		<div class='flex flex-row items-center gap-1 [&_svg]:w-[10px]'>
+																			{getIcon('Add')}
+																			<span class='text-[8px] font-bold'>
+																				{t(
+																					'ADD_TIME_ENTRY_LABEL'
+																				)}
+																			</span>
+																		</div>
+																	</Button>
+																)}
 														</div>
 													);
 												})}
