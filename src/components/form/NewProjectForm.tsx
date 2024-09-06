@@ -5,6 +5,7 @@ import {
 	component$,
 	useComputed$,
 	useSignal,
+	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
@@ -83,15 +84,29 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			}
 		});
 
+		const _onChangeTask = $(async (value: string) => {
+			const task = dataTasksSign.value.find((task) => task.name === value);
+			if (task) {
+				taskSelected.value = task;
+			} else {
+				taskSelected.value.name = value;
+			}
+		});
+
 		const _onChangeTypeProject = $(async (value: string) => {
 			projectSelected.value.type = value as ProjectType;
 		});
 
 		const _projectTypeSelected = useSignal(projectSelected.value.type);
 
-		useVisibleTask$(({ track }) => {
+		useTask$(({ track }) => {
 			track(() => projectSelected.value);
 			_projectSelected.value = projectSelected.value.name;
+		});
+
+		useTask$(({ track }) => {
+			track(() => taskSelected.value);
+			_taskSelected.value = taskSelected.value.name;
 		});
 
 		useVisibleTask$(({ track }) => {
@@ -173,6 +188,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 							placeholder='Search...'
 							required
 							disabled={!taskEnableSig.value}
+							onChange$={_onChangeTask}
 						/>
 
 						<div class='flex flex-row justify-end space-x-1'>
