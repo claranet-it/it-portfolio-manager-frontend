@@ -150,7 +150,7 @@ export const useNewTimeEntry = (
 				dataProjectsSig.value.find(
 					(project) => project.name === projectSelected.value.name
 				) &&
-				dataTasksSign.value.find((task) => task === taskSelected.value)
+				dataTasksSign.value.find((task) => task.name === taskSelected.value.name)
 		);
 	};
 

@@ -5,6 +5,7 @@ import {
 	component$,
 	useComputed$,
 	useSignal,
+	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
@@ -80,7 +81,19 @@ export const NewTaskForm = component$<NewTaskForm>(
 			const task = dataTasksSign.value.find((task) => task.name === value);
 			if (task) {
 				taskSelected.value = task;
+			} else {
+				taskSelected.value.name = value;
 			}
+		});
+
+		useTask$(({ track }) => {
+			track(() => projectSelected.value);
+			_projectSelected.value = projectSelected.value.name;
+		});
+
+		useTask$(({ track }) => {
+			track(() => taskSelected.value);
+			_taskSelected.value = taskSelected.value.name;
 		});
 
 		return (
