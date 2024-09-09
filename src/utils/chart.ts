@@ -305,11 +305,19 @@ const groupByKeys = async (
 		grouped[groupKey].duration += entry.hours;
 
 		if (keys[level + 1]) {
-			grouped[groupKey].subGroups = await groupByKeys(
-				data.filter((d) => d[key] === groupKey),
-				keys,
-				level + 1
-			);
+			const filteredData = data.filter((d) => {
+				let dGroupKey;
+				if (typeof d[key] === 'object') {
+					const obj = d[key] as { name: string };
+					dGroupKey = obj?.['name'];
+				} else {
+					dGroupKey = d[key] as string;
+				}
+
+				return dGroupKey === groupKey;
+			});
+
+			grouped[groupKey].subGroups = await groupByKeys(filteredData, keys, level + 1);
 		}
 	});
 

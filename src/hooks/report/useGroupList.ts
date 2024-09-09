@@ -1,16 +1,16 @@
-import { $, Signal, useComputed$, useContext, useSignal } from '@builder.io/qwik';
-import { Project } from '@models/project';
+import { $, useComputed$, useContext, useSignal } from '@builder.io/qwik';
 import { GroupByKeys, ReportTimeEntry } from '@models/report';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 import { groupData } from 'src/utils/chart';
 
-export const useGroupList = (project: Signal<Project>, data: ReportTimeEntry[]) => {
+export const useGroupList = (data: ReportTimeEntry[]) => {
 	const appStore = useContext(AppContext);
 
-	const groupKeys = useSignal(['project', 'task', 'name', 'date', 'description']);
+	const groupKeys = useSignal(['customer', 'project', 'task', 'name', 'date', 'description']);
 
 	const selectOptions = [
+		t('CUSTOMER_LABEL'),
 		t('PROJECT_LABEL'),
 		t('TASK_LABEL'),
 		t('USER_LABEL'),
@@ -20,12 +20,12 @@ export const useGroupList = (project: Signal<Project>, data: ReportTimeEntry[]) 
 
 	const selectedKeys = useSignal<GroupByKeys[]>([]);
 
-	const valueL1Selected = useSignal<string>(t('TASK_LABEL'));
+	const valueL1Selected = useSignal<string>(t('CUSTOMER_LABEL'));
 	const valueL2Selected = useSignal<string>(t('NONE_LABEL'));
 	const valueL3Selected = useSignal<string>(t('NONE_LABEL'));
-	const valueL1SelectedValue = useSignal<GroupByKeys>('task');
-	const valueL2SelectedValue = useSignal<GroupByKeys>('task');
-	const valueL3SelectedValue = useSignal<GroupByKeys>('task');
+	const valueL1SelectedValue = useSignal<GroupByKeys>('customer');
+	const valueL2SelectedValue = useSignal<GroupByKeys>('customer');
+	const valueL3SelectedValue = useSignal<GroupByKeys>('customer');
 
 	const resetL2 = $(() => {
 		valueL2Selected.value = t('NONE_LABEL');
@@ -39,10 +39,7 @@ export const useGroupList = (project: Signal<Project>, data: ReportTimeEntry[]) 
 
 	const results = useComputed$(async () => {
 		appStore.isLoading = true;
-		const results = await groupData(
-			data.filter((entry) => entry.project.name === project.value.name),
-			selectedKeys.value
-		);
+		const results = await groupData(data, selectedKeys.value);
 		appStore.isLoading = false;
 		return results;
 	});

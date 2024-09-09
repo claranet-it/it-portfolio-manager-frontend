@@ -47,7 +47,7 @@ export const useReportProject = (
 		return results;
 	});
 
-	const featchProjets = $(async () => {
+	const fetchProjects = $(async () => {
 		appStore.isLoading = true;
 		try {
 			const response = await getReportTimeEntry(
@@ -77,7 +77,7 @@ export const useReportProject = (
 		track(() => from.value);
 		track(() => to.value);
 		track(() => tab.value);
-		(await fetchValidation()) && (await featchProjets());
+		(await fetchValidation()) && (await fetchProjects());
 	});
 
 	return { results };

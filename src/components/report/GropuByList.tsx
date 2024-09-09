@@ -1,5 +1,4 @@
-import { component$, Signal, useSignal } from '@builder.io/qwik';
-import { Project } from '@models/project';
+import { component$, useSignal } from '@builder.io/qwik';
 import { ReportTimeEntry } from '@models/report';
 import { useGroupList } from 'src/hooks/report/useGroupList';
 import { t } from 'src/locale/labels';
@@ -9,11 +8,10 @@ import { UUID } from 'src/utils/uuid';
 import { Select } from '../form/Select';
 
 interface GroupByListProps {
-	project: Signal<Project>;
 	data: ReportTimeEntry[];
 }
 
-export const GroupByList = component$<GroupByListProps>(({ project, data }) => {
+export const GroupByList = component$<GroupByListProps>(({ data }) => {
 	const {
 		results,
 		valueL1Selected,
@@ -23,7 +21,9 @@ export const GroupByList = component$<GroupByListProps>(({ project, data }) => {
 		onChangeGroupL2,
 		onChangeGroupL3,
 		selectOptions,
-	} = useGroupList(project, data);
+	} = useGroupList(data);
+
+	const _selectOptions = useSignal(selectOptions);
 
 	return (
 		<div class='border-sourface-20 border-t py-3'>
@@ -33,14 +33,14 @@ export const GroupByList = component$<GroupByListProps>(({ project, data }) => {
 				<Select
 					id={UUID()}
 					value={valueL1Selected}
-					options={useSignal(selectOptions)}
+					options={_selectOptions}
 					onChange$={onChangeGroupL1}
 				/>
 
 				<Select
 					id={UUID()}
 					value={valueL2Selected}
-					options={useSignal(selectOptions)}
+					options={_selectOptions}
 					onChange$={onChangeGroupL2}
 				/>
 
@@ -48,7 +48,7 @@ export const GroupByList = component$<GroupByListProps>(({ project, data }) => {
 					<Select
 						id={UUID()}
 						value={valueL3Selected}
-						options={useSignal(selectOptions)}
+						options={_selectOptions}
 						onChange$={onChangeGroupL3}
 					/>
 				)}
@@ -59,7 +59,7 @@ export const GroupByList = component$<GroupByListProps>(({ project, data }) => {
 					<thead class='text-xs text-gray-700'>
 						<tr>
 							<th scope='col' class='flex-1 py-3 text-xs font-normal text-dark-grey'>
-								{t('PROJECT_LABEL')}
+								{t('NAME_LABEL')}
 							</th>
 							<th
 								scope='col'
@@ -71,7 +71,9 @@ export const GroupByList = component$<GroupByListProps>(({ project, data }) => {
 					</thead>
 					<tbody>
 						<tr class='border-b bg-white text-base font-bold text-dark-grey'>
-							<td class='flex-1 pb-2'>{project.value.name}</td>
+							<td class='flex-1 pb-2'>
+								{selectOptions[selectOptions.indexOf(valueL1Selected.value)]}
+							</td>
 							<td class='w-64 flex-auto pb-2 text-right'>
 								{getFormattedHours(getReportTotalHours(data))} h
 							</td>

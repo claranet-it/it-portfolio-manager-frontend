@@ -174,11 +174,8 @@ export const Report = component$(() => {
 									to={to}
 								/>
 
-								{selectedProjectSig.value !== INIT_PROJECT_VALUE && (
-									<GroupByList
-										project={selectedProjectSig}
-										data={projectResults.data}
-									/>
+								{projectResults.data.length > 0 && (
+									<GroupByList data={projectResults.data} />
 								)}
 							</div>
 						) : (
@@ -201,6 +198,10 @@ export const Report = component$(() => {
 									from={from}
 									to={to}
 								/>
+
+								{projectResults.data.length > 0 && (
+									<GroupByList data={projectResults.data} />
+								)}
 							</div>
 						)}
 					</div>
