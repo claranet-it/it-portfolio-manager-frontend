@@ -5,7 +5,9 @@ import { t } from 'src/locale/labels';
 import { getReportTotalHours } from 'src/utils/chart';
 import { getFormattedHours } from 'src/utils/timesheet';
 import { UUID } from 'src/utils/uuid';
+import { Button } from '../Button';
 import { Select } from '../form/Select';
+import { getIcon } from '../icons';
 
 interface GroupByListProps {
 	data: ReportTimeEntry[];
@@ -27,31 +29,41 @@ export const GroupByList = component$<GroupByListProps>(({ data }) => {
 
 	return (
 		<div class='border-sourface-20 border-t py-3'>
-			<div class='flex flex-row items-center gap-2'>
-				<span>{t('GROUP_BY_LABEL')}</span>
+			<div class='flex items-center gap-2 sm:flex-col md:flex-row md:justify-between lg:flex-row lg:justify-between'>
+				<div class='flex items-center gap-2 sm:w-full sm:flex-col md:flex-auto md:flex-row lg:flex-auto lg:flex-row'>
+					<span>{t('GROUP_BY_LABEL')}</span>
 
-				<Select
-					id={UUID()}
-					value={valueL1Selected}
-					options={_selectOptions}
-					onChange$={onChangeGroupL1}
-				/>
-
-				<Select
-					id={UUID()}
-					value={valueL2Selected}
-					options={_selectOptions}
-					onChange$={onChangeGroupL2}
-				/>
-
-				{valueL2Selected.value != t('NONE_LABEL') && (
 					<Select
 						id={UUID()}
-						value={valueL3Selected}
+						value={valueL1Selected}
 						options={_selectOptions}
-						onChange$={onChangeGroupL3}
+						onChange$={onChangeGroupL1}
 					/>
-				)}
+
+					<Select
+						id={UUID()}
+						value={valueL2Selected}
+						options={_selectOptions}
+						onChange$={onChangeGroupL2}
+					/>
+
+					{valueL2Selected.value != t('NONE_LABEL') && (
+						<Select
+							id={UUID()}
+							value={valueL3Selected}
+							options={_selectOptions}
+							onChange$={onChangeGroupL3}
+						/>
+					)}
+				</div>
+
+				<div class='flex flex-none flex-row items-center gap-2'>
+					<Button variant={'link'} onClick$={() => {}}>
+						<span class='inline-flex items-start gap-1'>
+							{getIcon('Downlaod')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
+						</span>
+					</Button>
+				</div>
 			</div>
 
 			<div class='relative overflow-x-auto'>
