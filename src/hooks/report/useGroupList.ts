@@ -1,10 +1,10 @@
-import { $, useComputed$, useContext, useSignal } from '@builder.io/qwik';
+import { $, Signal, useComputed$, useContext, useSignal } from '@builder.io/qwik';
 import { GroupByKeys, ReportTimeEntry } from '@models/report';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 import { groupData } from 'src/utils/chart';
 
-export const useGroupList = (data: ReportTimeEntry[]) => {
+export const useGroupList = (data: Signal<ReportTimeEntry[]>) => {
 	const appStore = useContext(AppContext);
 
 	const groupKeys = useSignal(['customer', 'project', 'task', 'name', 'date', 'description']);
@@ -39,7 +39,7 @@ export const useGroupList = (data: ReportTimeEntry[]) => {
 
 	const results = useComputed$(async () => {
 		appStore.isLoading = true;
-		const results = await groupData(data, selectedKeys.value);
+		const results = await groupData(data.value, selectedKeys.value);
 		appStore.isLoading = false;
 		return results;
 	});

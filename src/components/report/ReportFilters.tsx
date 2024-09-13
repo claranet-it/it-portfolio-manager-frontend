@@ -1,123 +1,141 @@
-import { $, Signal, component$, useComputed$, useSignal } from '@builder.io/qwik';
+import { $, Signal, component$, sync$, useComputed$, useSignal } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
 import { t } from 'src/locale/labels';
-import { getCustomers } from 'src/services/customer';
-import { getProjects } from 'src/services/projects';
-import { getTasks } from 'src/services/tasks';
-import { INIT_PROJECT_VALUE } from 'src/utils/constants';
+import { getAllTasks } from 'src/services/tasks';
+import { UUID } from 'src/utils/uuid';
 import { Button } from '../Button';
 import { Input } from '../form/Input';
-import { Select } from '../form/Select';
+import { Multiselect } from '../form/Multiselect';
 
 export const ReportFilters = component$<{
-	selectedCustomer: Signal<Customer>;
-	selectedProject: Signal<Project>;
-	selectedTask: Signal<Task>;
+	selectedCustomer: Signal<Customer[]>;
+	selectedProject: Signal<Project[]>;
+	selectedTask: Signal<Task[]>;
 	selectedName: Signal<string>;
 }>(({ selectedCustomer, selectedProject, selectedTask, selectedName }) => {
-	const customerSig = useComputed$(async () => {
-		return await getCustomers();
+	const getUniqueValues = sync$((arr: string[]): string[] => {
+		return [...new Set(arr)];
 	});
 
-	const _projectSelected = useSignal(selectedProject.value.name);
-	const _taskSelected = useSignal(selectedTask.value.name);
+	const _selectedProject = useSignal(selectedProject.value.map((project) => project.name));
+	const _selectedTask = useSignal(selectedTask.value.map((task) => task.name));
 
-	const _projectSig = useComputed$(async () => {
-		return selectedCustomer.value != ''
-			? (await getProjects(selectedCustomer.value)).map((project) => project.name)
-			: [];
+	const taskProjectCustomerSig = useComputed$(async () => {
+		return await getAllTasks();
 	});
 
-	const projectSig = useComputed$(async () => {
-		return selectedCustomer.value != '' ? await getProjects(selectedCustomer.value) : [];
+	const customerOptionsSig = useComputed$(async () => {
+		return getUniqueValues(
+			taskProjectCustomerSig.value.map((taskProjectCustomer) => taskProjectCustomer.customer)
+		);
 	});
 
-	const onChangeCustomer = $(() => {
-		_projectSelected.value = '';
-		selectedProject.value = INIT_PROJECT_VALUE;
-		_taskSelected.value == '';
-	});
+	const _projectOptionsSig = useComputed$(async () => {
+		let customerProjects;
 
-	const onChangeProject = $(() => {
-		if (projectSig.value.length > 0) {
-			const result = projectSig.value.find(
-				(project) => project.name === _projectSelected.value
-			)!;
-
-			if (result) selectedProject.value = result;
+		if (selectedCustomer.value.length !== 0) {
+			customerProjects = taskProjectCustomerSig.value.filter(
+				(element) =>
+					selectedCustomer.value.includes(element.customer) &&
+					customerOptionsSig.value.includes(element.customer)
+			);
+		} else {
+			customerProjects = taskProjectCustomerSig.value;
 		}
 
-		_taskSelected.value = '';
+		return getUniqueValues(
+			customerProjects.map((taskProjectCustomer) => taskProjectCustomer.project)
+		);
 	});
 
-	const taskSig = useComputed$(async () => {
-		return _projectSelected.value != ''
-			? await getTasks(selectedCustomer.value, selectedProject.value)
-			: [];
-	});
+	const _taskOptionsSig = useComputed$(async () => {
+		let taskProjects;
 
-	const _taskSig = useComputed$(async () => {
-		return _projectSelected.value != ''
-			? (await getTasks(selectedCustomer.value, selectedProject.value)).map(
-					(task) => task.name
-				)
-			: [];
+		if (selectedProject.value.length !== 0) {
+			const projectNames = selectedProject.value.map((project) => project.name);
+			taskProjects = taskProjectCustomerSig.value.filter(
+				(element) =>
+					projectNames.includes(element.project) &&
+					_projectOptionsSig.value.includes(element.project)
+			);
+		} else {
+			taskProjects = taskProjectCustomerSig.value;
+		}
+
+		return taskProjects.map((taskProjectCustomer) => taskProjectCustomer.task);
 	});
 
 	const onChangeTask = $(() => {
-		if (taskSig.value.length > 0) {
-			const result = taskSig.value.find((task) => task.name === _taskSelected.value)!;
-
-			if (result) {
-				selectedTask.value = result;
-			} else {
-				selectedTask.value = {
-					name: '',
-					completed: false,
-					plannedHours: 0,
-				};
-			}
-		}
+		selectedTask.value = _selectedTask.value.map((task) => ({
+			name: task,
+			completed: false,
+			plannedHours: 0,
+		}));
 	});
 
+	const onChangeProject = $(() => {
+		selectedProject.value = _selectedProject.value.map((project) => ({
+			name: project,
+			type: '',
+			plannedHours: 0,
+		}));
+	});
+
+	// TODO: use as base for task and project change
+	// const onChangeTask = $(() => {
+	// 	if (taskSig.value.length > 0) {
+	// 		const result = taskSig.value.find((task) => task.name === _selectedTask.value)!;
+
+	// 		if (result) {
+	// 			selectedTask.value = result;
+	// 		} else {
+	// 			selectedTask.value = {
+	// 				name: '',
+	// 				completed: false,
+	// 				plannedHours: 0,
+	// 			};
+	// 		}
+	// 	}
+	// });
+
 	const clearFilters = $(() => {
-		selectedCustomer.value = '';
-		selectedProject.value = INIT_PROJECT_VALUE;
-		_taskSelected.value = '';
+		selectedCustomer.value = [];
+		selectedProject.value = [];
+		_selectedTask.value = [];
 		selectedName.value = '';
 	});
 
 	return (
 		<div class='m-0 flex w-full gap-1 justify-self-start sm:flex-col sm:space-y-2 md:space-x-2 lg:space-x-2'>
-			<Select
-				id='filer-customer'
+			<Multiselect
+				id={UUID() + '-filter-customer'}
 				label={t('CUSTOMER_LABEL')}
 				placeholder={t('select_empty_label')}
 				value={selectedCustomer}
-				options={customerSig}
-				onChange$={onChangeCustomer}
+				options={customerOptionsSig}
+				allowSelectAll
 			/>
 
-			<Select
-				id='filter-project'
+			<Multiselect
+				id={UUID() + '-filter-project'}
 				label={t('PROJECT_LABEL')}
 				placeholder={t('select_empty_label')}
-				value={_projectSelected}
-				options={_projectSig}
-				disabled={!selectedCustomer.value}
+				value={_selectedProject}
+				options={_projectOptionsSig}
 				onChange$={onChangeProject}
+				allowSelectAll
 			/>
 
-			<Select
-				id='filter-task'
+			<Multiselect
+				id={UUID() + '-filter-task'}
 				label={t('TASK_LABEL')}
 				placeholder={t('select_empty_label')}
-				disabled={_projectSelected.value === ''}
-				value={_taskSelected}
-				options={_taskSig}
+				value={_selectedTask}
+				options={_taskOptionsSig}
 				onChange$={onChangeTask}
+				allowSelectAll
 			/>
 
 			<Input

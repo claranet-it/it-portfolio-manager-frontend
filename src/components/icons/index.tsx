@@ -123,7 +123,7 @@ export const getIcon = (skill: string) => {
 			return <UserGroup />;
 		case 'Info':
 			return <Info />;
-		case 'Downlaod':
+		case 'Download':
 			return <Downalod />;
 		default:
 			return <AWS />;

@@ -1,4 +1,4 @@
-import { component$, useSignal } from '@builder.io/qwik';
+import { component$, Signal, useSignal } from '@builder.io/qwik';
 import { ReportTimeEntry } from '@models/report';
 import { useGroupList } from 'src/hooks/report/useGroupList';
 import { t } from 'src/locale/labels';
@@ -8,7 +8,7 @@ import { UUID } from 'src/utils/uuid';
 import { Select } from '../form/Select';
 
 interface GroupByListProps {
-	data: ReportTimeEntry[];
+	data: Signal<ReportTimeEntry[]>;
 }
 
 export const GroupByList = component$<GroupByListProps>(({ data }) => {
@@ -75,7 +75,7 @@ export const GroupByList = component$<GroupByListProps>(({ data }) => {
 								{selectOptions[selectOptions.indexOf(valueL1Selected.value)]}
 							</td>
 							<td class='w-64 flex-auto pb-2 text-right'>
-								{getFormattedHours(getReportTotalHours(data))} h
+								{getFormattedHours(getReportTotalHours(data.value))} h
 							</td>
 						</tr>
 						{/* GROUP BY L1 */}

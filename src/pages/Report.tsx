@@ -1,70 +1,24 @@
-import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { component$, useSignal } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { RepotTab } from '@models/report';
 import { Task } from '@models/task';
 import { Button } from 'src/components/Button';
 import { DataRange } from 'src/components/form/DataRange';
-import { getIcon } from 'src/components/icons';
-import { GroupByList } from 'src/components/report/GropuByList';
-import { ProductivityLegend } from 'src/components/report/ProductivityLegend';
-import { ProductivityTable } from 'src/components/report/ProductivityTable';
-import { ProjectReportDetails } from 'src/components/report/ProjectReportDetails';
-import { ProjectReportPreview } from 'src/components/report/ProjectReportPreview';
+import { ProductivitySection } from 'src/components/report/ProductivitySection';
+import { ProjectsSection } from 'src/components/report/ProjectsSection';
 import { ReportFilters } from 'src/components/report/ReportFilters';
-import { ReportHeader } from 'src/components/report/ReportHeader';
-import { useProductivity } from 'src/hooks/report/useProductivity';
-import { useReportProject } from 'src/hooks/report/useReportProject';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
 import { t } from 'src/locale/labels';
-import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
-import { handlePrint } from 'src/utils/handlePrint';
 
 export const Report = component$(() => {
 	const { from, to, nextWeek, prevWeek, currentWeek } = useGetTimeSheetDays();
 
-	const selectedCustomerSig = useSignal<Customer>('');
-	const selectedProjectSig = useSignal<Project>(INIT_PROJECT_VALUE);
-	const selectedTaskSig = useSignal<Task>(INIT_TASK_VALUE);
+	const selectedCustomerSig = useSignal<Customer[]>([]);
+	const selectedProjectSig = useSignal<Project[]>([]);
+	const selectedTaskSig = useSignal<Task[]>([]);
 	const selectedNameSig = useSignal<string>('');
 	const selectedTab = useSignal<RepotTab>('project');
-	const showProjectsDetails = useSignal(false);
-
-	const productivityTableRef = useSignal<HTMLElement>();
-	const projectReportDetailsRef = useSignal<HTMLElement>();
-	const projectReportPreviewRef = useSignal<HTMLElement>();
-
-	const { results: productivityResults } = useProductivity(
-		selectedCustomerSig,
-		selectedProjectSig,
-		selectedTaskSig,
-		selectedNameSig,
-		from,
-		to,
-		selectedTab
-	);
-
-	const { results: projectResults } = useReportProject(
-		selectedCustomerSig,
-		selectedProjectSig,
-		selectedTaskSig,
-		selectedNameSig,
-		from,
-		to,
-		selectedTab
-	);
-
-	useVisibleTask$(({ track }) => {
-		track(() => selectedCustomerSig.value);
-		track(() => selectedProjectSig.value);
-		track(() => selectedTaskSig.value);
-		track(() => selectedNameSig.value);
-		showProjectsDetails.value =
-			selectedCustomerSig.value !== '' ||
-			selectedProjectSig.value !== INIT_PROJECT_VALUE ||
-			selectedTaskSig.value.name !== '' ||
-			selectedNameSig.value !== '';
-	});
 
 	return (
 		<div class='w-full space-y-6 px-6 py-2.5'>
@@ -132,78 +86,35 @@ export const Report = component$(() => {
 				<div id='report-tab-content' class='mb-2 border border-surface-70 p-6'>
 					<div
 						class='flex hidden flex-col gap-6'
-						id='productivity'
-						role='tabpanel'
-						aria-labelledby='productivity-tab'
-					>
-						<div class='flex sm:flex-col md:flex-row md:justify-between lg:flex-row lg:justify-between'>
-							<ProductivityLegend />
-							<Button
-								variant={'link'}
-								onClick$={() => handlePrint(productivityTableRef)}
-							>
-								<span class='inline-flex items-end gap-1'>
-									{getIcon('Downlaod')} Download report
-								</span>
-							</Button>
-						</div>
-
-						<ProductivityTable
-							results={productivityResults.data}
-							ref={productivityTableRef}
-						/>
-					</div>
-					<div
-						class='flex hidden flex-col gap-6'
 						id='projects'
 						role='tabpanel'
 						aria-labelledby='projects-tab'
 					>
-						{showProjectsDetails.value ? (
-							<div class='flex flex-col gap-1'>
-								<ReportHeader
-									printableComponent={projectReportDetailsRef}
-									customer={selectedCustomerSig}
-									data={projectResults.data}
-								/>
-
-								<ProjectReportDetails
-									ref={projectReportDetailsRef}
-									data={projectResults.data}
-									from={from}
-									to={to}
-								/>
-
-								{projectResults.data.length > 0 && (
-									<GroupByList data={projectResults.data} />
-								)}
-							</div>
-						) : (
-							<div class='flex flex-col gap-6'>
-								<h3 class='text-base font-bold text-dark-grey'>
-									{t('TIMESHEET_TABLE_PROJECT_COL_LABEL')}
-								</h3>
-								<ReportHeader
-									printableComponent={projectReportPreviewRef}
-									data={projectResults.data}
-									from={from}
-									to={to}
-									showTopCustomer
-									showTopProject
-								/>
-
-								<ProjectReportPreview
-									ref={projectReportPreviewRef}
-									data={projectResults.data}
-									from={from}
-									to={to}
-								/>
-
-								{projectResults.data.length > 0 && (
-									<GroupByList data={projectResults.data} />
-								)}
-							</div>
-						)}
+						<ProjectsSection
+							selectedCustomerSig={selectedCustomerSig}
+							selectedProjectSig={selectedProjectSig}
+							selectedTaskSig={selectedTaskSig}
+							selectedNameSig={selectedNameSig}
+							selectedTab={selectedTab}
+							to={to}
+							from={from}
+						/>
+					</div>
+					<div
+						class='flex hidden flex-col gap-6'
+						id='productivity'
+						role='tabpanel'
+						aria-labelledby='productivity-tab'
+					>
+						<ProductivitySection
+							selectedCustomerSig={selectedCustomerSig}
+							selectedProjectSig={selectedProjectSig}
+							selectedTaskSig={selectedTaskSig}
+							selectedNameSig={selectedNameSig}
+							selectedTab={selectedTab}
+							to={to}
+							from={from}
+						/>
 					</div>
 				</div>
 			</div>

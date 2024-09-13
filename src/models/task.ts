@@ -3,3 +3,9 @@ export type Task = {
 	completed: boolean;
 	plannedHours: number;
 };
+
+export type TaskProjectCustomer = {
+	customer: string;
+	project: string;
+	task: string;
+};

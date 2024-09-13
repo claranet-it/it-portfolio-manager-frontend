@@ -6,7 +6,7 @@ import { getIcon } from '../icons';
 import { BarLegend } from './BarLegend';
 
 interface ProductivityTableProps {
-	results: ReportProductivityItem[];
+	results: Signal<ReportProductivityItem[]>;
 	ref: Signal<HTMLElement | undefined>;
 }
 
@@ -52,7 +52,7 @@ export const ProductivityTable = component$<ProductivityTableProps>(({ results, 
 				</thead>
 				<tbody>
 					{results &&
-						results.map((result, index) => (
+						results.value.map((result, index) => (
 							<tr
 								key={`${index}-${result.totalProductivity}-${result.totalTracked}-${result.workedHours}`}
 								class='border-b bg-white odd:bg-white even:bg-surface-5'
@@ -60,7 +60,6 @@ export const ProductivityTable = component$<ProductivityTableProps>(({ results, 
 								<td class='w-52 min-w-52 border border-surface-50 px-4 py-3 text-left'>
 									<div class='flex text-left sm:flex-col sm:space-y-1 md:flex-row md:space-x-1.5 lg:flex-row lg:space-x-1.5'>
 										{result.user.name !== '' && <Avatar user={result.user} />}
-
 										<span>
 											{result.user.name !== ''
 												? result.user.name

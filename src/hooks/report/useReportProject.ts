@@ -1,4 +1,4 @@
-import { $, Signal, useContext, useStore, useVisibleTask$ } from '@builder.io/qwik';
+import { $, Signal, useContext, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { ReportTimeEntry, RepotTab } from '@models/report';
@@ -10,32 +10,35 @@ import { Task } from '@models/task';
 import { useDebounce } from '../useDebounce';
 
 export const useReportProject = (
-	customer: Signal<Customer>,
-	project: Signal<Project>,
-	task: Signal<Task>,
+	customer: Signal<Customer[]>,
+	project: Signal<Project[]>,
+	task: Signal<Task[]>,
 	name: Signal<String>,
 	from: Signal<Date>,
 	to: Signal<Date>,
 	tab: Signal<RepotTab>
 ) => {
 	const appStore = useContext(AppContext);
-	const results = useStore<{ data: ReportTimeEntry[] }>({ data: [] });
-	const originResults = useStore<{ data: ReportTimeEntry[] }>({ data: [] });
+	const results = useSignal<ReportTimeEntry[]>([]);
 	const nameDebunce = useDebounce(name, 300);
 
 	const setFilters = $(async (data: ReportTimeEntry[]) => {
 		let results = data;
 
-		if (customer.value != '') {
-			results = results.filter((entry) => entry.customer === customer.value);
+		if (customer.value.length !== 0) {
+			results = results.filter((entry) => customer.value.includes(entry.customer));
 		}
 
-		if (project.value.name != '') {
-			results = results.filter((entry) => entry.project.name === project.value.name);
+		if (project.value.length !== 0) {
+			results = results.filter((entry) =>
+				project.value.map((proj) => proj.name).includes(entry.project.name)
+			);
 		}
 
-		if (task.value.name != '') {
-			results = results.filter((entry) => entry.task.name === task.value.name);
+		if (task.value.length !== 0) {
+			results = results.filter((entry) =>
+				task.value.map((task) => task.name).includes(entry.task.name)
+			);
 		}
 
 		if (nameDebunce.value) {
@@ -54,7 +57,7 @@ export const useReportProject = (
 				formatDateString(from.value),
 				formatDateString(to.value)
 			);
-			originResults.data = results.data = await setFilters(response);
+			results.value = await setFilters(response);
 		} catch (error) {
 			const errorObject = error as Error;
 			console.error(errorObject.message);
@@ -72,7 +75,7 @@ export const useReportProject = (
 	useVisibleTask$(async ({ track }) => {
 		track(() => customer.value);
 		track(() => project.value);
-		track(() => task.value.name);
+		track(() => task.value);
 		track(() => nameDebunce.value);
 		track(() => from.value);
 		track(() => to.value);

@@ -18,7 +18,7 @@ import { Button } from '../Button';
 import { getIcon } from '../icons';
 
 interface ReportHeaderProps {
-	customer?: Signal<Customer>;
+	customer?: Signal<Customer[]>;
 	data: ReportTimeEntry[];
 	showTopCustomer?: boolean;
 	showTopProject?: boolean;
@@ -67,7 +67,9 @@ export const ReportHeader = component$<ReportHeaderProps>(
 
 		return (
 			<div class='flex flex-col gap-6'>
-				{customer && <h3 class='text-base font-bold text-dark-grey'>{customer.value}</h3>}
+				<h3 class='text-base font-bold text-dark-grey'>
+					{t('TIMESHEET_TABLE_PROJECT_COL_LABEL')}
+				</h3>
 
 				<div class='flex w-full flex-row justify-between align-middle'>
 					<div class='flex flex-row items-center gap-5'>
@@ -103,14 +105,14 @@ export const ReportHeader = component$<ReportHeaderProps>(
 					<div class='flex flex-row items-center'>
 						<Button variant={'link'} onClick$={() => handlePrint(printableComponent)}>
 							<span class='inline-flex items-start gap-1'>
-								{getIcon('Downlaod')} {t('REPORT_DOWNLOAD_PDF_LABEL')}
+								{getIcon('Download')} {t('REPORT_DOWNLOAD_PDF_LABEL')}
 							</span>
 						</Button>
 
 						{from && to && (
 							<Button variant={'link'} onClick$={downloadCSV}>
 								<span class='inline-flex items-start gap-1'>
-									{getIcon('Downlaod')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
+									{getIcon('Download')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
 								</span>
 							</Button>
 						)}
