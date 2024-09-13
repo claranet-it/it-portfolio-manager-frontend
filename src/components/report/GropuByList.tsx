@@ -1,4 +1,4 @@
-import { component$, useSignal } from '@builder.io/qwik';
+import { component$, Signal, useSignal } from '@builder.io/qwik';
 import { ReportTimeEntry } from '@models/report';
 import { useGroupList } from 'src/hooks/report/useGroupList';
 import { t } from 'src/locale/labels';
@@ -11,9 +11,11 @@ import { getIcon } from '../icons';
 
 interface GroupByListProps {
 	data: ReportTimeEntry[];
+	from: Signal<Date>;
+	to: Signal<Date>;
 }
 
-export const GroupByList = component$<GroupByListProps>(({ data }) => {
+export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => {
 	const {
 		results,
 		valueL1Selected,
@@ -23,7 +25,8 @@ export const GroupByList = component$<GroupByListProps>(({ data }) => {
 		onChangeGroupL2,
 		onChangeGroupL3,
 		selectOptions,
-	} = useGroupList(data);
+		handlerDownloadCSV,
+	} = useGroupList(data, from, to);
 
 	const _selectOptions = useSignal(selectOptions);
 
@@ -58,7 +61,7 @@ export const GroupByList = component$<GroupByListProps>(({ data }) => {
 				</div>
 
 				<div class='flex flex-none flex-row items-center gap-2'>
-					<Button variant={'link'} onClick$={() => {}}>
+					<Button variant={'link'} onClick$={handlerDownloadCSV}>
 						<span class='inline-flex items-start gap-1'>
 							{getIcon('Downlaod')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
 						</span>

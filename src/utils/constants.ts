@@ -26,3 +26,4 @@ export const INIT_TASK_VALUE = {
 export const REPORT_LIST_RESULTS_PER_PAGE = 10;
 
 export const CSV_REPORT_PROJECTS_FILE_NAME = 'Brickly_projects_report';
+export const CSV_REPORT_GROUPBY_FILE_NAME = 'Brickly_groupby_report';

@@ -1,10 +1,12 @@
-import { $, useComputed$, useContext, useSignal } from '@builder.io/qwik';
+import { $, Signal, useComputed$, useContext, useSignal } from '@builder.io/qwik';
 import { GroupByKeys, ReportTimeEntry } from '@models/report';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 import { groupData } from 'src/utils/chart';
+import { formatDateString } from 'src/utils/dates';
+import { downloadGroupByCSV } from 'src/utils/report';
 
-export const useGroupList = (data: ReportTimeEntry[]) => {
+export const useGroupList = (data: ReportTimeEntry[], from: Signal<Date>, to: Signal<Date>) => {
 	const appStore = useContext(AppContext);
 
 	const groupKeys = useSignal(['customer', 'project', 'task', 'name', 'date', 'description']);
@@ -80,6 +82,16 @@ export const useGroupList = (data: ReportTimeEntry[]) => {
 		];
 	});
 
+	const handlerDownloadCSV = $(async () => {
+		appStore.isLoading = true;
+		await downloadGroupByCSV(
+			results.value,
+			formatDateString(from.value),
+			formatDateString(to.value)
+		);
+		appStore.isLoading = false;
+	});
+
 	return {
 		results,
 		valueL1Selected,
@@ -89,5 +101,6 @@ export const useGroupList = (data: ReportTimeEntry[]) => {
 		onChangeGroupL2,
 		onChangeGroupL3,
 		selectOptions,
+		handlerDownloadCSV,
 	};
 };
