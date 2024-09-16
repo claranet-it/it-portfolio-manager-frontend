@@ -1,8 +1,9 @@
 import { component$, useSignal } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
-import { RepotTab } from '@models/report';
+import { ReportTab } from '@models/report';
 import { Task } from '@models/task';
+import { UserProfile } from '@models/user';
 import { Button } from 'src/components/Button';
 import { DataRange } from 'src/components/form/DataRange';
 import { ProductivitySection } from 'src/components/report/ProductivitySection';
@@ -14,11 +15,11 @@ import { t } from 'src/locale/labels';
 export const Report = component$(() => {
 	const { from, to, nextWeek, prevWeek, currentWeek } = useGetTimeSheetDays();
 
-	const selectedCustomerSig = useSignal<Customer[]>([]);
-	const selectedProjectSig = useSignal<Project[]>([]);
-	const selectedTaskSig = useSignal<Task[]>([]);
-	const selectedNameSig = useSignal<string>('');
-	const selectedTab = useSignal<RepotTab>('project');
+	const selectedCustomersSig = useSignal<Customer[]>([]);
+	const selectedProjectsSig = useSignal<Project[]>([]);
+	const selectedTasksSig = useSignal<Task[]>([]);
+	const selectedNamesSig = useSignal<UserProfile[]>([]);
+	const selectedTab = useSignal<ReportTab>('project');
 
 	return (
 		<div class='w-full space-y-6 px-6 py-2.5'>
@@ -36,10 +37,10 @@ export const Report = component$(() => {
 			</div>
 
 			<ReportFilters
-				selectedCustomer={selectedCustomerSig}
-				selectedProject={selectedProjectSig}
-				selectedTask={selectedTaskSig}
-				selectedName={selectedNameSig}
+				selectedCustomers={selectedCustomersSig}
+				selectedProjects={selectedProjectsSig}
+				selectedTasks={selectedTasksSig}
+				selectedNames={selectedNamesSig}
 			/>
 
 			{/* TAB Selection */}
@@ -91,10 +92,10 @@ export const Report = component$(() => {
 						aria-labelledby='projects-tab'
 					>
 						<ProjectsSection
-							selectedCustomerSig={selectedCustomerSig}
-							selectedProjectSig={selectedProjectSig}
-							selectedTaskSig={selectedTaskSig}
-							selectedNameSig={selectedNameSig}
+							selectedCustomersSig={selectedCustomersSig}
+							selectedProjectsSig={selectedProjectsSig}
+							selectedTasksSig={selectedTasksSig}
+							selectedNamesSig={selectedNamesSig}
 							selectedTab={selectedTab}
 							to={to}
 							from={from}
@@ -107,10 +108,10 @@ export const Report = component$(() => {
 						aria-labelledby='productivity-tab'
 					>
 						<ProductivitySection
-							selectedCustomerSig={selectedCustomerSig}
-							selectedProjectSig={selectedProjectSig}
-							selectedTaskSig={selectedTaskSig}
-							selectedNameSig={selectedNameSig}
+							selectedCustomersSig={selectedCustomersSig}
+							selectedProjectsSig={selectedProjectsSig}
+							selectedTasksSig={selectedTasksSig}
+							selectedNamesSig={selectedNamesSig}
 							selectedTab={selectedTab}
 							to={to}
 							from={from}

@@ -28,15 +28,7 @@ interface ReportHeaderProps {
 }
 
 export const ReportHeader = component$<ReportHeaderProps>(
-	({
-		customer,
-		data,
-		showTopCustomer = false,
-		showTopProject = false,
-		printableComponent,
-		from,
-		to,
-	}) => {
+	({ data, showTopCustomer = false, showTopProject = false, printableComponent, from, to }) => {
 		const appStore = useContext(AppContext);
 
 		const totalHours = useComputed$(() => {

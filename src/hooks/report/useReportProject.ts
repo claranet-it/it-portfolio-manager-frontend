@@ -1,26 +1,25 @@
 import { $, Signal, useContext, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
-import { ReportTimeEntry, RepotTab } from '@models/report';
+import { ReportTab, ReportTimeEntry } from '@models/report';
 import { AppContext } from 'src/app';
 import { getReportTimeEntry } from 'src/services/report';
 import { formatDateString } from 'src/utils/dates';
 
 import { Task } from '@models/task';
-import { useDebounce } from '../useDebounce';
+import { UserProfile } from '@models/user';
 
 export const useReportProject = (
 	customer: Signal<Customer[]>,
 	project: Signal<Project[]>,
 	task: Signal<Task[]>,
-	name: Signal<String>,
+	users: Signal<UserProfile[]>,
 	from: Signal<Date>,
 	to: Signal<Date>,
-	tab: Signal<RepotTab>
+	tab: Signal<ReportTab>
 ) => {
 	const appStore = useContext(AppContext);
 	const results = useSignal<ReportTimeEntry[]>([]);
-	const nameDebunce = useDebounce(name, 300);
 
 	const setFilters = $(async (data: ReportTimeEntry[]) => {
 		let results = data;
@@ -41,9 +40,9 @@ export const useReportProject = (
 			);
 		}
 
-		if (nameDebunce.value) {
+		if (users.value.length !== 0) {
 			results = results.filter((entry) =>
-				entry.email.includes(nameDebunce.value.toLowerCase())
+				users.value.map((user) => user.email).includes(entry.email)
 			);
 		}
 
@@ -76,7 +75,7 @@ export const useReportProject = (
 		track(() => customer.value);
 		track(() => project.value);
 		track(() => task.value);
-		track(() => nameDebunce.value);
+		track(() => users.value);
 		track(() => from.value);
 		track(() => to.value);
 		track(() => tab.value);

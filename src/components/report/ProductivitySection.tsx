@@ -1,7 +1,8 @@
 import { component$, Signal, useSignal } from '@builder.io/qwik';
 import { Project } from '@models/project';
-import { RepotTab } from '@models/report';
+import { ReportTab } from '@models/report';
 import { Task } from '@models/task';
+import { UserProfile } from '@models/user';
 import { useProductivity } from 'src/hooks/report/useProductivity';
 import { handlePrint } from 'src/utils/handlePrint';
 import { Button } from '../Button';
@@ -10,32 +11,31 @@ import { ProductivityLegend } from './ProductivityLegend';
 import { ProductivityTable } from './ProductivityTable';
 
 interface ReportProps {
-	selectedCustomerSig: Signal<string[]>;
-	selectedProjectSig: Signal<Project[]>;
-	selectedTaskSig: Signal<Task[]>;
-	selectedNameSig: Signal<string>;
-	selectedTab: Signal<RepotTab>;
+	selectedCustomersSig: Signal<string[]>;
+	selectedProjectsSig: Signal<Project[]>;
+	selectedTasksSig: Signal<Task[]>;
+	selectedNamesSig: Signal<UserProfile[]>;
+	selectedTab: Signal<ReportTab>;
 	to: Signal<Date>;
 	from: Signal<Date>;
 }
-
 export const ProductivitySection = component$<ReportProps>(
 	({
 		to,
 		from,
-		selectedCustomerSig,
-		selectedProjectSig,
-		selectedTaskSig,
-		selectedNameSig,
+		selectedCustomersSig,
+		selectedProjectsSig,
+		selectedTasksSig,
+		selectedNamesSig,
 		selectedTab,
 	}) => {
 		const productivityTableRef = useSignal<HTMLElement>();
 
 		const { results: productivityResults } = useProductivity(
-			selectedCustomerSig,
-			selectedProjectSig,
-			selectedTaskSig,
-			selectedNameSig,
+			selectedCustomersSig,
+			selectedProjectsSig,
+			selectedTasksSig,
+			selectedNamesSig,
 			from,
 			to,
 			selectedTab

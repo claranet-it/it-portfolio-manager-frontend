@@ -1,7 +1,8 @@
 import { component$, Signal, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Project } from '@models/project';
-import { RepotTab } from '@models/report';
+import { ReportTab } from '@models/report';
 import { Task } from '@models/task';
+import { UserProfile } from '@models/user';
 import { useReportProject } from 'src/hooks/report/useReportProject';
 import { GroupByList } from './GropuByList';
 import { ProjectReportDetails } from './ProjectReportDetails';
@@ -9,11 +10,11 @@ import { ProjectReportPreview } from './ProjectReportPreview';
 import { ReportHeader } from './ReportHeader';
 
 interface ReportProps {
-	selectedCustomerSig: Signal<string[]>;
-	selectedProjectSig: Signal<Project[]>;
-	selectedTaskSig: Signal<Task[]>;
-	selectedNameSig: Signal<string>;
-	selectedTab: Signal<RepotTab>;
+	selectedCustomersSig: Signal<string[]>;
+	selectedProjectsSig: Signal<Project[]>;
+	selectedTasksSig: Signal<Task[]>;
+	selectedNamesSig: Signal<UserProfile[]>;
+	selectedTab: Signal<ReportTab>;
 	to: Signal<Date>;
 	from: Signal<Date>;
 }
@@ -22,10 +23,10 @@ export const ProjectsSection = component$<ReportProps>(
 	({
 		to,
 		from,
-		selectedCustomerSig,
-		selectedProjectSig,
-		selectedTaskSig,
-		selectedNameSig,
+		selectedCustomersSig,
+		selectedProjectsSig,
+		selectedTasksSig,
+		selectedNamesSig,
 		selectedTab,
 	}) => {
 		const projectReportDetailsRef = useSignal<HTMLElement>();
@@ -34,25 +35,25 @@ export const ProjectsSection = component$<ReportProps>(
 		const showProjectsDetails = useSignal(false);
 
 		const { results: projectResults } = useReportProject(
-			selectedCustomerSig,
-			selectedProjectSig,
-			selectedTaskSig,
-			selectedNameSig,
+			selectedCustomersSig,
+			selectedProjectsSig,
+			selectedTasksSig,
+			selectedNamesSig,
 			from,
 			to,
 			selectedTab
 		);
 
 		useVisibleTask$(({ track }) => {
-			track(() => selectedCustomerSig.value);
-			track(() => selectedProjectSig.value);
-			track(() => selectedTaskSig.value);
-			track(() => selectedNameSig.value);
+			track(() => selectedCustomersSig.value);
+			track(() => selectedProjectsSig.value);
+			track(() => selectedTasksSig.value);
+			track(() => selectedNamesSig.value);
 			showProjectsDetails.value =
-				selectedCustomerSig.value.length !== 0 ||
-				selectedProjectSig.value.length !== 0 ||
-				selectedTaskSig.value.length !== 0 ||
-				selectedNameSig.value !== '';
+				selectedCustomersSig.value.length !== 0 ||
+				selectedProjectsSig.value.length !== 0 ||
+				selectedTasksSig.value.length !== 0 ||
+				selectedNamesSig.value.length !== 0;
 		});
 
 		return (
@@ -61,7 +62,7 @@ export const ProjectsSection = component$<ReportProps>(
 					<div class='flex flex-col gap-1'>
 						<ReportHeader
 							printableComponent={projectReportDetailsRef}
-							customer={selectedCustomerSig}
+							customer={selectedCustomersSig}
 							data={projectResults.value}
 						/>
 

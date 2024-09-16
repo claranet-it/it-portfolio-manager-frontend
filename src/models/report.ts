@@ -42,7 +42,7 @@ export type ReportTimeEntry = Omit<TimeEntry, 'isUnsaved' | 'index'> & {
 	crew: string;
 };
 
-export type RepotTab = 'project' | 'productivity';
+export type ReportTab = 'project' | 'productivity';
 
 export type ReportRow = {
 	type: ProjectType;

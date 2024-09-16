@@ -2,28 +2,39 @@ import { $, Signal, component$, sync$, useComputed$, useSignal } from '@builder.
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
+import { UserProfile } from '@models/user';
 import { t } from 'src/locale/labels';
-import { getAllTasks } from 'src/services/tasks';
+import { getProjects } from 'src/services/projects';
+import { getAllTasks, getTasks } from 'src/services/tasks';
+import { getUserProfiles } from 'src/services/user';
 import { UUID } from 'src/utils/uuid';
 import { Button } from '../Button';
-import { Input } from '../form/Input';
 import { Multiselect } from '../form/Multiselect';
 
 export const ReportFilters = component$<{
-	selectedCustomer: Signal<Customer[]>;
-	selectedProject: Signal<Project[]>;
-	selectedTask: Signal<Task[]>;
-	selectedName: Signal<string>;
-}>(({ selectedCustomer, selectedProject, selectedTask, selectedName }) => {
+	selectedCustomers: Signal<Customer[]>;
+	selectedProjects: Signal<Project[]>;
+	selectedTasks: Signal<Task[]>;
+	selectedNames: Signal<UserProfile[]>;
+}>(({ selectedCustomers, selectedProjects, selectedTasks, selectedNames }) => {
 	const getUniqueValues = sync$((arr: string[]): string[] => {
 		return [...new Set(arr)];
 	});
 
-	const _selectedProject = useSignal(selectedProject.value.map((project) => project.name));
-	const _selectedTask = useSignal(selectedTask.value.map((task) => task.name));
+	const _selectedProjects = useSignal(selectedProjects.value.map((project) => project.name));
+	const _selectedTasks = useSignal(selectedTasks.value.map((task) => task.name));
+	const _selectedUsers = useSignal(selectedNames.value.map((user) => user.name));
 
 	const taskProjectCustomerSig = useComputed$(async () => {
 		return await getAllTasks();
+	});
+
+	const usersSig = useComputed$(async () => {
+		return await getUserProfiles();
+	});
+
+	const _usersOptionsSig = useComputed$(async () => {
+		return usersSig.value.map((user) => user.name);
 	});
 
 	const customerOptionsSig = useComputed$(async () => {
@@ -35,10 +46,10 @@ export const ReportFilters = component$<{
 	const _projectOptionsSig = useComputed$(async () => {
 		let customerProjects;
 
-		if (selectedCustomer.value.length !== 0) {
+		if (selectedCustomers.value.length !== 0) {
 			customerProjects = taskProjectCustomerSig.value.filter(
 				(element) =>
-					selectedCustomer.value.includes(element.customer) &&
+					selectedCustomers.value.includes(element.customer) &&
 					customerOptionsSig.value.includes(element.customer)
 			);
 		} else {
@@ -53,8 +64,8 @@ export const ReportFilters = component$<{
 	const _taskOptionsSig = useComputed$(async () => {
 		let taskProjects;
 
-		if (selectedProject.value.length !== 0) {
-			const projectNames = selectedProject.value.map((project) => project.name);
+		if (selectedProjects.value.length !== 0) {
+			const projectNames = selectedProjects.value.map((project) => project.name);
 			taskProjects = taskProjectCustomerSig.value.filter(
 				(element) =>
 					projectNames.includes(element.project) &&
@@ -67,44 +78,95 @@ export const ReportFilters = component$<{
 		return taskProjects.map((taskProjectCustomer) => taskProjectCustomer.task);
 	});
 
-	const onChangeTask = $(() => {
-		selectedTask.value = _selectedTask.value.map((task) => ({
-			name: task,
-			completed: false,
-			plannedHours: 0,
-		}));
+	const getProjectSig = $(async (project: string) => {
+		const customer = taskProjectCustomerSig.value.find(
+			(value) => value.project === project
+		)?.customer;
+		if (customer) {
+			const customerProjectList = await getProjects(customer);
+			return customerProjectList.find((element) => element.name === project);
+		}
 	});
 
-	const onChangeProject = $(() => {
-		selectedProject.value = _selectedProject.value.map((project) => ({
-			name: project,
-			type: '',
-			plannedHours: 0,
-		}));
+	const getTaskSig = $(async (task: string) => {
+		const project = taskProjectCustomerSig.value.find((value) => value.task === task)?.project;
+		const customer = taskProjectCustomerSig.value.find(
+			(value) => value.project === project
+		)?.customer;
+		if (customer && project) {
+			const projectTaskList = await getTasks(customer, project);
+			return projectTaskList.find((element) => element.name === task);
+		}
 	});
 
-	// TODO: use as base for task and project change
-	// const onChangeTask = $(() => {
-	// 	if (taskSig.value.length > 0) {
-	// 		const result = taskSig.value.find((task) => task.name === _selectedTask.value)!;
+	const onChangeTask = $(async () => {
+		const selectedTaskNames = selectedTasks.value.map((task) => task.name);
+		const tasksToAdd = _selectedTasks.value.filter(
+			(taskName) => !selectedTaskNames.includes(taskName)
+		);
 
-	// 		if (result) {
-	// 			selectedTask.value = result;
-	// 		} else {
-	// 			selectedTask.value = {
-	// 				name: '',
-	// 				completed: false,
-	// 				plannedHours: 0,
-	// 			};
-	// 		}
-	// 	}
-	// });
+		if (tasksToAdd.length > 0) {
+			for (const taskName of tasksToAdd) {
+				const task = await getTaskSig(taskName);
+				selectedTasks.value = [
+					...selectedTasks.value,
+					task ?? { name: taskName, completed: false, plannedHours: 0 },
+				];
+			}
+		} else {
+			const tasksToRemove = selectedTasks.value
+				.filter((task) => !_selectedTasks.value.includes(task.name))
+				.map((task) => task.name);
+
+			selectedTasks.value = selectedTasks.value.filter(
+				(task) => !tasksToRemove.includes(task.name)
+			);
+		}
+	});
+
+	const onChangeProject = $(async () => {
+		const selectedProjectNames = selectedProjects.value.map((proj) => proj.name);
+		const projectsToAdd = _selectedProjects.value.filter(
+			(projName) => !selectedProjectNames.includes(projName)
+		);
+
+		if (projectsToAdd.length > 0) {
+			for (const projName of projectsToAdd) {
+				const project = await getProjectSig(projName);
+				selectedProjects.value = [
+					...selectedProjects.value,
+					project ?? { name: projName, type: '', plannedHours: 0 },
+				];
+			}
+		} else {
+			const projectsToRemove = selectedProjects.value
+				.filter((proj) => !_selectedProjects.value.includes(proj.name))
+				.map((proj) => proj.name);
+
+			selectedProjects.value = selectedProjects.value.filter(
+				(proj) => !projectsToRemove.includes(proj.name)
+			);
+		}
+	});
+
+	const onChangeUser = $(() => {
+		selectedNames.value = _selectedUsers.value.map((user) => {
+			const value = usersSig.value.find((element) => element.name === user);
+			return (
+				value ?? {
+					name: user,
+					email: '',
+					id: '',
+				}
+			);
+		});
+	});
 
 	const clearFilters = $(() => {
-		selectedCustomer.value = [];
-		selectedProject.value = [];
-		_selectedTask.value = [];
-		selectedName.value = '';
+		selectedCustomers.value = [];
+		selectedProjects.value = [];
+		_selectedTasks.value = [];
+		selectedNames.value = [];
 	});
 
 	return (
@@ -113,7 +175,7 @@ export const ReportFilters = component$<{
 				id={UUID() + '-filter-customer'}
 				label={t('CUSTOMER_LABEL')}
 				placeholder={t('select_empty_label')}
-				value={selectedCustomer}
+				value={selectedCustomers}
 				options={customerOptionsSig}
 				allowSelectAll
 			/>
@@ -122,7 +184,7 @@ export const ReportFilters = component$<{
 				id={UUID() + '-filter-project'}
 				label={t('PROJECT_LABEL')}
 				placeholder={t('select_empty_label')}
-				value={_selectedProject}
+				value={_selectedProjects}
 				options={_projectOptionsSig}
 				onChange$={onChangeProject}
 				allowSelectAll
@@ -132,17 +194,20 @@ export const ReportFilters = component$<{
 				id={UUID() + '-filter-task'}
 				label={t('TASK_LABEL')}
 				placeholder={t('select_empty_label')}
-				value={_selectedTask}
+				value={_selectedTasks}
 				options={_taskOptionsSig}
 				onChange$={onChangeTask}
 				allowSelectAll
 			/>
 
-			<Input
-				id='filter-name'
+			<Multiselect
+				id={UUID() + '-filter-user'}
 				label={t('name_label')}
-				bindValue={selectedName}
-				placeholder={t('input_empty_label')}
+				placeholder={t('select_empty_label')}
+				value={_selectedUsers}
+				options={_usersOptionsSig}
+				onChange$={onChangeUser}
+				allowSelectAll
 			/>
 
 			<div class='flex items-end'>
