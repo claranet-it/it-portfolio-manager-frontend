@@ -165,6 +165,8 @@ export const Report = component$(() => {
 									printableComponent={projectReportDetailsRef}
 									customer={selectedCustomerSig}
 									data={projectResults.data}
+									from={from}
+									to={to}
 								/>
 
 								<ProjectReportDetails
@@ -175,7 +177,7 @@ export const Report = component$(() => {
 								/>
 
 								{projectResults.data.length > 0 && (
-									<GroupByList data={projectResults.data} />
+									<GroupByList data={projectResults.data} from={from} to={to} />
 								)}
 							</div>
 						) : (
@@ -200,7 +202,7 @@ export const Report = component$(() => {
 								/>
 
 								{projectResults.data.length > 0 && (
-									<GroupByList data={projectResults.data} />
+									<GroupByList data={projectResults.data} from={from} to={to} />
 								)}
 							</div>
 						)}

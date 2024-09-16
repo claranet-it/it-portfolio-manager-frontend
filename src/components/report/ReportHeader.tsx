@@ -3,16 +3,19 @@ import { Customer } from '@models/customer';
 import { ReportTimeEntry } from '@models/report';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
-import { downloadReportCSV } from 'src/services/report';
+
 import {
 	getReportBillableHours,
 	getReportTotalHours,
 	getTopCustomer,
 	getTopProject,
 } from 'src/utils/chart';
+import { openDownloadCSVDialog } from 'src/utils/csv';
 import { formatDateString } from 'src/utils/dates';
 import { handlePrint } from 'src/utils/handlePrint';
+import { getReportCSV } from 'src/utils/report';
 import { getFormattedHours } from 'src/utils/timesheet';
+import { CSV_REPORT_PROJECTS_FILE_NAME } from '../../utils/constants';
 import { capitalizeString } from '../../utils/string';
 import { Button } from '../Button';
 import { getIcon } from '../icons';
@@ -60,7 +63,11 @@ export const ReportHeader = component$<ReportHeaderProps>(
 		const downloadCSV = $(async () => {
 			if (from && to) {
 				appStore.isLoading = true;
-				await downloadReportCSV(formatDateString(from.value), formatDateString(to.value));
+				const CSV = await getReportCSV(data);
+				openDownloadCSVDialog(
+					CSV,
+					`${CSV_REPORT_PROJECTS_FILE_NAME}_${formatDateString(from.value)}_${formatDateString(to.value)}`
+				);
 				appStore.isLoading = false;
 			}
 		});
@@ -107,13 +114,11 @@ export const ReportHeader = component$<ReportHeaderProps>(
 							</span>
 						</Button>
 
-						{from && to && (
-							<Button variant={'link'} onClick$={downloadCSV}>
-								<span class='inline-flex items-start gap-1'>
-									{getIcon('Downlaod')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
-								</span>
-							</Button>
-						)}
+						<Button variant={'link'} onClick$={downloadCSV}>
+							<span class='inline-flex items-start gap-1'>
+								{getIcon('Downlaod')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
+							</span>
+						</Button>
 					</div>
 				</div>
 			</div>
