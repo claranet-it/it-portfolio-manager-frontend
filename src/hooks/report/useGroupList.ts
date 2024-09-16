@@ -3,8 +3,10 @@ import { GroupByKeys, ReportTimeEntry } from '@models/report';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 import { groupData } from 'src/utils/chart';
+import { CSV_REPORT_GROUPBY_FILE_NAME } from 'src/utils/constants';
+import { openDownloadCSVDialog } from 'src/utils/csv';
 import { formatDateString } from 'src/utils/dates';
-import { downloadGroupByCSV } from 'src/utils/report';
+import { getReportGroupByCSV } from 'src/utils/report';
 
 export const useGroupList = (data: ReportTimeEntry[], from: Signal<Date>, to: Signal<Date>) => {
 	const appStore = useContext(AppContext);
@@ -84,10 +86,11 @@ export const useGroupList = (data: ReportTimeEntry[], from: Signal<Date>, to: Si
 
 	const handlerDownloadCSV = $(async () => {
 		appStore.isLoading = true;
-		await downloadGroupByCSV(
-			results.value,
-			formatDateString(from.value),
-			formatDateString(to.value)
+		const CSV = await getReportGroupByCSV(results.value);
+
+		openDownloadCSVDialog(
+			CSV,
+			`${CSV_REPORT_GROUPBY_FILE_NAME}_${formatDateString(from.value)}_${formatDateString(to.value)}`
 		);
 		appStore.isLoading = false;
 	});

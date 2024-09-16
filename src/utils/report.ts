@@ -1,7 +1,5 @@
 import { ProjectType } from '@models/project';
-import { BarLegendColor, ReportGroupedData } from '@models/report';
-import { CSV_REPORT_GROUPBY_FILE_NAME } from './constants';
-import { openDownloadCSVDialog } from './csv';
+import { BarLegendColor, ReportGroupedData, ReportTimeEntry } from '@models/report';
 
 export const getLegendBarColor = (type: string | ProjectType): BarLegendColor => {
 	switch (type) {
@@ -79,8 +77,33 @@ const groupByToCSV = async (data: ReportGroupedData[], fathers: string[]) => {
 	return csv;
 };
 
-export const downloadGroupByCSV = async (data: ReportGroupedData[], from: string, to: string) => {
+export const getReportGroupByCSV = async (data: ReportGroupedData[]): Promise<string> => {
 	const CSV = await groupByToCSV(data, []);
+	return CSV;
+};
 
-	openDownloadCSVDialog(CSV, `${CSV_REPORT_GROUPBY_FILE_NAME}_${from}_${to}`);
+export const getReportCSV = async (data: ReportTimeEntry[]): Promise<string> => {
+	const CSV = data.reduce((csv: String, entry: ReportTimeEntry) => {
+		const row =
+			[
+				entry.date,
+				entry.email,
+				entry.name,
+				entry.company,
+				entry.crew,
+				entry.customer,
+				entry.task.name,
+				entry.project.name,
+				entry.project.type,
+				entry.project.plannedHours,
+				entry.hours,
+				entry.description,
+				entry.startHour,
+				entry.endHour,
+			].join(',') + '\n';
+
+		return (csv += row);
+	}, 'DATE,EMAIL,NAME,COMPANY,CREW,CUSTOMER,PROJECT,TASK,PROJECT TYPE,PLANNED HOURS,HOURS,DESCRIPTION,START HOUR,END HOUR\n');
+
+	return CSV;
 };

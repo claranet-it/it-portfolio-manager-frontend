@@ -165,6 +165,8 @@ export const Report = component$(() => {
 									printableComponent={projectReportDetailsRef}
 									customer={selectedCustomerSig}
 									data={projectResults.data}
+									from={from}
+									to={to}
 								/>
 
 								<ProjectReportDetails
