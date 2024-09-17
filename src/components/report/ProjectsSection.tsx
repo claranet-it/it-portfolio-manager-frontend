@@ -64,6 +64,8 @@ export const ProjectsSection = component$<ReportProps>(
 							printableComponent={projectReportDetailsRef}
 							customer={selectedCustomersSig}
 							data={projectResults.value}
+							from={from}
+							to={to}
 						/>
 
 						<ProjectReportDetails
@@ -73,7 +75,9 @@ export const ProjectsSection = component$<ReportProps>(
 							to={to}
 						/>
 
-						{projectResults.value.length > 0 && <GroupByList data={projectResults} />}
+						{projectResults.value.length > 0 && (
+							<GroupByList data={projectResults} from={from} to={to} />
+						)}
 					</div>
 				) : (
 					<div class='flex flex-col gap-6'>
@@ -93,7 +97,9 @@ export const ProjectsSection = component$<ReportProps>(
 							to={to}
 						/>
 
-						{projectResults.value.length > 0 && <GroupByList data={projectResults} />}
+						{projectResults.value.length > 0 && (
+							<GroupByList data={projectResults} from={from} to={to} />
+						)}
 					</div>
 				)}
 			</>

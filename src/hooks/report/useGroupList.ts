@@ -3,8 +3,16 @@ import { GroupByKeys, ReportTimeEntry } from '@models/report';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 import { groupData } from 'src/utils/chart';
+import { CSV_REPORT_GROUPBY_FILE_NAME } from 'src/utils/constants';
+import { openDownloadCSVDialog } from 'src/utils/csv';
+import { formatDateString } from 'src/utils/dates';
+import { getReportGroupByCSV } from 'src/utils/report';
 
-export const useGroupList = (data: Signal<ReportTimeEntry[]>) => {
+export const useGroupList = (
+	data: Signal<ReportTimeEntry[]>,
+	from: Signal<Date>,
+	to: Signal<Date>
+) => {
 	const appStore = useContext(AppContext);
 
 	const groupKeys = useSignal(['customer', 'project', 'task', 'name', 'date', 'description']);
@@ -80,6 +88,17 @@ export const useGroupList = (data: Signal<ReportTimeEntry[]>) => {
 		];
 	});
 
+	const handlerDownloadCSV = $(async () => {
+		appStore.isLoading = true;
+		const CSV = await getReportGroupByCSV(results.value);
+
+		openDownloadCSVDialog(
+			CSV,
+			`${CSV_REPORT_GROUPBY_FILE_NAME}_${formatDateString(from.value)}_${formatDateString(to.value)}`
+		);
+		appStore.isLoading = false;
+	});
+
 	return {
 		results,
 		valueL1Selected,
@@ -89,5 +108,6 @@ export const useGroupList = (data: Signal<ReportTimeEntry[]>) => {
 		onChangeGroupL2,
 		onChangeGroupL3,
 		selectOptions,
+		handlerDownloadCSV,
 	};
 };
