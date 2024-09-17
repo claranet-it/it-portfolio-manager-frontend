@@ -13,7 +13,7 @@ interface ReportProps {
 	selectedCustomersSig: Signal<string[]>;
 	selectedProjectsSig: Signal<Project[]>;
 	selectedTasksSig: Signal<Task[]>;
-	selectedNamesSig: Signal<UserProfile[]>;
+	selectedUsersSig: Signal<UserProfile[]>;
 	selectedTab: Signal<ReportTab>;
 	to: Signal<Date>;
 	from: Signal<Date>;
@@ -26,7 +26,7 @@ export const ProjectsSection = component$<ReportProps>(
 		selectedCustomersSig,
 		selectedProjectsSig,
 		selectedTasksSig,
-		selectedNamesSig,
+		selectedUsersSig,
 		selectedTab,
 	}) => {
 		const projectReportDetailsRef = useSignal<HTMLElement>();
@@ -38,7 +38,7 @@ export const ProjectsSection = component$<ReportProps>(
 			selectedCustomersSig,
 			selectedProjectsSig,
 			selectedTasksSig,
-			selectedNamesSig,
+			selectedUsersSig,
 			from,
 			to,
 			selectedTab
@@ -48,12 +48,12 @@ export const ProjectsSection = component$<ReportProps>(
 			track(() => selectedCustomersSig.value);
 			track(() => selectedProjectsSig.value);
 			track(() => selectedTasksSig.value);
-			track(() => selectedNamesSig.value);
+			track(() => selectedUsersSig.value);
 			showProjectsDetails.value =
 				selectedCustomersSig.value.length !== 0 ||
 				selectedProjectsSig.value.length !== 0 ||
 				selectedTasksSig.value.length !== 0 ||
-				selectedNamesSig.value.length !== 0;
+				selectedUsersSig.value.length !== 0;
 		});
 
 		return (

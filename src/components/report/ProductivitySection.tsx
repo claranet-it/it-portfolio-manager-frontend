@@ -14,7 +14,7 @@ interface ReportProps {
 	selectedCustomersSig: Signal<string[]>;
 	selectedProjectsSig: Signal<Project[]>;
 	selectedTasksSig: Signal<Task[]>;
-	selectedNamesSig: Signal<UserProfile[]>;
+	selectedUsersSig: Signal<UserProfile[]>;
 	selectedTab: Signal<ReportTab>;
 	to: Signal<Date>;
 	from: Signal<Date>;
@@ -26,7 +26,7 @@ export const ProductivitySection = component$<ReportProps>(
 		selectedCustomersSig,
 		selectedProjectsSig,
 		selectedTasksSig,
-		selectedNamesSig,
+		selectedUsersSig,
 		selectedTab,
 	}) => {
 		const productivityTableRef = useSignal<HTMLElement>();
@@ -35,7 +35,7 @@ export const ProductivitySection = component$<ReportProps>(
 			selectedCustomersSig,
 			selectedProjectsSig,
 			selectedTasksSig,
-			selectedNamesSig,
+			selectedUsersSig,
 			from,
 			to,
 			selectedTab

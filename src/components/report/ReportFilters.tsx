@@ -15,15 +15,15 @@ export const ReportFilters = component$<{
 	selectedCustomers: Signal<Customer[]>;
 	selectedProjects: Signal<Project[]>;
 	selectedTasks: Signal<Task[]>;
-	selectedNames: Signal<UserProfile[]>;
-}>(({ selectedCustomers, selectedProjects, selectedTasks, selectedNames }) => {
+	selectedUsers: Signal<UserProfile[]>;
+}>(({ selectedCustomers, selectedProjects, selectedTasks, selectedUsers }) => {
 	const getUniqueValues = sync$((arr: string[]): string[] => {
 		return [...new Set(arr)];
 	});
 
 	const _selectedProjects = useSignal(selectedProjects.value.map((project) => project.name));
 	const _selectedTasks = useSignal(selectedTasks.value.map((task) => task.name));
-	const _selectedUsers = useSignal(selectedNames.value.map((user) => user.name));
+	const _selectedUsers = useSignal(selectedUsers.value.map((user) => user.name));
 
 	const taskProjectCustomerSig = useComputed$(async () => {
 		return await getAllTasks();
@@ -150,7 +150,7 @@ export const ReportFilters = component$<{
 	});
 
 	const onChangeUser = $(() => {
-		selectedNames.value = _selectedUsers.value.map((user) => {
+		selectedUsers.value = _selectedUsers.value.map((user) => {
 			const value = usersSig.value.find((element) => element.name === user);
 			return (
 				value ?? {
@@ -164,9 +164,9 @@ export const ReportFilters = component$<{
 
 	const clearFilters = $(() => {
 		selectedCustomers.value = [];
-		selectedProjects.value = [];
+		_selectedProjects.value = [];
 		_selectedTasks.value = [];
-		selectedNames.value = [];
+		_selectedUsers.value = [];
 	});
 
 	return (

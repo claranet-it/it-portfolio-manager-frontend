@@ -18,7 +18,7 @@ export const Report = component$(() => {
 	const selectedCustomersSig = useSignal<Customer[]>([]);
 	const selectedProjectsSig = useSignal<Project[]>([]);
 	const selectedTasksSig = useSignal<Task[]>([]);
-	const selectedNamesSig = useSignal<UserProfile[]>([]);
+	const selectedUsersSig = useSignal<UserProfile[]>([]);
 	const selectedTab = useSignal<ReportTab>('project');
 
 	return (
@@ -40,7 +40,7 @@ export const Report = component$(() => {
 				selectedCustomers={selectedCustomersSig}
 				selectedProjects={selectedProjectsSig}
 				selectedTasks={selectedTasksSig}
-				selectedNames={selectedNamesSig}
+				selectedUsers={selectedUsersSig}
 			/>
 
 			{/* TAB Selection */}
@@ -95,7 +95,7 @@ export const Report = component$(() => {
 							selectedCustomersSig={selectedCustomersSig}
 							selectedProjectsSig={selectedProjectsSig}
 							selectedTasksSig={selectedTasksSig}
-							selectedNamesSig={selectedNamesSig}
+							selectedUsersSig={selectedUsersSig}
 							selectedTab={selectedTab}
 							to={to}
 							from={from}
@@ -111,7 +111,7 @@ export const Report = component$(() => {
 							selectedCustomersSig={selectedCustomersSig}
 							selectedProjectsSig={selectedProjectsSig}
 							selectedTasksSig={selectedTasksSig}
-							selectedNamesSig={selectedNamesSig}
+							selectedUsersSig={selectedUsersSig}
 							selectedTab={selectedTab}
 							to={to}
 							from={from}
