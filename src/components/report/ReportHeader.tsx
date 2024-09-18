@@ -110,7 +110,7 @@ export const ReportHeader = component$<ReportHeaderProps>(
 
 						<Button variant={'link'} onClick$={downloadCSV}>
 							<span class='inline-flex items-start gap-1'>
-								{getIcon('Downlaod')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
+								{getIcon('Download')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
 							</span>
 						</Button>
 					</div>

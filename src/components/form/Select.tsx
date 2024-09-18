@@ -9,6 +9,7 @@ import {
 } from '@builder.io/qwik';
 import { initFlowbite } from 'flowbite';
 import { t } from '../../locale/labels';
+import { getIcon } from '../icons';
 
 interface selectInterface {
 	id: string;
@@ -88,21 +89,7 @@ export const Select = component$<selectInterface>(
 					<span class={['truncate', !value.value && 'text-darkgray-500']}>
 						{value.value || placeholder}
 					</span>
-					<svg
-						class='text-darkgray-700 m-[5px] h-2.5 w-2.5'
-						aria-hidden='true'
-						xmlns='http://www.w3.org/2000/svg'
-						fill='none'
-						viewBox='0 0 10 6'
-					>
-						<path
-							stroke='currentColor'
-							stroke-linecap='round'
-							stroke-linejoin='round'
-							stroke-width='2'
-							d='m1 1 4 4 4-4'
-						/>
-					</svg>
+					{getIcon('Downarrow')}
 				</button>
 
 				{invalid && <p class='mt-1 text-xs text-red-500'>{t('REQUIRED_FIELD_LABEL')}</p>}

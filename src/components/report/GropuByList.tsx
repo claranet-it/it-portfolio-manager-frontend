@@ -63,7 +63,7 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 				<div class='flex flex-none flex-row items-center gap-2'>
 					<Button variant={'link'} onClick$={handlerDownloadCSV}>
 						<span class='inline-flex items-start gap-1'>
-							{getIcon('Downlaod')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
+							{getIcon('Download')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
 						</span>
 					</Button>
 				</div>

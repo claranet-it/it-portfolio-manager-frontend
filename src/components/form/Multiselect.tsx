@@ -9,6 +9,7 @@ import {
 } from '@builder.io/qwik';
 import { initFlowbite } from 'flowbite';
 import { t } from '../../locale/labels';
+import { getIcon } from '../icons';
 
 interface multiSelectInterface {
 	id: string;
@@ -61,7 +62,7 @@ export const Multiselect = component$<multiSelectInterface>(
 			if (value.value.length === options.value.length) {
 				value.value = [];
 			} else {
-				value.value = [...options.value];
+				value.value = options.value;
 			}
 		});
 
@@ -119,21 +120,7 @@ export const Multiselect = component$<multiSelectInterface>(
 					<span class={['truncate', value.value.length === 0 && 'text-darkgray-500']}>
 						{value.value.join(', ') || placeholder}
 					</span>
-					<svg
-						class='text-darkgray-700 m-[5px] h-2.5 w-2.5'
-						aria-hidden='true'
-						xmlns='http://www.w3.org/2000/svg'
-						fill='none'
-						viewBox='0 0 10 6'
-					>
-						<path
-							stroke='currentColor'
-							stroke-linecap='round'
-							stroke-linejoin='round'
-							stroke-width='2'
-							d='m1 1 4 4 4-4'
-						/>
-					</svg>
+					{getIcon('Downarrow')}
 				</button>
 
 				{invalid && <p class='mt-1 text-xs text-red-500'>{t('REQUIRED_FIELD_LABEL')}</p>}
@@ -150,7 +137,7 @@ export const Multiselect = component$<multiSelectInterface>(
 								id='checkbox-item-1'
 								type='checkbox'
 								value=''
-								class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700'
+								class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
 							/>
 							<label
 								for='checkbox-item-1'
@@ -170,7 +157,7 @@ export const Multiselect = component$<multiSelectInterface>(
 										id={'checkbox-item-' + index}
 										type='checkbox'
 										value=''
-										class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700'
+										class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
 									/>
 									<label
 										for={'checkbox-item-' + index}
