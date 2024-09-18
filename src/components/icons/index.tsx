@@ -13,6 +13,7 @@ import { Claranet } from './Claranet';
 import { Clear } from './Clear';
 import { Close } from './Close';
 import { Design } from './Design';
+import { DownArrow } from './DownArrow';
 import { Downalod } from './Download';
 import { Edit } from './Edit';
 import { EditWhite } from './EditWhite';
@@ -123,8 +124,10 @@ export const getIcon = (skill: string) => {
 			return <UserGroup />;
 		case 'Info':
 			return <Info />;
-		case 'Downlaod':
+		case 'Download':
 			return <Downalod />;
+		case 'Downarrow':
+			return <DownArrow />;
 		default:
 			return <AWS />;
 	}

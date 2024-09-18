@@ -11,10 +11,10 @@ import { initFlowbite } from 'flowbite';
 import { t } from '../../locale/labels';
 import { getIcon } from '../icons';
 
-interface selectInterface {
+interface multiSelectInterface {
 	id: string;
 	label?: string;
-	value: Signal<string>;
+	value: Signal<string[]>;
 	options: Signal<string[]>;
 	size?: 'm' | 'auto';
 	placeholder?: string;
@@ -22,10 +22,23 @@ interface selectInterface {
 	disabled?: boolean;
 	invalid?: boolean;
 	hidden?: boolean;
+	allowSelectAll?: boolean;
 }
 
-export const Select = component$<selectInterface>(
-	({ id, label, value, options, size, placeholder, onChange$, disabled, invalid, hidden }) => {
+export const Multiselect = component$<multiSelectInterface>(
+	({
+		id,
+		label,
+		value,
+		options,
+		size,
+		placeholder,
+		onChange$,
+		disabled,
+		invalid,
+		hidden,
+		allowSelectAll,
+	}) => {
 		const buttonRef = useSignal<HTMLElement>();
 
 		const closeDropdown = $(() => {
@@ -33,13 +46,24 @@ export const Select = component$<selectInterface>(
 		});
 
 		const clearValue = $(() => {
-			value.value = '';
+			value.value = [];
 			closeDropdown();
 		});
 
 		const updateValue = $((_value: string) => {
-			value.value = _value;
-			closeDropdown();
+			if (value.value.includes(_value)) {
+				value.value = [...value.value.filter((val) => val !== _value)];
+			} else {
+				value.value = [...value.value, _value];
+			}
+		});
+
+		const selectAll = $(() => {
+			if (value.value.length === options.value.length) {
+				value.value = [];
+			} else {
+				value.value = options.value;
+			}
 		});
 
 		const labelStyle = useComputed$(() => {
@@ -62,13 +86,20 @@ export const Select = component$<selectInterface>(
 			return 'md:max-w-[300px] lg:max-w-[300px]';
 		});
 
+		useVisibleTask$(() => {
+			initFlowbite();
+		});
+
 		useVisibleTask$(({ track }) => {
-			track(value);
+			track(() => value.value);
+
 			onChange$ && onChange$(value.value);
 		});
 
-		useVisibleTask$(() => {
-			initFlowbite();
+		useVisibleTask$(({ track }) => {
+			track(() => options.value);
+
+			value.value = value.value.filter((val) => options.value.includes(val));
 		});
 
 		return (
@@ -77,17 +108,17 @@ export const Select = component$<selectInterface>(
 
 				<button
 					ref={buttonRef}
-					id={'select-button-' + id}
+					id={'select-button_multiple_' + id}
 					disabled={disabled}
-					data-dropdown-toggle={'select-dropdown-' + id}
+					data-dropdown-toggle={'select-dropdown_multiple_' + id}
 					class={[
 						'inline-flex w-full flex-row justify-between rounded-md border p-2.5 align-middle text-sm font-normal',
 						buttonStyle.value,
 					]}
 					type='button'
 				>
-					<span class={['truncate', !value.value && 'text-darkgray-500']}>
-						{value.value || placeholder}
+					<span class={['truncate', value.value.length === 0 && 'text-darkgray-500']}>
+						{value.value.join(', ') || placeholder}
 					</span>
 					{getIcon('Downarrow')}
 				</button>
@@ -96,18 +127,45 @@ export const Select = component$<selectInterface>(
 
 				{/* Dropdown menu */}
 				<div
-					id={'select-dropdown-' + id}
+					id={'select-dropdown_multiple_' + id}
 					class={'z-10 hidden w-full divide-y divide-gray-100 rounded-md bg-white shadow'}
 				>
+					{options.value.length !== 0 && allowSelectAll && (
+						<div class='block px-4 py-2 hover:bg-gray-100' onClick$={() => selectAll()}>
+							<input
+								checked={value.value.length === options.value.length}
+								id='checkbox-item-1'
+								type='checkbox'
+								value=''
+								class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
+							/>
+							<label
+								for='checkbox-item-1'
+								class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
+							>
+								Select All
+							</label>
+						</div>
+					)}
 					<ul class='max-h-96 overflow-y-auto py-2 text-sm text-gray-700'>
 						{options?.value.map((option, index) => (
-							<li
-								key={index}
-								onClick$={() => {
-									updateValue(option);
-								}}
-							>
-								<span class='block px-4 py-2 hover:bg-gray-100'>{option}</span>
+							<li key={'select-dropdown_multiple_' + id + '_' + index}>
+								<div class='block px-4 py-2 hover:bg-gray-100'>
+									<input
+										onChange$={() => updateValue(option)}
+										checked={value.value.includes(option)}
+										id={'checkbox-item-' + index}
+										type='checkbox'
+										value=''
+										class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
+									/>
+									<label
+										for={'checkbox-item-' + index}
+										class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
+									>
+										{option}
+									</label>
+								</div>
 							</li>
 						))}
 					</ul>

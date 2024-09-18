@@ -8,7 +8,11 @@ import { openDownloadCSVDialog } from 'src/utils/csv';
 import { formatDateString } from 'src/utils/dates';
 import { getReportGroupByCSV } from 'src/utils/report';
 
-export const useGroupList = (data: ReportTimeEntry[], from: Signal<Date>, to: Signal<Date>) => {
+export const useGroupList = (
+	data: Signal<ReportTimeEntry[]>,
+	from: Signal<Date>,
+	to: Signal<Date>
+) => {
 	const appStore = useContext(AppContext);
 
 	const groupKeys = useSignal(['customer', 'project', 'task', 'name', 'date', 'description']);
@@ -43,7 +47,7 @@ export const useGroupList = (data: ReportTimeEntry[], from: Signal<Date>, to: Si
 
 	const results = useComputed$(async () => {
 		appStore.isLoading = true;
-		const results = await groupData(data, selectedKeys.value);
+		const results = await groupData(data.value, selectedKeys.value);
 		appStore.isLoading = false;
 		return results;
 	});

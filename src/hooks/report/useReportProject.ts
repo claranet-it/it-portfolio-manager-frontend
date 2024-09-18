@@ -1,46 +1,48 @@
-import { $, Signal, useContext, useStore, useVisibleTask$ } from '@builder.io/qwik';
+import { $, Signal, useContext, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
-import { ReportTimeEntry, RepotTab } from '@models/report';
+import { ReportTab, ReportTimeEntry } from '@models/report';
 import { AppContext } from 'src/app';
 import { getReportTimeEntry } from 'src/services/report';
 import { formatDateString } from 'src/utils/dates';
 
 import { Task } from '@models/task';
-import { useDebounce } from '../useDebounce';
+import { UserProfile } from '@models/user';
 
 export const useReportProject = (
-	customer: Signal<Customer>,
-	project: Signal<Project>,
-	task: Signal<Task>,
-	name: Signal<String>,
+	customer: Signal<Customer[]>,
+	project: Signal<Project[]>,
+	task: Signal<Task[]>,
+	users: Signal<UserProfile[]>,
 	from: Signal<Date>,
 	to: Signal<Date>,
-	tab: Signal<RepotTab>
+	tab: Signal<ReportTab>
 ) => {
 	const appStore = useContext(AppContext);
-	const results = useStore<{ data: ReportTimeEntry[] }>({ data: [] });
-	const originResults = useStore<{ data: ReportTimeEntry[] }>({ data: [] });
-	const nameDebunce = useDebounce(name, 300);
+	const results = useSignal<ReportTimeEntry[]>([]);
 
 	const setFilters = $(async (data: ReportTimeEntry[]) => {
 		let results = data;
 
-		if (customer.value != '') {
-			results = results.filter((entry) => entry.customer === customer.value);
+		if (customer.value.length !== 0) {
+			results = results.filter((entry) => customer.value.includes(entry.customer));
 		}
 
-		if (project.value.name != '') {
-			results = results.filter((entry) => entry.project.name === project.value.name);
-		}
-
-		if (task.value.name != '') {
-			results = results.filter((entry) => entry.task.name === task.value.name);
-		}
-
-		if (nameDebunce.value) {
+		if (project.value.length !== 0) {
 			results = results.filter((entry) =>
-				entry.email.includes(nameDebunce.value.toLowerCase())
+				project.value.map((proj) => proj.name).includes(entry.project.name)
+			);
+		}
+
+		if (task.value.length !== 0) {
+			results = results.filter((entry) =>
+				task.value.map((task) => task.name).includes(entry.task.name)
+			);
+		}
+
+		if (users.value.length !== 0) {
+			results = results.filter((entry) =>
+				users.value.map((user) => user.email).includes(entry.email)
 			);
 		}
 
@@ -54,7 +56,7 @@ export const useReportProject = (
 				formatDateString(from.value),
 				formatDateString(to.value)
 			);
-			originResults.data = results.data = await setFilters(response);
+			results.value = await setFilters(response);
 		} catch (error) {
 			const errorObject = error as Error;
 			console.error(errorObject.message);
@@ -72,8 +74,8 @@ export const useReportProject = (
 	useVisibleTask$(async ({ track }) => {
 		track(() => customer.value);
 		track(() => project.value);
-		track(() => task.value.name);
-		track(() => nameDebunce.value);
+		track(() => task.value);
+		track(() => users.value);
 		track(() => from.value);
 		track(() => to.value);
 		track(() => tab.value);

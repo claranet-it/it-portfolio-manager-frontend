@@ -1,5 +1,5 @@
 import { Customer } from '@models/customer';
-import { Project, ProjectType } from '@models/project';
+import { ProjectType } from '@models/project';
 import { ReportProductivityItem, ReportTimeEntry } from '@models/report';
 import { TimeEntry } from '@models/timeEntry';
 import { getHttpResponse } from 'src/network/httpRequest';
@@ -7,7 +7,7 @@ import { UUID } from 'src/utils/uuid';
 
 export const getProductivity = async (
 	customer: Customer,
-	project: Project,
+	project: string,
 	task: string,
 	name: string,
 	from: string,
@@ -19,7 +19,7 @@ export const getProductivity = async (
 			from,
 			to,
 			...(customer !== '' && { customer: customer }),
-			...(project.name !== '' && { project: project.name }),
+			...(project !== '' && { project: project }),
 			...(task !== '' && { task: task }),
 			...(name !== '' && { name: name }),
 		},

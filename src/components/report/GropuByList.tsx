@@ -10,7 +10,7 @@ import { Select } from '../form/Select';
 import { getIcon } from '../icons';
 
 interface GroupByListProps {
-	data: ReportTimeEntry[];
+	data: Signal<ReportTimeEntry[]>;
 	from: Signal<Date>;
 	to: Signal<Date>;
 }
@@ -63,7 +63,7 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 				<div class='flex flex-none flex-row items-center gap-2'>
 					<Button variant={'link'} onClick$={handlerDownloadCSV}>
 						<span class='inline-flex items-start gap-1'>
-							{getIcon('Downlaod')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
+							{getIcon('Download')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
 						</span>
 					</Button>
 				</div>
@@ -90,7 +90,7 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 								{selectOptions[selectOptions.indexOf(valueL1Selected.value)]}
 							</td>
 							<td class='w-64 flex-auto pb-2 text-right'>
-								{getFormattedHours(getReportTotalHours(data))} h
+								{getFormattedHours(getReportTotalHours(data.value))} h
 							</td>
 						</tr>
 						{/* GROUP BY L1 */}
