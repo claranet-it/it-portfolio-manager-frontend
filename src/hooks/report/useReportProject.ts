@@ -8,12 +8,14 @@ import { formatDateString } from 'src/utils/dates';
 
 import { Task } from '@models/task';
 import { UserProfile } from '@models/user';
+import { WORK_END_HOUR, WORK_START_HOUR } from 'src/utils/constants';
 
 export const useReportProject = (
 	customer: Signal<Customer[]>,
 	project: Signal<Project[]>,
 	task: Signal<Task[]>,
 	users: Signal<UserProfile[]>,
+	afterHours: Signal<boolean>,
 	from: Signal<Date>,
 	to: Signal<Date>,
 	tab: Signal<ReportTab>
@@ -46,6 +48,34 @@ export const useReportProject = (
 			);
 		}
 
+		if (afterHours.value === true) {
+			results = results.filter((entry) => {
+				if (
+					(entry.startHour === '00:00' || !entry.startHour) &&
+					(entry.endHour === '00:00' || !entry.endHour)
+				) {
+					return false;
+				}
+
+				const timeToMinutes = (time: string): number => {
+					const [hours, minutes] = time.split(':').map(Number);
+					return hours * 60 + minutes;
+				};
+
+				const taskStartMinutes = timeToMinutes(entry.startHour ?? '00:00');
+				const taskEndMinutes = timeToMinutes(entry.endHour ?? '00:00');
+				const workStartMinutes = timeToMinutes(WORK_START_HOUR);
+				const workEndMinutes = timeToMinutes(WORK_END_HOUR);
+
+				const startsOutside =
+					taskStartMinutes < workStartMinutes || taskStartMinutes > workEndMinutes;
+				const endsOutside =
+					taskEndMinutes < workStartMinutes || taskEndMinutes > workEndMinutes;
+
+				return startsOutside || endsOutside;
+			});
+		}
+
 		return results;
 	});
 
@@ -76,6 +106,7 @@ export const useReportProject = (
 		track(() => project.value);
 		track(() => task.value);
 		track(() => users.value);
+		track(() => afterHours.value);
 		track(() => from.value);
 		track(() => to.value);
 		track(() => tab.value);
