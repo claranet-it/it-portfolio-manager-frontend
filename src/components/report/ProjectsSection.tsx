@@ -31,6 +31,7 @@ export const ProjectsSection = component$<ReportProps>(
 	}) => {
 		const projectReportDetailsRef = useSignal<HTMLElement>();
 		const projectReportPreviewRef = useSignal<HTMLElement>();
+		const afterHoursSig = useSignal(false);
 
 		const showProjectsDetails = useSignal(false);
 
@@ -39,6 +40,7 @@ export const ProjectsSection = component$<ReportProps>(
 			selectedProjectsSig,
 			selectedTasksSig,
 			selectedUsersSig,
+			afterHoursSig,
 			from,
 			to,
 			selectedTab
@@ -64,6 +66,7 @@ export const ProjectsSection = component$<ReportProps>(
 							printableComponent={projectReportDetailsRef}
 							customer={selectedCustomersSig}
 							data={projectResults.value}
+							afterHoursSig={afterHoursSig}
 							from={from}
 							to={to}
 						/>
@@ -84,6 +87,7 @@ export const ProjectsSection = component$<ReportProps>(
 						<ReportHeader
 							printableComponent={projectReportPreviewRef}
 							data={projectResults.value}
+							afterHoursSig={afterHoursSig}
 							from={from}
 							to={to}
 							showTopCustomer
