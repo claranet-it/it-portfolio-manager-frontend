@@ -55,19 +55,19 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			updateTimeEntries(timeEntryObject);
 		});
 
-		const deleteHandler = $((entry: TimeEntry) => {
-			if (!entry.isUnsaved) {
+		const deleteHandler = $((entries: TimeEntry[]) => {
+			if (entries.findIndex((entry) => !entry.isUnsaved) !== -1) {
 				deleteTimeEntriesRowModalState.isVisible = true;
 				deleteTimeEntriesRowModalState.confirmLabel = t('ACTION_CONFIRM');
 				deleteTimeEntriesRowModalState.cancelLabel = t('ACTION_CANCEL');
 				deleteTimeEntriesRowModalState.onConfirm$ = $(() => {
-					deleteProjectEntries(entry);
+					entries.forEach((entry) => deleteProjectEntries(entry));
 				});
 
 				return;
 			}
 
-			deleteProjectEntries(entry);
+			entries.forEach((entry) => deleteProjectEntries(entry));
 		});
 
 		useTask$(async ({ track }) => {
@@ -288,7 +288,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 										</span>
 									</td>
 									<td class='border border-surface-50 px-4 py-3 text-center'>
-										<button onClick$={() => deleteHandler(entries[0])}>
+										<button onClick$={() => deleteHandler(entries)}>
 											{getIcon('Bin')}
 										</button>
 									</td>
