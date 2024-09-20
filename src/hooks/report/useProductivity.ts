@@ -20,6 +20,7 @@ export const useProductivity = (
 ) => {
 	const appStore = useContext(AppContext);
 	const results = useSignal<ReportProductivityItem[]>([]);
+	const originalResults = useSignal<ReportProductivityItem[]>([]);
 
 	const isRunning = useSignal(false);
 
@@ -29,15 +30,15 @@ export const useProductivity = (
 
 	const getProductivityResults = $(
 		async (
-			el: TaskProjectCustomer,
+			el: Partial<TaskProjectCustomer>,
 			user: UserProfile | undefined,
 			tempResults: ReportProductivityItem[]
 		) => {
 			try {
 				const result = await getProductivity(
-					el.customer,
-					el.project,
-					el.task,
+					el.customer ?? '',
+					el.project ?? '',
+					el.task ?? '',
 					user?.name ?? '',
 					formatDateString(from.value),
 					formatDateString(to.value)
@@ -100,31 +101,66 @@ export const useProductivity = (
 	const getBatchProductivity = $(async () => {
 		let tempResults: ReportProductivityItem[] = [];
 
-		// Extract project and task names as strings
-		const stringProjects = projects.value.map((proj) => proj.name);
-		const stringTasks = tasks.value.map((task) => task.name);
+		if (
+			customers.value.length === 0 &&
+			projects.value.length === 0 &&
+			tasks.value.length === 0
+		) {
+			tempResults = await getProductivityResults(
+				{
+					customer: '',
+					project: '',
+					task: '',
+				},
+				undefined,
+				tempResults
+			);
+		} else {
+			// Extract project and task names as strings
+			const stringProjects = projects.value.map((proj) => proj.name);
+			const stringTasks = tasks.value.map((task) => task.name);
 
-		// Filter taskProjectCustomerSig based on the customer, project, and task conditions
-		const arrayToCheck = taskProjectCustomerSig.value.filter((entry) => {
-			const isCustomerIncluded =
-				customers.value.length === 0 || customers.value.includes(entry.customer);
-			const isProjectIncluded =
-				stringProjects.length === 0 || stringProjects.includes(entry.project);
-			const isTaskIncluded = stringTasks.length === 0 || stringTasks.includes(entry.task);
+			const arrayToCheck: Partial<TaskProjectCustomer>[] = taskProjectCustomerSig.value
+				.filter((entry) => {
+					const isCustomerIncluded =
+						customers.value.length === 0 || customers.value.includes(entry.customer);
+					const isProjectIncluded =
+						stringProjects.length === 0 || stringProjects.includes(entry.project);
+					const isTaskIncluded =
+						stringTasks.length === 0 || stringTasks.includes(entry.task);
 
-			return isCustomerIncluded && isProjectIncluded && isTaskIncluded;
-		});
+					return isCustomerIncluded && isProjectIncluded && isTaskIncluded;
+				})
+				.map((entry) => {
+					// Task is selected, so return customer, project, and task
+					if (stringTasks.length > 0) {
+						return {
+							customer: entry.customer,
+							project: entry.project,
+							task: entry.task,
+						};
+					}
+					// Project is selected but no task, so return customer and project
+					if (stringProjects.length > 0) {
+						return {
+							customer: entry.customer,
+							project: entry.project,
+							task: undefined,
+						};
+					}
+					// Only customer is selected, so return customer only
+					if (customers.value.length > 0) {
+						return { customer: entry.customer, project: undefined, task: undefined };
+					}
+					return {
+						customer: undefined,
+						project: undefined,
+						task: undefined,
+					}; // Fallback return
+				})
+				.filter((entry) => entry !== null);
 
-		const hasUsers = users.value.length > 0;
-
-		for (let el of arrayToCheck) {
-			if (hasUsers) {
-				const userProductivityPromises = users.value.map((user) =>
-					getProductivityResults(el, user, tempResults)
-				);
-				const results = await Promise.all(userProductivityPromises);
-				tempResults = results.flat();
-			} else {
+			for (let el of arrayToCheck) {
 				tempResults = await getProductivityResults(el, undefined, tempResults);
 			}
 		}
@@ -139,13 +175,27 @@ export const useProductivity = (
 		appStore.isLoading = true;
 
 		try {
-			results.value = await getBatchProductivity();
+			results.value = originalResults.value = await getBatchProductivity();
 		} catch (error) {
 			const errorObject = error as Error;
 			console.error(errorObject.message);
 		}
 
 		isRunning.value = false;
+		appStore.isLoading = false;
+	});
+
+	const filterProductivity = $(() => {
+		appStore.isLoading = true;
+
+		if (users.value.length > 0) {
+			results.value = originalResults.value.filter((tempResult) =>
+				users.value.map((user) => user.email).includes(tempResult.user.email)
+			);
+		} else {
+			results.value = originalResults.value;
+		}
+
 		appStore.isLoading = false;
 	});
 
@@ -159,11 +209,15 @@ export const useProductivity = (
 		track(() => customers.value);
 		track(() => projects.value);
 		track(() => tasks.value);
-		track(() => users.value);
 		track(() => from.value);
 		track(() => to.value);
 		track(() => tab.value);
 		(await fetchValidation()) && fetchProductivityResults();
+	});
+
+	useTask$(({ track }) => {
+		track(() => users.value);
+		filterProductivity();
 	});
 
 	return { results };
