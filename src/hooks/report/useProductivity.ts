@@ -84,7 +84,8 @@ export const useProductivity = (
 							...tempResults.slice(existingUserIndex + 1, tempResults.length),
 						];
 					} else {
-						tempResults = tempResults.length === 0 ? result : [...tempResults, newData];
+						tempResults =
+							tempResults.length === 0 ? [newData] : [...tempResults, newData];
 					}
 				});
 			} catch (error) {
