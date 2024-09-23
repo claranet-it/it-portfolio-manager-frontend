@@ -150,5 +150,6 @@
 	"ADD_TIME_ENTRY_LABEL": "add time entry",
 	"REPORT_DOWNLOAD_PDF_LABEL": "Download report",
 	"REPORT_DOWNLOAD_CSV_LABEL": "Download CSV",
-	"TIMESHEET_REPORT_AFTER_HOURS_ONLY": "Show after hours only"
+	"TIMESHEET_REPORT_AFTER_HOURS_ONLY": "Show after hours only",
+	"SELECT_ALL_LABEL": "Select all"
 }

@@ -134,33 +134,42 @@ export const Multiselect = component$<multiSelectInterface>(
 						<div class='block px-4 py-2 hover:bg-gray-100' onClick$={() => selectAll()}>
 							<input
 								checked={value.value.length === options.value.length}
-								id='checkbox-item-1'
+								id={'checkbox-select-all-' + label + '-' + options.value.length}
 								type='checkbox'
 								value=''
 								class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
 							/>
 							<label
-								for='checkbox-item-1'
+								for={'checkbox-select-all-' + label + '-' + options.value.length}
 								class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
 							>
-								Select All
+								{t('SELECT_ALL_LABEL')}
 							</label>
 						</div>
 					)}
 					<ul class='max-h-96 overflow-y-auto py-2 text-sm text-gray-700'>
 						{options?.value.map((option, index) => (
-							<li key={'select-dropdown_multiple_' + id + '_' + index}>
+							<li
+								key={
+									'select-dropdown_multiple-' +
+									option +
+									'-' +
+									value.value.includes(option)
+										? 'includes'
+										: 'not-includes'
+								}
+							>
 								<div class='block px-4 py-2 hover:bg-gray-100'>
 									<input
 										onChange$={() => updateValue(option)}
 										checked={value.value.includes(option)}
-										id={'checkbox-item-' + index}
+										id={'checkbox-item-' + option + '-' + index}
 										type='checkbox'
 										value=''
 										class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
 									/>
 									<label
-										for={'checkbox-item-' + index}
+										for={'checkbox-item-' + option + '-' + index}
 										class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
 									>
 										{option}
