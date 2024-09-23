@@ -30,7 +30,7 @@ export const ReportFilters = component$<{
 	});
 
 	const usersSig = useComputed$(async () => {
-		return await getUserProfiles();
+		return (await getUserProfiles()).sort((a, b) => a.name.localeCompare(b.name));
 	});
 
 	const _usersOptionsSig = useComputed$(async () => {

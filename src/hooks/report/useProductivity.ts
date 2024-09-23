@@ -56,7 +56,7 @@ export const useProductivity = (
 						existingUserIndex !== -1 ? tempResults[existingUserIndex] : null;
 
 					// If existing user exists, update it, else, add it to tempResults array
-					if (existingUser) {
+					if (existingUser !== null) {
 						existingUser = {
 							user: existingUser.user,
 							workedHours: existingUser.workedHours + newData.workedHours,
