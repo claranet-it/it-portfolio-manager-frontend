@@ -97,7 +97,7 @@ export const getReportCSV = async (data: ReportTimeEntry[]): Promise<string> => 
 				entry.project.type,
 				entry.project.plannedHours,
 				entry.hours,
-				entry.description,
+				'"' + entry.description + '"',
 				entry.startHour,
 				entry.endHour,
 			].join(',') + '\n';
