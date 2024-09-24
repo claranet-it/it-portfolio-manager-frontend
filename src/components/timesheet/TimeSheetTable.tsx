@@ -52,6 +52,33 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			}
 			timeEntriesState[project.name][date] = hours;
 
+			const ignoreChange = () => {
+				const { hours, date, project, task, startHour, endHour, description } =
+					timeEntryObject;
+
+				if (timeEntriesState[project.name][date] !== hours) return false;
+
+				if (hours === 0) return true;
+
+				const entryNotChanged = state.dataTimeEntries.find(
+					(entry) =>
+						entry.hours === hours &&
+						entry.date === date &&
+						entry.project.name === project.name &&
+						entry.project.type === project.type &&
+						entry.task === task &&
+						entry.startHour === startHour &&
+						entry.endHour === endHour &&
+						entry.description === description
+				);
+
+				return entryNotChanged;
+			};
+
+			if (ignoreChange()) {
+				return;
+			}
+
 			updateTimeEntries(timeEntryObject);
 		});
 
