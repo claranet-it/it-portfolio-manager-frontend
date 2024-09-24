@@ -58,8 +58,6 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 
 				if (timeEntriesState[project.name][date] !== hours) return false;
 
-				if (hours === 0) return true;
-
 				const entryNotChanged = state.dataTimeEntries.find(
 					(entry) =>
 						entry.hours === hours &&
