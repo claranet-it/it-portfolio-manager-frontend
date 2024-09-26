@@ -285,7 +285,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																				customer,
 																				project,
 																				task,
-																				undefined
+																				entryIndex
 																			)
 																		}
 																	>
