@@ -70,7 +70,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						entry.description === description
 				);
 
-				return entryNotChanged;
+				return entryNotChanged || (entryNotChanged && hours === 0);
 			};
 
 			if (ignoreChange()) {
@@ -285,7 +285,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																				customer,
 																				project,
 																				task,
-																				entryIndex
+																				undefined
 																			)
 																		}
 																	>
