@@ -276,6 +276,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																hours !== 0 &&
 																hours !== undefined && (
 																	<Button
+																		key={`new-entry-${dailyEntries.length + 1}`}
 																		tabIndex={-1}
 																		variant={'link'}
 																		size={'small'}
@@ -285,7 +286,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																				customer,
 																				project,
 																				task,
-																				entryIndex
+																				dailyEntries.length
 																			)
 																		}
 																	>
