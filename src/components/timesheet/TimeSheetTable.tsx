@@ -52,25 +52,35 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			}
 			timeEntriesState[project.name][date] = hours;
 
+			// This functions will ignore the change if the user passes over a time entry without editing it
 			const ignoreChange = () => {
-				const { hours, date, project, task, startHour, endHour, description } =
+				const { index, hours, date, project, task, startHour, endHour, description } =
 					timeEntryObject;
 
 				if (timeEntriesState[project.name][date] !== hours) return false;
 
-				const entryNotChanged = state.dataTimeEntries.find(
+				// Check if the entry already exists
+				const entryExists = state.dataTimeEntries.find(
 					(entry) =>
-						entry.hours === hours &&
+						entry.index === index &&
 						entry.date === date &&
 						entry.project.name === project.name &&
 						entry.project.type === project.type &&
-						entry.task === task &&
+						entry.task.name === task.name &&
 						entry.startHour === startHour &&
 						entry.endHour === endHour &&
 						entry.description === description
 				);
 
-				return entryNotChanged || (entryNotChanged && hours === 0);
+				// If the entry exists
+				if (entryExists) {
+					// Return true if the new hours are the same as the existing hours
+					return entryExists.hours === hours;
+				} else {
+					// If the entry does not exist
+					// return true if the hours are 0
+					return hours === 0;
+				}
 			};
 
 			if (ignoreChange()) {
