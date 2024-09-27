@@ -19,121 +19,116 @@ interface ProjectReportDetailsProps {
 	data: ReportTimeEntry[];
 	from: Signal<Date>;
 	to: Signal<Date>;
-	ref: Signal<HTMLElement | undefined>;
 }
 
-export const ProjectReportDetails = component$<ProjectReportDetailsProps>(
-	({ data, from, to, ref }) => {
-		const daysSeries = useComputed$(() => {
-			return columnChartSeriesAdapter(data, from.value, to.value);
-		});
-		// ____ PROJECTS _____ //
-		const groupByProjectSeries = useComputed$(() => {
-			return donutChartGroupByProjectsAdapter(data);
-		});
+export const ProjectReportDetails = component$<ProjectReportDetailsProps>(({ data, from, to }) => {
+	const daysSeries = useComputed$(() => {
+		return columnChartSeriesAdapter(data, from.value, to.value);
+	});
+	// ____ PROJECTS _____ //
+	const groupByProjectSeries = useComputed$(() => {
+		return donutChartGroupByProjectsAdapter(data);
+	});
 
-		const listGroupByProjectSeries = useComputed$(() => {
-			return listGroupByProjectsAdapter(data);
-		});
+	const listGroupByProjectSeries = useComputed$(() => {
+		return listGroupByProjectsAdapter(data);
+	});
 
-		// ____ USERS _____ //
+	// ____ USERS _____ //
 
-		const groupByUserSeries = useComputed$(() => {
-			return donutChartGroupByUsesAdapter(data);
-		});
+	const groupByUserSeries = useComputed$(() => {
+		return donutChartGroupByUsesAdapter(data);
+	});
 
-		const listGroupByUserSeries = useComputed$(() => {
-			return listGroupByUsersAdapter(data);
-		});
+	const listGroupByUserSeries = useComputed$(() => {
+		return listGroupByUsersAdapter(data);
+	});
 
-		// ____ TASK _____ //
+	// ____ TASK _____ //
 
-		const groupByTaskSeries = useComputed$(() => {
-			return donutChartGroupByTaskAdapter(data);
-		});
+	const groupByTaskSeries = useComputed$(() => {
+		return donutChartGroupByTaskAdapter(data);
+	});
 
-		const listGroupByTaskSeries = useComputed$(() => {
-			return listGroupByTaskAdapter(data);
-		});
+	const listGroupByTaskSeries = useComputed$(() => {
+		return listGroupByTaskAdapter(data);
+	});
 
-		return (
-			<div class='flex flex-col divide-y divide-surface-70 p-3' ref={ref}>
-				<ColumnChart data={daysSeries} />
+	return (
+		<div class='flex flex-col divide-y divide-surface-70 p-3'>
+			<ColumnChart data={daysSeries} />
 
-				{/* ____ PROJECTS _____  */}
+			{/* ____ PROJECTS _____  */}
 
-				{groupByProjectSeries.value.series.length > 0 &&
-					listGroupByProjectSeries.value.length > 0 && (
-						<div class='flex gap-1 py-6 sm:flex-col md:flex-row md:justify-between lg:flex-row lg:justify-between'>
-							<div class='flex-none'>
-								<h3 class='text-xl font-bold text-dark-grey'>
-									{t('PROJECT_LABEL')}
-								</h3>
-							</div>
+			{groupByProjectSeries.value.series.length > 0 &&
+				listGroupByProjectSeries.value.length > 0 && (
+					<div class='flex gap-1 py-6 sm:flex-col md:flex-row md:justify-between lg:flex-row lg:justify-between'>
+						<div class='flex-none'>
+							<h3 class='text-xl font-bold text-dark-grey'>{t('PROJECT_LABEL')}</h3>
+						</div>
 
-							<div class='flex-1 items-center text-center'>
-								<div class='max-w-lg'>
-									<DonutChart data={groupByProjectSeries} />
-								</div>
-							</div>
-
-							<div class='flex-1 sm:w-full'>
-								<ReportList
-									data={listGroupByProjectSeries}
-									resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
-								/>
+						<div class='flex-1 items-center text-center'>
+							<div class='max-w-lg'>
+								<DonutChart data={groupByProjectSeries} />
 							</div>
 						</div>
-					)}
 
-				{/* ____ USERS _____  */}
+						<div class='flex-1 sm:w-full'>
+							<ReportList
+								data={listGroupByProjectSeries}
+								resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
+							/>
+						</div>
+					</div>
+				)}
 
-				{groupByUserSeries.value.series.length > 0 &&
-					listGroupByUserSeries.value.length > 0 && (
-						<div class='flex gap-1 py-6 sm:flex-col md:flex-row md:justify-between lg:flex-row lg:justify-between'>
-							<div class='flex-none'>
-								<h3 class='text-xl font-bold text-dark-grey'>{t('USER_LABEL')}</h3>
-							</div>
+			{/* ____ USERS _____  */}
 
-							<div class='flex-1 items-center text-center'>
-								<div class='max-w-lg'>
-									<DonutChart data={groupByUserSeries} />
-								</div>
-							</div>
+			{groupByUserSeries.value.series.length > 0 &&
+				listGroupByUserSeries.value.length > 0 && (
+					<div class='flex gap-1 py-6 sm:flex-col md:flex-row md:justify-between lg:flex-row lg:justify-between'>
+						<div class='flex-none'>
+							<h3 class='text-xl font-bold text-dark-grey'>{t('USER_LABEL')}</h3>
+						</div>
 
-							<div class='flex-1 sm:w-full'>
-								<ReportList
-									data={listGroupByUserSeries}
-									resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
-								/>
+						<div class='flex-1 items-center text-center'>
+							<div class='max-w-lg'>
+								<DonutChart data={groupByUserSeries} />
 							</div>
 						</div>
-					)}
 
-				{/* ____ TASK _____  */}
+						<div class='flex-1 sm:w-full'>
+							<ReportList
+								data={listGroupByUserSeries}
+								resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
+							/>
+						</div>
+					</div>
+				)}
 
-				{groupByTaskSeries.value.series.length > 0 &&
-					listGroupByTaskSeries.value.length > 0 && (
-						<div class='flex gap-1 py-6 sm:flex-col md:flex-row md:justify-between lg:flex-row lg:justify-between'>
-							<div class='flex-none'>
-								<h3 class='text-xl font-bold text-dark-grey'>{t('TASK_LABEL')}</h3>
-							</div>
+			{/* ____ TASK _____  */}
 
-							<div class='flex-1 items-center text-center'>
-								<div class='max-w-lg'>
-									<DonutChart data={groupByTaskSeries} />
-								</div>
-							</div>
+			{groupByTaskSeries.value.series.length > 0 &&
+				listGroupByTaskSeries.value.length > 0 && (
+					<div class='flex gap-1 py-6 sm:flex-col md:flex-row md:justify-between lg:flex-row lg:justify-between'>
+						<div class='flex-none'>
+							<h3 class='text-xl font-bold text-dark-grey'>{t('TASK_LABEL')}</h3>
+						</div>
 
-							<div class='flex-1 sm:w-full'>
-								<ReportList
-									data={listGroupByTaskSeries}
-									resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
-								/>
+						<div class='flex-1 items-center text-center'>
+							<div class='max-w-lg'>
+								<DonutChart data={groupByTaskSeries} />
 							</div>
 						</div>
-					)}
-			</div>
-		);
-	}
-);
+
+						<div class='flex-1 sm:w-full'>
+							<ReportList
+								data={listGroupByTaskSeries}
+								resultsPerPage={REPORT_LIST_RESULTS_PER_PAGE}
+							/>
+						</div>
+					</div>
+				)}
+		</div>
+	);
+});

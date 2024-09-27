@@ -148,8 +148,9 @@
 	"NONE_LABEL": "(none)",
 	"EMPTY_LABEL": "(empty)",
 	"ADD_TIME_ENTRY_LABEL": "add time entry",
-	"REPORT_DOWNLOAD_PDF_LABEL": "Download report",
-	"REPORT_DOWNLOAD_CSV_LABEL": "Download CSV",
+	"PDF_LABEL": "PDF",
+	"CSV_LABEL": "CSV",
+	"REPORT_DOWNLOAD_LABEL": "Download report",
 	"TIMESHEET_REPORT_AFTER_HOURS_ONLY": "Show after hours only",
 	"SELECT_ALL_LABEL": "Select all"
 }
