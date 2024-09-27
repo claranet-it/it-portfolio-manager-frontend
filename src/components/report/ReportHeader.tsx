@@ -17,7 +17,7 @@ import { getReportCSV } from 'src/utils/report';
 import { getFormattedHours } from 'src/utils/timesheet';
 import { CSV_REPORT_PROJECTS_FILE_NAME } from '../../utils/constants';
 import { capitalizeString } from '../../utils/string';
-import { Button } from '../Button';
+import { OptionDropdown } from '../form/OptionDropdown';
 import { ToggleSwitch } from '../form/ToggleSwitch';
 import { getIcon } from '../icons';
 
@@ -80,11 +80,12 @@ export const ReportHeader = component$<ReportHeaderProps>(
 					<h3 class='text-base font-bold text-dark-grey'>
 						{t('TIMESHEET_TABLE_PROJECT_COL_LABEL')}
 					</h3>
-
-					<ToggleSwitch
-						isChecked={afterHoursSig}
-						label={t('TIMESHEET_REPORT_AFTER_HOURS_ONLY')}
-					/>
+					<div class='hide-on-pdf-download'>
+						<ToggleSwitch
+							isChecked={afterHoursSig}
+							label={t('TIMESHEET_REPORT_AFTER_HOURS_ONLY')}
+						/>
+					</div>
 				</div>
 
 				<div class='flex w-full flex-row justify-between align-middle'>
@@ -118,18 +119,22 @@ export const ReportHeader = component$<ReportHeaderProps>(
 						)}
 					</div>
 
-					<div class='flex flex-row items-center'>
-						<Button variant={'link'} onClick$={() => handlePrint(printableComponent)}>
-							<span class='inline-flex items-start gap-1'>
-								{getIcon('Download')} {t('REPORT_DOWNLOAD_PDF_LABEL')}
-							</span>
-						</Button>
-
-						<Button variant={'link'} onClick$={downloadCSV}>
-							<span class='inline-flex items-start gap-1'>
-								{getIcon('Download')} {t('REPORT_DOWNLOAD_CSV_LABEL')}
-							</span>
-						</Button>
+					<div class='hide-on-pdf-download flex flex-row items-center'>
+						<OptionDropdown
+							id='download-dropdown'
+							icon={getIcon('Download')}
+							label={t('REPORT_DOWNLOAD_LABEL')}
+							options={[
+								{
+									value: t('CSV_LABEL'),
+									onChange: downloadCSV,
+								},
+								{
+									value: t('PDF_LABEL'),
+									onChange: $(() => handlePrint(printableComponent)),
+								},
+							]}
+						/>
 					</div>
 				</div>
 			</div>

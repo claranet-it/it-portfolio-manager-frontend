@@ -4,6 +4,7 @@ import { ReportTab } from '@models/report';
 import { Task } from '@models/task';
 import { UserProfile } from '@models/user';
 import { useReportProject } from 'src/hooks/report/useReportProject';
+import { getIcon } from '../icons';
 import { GroupByList } from './GropuByList';
 import { ProjectReportDetails } from './ProjectReportDetails';
 import { ProjectReportPreview } from './ProjectReportPreview';
@@ -61,7 +62,13 @@ export const ProjectsSection = component$<ReportProps>(
 		return (
 			<>
 				{showProjectsDetails.value ? (
-					<div class='flex flex-col gap-1'>
+					<div ref={projectReportDetailsRef} class='flex flex-col gap-1'>
+						<div class='brickly-logo-pdf-download flex hidden justify-end'>
+							<div class='px-6 py-4 sm:text-center [&_svg]:sm:inline'>
+								{getIcon('BricklyRedLogo')}
+							</div>
+						</div>
+
 						<ReportHeader
 							printableComponent={projectReportDetailsRef}
 							customer={selectedCustomersSig}
@@ -71,19 +78,20 @@ export const ProjectsSection = component$<ReportProps>(
 							to={to}
 						/>
 
-						<ProjectReportDetails
-							ref={projectReportDetailsRef}
-							data={projectResults.value}
-							from={from}
-							to={to}
-						/>
+						<ProjectReportDetails data={projectResults.value} from={from} to={to} />
 
 						{projectResults.value.length > 0 && (
 							<GroupByList data={projectResults} from={from} to={to} />
 						)}
 					</div>
 				) : (
-					<div class='flex flex-col gap-6'>
+					<div ref={projectReportPreviewRef} class='flex flex-col gap-6'>
+						<div class='brickly-logo-pdf-download flex hidden justify-end'>
+							<div class='px-6 py-4 sm:text-center [&_svg]:sm:inline'>
+								{getIcon('BricklyRedLogo')}
+							</div>
+						</div>
+
 						<ReportHeader
 							printableComponent={projectReportPreviewRef}
 							data={projectResults.value}
@@ -94,12 +102,7 @@ export const ProjectsSection = component$<ReportProps>(
 							showTopProject
 						/>
 
-						<ProjectReportPreview
-							ref={projectReportPreviewRef}
-							data={projectResults.value}
-							from={from}
-							to={to}
-						/>
+						<ProjectReportPreview data={projectResults.value} from={from} to={to} />
 
 						{projectResults.value.length > 0 && (
 							<GroupByList data={projectResults} from={from} to={to} />
