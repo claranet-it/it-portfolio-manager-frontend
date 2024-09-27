@@ -58,7 +58,6 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 					timeEntryObject;
 
 				if (timeEntriesState[project.name][date] !== hours) return false;
-
 				// Check if the entry already exists
 				const entryExists = state.dataTimeEntries.find(
 					(entry) =>
@@ -67,13 +66,19 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						entry.project.name === project.name &&
 						entry.project.type === project.type &&
 						entry.task.name === task.name &&
-						entry.startHour === startHour &&
-						entry.endHour === endHour &&
 						entry.description === description
 				);
-
 				// If the entry exists
 				if (entryExists) {
+					// If the start/end hours are the same (and exist), then the hours too have not changed
+					if (startHour !== '00:00' && endHour !== '00:00') {
+						if (
+							entryExists.startHour === startHour &&
+							entryExists.endHour === endHour
+						) {
+							return true;
+						}
+					}
 					// Return true if the new hours are the same as the existing hours
 					return entryExists.hours === hours;
 				} else {
