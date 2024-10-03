@@ -62,6 +62,7 @@
 	"CLIENT": "Client",
 	"TASK": "Task",
 	"clear_filter_label": "Clear",
+	"CLEAR_ALL_FILTERS_LABEL": "Clear filters",
 	"INSERT_NEW_PROJECT_TITLE_MODAL": "Insert new project",
 	"INSERT_NEW_PROJECT_MESSAGE_MODAL": "Do you confirm the insertion of the new project?",
 	"INSERT_NEW_PROJECT_SUCCESS_MESSAGE": "#customer - #project - #task has been added",
@@ -151,6 +152,12 @@
 	"PDF_LABEL": "PDF",
 	"CSV_LABEL": "CSV",
 	"REPORT_DOWNLOAD_LABEL": "Download report",
-	"TIMESHEET_REPORT_AFTER_HOURS_ONLY": "Show after hours only",
-	"SELECT_ALL_LABEL": "Select all"
+	"SELECT_ALL_LABEL": "Select all",
+	"TIMESHEET_REPORT_HOURS_LABEL": "Show hours",
+	"TIMESHEET_REPORT_ALL_TITLE": "All",
+	"TIMESHEET_REPORT_ALL_BODY": "Work hours + After hours",
+	"TIMESHEET_REPORT_WORK_HOURS_ONLY_TITLE": "Work",
+	"TIMESHEET_REPORT_WORK_HOURS_ONLY_BODY": "Work hours only",
+	"TIMESHEET_REPORT_AFTER_HOURS_ONLY_TITLE": "After",
+	"TIMESHEET_REPORT_AFTER_HOURS_ONLY_BODY": "After hours only"
 }

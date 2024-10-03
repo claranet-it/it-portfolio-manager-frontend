@@ -1,4 +1,4 @@
-import { component$, useSignal } from '@builder.io/qwik';
+import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { ReportTab } from '@models/report';
@@ -6,6 +6,7 @@ import { Task } from '@models/task';
 import { UserProfile } from '@models/user';
 import { Button } from 'src/components/Button';
 import { DataRange } from 'src/components/form/DataRange';
+import { ToggleState } from 'src/components/form/RadioDropdown';
 import { ProductivitySection } from 'src/components/report/ProductivitySection';
 import { ProjectsSection } from 'src/components/report/ProjectsSection';
 import { ReportFilters } from 'src/components/report/ReportFilters';
@@ -20,6 +21,12 @@ export const Report = component$(() => {
 	const selectedTasksSig = useSignal<Task[]>([]);
 	const selectedUsersSig = useSignal<UserProfile[]>([]);
 	const selectedTab = useSignal<ReportTab>('project');
+	const afterHoursSig = useSignal<ToggleState>(ToggleState.Intermediate);
+
+	useVisibleTask$(({ track }) => {
+		track(() => selectedTab.value);
+		afterHoursSig.value = ToggleState.Intermediate;
+	});
 
 	return (
 		<div class='w-full space-y-6 px-6 py-2.5'>
@@ -41,6 +48,8 @@ export const Report = component$(() => {
 				selectedProjects={selectedProjectsSig}
 				selectedTasks={selectedTasksSig}
 				selectedUsers={selectedUsersSig}
+				afterHoursSig={afterHoursSig}
+				selectedTab={selectedTab}
 			/>
 
 			{/* TAB Selection */}
@@ -97,6 +106,7 @@ export const Report = component$(() => {
 							selectedTasksSig={selectedTasksSig}
 							selectedUsersSig={selectedUsersSig}
 							selectedTab={selectedTab}
+							afterHoursSig={afterHoursSig}
 							to={to}
 							from={from}
 						/>

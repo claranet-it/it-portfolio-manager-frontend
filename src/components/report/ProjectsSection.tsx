@@ -4,6 +4,7 @@ import { ReportTab } from '@models/report';
 import { Task } from '@models/task';
 import { UserProfile } from '@models/user';
 import { useReportProject } from 'src/hooks/report/useReportProject';
+import { ToggleState } from '../form/RadioDropdown';
 import { getIcon } from '../icons';
 import { GroupByList } from './GropuByList';
 import { ProjectReportDetails } from './ProjectReportDetails';
@@ -16,6 +17,7 @@ interface ReportProps {
 	selectedTasksSig: Signal<Task[]>;
 	selectedUsersSig: Signal<UserProfile[]>;
 	selectedTab: Signal<ReportTab>;
+	afterHoursSig: Signal<ToggleState>;
 	to: Signal<Date>;
 	from: Signal<Date>;
 }
@@ -29,11 +31,10 @@ export const ProjectsSection = component$<ReportProps>(
 		selectedTasksSig,
 		selectedUsersSig,
 		selectedTab,
+		afterHoursSig,
 	}) => {
 		const projectReportDetailsRef = useSignal<HTMLElement>();
 		const projectReportPreviewRef = useSignal<HTMLElement>();
-		const afterHoursSig = useSignal(false);
-
 		const showProjectsDetails = useSignal(false);
 
 		const { results: projectResults } = useReportProject(
@@ -73,7 +74,6 @@ export const ProjectsSection = component$<ReportProps>(
 							printableComponent={projectReportDetailsRef}
 							customer={selectedCustomersSig}
 							data={projectResults.value}
-							afterHoursSig={afterHoursSig}
 							from={from}
 							to={to}
 						/>
@@ -95,7 +95,6 @@ export const ProjectsSection = component$<ReportProps>(
 						<ReportHeader
 							printableComponent={projectReportPreviewRef}
 							data={projectResults.value}
-							afterHoursSig={afterHoursSig}
 							from={from}
 							to={to}
 							showTopCustomer

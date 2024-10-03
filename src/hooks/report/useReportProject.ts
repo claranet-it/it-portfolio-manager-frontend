@@ -8,6 +8,7 @@ import { formatDateString } from 'src/utils/dates';
 
 import { Task } from '@models/task';
 import { UserProfile } from '@models/user';
+import { ToggleState } from 'src/components/form/RadioDropdown';
 import { WORK_END_HOUR, WORK_START_HOUR } from 'src/utils/constants';
 
 export const useReportProject = (
@@ -15,7 +16,7 @@ export const useReportProject = (
 	project: Signal<Project[]>,
 	task: Signal<Task[]>,
 	users: Signal<UserProfile[]>,
-	afterHours: Signal<boolean>,
+	afterHours: Signal<ToggleState>,
 	from: Signal<Date>,
 	to: Signal<Date>,
 	tab: Signal<ReportTab>
@@ -25,6 +26,11 @@ export const useReportProject = (
 
 	const setFilters = $(async (data: ReportTimeEntry[]) => {
 		let results = data;
+
+		const timeToMinutes = (time: string): number => {
+			const [hours, minutes] = time.split(':').map(Number);
+			return hours * 60 + minutes;
+		};
 
 		if (customer.value.length !== 0) {
 			results = results.filter((entry) => customer.value.includes(entry.customer));
@@ -48,7 +54,7 @@ export const useReportProject = (
 			);
 		}
 
-		if (afterHours.value === true) {
+		if (afterHours.value === ToggleState.On) {
 			results = results.filter((entry) => {
 				if (
 					(entry.startHour === '00:00' || !entry.startHour) &&
@@ -56,11 +62,6 @@ export const useReportProject = (
 				) {
 					return false;
 				}
-
-				const timeToMinutes = (time: string): number => {
-					const [hours, minutes] = time.split(':').map(Number);
-					return hours * 60 + minutes;
-				};
 
 				const taskStartMinutes = timeToMinutes(entry.startHour ?? '00:00');
 				const taskEndMinutes = timeToMinutes(entry.endHour ?? '00:00');
@@ -73,6 +74,27 @@ export const useReportProject = (
 					taskEndMinutes < workStartMinutes || taskEndMinutes > workEndMinutes;
 
 				return startsOutside || endsOutside;
+			});
+		} else if (afterHours.value === ToggleState.Off) {
+			results = results.filter((entry) => {
+				if (
+					(entry.startHour === '00:00' || !entry.startHour) &&
+					(entry.endHour === '00:00' || !entry.endHour)
+				) {
+					return true;
+				}
+
+				const taskStartMinutes = timeToMinutes(entry.startHour ?? '00:00');
+				const taskEndMinutes = timeToMinutes(entry.endHour ?? '00:00');
+				const workStartMinutes = timeToMinutes(WORK_START_HOUR);
+				const workEndMinutes = timeToMinutes(WORK_END_HOUR);
+
+				const startsInside =
+					taskStartMinutes >= workStartMinutes && taskStartMinutes <= workEndMinutes;
+				const endsInside =
+					taskEndMinutes >= workStartMinutes && taskEndMinutes <= workEndMinutes;
+
+				return startsInside && endsInside;
 			});
 		}
 

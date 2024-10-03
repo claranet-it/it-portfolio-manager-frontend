@@ -18,13 +18,11 @@ import { getFormattedHours } from 'src/utils/timesheet';
 import { CSV_REPORT_PROJECTS_FILE_NAME } from '../../utils/constants';
 import { capitalizeString } from '../../utils/string';
 import { OptionDropdown } from '../form/OptionDropdown';
-import { ToggleSwitch } from '../form/ToggleSwitch';
 import { getIcon } from '../icons';
 
 interface ReportHeaderProps {
 	customer?: Signal<Customer[]>;
 	data: ReportTimeEntry[];
-	afterHoursSig: Signal<boolean>;
 	showTopCustomer?: boolean;
 	showTopProject?: boolean;
 	printableComponent: Signal<HTMLElement | undefined>;
@@ -33,15 +31,7 @@ interface ReportHeaderProps {
 }
 
 export const ReportHeader = component$<ReportHeaderProps>(
-	({
-		data,
-		afterHoursSig,
-		showTopCustomer = false,
-		showTopProject = false,
-		printableComponent,
-		from,
-		to,
-	}) => {
+	({ data, showTopCustomer = false, showTopProject = false, printableComponent, from, to }) => {
 		const appStore = useContext(AppContext);
 
 		const totalHours = useComputed$(() => {
@@ -80,12 +70,6 @@ export const ReportHeader = component$<ReportHeaderProps>(
 					<h3 class='text-base font-bold text-dark-grey'>
 						{t('TIMESHEET_TABLE_PROJECT_COL_LABEL')}
 					</h3>
-					<div class='hide-on-pdf-download'>
-						<ToggleSwitch
-							isChecked={afterHoursSig}
-							label={t('TIMESHEET_REPORT_AFTER_HOURS_ONLY')}
-						/>
-					</div>
 				</div>
 
 				<div class='flex w-full flex-row justify-between align-middle'>
