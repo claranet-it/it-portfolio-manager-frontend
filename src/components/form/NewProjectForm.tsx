@@ -24,10 +24,14 @@ interface NewProjectFormProp {
 	alertMessageState: ModalState;
 	onCancel$?: QRL;
 	allowNewEntry?: boolean;
+	preSelectedData: Signal<{
+		customer?: string;
+		project?: string;
+	}>;
 }
 
 export const NewProjectForm = component$<NewProjectFormProp>(
-	({ timeEntry, alertMessageState, onCancel$, allowNewEntry }) => {
+	({ timeEntry, alertMessageState, onCancel$, allowNewEntry, preSelectedData }) => {
 		const {
 			dataCustomersSig,
 			dataProjectsSig,
@@ -61,7 +65,9 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			onCancel$ && onCancel$();
 		});
 
-		const _projectSelected = useSignal(projectSelected.value.name);
+		const _projectSelected = useSignal(
+			preSelectedData.value.project ?? projectSelected.value.name
+		);
 		const _taskSelected = useSignal(taskSelected.value.name);
 
 		const _projectOptions = useComputed$(() => {
@@ -102,6 +108,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 		useTask$(({ track }) => {
 			track(() => projectSelected.value);
 			_projectSelected.value = projectSelected.value.name;
+			_projectTypeSelected.value = projectSelected.value.type;
 		});
 
 		useTask$(({ track }) => {
@@ -109,9 +116,24 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			_taskSelected.value = taskSelected.value.name;
 		});
 
-		useVisibleTask$(({ track }) => {
-			track(() => projectSelected.value);
-			_projectTypeSelected.value = projectSelected.value.type;
+		useVisibleTask$(async ({ track }) => {
+			track(() => preSelectedData.value);
+
+			if (
+				preSelectedData.value.customer === undefined &&
+				preSelectedData.value.project === undefined
+			) {
+				return;
+			}
+
+			if (preSelectedData.value.customer) {
+				customerSelected.value = preSelectedData.value.customer;
+				await onChangeCustomer(preSelectedData.value.customer);
+			}
+
+			if (preSelectedData.value.project) {
+				await _onChangeProject(preSelectedData.value.project);
+			}
 		});
 
 		return (

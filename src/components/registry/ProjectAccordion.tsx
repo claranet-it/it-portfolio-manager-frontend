@@ -1,4 +1,13 @@
-import { $, component$, QRL, useSignal, useStore } from '@builder.io/qwik';
+import {
+	$,
+	component$,
+	QRL,
+	Signal,
+	sync$,
+	useSignal,
+	useStore,
+	useVisibleTask$,
+} from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { Project } from '@models/project';
@@ -18,10 +27,19 @@ interface ProjectAccordionProps {
 	customer: Customer;
 	project: Project;
 	refresh?: QRL;
+	preSelectedData: Signal<{
+		customer?: string;
+		project?: string;
+	}>;
+	preOpenData: Signal<{
+		customer?: string;
+		project?: string;
+		beenOpened?: boolean;
+	}>;
 }
 
 export const ProjectAccordion = component$<ProjectAccordionProps>(
-	({ customer, project, refresh }) => {
+	({ customer, project, refresh, preSelectedData, preOpenData }) => {
 		const visibleBody = useSignal(false);
 		const { addEvent } = useNotification();
 		const { tasks, fetchTasks, isLoading } = useTasks();
@@ -79,15 +97,35 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 			confirmLabel: t('ACTION_CONFIRM'),
 		});
 
-		const openBody = $(() => {
+		const openBody = sync$(async () => {
 			visibleBody.value = !visibleBody.value;
-			if (visibleBody.value) fetchTasks(customer, project);
+			if (visibleBody.value) await fetchTasks(customer, project);
+		});
+
+		const selectPreselected = $(() => {
+			preSelectedData.value = {
+				customer: customer,
+				project: project.name,
+			};
+		});
+
+		useVisibleTask$(async () => {
+			if (preOpenData.value.project === project.name && !preOpenData.value.beenOpened) {
+				await openBody().then(() => (preOpenData.value.beenOpened = true));
+			}
 		});
 
 		return (
 			<>
 				<h2>
-					<div class='flex w-full items-center justify-between gap-3 border border-gray-200 p-5 font-medium text-gray-500 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 rtl:text-right'>
+					<div
+						class={
+							'flex w-full items-center justify-between gap-3 border border-gray-200 p-5 font-medium text-gray-500 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 rtl:text-right ' +
+							(visibleBody.value && !isLoading.value
+								? 'border-2 bg-dark-gray-50'
+								: '')
+						}
+					>
 						<div class='flex flex-row gap-3'>
 							<span>{project.name}</span>{' '}
 							{isLoading.value && <LoadingSpinnerInline />}
@@ -106,6 +144,9 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 								onClick$={() => (projectModalState.isVisible = true)}
 							>
 								{getIcon('Edit')}
+							</Button>
+							<Button variant={'outline'} onClick$={selectPreselected}>
+								{getIcon('Add')}
 							</Button>
 
 							<AccordionOpenButton onClick$={openBody} accordionState={visibleBody} />

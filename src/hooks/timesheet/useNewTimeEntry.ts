@@ -9,6 +9,7 @@ import {
 	useTask$,
 } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { navigateTo } from 'src/router';
 import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
 import { t, tt } from '../../locale/labels';
 import { Customer } from '../../models/customer';
@@ -53,7 +54,9 @@ export const useNewTimeEntry = (
 		if (customer !== undefined) {
 			if (customer === '' || dataCustomersSig.value.includes(customer)) {
 				projectTypeEnabled.newCustomer = false;
-				projectSelected.value = INIT_PROJECT_VALUE;
+				if (project === undefined || project.type === '') {
+					projectSelected.value = INIT_PROJECT_VALUE;
+				}
 			} else {
 				projectTypeEnabled.newCustomer = true;
 			}
@@ -68,6 +71,9 @@ export const useNewTimeEntry = (
 	});
 
 	const onChangeCustomer = $(async (value: string) => {
+		if (value !== '' && value === customerSelected.value && projectSelected.value.name !== '') {
+			return;
+		}
 		projectSelected.value = INIT_PROJECT_VALUE;
 		taskSelected.value = INIT_TASK_VALUE;
 		if (value != '') {
@@ -84,9 +90,9 @@ export const useNewTimeEntry = (
 	});
 
 	const onChangeProject = $(async (value: Project) => {
-		if (customerSelected.value != '') {
+		if (customerSelected.value !== '') {
 			taskSelected.value = INIT_TASK_VALUE;
-			if (value.name != '') {
+			if (value.name !== '') {
 				dataTasksSign.value = await getTasks(customerSelected.value, value);
 				taskEnableSig.value = true;
 			} else {
@@ -133,7 +139,7 @@ export const useNewTimeEntry = (
 				type: 'success',
 				message: tt('INSERT_NEW_PROJECT_SUCCESS_MESSAGE', {
 					customer: customerSelected.value,
-					project: projectSelected.value?.name ?? '',
+					project: projectSelected.value.name ?? '',
 					task: taskSelected.value.name,
 				}),
 				autoclose: true,
@@ -141,17 +147,25 @@ export const useNewTimeEntry = (
 
 			clearForm();
 			closeForm && closeForm();
+			navigateTo('registry', {
+				customer: customerSelected.value,
+				project: projectSelected.value.name,
+			});
 		}
 	});
 
 	const newEntityExist = (): boolean => {
-		return Boolean(
-			dataCustomersSig.value.find((customer) => customer === customerSelected.value) &&
-				dataProjectsSig.value.find(
-					(project) => project.name === projectSelected.value.name
-				) &&
-				dataTasksSign.value.find((task) => task.name === taskSelected.value.name)
+		const dataCustomerExist = dataCustomersSig.value.find(
+			(customer) => customer === customerSelected.value
 		);
+		const dataProjectExist = dataProjectsSig.value.find(
+			(project) => project.name === projectSelected.value.name
+		);
+		const dataTaskExist = dataTasksSign.value.find(
+			(task) => task.name === taskSelected.value.name
+		);
+
+		return Boolean(dataCustomerExist && dataProjectExist && dataTaskExist);
 	};
 
 	const showAlert = (props: ModalState) => {

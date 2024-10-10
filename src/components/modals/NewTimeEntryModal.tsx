@@ -1,8 +1,23 @@
-import { $, component$, Slot, useComputed$, useSignal } from '@builder.io/qwik';
+import {
+	$,
+	component$,
+	Signal,
+	Slot,
+	useComputed$,
+	useSignal,
+	useVisibleTask$,
+} from '@builder.io/qwik';
 import { t } from 'src/locale/labels';
 import { getIcon } from '../icons';
 
-export const NewTimeEntryModal = component$(() => {
+interface NewTimeEntryModalProp {
+	preSelectedData?: Signal<{
+		customer?: string;
+		project?: string;
+	}>;
+}
+
+export const NewTimeEntryModal = component$<NewTimeEntryModalProp>(({ preSelectedData }) => {
 	const modalVisible = useSignal(false);
 
 	const modalToggle = $(() => {
@@ -13,6 +28,18 @@ export const NewTimeEntryModal = component$(() => {
 		return {
 			display: modalVisible.value ? 'block' : 'none',
 		};
+	});
+
+	useVisibleTask$(({ track }) => {
+		track(() => preSelectedData?.value);
+
+		if (
+			preSelectedData &&
+			(preSelectedData.value.customer !== undefined ||
+				preSelectedData.value.project !== undefined)
+		) {
+			modalVisible.value = true;
+		}
 	});
 
 	return (
