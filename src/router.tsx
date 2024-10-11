@@ -33,6 +33,19 @@ export const navigateTo = (route: Route, params?: Record<string, string>): void 
 	dispatchEvent(new PopStateEvent('popstate'));
 };
 
+export const getRouteParams = (): Record<string, string[]> => {
+	const params = new URLSearchParams(window.location.search);
+	const result: Record<string, string[]> = {};
+	for (const [key, value] of params) {
+		if (value.split(',').length > 1) {
+			result[key] = value.split(',');
+		} else {
+			result[key] = [value];
+		}
+	}
+	return result;
+};
+
 export const getCurrentRoute = (): Route => window.location.pathname.replaceAll('/', '') as Route;
 
 export const useRouter = (defaultRoute: Route = 'auth'): Signal<Route> => {

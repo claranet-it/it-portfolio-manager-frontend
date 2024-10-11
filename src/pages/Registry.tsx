@@ -16,6 +16,7 @@ import { NewTimeEntryModal } from 'src/components/modals/NewTimeEntryModal';
 import { CustomerAccordion } from 'src/components/registry/CustomerAccordion';
 import { useCustomers } from 'src/hooks/useCustomers';
 import { t } from 'src/locale/labels';
+import { getRouteParams } from 'src/router';
 
 export const Registry = component$(() => {
 	const appStore = useContext(AppContext);
@@ -54,10 +55,10 @@ export const Registry = component$(() => {
 	});
 
 	useVisibleTask$(async () => {
-		const params = new URL(location.href).searchParams;
+		const getParams = getRouteParams();
 		preOpenDataRegistry.value = {
-			customer: params.get('customer') ?? undefined,
-			project: params.get('project') ?? undefined,
+			customer: getParams['customer'][0] ?? undefined,
+			project: getParams['project'][0] ?? undefined,
 			beenOpened: false,
 		};
 	});
