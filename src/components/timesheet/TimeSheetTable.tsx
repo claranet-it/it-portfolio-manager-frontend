@@ -86,6 +86,11 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						entryExists.endHour !== '00:00'
 					) {
 						return false;
+					} else if (
+						startHour !== entryExists.startHour ||
+						endHour !== entryExists.endHour
+					) {
+						return false;
 					}
 					// Return true if the new hours are the same as the existing hours
 					return entryExists.hours === hours;

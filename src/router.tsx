@@ -23,12 +23,17 @@ export const routes = {
 	chartpreview: <ChartPreview />,
 };
 
-export const navigateTo = (route: Route): void => {
-	window.history.pushState({}, '', `/${route}`);
+export const navigateTo = (route: Route, params?: Record<string, string>): void => {
+	const url = `/${route}${params ? `?${new URLSearchParams(params).toString()}` : ''}`;
+	if (getCurrentRoute() === route) {
+		window.location.search = params ? `?${new URLSearchParams(params).toString()}` : '';
+	} else {
+		window.history.pushState({}, '', url);
+	}
 	dispatchEvent(new PopStateEvent('popstate'));
 };
 
-const getCurrentRoute = (): Route => window.location.pathname.replaceAll('/', '') as Route;
+export const getCurrentRoute = (): Route => window.location.pathname.replaceAll('/', '') as Route;
 
 export const useRouter = (defaultRoute: Route = 'auth'): Signal<Route> => {
 	const currentRouteSignal = useSignal<Route>(defaultRoute);

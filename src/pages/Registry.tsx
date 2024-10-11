@@ -32,6 +32,17 @@ export const Registry = component$(() => {
 		await fetchCustomers();
 	});
 
+	const preselectedDataRegistry = useSignal<{
+		customer?: string;
+		project?: string;
+	}>({});
+
+	const preOpenDataRegistry = useSignal<{
+		customer?: string;
+		project?: string;
+		beenOpened?: boolean;
+	}>({});
+
 	useVisibleTask$(({ track }) => {
 		track(() => isLoading.value);
 		appStore.isLoading = isLoading.value;
@@ -42,6 +53,15 @@ export const Registry = component$(() => {
 		await fetchCustomers();
 	});
 
+	useVisibleTask$(async () => {
+		const params = new URL(location.href).searchParams;
+		preOpenDataRegistry.value = {
+			customer: params.get('customer') ?? undefined,
+			project: params.get('project') ?? undefined,
+			beenOpened: false,
+		};
+	});
+
 	return (
 		<>
 			<div class='mb-32 w-full space-y-3 px-6 pt-2.5'>
@@ -50,19 +70,28 @@ export const Registry = component$(() => {
 						{t('REGISTRY_PAGE_TITLE')}
 					</h1>
 
-					<NewTimeEntryModal q:slot='newProject'>
+					<NewTimeEntryModal
+						q:slot='newProject'
+						preSelectedData={preselectedDataRegistry}
+					>
 						<NewProjectForm
 							timeEntry={update}
 							alertMessageState={alertMessageState}
 							onCancel$={newProjectCancelAction}
 							allowNewEntry={true}
+							preSelectedData={preselectedDataRegistry}
 						/>
 					</NewTimeEntryModal>
 				</div>
 
 				<div id='accordion-nested-parent' data-accordion='collapse'>
 					{customers.value.map((customer) => (
-						<CustomerAccordion customer={customer} refresh={refresh} />
+						<CustomerAccordion
+							preOpenData={preOpenDataRegistry}
+							preSelectedData={preselectedDataRegistry}
+							customer={customer}
+							refresh={refresh}
+						/>
 					))}
 				</div>
 			</div>
