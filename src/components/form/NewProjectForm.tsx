@@ -11,6 +11,7 @@ import {
 import { ModalState } from '@models/modalState';
 import { ProjectType } from '@models/project';
 import { initFlowbite } from 'flowbite';
+import { INIT_TASK_VALUE } from 'src/utils/constants';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
 import { t, tt } from '../../locale/labels';
 import { TimeEntry } from '../../models/timeEntry';
@@ -95,7 +96,10 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			if (task) {
 				taskSelected.value = task;
 			} else {
-				taskSelected.value.name = value;
+				taskSelected.value = {
+					...INIT_TASK_VALUE,
+					name: value,
+				};
 			}
 		});
 
