@@ -10,7 +10,7 @@ import { getAllTasks, getTasks } from 'src/services/tasks';
 import { getUserProfiles } from 'src/services/user';
 import { UUID } from 'src/utils/uuid';
 import { Button } from '../Button';
-import { Multiselect } from '../form/Multiselect';
+import { GroupedValues, Multiselect } from '../form/Multiselect';
 import { RadioDropdown, ToggleState } from '../form/RadioDropdown';
 
 export const ReportFilters = component$<{
@@ -173,6 +173,7 @@ export const ReportFilters = component$<{
 						name: user,
 						email: '',
 						id: '',
+						crew: '',
 					}
 				);
 			});
@@ -184,6 +185,26 @@ export const ReportFilters = component$<{
 			_selectedTasks.value = [];
 			_selectedUsers.value = [];
 			afterHoursSig.value = ToggleState.Intermediate;
+		});
+
+		const convertToGrouped = useComputed$(() => {
+			const teamsMap: Record<string, string[]> = usersSig.value.reduce(
+				(map, user) => {
+					if (!map[user.crew]) {
+						map[user.crew] = [];
+					}
+					map[user.crew].push(user.name);
+					return map;
+				},
+				{} as Record<string, string[]>
+			);
+
+			const teams: GroupedValues[] = Object.keys(teamsMap).map((teamName) => ({
+				key: teamName,
+				values: teamsMap[teamName],
+			}));
+
+			return teams;
 		});
 
 		return (
@@ -222,10 +243,16 @@ export const ReportFilters = component$<{
 
 				<Multiselect
 					id={UUID() + '-filter-user'}
-					label={t('name_label')}
+					label={t('USER_LABEL')}
 					placeholder={t('select_empty_label')}
 					value={_selectedUsers}
 					options={_usersOptionsSig}
+					multiLevel={[
+						{
+							label: t('crew'),
+							options: convertToGrouped,
+						},
+					]}
 					onChange$={onChangeUser}
 					allowSelectAll
 					size='auto'

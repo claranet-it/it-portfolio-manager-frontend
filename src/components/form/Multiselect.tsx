@@ -11,11 +11,20 @@ import { initFlowbite } from 'flowbite';
 import { t } from '../../locale/labels';
 import { getIcon } from '../icons';
 
+export type GroupedValues = {
+	key: string;
+	values: string[];
+};
+
 interface multiSelectInterface {
 	id: string;
 	label?: string;
 	value: Signal<string[]>;
 	options: Signal<string[]>;
+	multiLevel?: {
+		label: string;
+		options: Signal<GroupedValues[]>;
+	}[];
 	size?: 'm' | 'auto';
 	placeholder?: string;
 	onChange$?: QRL;
@@ -31,6 +40,7 @@ export const Multiselect = component$<multiSelectInterface>(
 		label,
 		value,
 		options,
+		multiLevel,
 		size,
 		placeholder,
 		onChange$,
@@ -84,6 +94,14 @@ export const Multiselect = component$<multiSelectInterface>(
 			if (size === 'auto') return '';
 
 			return 'md:max-w-[300px] lg:max-w-[300px]';
+		});
+
+		const updateMultiLevelValue = $((selectedValues: string[]) => {
+			if (selectedValues.every((v) => value.value.includes(v))) {
+				value.value = value.value.filter((val) => !selectedValues.includes(val));
+			} else {
+				value.value = [...value.value, ...selectedValues];
+			}
 		});
 
 		useVisibleTask$(() => {
@@ -147,6 +165,70 @@ export const Multiselect = component$<multiSelectInterface>(
 							</label>
 						</div>
 					)}
+					{multiLevel &&
+						multiLevel.map((item, index) => (
+							<div>
+								<button
+									id='doubleDropdownButton'
+									class='flex w-full flex-row px-4 py-2 hover:bg-gray-100'
+									data-dropdown-toggle='doubleDropdown'
+									data-dropdown-placement='right-start'
+									type='button'
+								>
+									<input
+										id={'multiLevel-' + index}
+										checked={options.value.some((v) => value.value.includes(v))}
+										disabled
+										type='checkbox'
+										class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-clara-red/[0.5] focus:ring-2 focus:ring-clara-red'
+									/>
+									<label
+										for={'multiLevel-' + index}
+										class='ms-2 flex w-full flex-row justify-between text-sm font-medium text-gray-900 dark:text-gray-300'
+									>
+										{item.label}
+										{getIcon('ArrowRight')}
+									</label>
+								</button>
+								<div
+									id='doubleDropdown'
+									class='z-10 hidden w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700'
+								>
+									<ul
+										class='max-h-96 overflow-y-auto py-2 text-sm text-gray-700'
+										aria-labelledby='doubleDropdownButton'
+									>
+										{item.options.value.map((option) => (
+											<li>
+												<div class='block px-4 py-2 hover:bg-gray-100'>
+													<input
+														id={
+															'multiLevel-' + index + '-' + option.key
+														}
+														checked={option.values.every((v) =>
+															value.value.includes(v)
+														)}
+														onChange$={() =>
+															updateMultiLevelValue(option.values)
+														}
+														type='checkbox'
+														class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
+													/>
+													<label
+														for={
+															'multiLevel-' + index + '-' + option.key
+														}
+														class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
+													>
+														{option.key}
+													</label>
+												</div>
+											</li>
+										))}
+									</ul>
+								</div>
+							</div>
+						))}
 					<ul class='max-h-96 overflow-y-auto py-2 text-sm text-gray-700'>
 						{options?.value.map((option, index) => (
 							<li
