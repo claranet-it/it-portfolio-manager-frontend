@@ -157,12 +157,14 @@ export const listGroupByProjectsAdapter = (data: ReportTimeEntry[]): ReportRow[]
 			prev[entry.project.name].type = entry.project.type;
 			prev[entry.project.name].label = entry.project.name;
 			prev[entry.project.name].percentage = Number(((hours / totalHours) * 100).toFixed(2));
+			prev[entry.project.name].plannedHours = entry.project.plannedHours;
 		} else {
 			prev[entry.project.name] = {
 				hours: entry.hours,
 				type: entry.project.type,
 				label: entry.project.name,
 				percentage: Number(((entry.hours / totalHours) * 100).toFixed(2)),
+				plannedHours: entry.project.plannedHours,
 			};
 		}
 		return prev;
@@ -235,6 +237,13 @@ export const getReportTotalHours = (data: ReportTimeEntry[]): number => {
 	}, 0);
 };
 
+export const getReportTotalPlannedHours = (data: ReportTimeEntry[]): number => {
+	return data.reduce((prev: number, time: ReportTimeEntry) => {
+		prev = prev + time.project.plannedHours;
+		return prev;
+	}, 0);
+};
+
 export const getReportBillableHours = (data: ReportTimeEntry[]): number => {
 	return data.reduce((prev: number, time: ReportTimeEntry) => {
 		if (time.project.type === 'billable') {
@@ -299,10 +308,11 @@ const groupByKeys = async (
 
 		if (!grouped[groupKey]) {
 			// new elment
-			grouped[groupKey] = { key: groupKey, duration: 0, subGroups: [] };
+			grouped[groupKey] = { key: groupKey, duration: 0, subGroups: [], plannedHours: 0 };
 		}
 
 		grouped[groupKey].duration += entry.hours;
+		grouped[groupKey].plannedHours = entry.project.plannedHours;
 
 		if (keys[level + 1]) {
 			const filteredData = data.filter((d) => {

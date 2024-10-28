@@ -159,5 +159,7 @@
 	"TIMESHEET_REPORT_WORK_HOURS_ONLY_TITLE": "Work",
 	"TIMESHEET_REPORT_WORK_HOURS_ONLY_BODY": "Work hours only",
 	"TIMESHEET_REPORT_AFTER_HOURS_ONLY_TITLE": "After",
-	"TIMESHEET_REPORT_AFTER_HOURS_ONLY_BODY": "After hours only"
+	"TIMESHEET_REPORT_AFTER_HOURS_ONLY_BODY": "After hours only",
+	"PLANNED_HOURS_LABEL": "Planned",
+	"PLANNED_HOURS_DESCRIPTION": "Duration hours reflect the selected time range. Select the full timeframe to see actual vs. planned hours."
 }

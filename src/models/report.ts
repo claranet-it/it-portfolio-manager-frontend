@@ -40,6 +40,7 @@ export type DonutChartSeries = {
 export type ReportTimeEntry = Omit<TimeEntry, 'isUnsaved' | 'index'> & {
 	email: string;
 	crew: string;
+	plannedHours: number;
 };
 
 export type ReportTab = 'project' | 'productivity';
@@ -50,6 +51,7 @@ export type ReportRow = {
 	hours: number;
 	color?: string;
 	percentage: number;
+	plannedHours?: number;
 };
 
 export type GroupByKeys = keyof ReportTimeEntry;
@@ -57,5 +59,6 @@ export type GroupByKeys = keyof ReportTimeEntry;
 export type ReportGroupedData = {
 	[key: string]: any;
 	duration: number;
+	plannedHours: number;
 	subGroups?: ReportGroupedData[];
 };

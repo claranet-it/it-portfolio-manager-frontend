@@ -102,7 +102,7 @@ export const useNewTimeEntry = (
 		}
 	});
 
-	const clearForm = $(() => {
+	const clearForm = sync$(() => {
 		customerSelected.value = initCustomer;
 		projectSelected.value = INIT_PROJECT_VALUE;
 		taskSelected.value = INIT_TASK_VALUE;

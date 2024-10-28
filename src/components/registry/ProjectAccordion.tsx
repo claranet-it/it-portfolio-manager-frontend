@@ -15,6 +15,7 @@ import { useNotification } from 'src/hooks/useNotification';
 import { useProjects } from 'src/hooks/useProjects';
 import { useTasks } from 'src/hooks/useTasks';
 import { t, tt } from 'src/locale/labels';
+import { getCurrentRoute, navigateTo } from 'src/router';
 import { Button } from '../Button';
 import { EditProjectForm } from '../form/editProjectFrom';
 import { getIcon } from '../icons';
@@ -63,15 +64,20 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 				const editedProject = {
 					name: name.value,
 					type: type.value,
-					plannedHours: plannedHours.value,
+					plannedHours: Number(plannedHours.value),
 				};
 				if (await updateProject(customer, project, editedProject)) {
-					refresh && refresh();
 					addEvent({
 						type: 'success',
 						message: t('EDIT_PROJECT_SUCCESS_MESSAGE'),
 						autoclose: true,
 					});
+					if (getCurrentRoute() === 'registry') {
+						navigateTo('registry', {
+							customer: customer,
+							project: project.name,
+						});
+					}
 				}
 			}),
 			cancelLabel: t('ACTION_CANCEL'),
@@ -127,7 +133,17 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 						}
 					>
 						<div class='flex flex-row gap-3'>
-							<span>{project.name}</span>{' '}
+							<div class='flex flex-col gap-2'>
+								<span>{project.name}</span>{' '}
+								{project.plannedHours !== 0 ? (
+									<span class='text-sm text-gray-400'>
+										({project.plannedHours}h)
+									</span>
+								) : (
+									''
+								)}
+							</div>
+
 							{isLoading.value && <LoadingSpinnerInline />}
 						</div>
 

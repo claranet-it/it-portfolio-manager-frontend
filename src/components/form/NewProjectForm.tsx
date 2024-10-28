@@ -18,6 +18,7 @@ import { TimeEntry } from '../../models/timeEntry';
 import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
 import { Autocomplete } from './Autocomplete';
+import { Input } from './Input';
 import { Select } from './Select';
 
 interface NewProjectFormProp {
@@ -61,15 +62,12 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			'absence',
 		]);
 
-		const _onCancel = $(() => {
-			clearForm();
-			onCancel$ && onCancel$();
-		});
-
 		const _projectSelected = useSignal(
 			preSelectedData.value.project ?? projectSelected.value.name
 		);
 		const _taskSelected = useSignal(taskSelected.value.name);
+
+		const _projectTypeSelected = useSignal(projectSelected.value.type);
 
 		const _projectOptions = useComputed$(() => {
 			return dataProjectsSig.value.map((project) => project.name);
@@ -77,6 +75,15 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 
 		const _dataTasksSign = useComputed$(() => {
 			return dataTasksSign.value.map((dataTasks) => dataTasks.name);
+		});
+
+		const _onCancel = $(() => {
+			clearForm();
+			_projectSelected.value = '';
+			_projectTypeSelected.value = '';
+			_taskSelected.value = '';
+
+			onCancel$ && onCancel$();
 		});
 
 		const _onChangeProject = $(async (value: string) => {
@@ -103,20 +110,34 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			}
 		});
 
+		const onChangePlannedHours = $((value: string, type: 'task' | 'project') => {
+			if (type === 'task') {
+				if (value === '') {
+					taskSelected.value.plannedHours = 0;
+				} else {
+					taskSelected.value.plannedHours = Number(value);
+				}
+			} else if (type === 'project') {
+				if (value === '') {
+					projectSelected.value.plannedHours = 0;
+				} else {
+					projectSelected.value.plannedHours = Number(value);
+				}
+			}
+		});
+
 		const _onChangeTypeProject = $(async (value: string) => {
 			projectSelected.value.type = value as ProjectType;
 		});
 
-		const _projectTypeSelected = useSignal(projectSelected.value.type);
-
 		useTask$(({ track }) => {
-			track(() => projectSelected.value);
+			track(() => projectSelected.value.name);
 			_projectSelected.value = projectSelected.value.name;
 			_projectTypeSelected.value = projectSelected.value.type;
 		});
 
 		useTask$(({ track }) => {
-			track(() => taskSelected.value);
+			track(() => taskSelected.value.name);
 			_taskSelected.value = taskSelected.value.name;
 		});
 
@@ -187,24 +208,37 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								)}
 						</div>
 
-						<Select
-							hidden={
-								!(
-									allowNewEntry &&
-									(projectTypeEnabled.newCustomer ||
-										projectTypeEnabled.newProject)
-								)
-							}
-							id={UUID()}
-							disabled={!taskEnableSig.value}
-							label='Project Type'
-							placeholder='Select Project Type'
-							value={_projectTypeSelected}
-							options={_projectTypeOptions}
-							invalid={projectTypeInvalid.value}
-							size='auto'
-							onChange$={_onChangeTypeProject}
-						/>
+						{allowNewEntry &&
+							(projectTypeEnabled.newCustomer || projectTypeEnabled.newProject) && (
+								<div class='flex w-full flex-row gap-2'>
+									<Select
+										id={UUID()}
+										disabled={!taskEnableSig.value}
+										label='Project Type'
+										placeholder='Select Project Type'
+										value={_projectTypeSelected}
+										options={_projectTypeOptions}
+										invalid={projectTypeInvalid.value}
+										size='auto'
+										onChange$={_onChangeTypeProject}
+									/>
+
+									<Input
+										id={UUID()}
+										type='number'
+										label={'Project planned hours:'}
+										placeholder='0'
+										value={projectSelected.value.plannedHours}
+										styleClass='w-full'
+										onChange$={(event) =>
+											onChangePlannedHours(
+												(event.target as HTMLInputElement).value,
+												'project'
+											)
+										}
+									/>
+								</div>
+							)}
 
 						<Autocomplete
 							id={UUID()}

@@ -16,7 +16,7 @@ interface selectInterface {
 	label?: string;
 	value: Signal<string>;
 	options: Signal<string[]>;
-	size?: 'm' | 'auto';
+	size?: 's' | 'm' | 'auto';
 	placeholder?: string;
 	onChange$?: QRL;
 	disabled?: boolean;
@@ -58,6 +58,8 @@ export const Select = component$<selectInterface>(
 
 		const sizeStyle = useComputed$(() => {
 			if (size === 'auto') return '';
+
+			if (size === 's') return 'md:max-w-[200px] lg:max-w-[200px]';
 
 			return 'md:max-w-[300px] lg:max-w-[300px]';
 		});
