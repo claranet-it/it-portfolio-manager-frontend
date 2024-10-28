@@ -56,6 +56,11 @@ export const Registry = component$(() => {
 
 	useVisibleTask$(async () => {
 		const getParams = getRouteParams();
+
+		if (Object.keys(getParams).length === 0) {
+			return;
+		}
+
 		preOpenDataRegistry.value = {
 			customer: getParams['customer'][0] ?? undefined,
 			project: getParams['project'][0] ?? undefined,
