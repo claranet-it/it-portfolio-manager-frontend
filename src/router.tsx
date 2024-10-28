@@ -2,6 +2,7 @@ import { Signal, useSignal, useTask$ } from '@builder.io/qwik';
 import { AuthManager } from './pages/AuthManager';
 import { ChartPreview } from './pages/ChartPreview';
 import { Effort } from './pages/Effort';
+import { People } from './pages/People';
 import { Profile } from './pages/Profile';
 import { Registry } from './pages/Registry';
 import { Report } from './pages/Report';
@@ -21,6 +22,7 @@ export const routes = {
 	search: <Search />,
 	registry: <Registry />,
 	chartpreview: <ChartPreview />,
+	people: <People />,
 };
 
 export const navigateTo = (route: Route, params?: Record<string, string>): void => {
