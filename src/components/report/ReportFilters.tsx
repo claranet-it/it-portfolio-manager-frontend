@@ -95,6 +95,10 @@ export const ReportFilters = component$<{
 						projectNames.includes(element.project) &&
 						_projectOptionsSig.value.includes(element.project)
 				);
+			} else if (selectedCustomers.value.length !== 0) {
+				taskProjects = taskProjectCustomerSig.value.filter((element) =>
+					selectedCustomers.value.includes(element.customer)
+				);
 			} else {
 				taskProjects = taskProjectCustomerSig.value;
 			}
