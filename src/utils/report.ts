@@ -1,5 +1,7 @@
+import { sync$ } from '@builder.io/qwik';
 import { ProjectType } from '@models/project';
 import { BarLegendColor, ReportGroupedData, ReportTimeEntry } from '@models/report';
+import { getRouteParams } from 'src/router';
 
 export const getLegendBarColor = (type: string | ProjectType): BarLegendColor => {
 	switch (type) {
@@ -107,3 +109,23 @@ export const getReportCSV = async (data: ReportTimeEntry[]): Promise<string> => 
 
 	return CSV;
 };
+
+export const parametersHandler = sync$((key: string, values: string[]) => {
+	const params = getRouteParams();
+
+	if (values.length === 0) {
+		delete params[key];
+	} else {
+		params[key] = Array.from(new Set(values));
+	}
+
+	const urlSearchParams = new URLSearchParams();
+	Object.entries(params).forEach(([paramKey, paramValues]) => {
+		const uniqueValues = Array.from(new Set(paramValues as string[]));
+		if (uniqueValues.length) {
+			urlSearchParams.set(paramKey, uniqueValues.join(','));
+		}
+	});
+
+	window.history.replaceState(null, '', `?${urlSearchParams.toString()}`);
+});

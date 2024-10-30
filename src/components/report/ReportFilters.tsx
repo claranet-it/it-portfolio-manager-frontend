@@ -1,13 +1,23 @@
-import { $, Signal, component$, sync$, useComputed$, useSignal } from '@builder.io/qwik';
+import {
+	$,
+	Signal,
+	component$,
+	sync$,
+	useComputed$,
+	useSignal,
+	useVisibleTask$,
+} from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { ReportTab } from '@models/report';
 import { Task } from '@models/task';
 import { UserProfile } from '@models/user';
 import { t } from 'src/locale/labels';
+import { getRouteParams } from 'src/router';
 import { getProjects } from 'src/services/projects';
 import { getAllTasks, getTasks } from 'src/services/tasks';
 import { getUserProfiles } from 'src/services/user';
+import { parametersHandler } from 'src/utils/report';
 import { UUID } from 'src/utils/uuid';
 import { Button } from '../Button';
 import { GroupedValues, Multiselect } from '../form/Multiselect';
@@ -138,6 +148,14 @@ export const ReportFilters = component$<{
 					(task) => !tasksToRemove.includes(task.name)
 				);
 			}
+			parametersHandler(
+				'task',
+				selectedTasks.value.map((task) => task.name)
+			);
+		});
+
+		const onChangeCustomer = $(async () => {
+			parametersHandler('customer', selectedCustomers.value);
 		});
 
 		const onChangeProject = $(async () => {
@@ -163,28 +181,10 @@ export const ReportFilters = component$<{
 					(proj) => !projectsToRemove.includes(proj.name)
 				);
 			}
-		});
-
-		const onChangeUser = $(() => {
-			selectedUsers.value = _selectedUsers.value.map((user) => {
-				const value = usersSig.value.find((element) => element.name === user);
-				return (
-					value ?? {
-						name: user,
-						email: '',
-						id: '',
-						crew: '',
-					}
-				);
-			});
-		});
-
-		const clearFilters = $(() => {
-			selectedCustomers.value = [];
-			_selectedProjects.value = [];
-			_selectedTasks.value = [];
-			_selectedUsers.value = [];
-			afterHoursSig.value = ToggleState.Intermediate;
+			parametersHandler(
+				'project',
+				selectedProjects.value.map((proj) => proj.name)
+			);
 		});
 
 		const convertToGrouped = useComputed$(() => {
@@ -207,6 +207,99 @@ export const ReportFilters = component$<{
 			return teams;
 		});
 
+		const handleUserCrews = sync$(() => {
+			const newParams = {
+				crew: [] as string[],
+				users: [] as string[],
+			};
+
+			const selectedUserNames = new Set(selectedUsers.value.map((user) => user.name));
+
+			for (const user of selectedUsers.value) {
+				const userCrew = user.crew;
+				const crewMembers = convertToGrouped.value.find(
+					(element) => element.key === userCrew
+				)?.values;
+
+				if (crewMembers) {
+					const allMembersSelected = crewMembers.every((member) =>
+						selectedUserNames.has(member)
+					);
+
+					if (allMembersSelected) {
+						newParams.crew.push(userCrew);
+					} else {
+						newParams.users.push(user.name);
+					}
+				}
+			}
+
+			parametersHandler('crew', newParams.crew);
+			parametersHandler('users', newParams.users);
+		});
+
+		const onChangeUser = $(() => {
+			selectedUsers.value = _selectedUsers.value.map((user) => {
+				const value = usersSig.value.find((element) => element.name === user);
+				return (
+					value ?? {
+						name: user,
+						email: '',
+						id: '',
+						crew: '',
+					}
+				);
+			});
+
+			handleUserCrews();
+		});
+
+		const clearFilters = $(() => {
+			selectedCustomers.value = [];
+			_selectedProjects.value = [];
+			_selectedTasks.value = [];
+			_selectedUsers.value = [];
+			afterHoursSig.value = ToggleState.Intermediate;
+		});
+
+		useVisibleTask$(() => {
+			const params = getRouteParams();
+
+			// Function to add matching items from params to the selected list
+			const addMatchingItems = (
+				paramKey: keyof typeof params,
+				optionsSig: Signal<string[]>,
+				selectedList: Signal<string[]>
+			) => {
+				params[paramKey]?.forEach((item) => {
+					const matchedItem = optionsSig.value.find(
+						(option) => option.toLowerCase() === item.toLowerCase()
+					);
+					if (matchedItem) selectedList.value = [...selectedList.value, matchedItem];
+				});
+			};
+
+			// Apply filtering for each parameter
+			addMatchingItems('customer', customerOptionsSig, selectedCustomers);
+			addMatchingItems('project', _projectOptionsSig, _selectedProjects);
+			addMatchingItems('task', _taskOptionsSig, _selectedTasks);
+			addMatchingItems('user', _usersOptionsSig, _selectedUsers);
+
+			// Special handling for 'crew' parameter with custom logic
+			params['crew']?.forEach((item) => {
+				const matchedCrew = usersSig.value.find(
+					(user) => user.crew.toLowerCase() === item.toLowerCase()
+				);
+				if (matchedCrew) _selectedUsers.value = [..._selectedUsers.value, matchedCrew.name];
+			});
+
+			// Set afterHours toggle state
+			if (params['afterHours']) {
+				afterHoursSig.value =
+					(params['afterHours'][0] as ToggleState) || ToggleState.Intermediate;
+			}
+		});
+
 		return (
 			<div class='m-0 flex w-full grid-cols-6 flex-col gap-1 sm:space-y-2 md:space-y-2 lg:grid lg:items-end md:[&>form]:!mx-0'>
 				<Multiselect
@@ -215,6 +308,7 @@ export const ReportFilters = component$<{
 					placeholder={t('select_empty_label')}
 					value={selectedCustomers}
 					options={customerOptionsSig}
+					onChange$={onChangeCustomer}
 					allowSelectAll
 					size='auto'
 				/>

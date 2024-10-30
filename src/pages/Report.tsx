@@ -12,6 +12,9 @@ import { ProjectsSection } from 'src/components/report/ProjectsSection';
 import { ReportFilters } from 'src/components/report/ReportFilters';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
 import { t } from 'src/locale/labels';
+import { getRouteParams } from 'src/router';
+import { currentWeek as currentWeekAsRange } from 'src/utils/dates';
+import { parametersHandler } from 'src/utils/report';
 
 export const Report = component$(() => {
 	const { from, to, nextWeek, prevWeek, currentWeek } = useGetTimeSheetDays();
@@ -26,6 +29,44 @@ export const Report = component$(() => {
 	useVisibleTask$(({ track }) => {
 		track(() => selectedTab.value);
 		afterHoursSig.value = ToggleState.Intermediate;
+	});
+
+	useVisibleTask$(() => {
+		const params = getRouteParams();
+
+		if (params['from']) {
+			const fromDate = new Date(params['from'][0] as string);
+			from.value = fromDate;
+
+			// Not accept to date without a from date.
+			if (params['to']) {
+				const toDate = new Date(params['to'][0] as string);
+				toDate.setHours(23, 59, 59, 999);
+				to.value = toDate;
+			}
+		}
+	});
+
+	useVisibleTask$(({ track }) => {
+		track(() => from.value);
+		track(() => to.value);
+
+		const formatDate = (date: Date) => date.toLocaleDateString('en-CA');
+		const [fixedFrom, fixedTo] = [from.value, to.value].map(formatDate);
+		const { from: rangeFrom, to: rangeTo } = currentWeekAsRange();
+		const [fromRange, toRange] = [rangeFrom, rangeTo].map(formatDate);
+
+		if (fixedFrom === fromRange && fixedTo === toRange) {
+			parametersHandler('from', []);
+			parametersHandler('to', []);
+			return;
+		}
+
+		const params = getRouteParams();
+		if (params['from']?.[0] === fixedFrom && params['to']?.[0] === fixedTo) return;
+
+		parametersHandler('from', [fixedFrom]);
+		parametersHandler('to', [fixedTo]);
 	});
 
 	return (
