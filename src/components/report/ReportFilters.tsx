@@ -106,6 +106,14 @@ export const ReportFilters = component$<{
 			return taskProjects.map((taskProjectCustomer) => taskProjectCustomer.task);
 		});
 
+		const isFullySelected = $(
+			(original: string[], selected: string[]) =>
+				selected.length > 0 &&
+				original.length > 0 &&
+				original.length === selected.length &&
+				original.every((element) => selected.includes(element))
+		);
+
 		const getProjectSig = $(async (project: string) => {
 			const customer = taskProjectCustomerSig.value.find(
 				(value) => value.project === project
@@ -152,14 +160,24 @@ export const ReportFilters = component$<{
 					(task) => !tasksToRemove.includes(task.name)
 				);
 			}
+			const isAllSelected = await isFullySelected(
+				_taskOptionsSig.value,
+				_selectedTasks.value
+			);
+
 			parametersHandler(
 				'task',
-				selectedTasks.value.map((task) => task.name)
+				isAllSelected ? ['all'] : selectedTasks.value.map((task) => task.name)
 			);
 		});
 
 		const onChangeCustomer = $(async () => {
-			parametersHandler('customer', selectedCustomers.value);
+			const isAllSelected = await isFullySelected(
+				customerOptionsSig.value,
+				selectedCustomers.value
+			);
+
+			parametersHandler('customer', isAllSelected ? ['all'] : selectedCustomers.value);
 		});
 
 		const onChangeProject = $(async () => {
@@ -185,9 +203,14 @@ export const ReportFilters = component$<{
 					(proj) => !projectsToRemove.includes(proj.name)
 				);
 			}
+			const isAllSelected = await isFullySelected(
+				_projectOptionsSig.value,
+				_selectedProjects.value
+			);
+
 			parametersHandler(
 				'project',
-				selectedProjects.value.map((proj) => proj.name)
+				isAllSelected ? ['all'] : selectedProjects.value.map((proj) => proj.name)
 			);
 		});
 
@@ -211,7 +234,7 @@ export const ReportFilters = component$<{
 			return teams;
 		});
 
-		const handleUserCrews = sync$(() => {
+		const handleUserCrews = sync$(async () => {
 			const newParams = {
 				crew: [] as string[],
 				users: [] as string[],
@@ -237,9 +260,12 @@ export const ReportFilters = component$<{
 					}
 				}
 			}
-
-			parametersHandler('crew', newParams.crew);
-			parametersHandler('users', newParams.users);
+			const isAllSelected = await isFullySelected(
+				usersSig.value.map((user) => user.name),
+				_selectedUsers.value
+			);
+			parametersHandler('crew', isAllSelected ? [] : newParams.crew);
+			parametersHandler('users', isAllSelected ? ['all'] : newParams.users);
 		});
 
 		const onChangeUser = $(() => {
@@ -275,12 +301,16 @@ export const ReportFilters = component$<{
 				optionsSig: Signal<string[]>,
 				selectedList: Signal<string[]>
 			) => {
-				params[paramKey]?.forEach((item) => {
-					const matchedItem = optionsSig.value.find(
-						(option) => option.toLowerCase() === item.toLowerCase()
-					);
-					if (matchedItem) selectedList.value = [...selectedList.value, matchedItem];
-				});
+				if (params[paramKey] && params[paramKey][0] === 'all') {
+					selectedList.value = optionsSig.value;
+				} else {
+					params[paramKey]?.forEach((item) => {
+						const matchedItem = optionsSig.value.find(
+							(option) => option.toLowerCase() === item.toLowerCase()
+						);
+						if (matchedItem) selectedList.value = [...selectedList.value, matchedItem];
+					});
+				}
 			};
 
 			// Apply filtering for each parameter
