@@ -226,7 +226,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 							</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody
+						key={`timesheet-table-${state.dataTimeEntries.length}-${state.from.value.getTime()}-${state.to.value.getTime()}`}
+					>
 						{Object.entries(groupedByProject.value).map(([_, entries], key) => {
 							const { customer, project, task } = extractFirstEntryDetails(entries);
 							return (
@@ -267,7 +269,10 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 										const tdClass = `relative py-3 px-4 text-center border border-surface-50 ${day.weekend ? 'bg-surface-20' : ''}`;
 
 										return (
-											<td key={formattedDate} class={tdClass}>
+											<td
+												key={`day-${formattedDate}-${dEntries.length}`}
+												class={tdClass}
+											>
 												{dEntries.map((dEntry, index) => {
 													const {
 														hours = undefined,
@@ -280,7 +285,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 														index === dEntries.length - 1;
 
 													return (
-														<div>
+														<div key={`entry-${key}-${formattedDate}`}>
 															<div class={isLastEntry ? '' : 'mb-2'}>
 																<TimeEntryElement
 																	key={key}
