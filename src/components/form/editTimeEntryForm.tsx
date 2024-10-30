@@ -23,7 +23,7 @@ interface EditTimeEntryFormProps {
 export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 	({ hoursSig, destriptionSig, date, hoursRange, customer, project, task }) => {
 		const key = `${task}-${date}-${hoursSig.value}-${hoursRange.start.value}-${hoursRange.end.value}`;
-		console.log('zkl task', task);
+
 		return (
 			<div key={key} class='flex flex-col gap-2 text-left'>
 				<div class='flex flex-col border-b border-gray-200 pb-3'>
@@ -32,7 +32,7 @@ export const EditTimeEntryForm = component$<EditTimeEntryFormProps>(
 					</h4>
 					<h4 class='text-sm font-normal text-darkgray-500'>{`${t('CLIENT')}: ${customer}`}</h4>
 					<h4 class='text-base font-bold text-dark-grey'>{project?.name}</h4>
-					<h4 class='text-dark-gray-900 text-sm font-normal'>{`${t('TASK')}: ${task}`}</h4>
+					<h4 class='text-dark-gray-900 text-sm font-normal'>{`${t('TASK')}: ${typeof task === 'string' ? task : task?.name}`}</h4>
 				</div>
 
 				<div class='flex flex-row gap-2'>
