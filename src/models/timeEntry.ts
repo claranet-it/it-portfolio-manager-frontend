@@ -13,7 +13,7 @@ export type TimeEntry = {
 	endHour?: string;
 	description?: string;
 	isUnsaved?: boolean;
-	index?: number;
+	index?: string;
 	name?: string;
 };
 
