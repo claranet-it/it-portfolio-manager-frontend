@@ -169,7 +169,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		};
 
 		const setNewTimeEntry = $(
-			(date: string, customer?: string, project?: Project, task?: Task, index?: number) => {
+			(date: string, customer?: string, project?: Project, task?: Task) => {
 				newTimeEntry.value = {
 					date: date,
 					company: 'it',
@@ -178,7 +178,6 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 					task: task || INIT_TASK_VALUE,
 					hours: 0,
 					isUnsaved: true,
-					index: (index ?? 0) + 1,
 				};
 			}
 		);
@@ -318,8 +317,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																				formattedDate,
 																				customer,
 																				project,
-																				task,
-																				dailyEntries.length
+																				task
 																			)
 																		}
 																	>
