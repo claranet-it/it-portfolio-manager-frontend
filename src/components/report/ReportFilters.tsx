@@ -61,9 +61,9 @@ export const ReportFilters = component$<{
 
 		const customerOptionsSig = useComputed$(async () => {
 			return getUniqueValues(
-				taskProjectCustomerSig.value.map(
-					(taskProjectCustomer) => taskProjectCustomer.customer
-				)
+				taskProjectCustomerSig.value
+					.map((taskProjectCustomer) => taskProjectCustomer.customer)
+					.sort((a, b) => a.localeCompare(b))
 			);
 		});
 
@@ -81,7 +81,9 @@ export const ReportFilters = component$<{
 			}
 
 			return getUniqueValues(
-				customerProjects.map((taskProjectCustomer) => taskProjectCustomer.project)
+				customerProjects
+					.map((taskProjectCustomer) => taskProjectCustomer.project)
+					.sort((a, b) => a.localeCompare(b))
 			);
 		});
 
@@ -103,7 +105,9 @@ export const ReportFilters = component$<{
 				taskProjects = taskProjectCustomerSig.value;
 			}
 
-			return taskProjects.map((taskProjectCustomer) => taskProjectCustomer.task);
+			return taskProjects
+				.map((taskProjectCustomer) => taskProjectCustomer.task)
+				.sort((a, b) => a.localeCompare(b));
 		});
 
 		const isFullySelected = $(
