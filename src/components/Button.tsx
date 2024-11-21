@@ -12,6 +12,7 @@ const buttonVariants = cva('py-2 px-4 rounded-md font-bold text-base text-nowrap
 		size: {
 			default: 'h-11 px-6 py-2',
 			small: 'h-11 px-0.5',
+			xsmall: 'h-11 !p-0',
 		},
 	},
 	defaultVariants: {

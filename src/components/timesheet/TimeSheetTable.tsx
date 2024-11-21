@@ -288,8 +288,18 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 														index === dEntries.length - 1;
 
 													return (
-														<div key={`entry-${key}-${formattedDate}`}>
-															<div class={isLastEntry ? '' : 'mb-2'}>
+														<div
+															class='relative'
+															key={`entry-${key}-${formattedDate}`}
+														>
+															<div
+																class={
+																	dEntries.length > 1 &&
+																	isLastEntry
+																		? 'mb-6'
+																		: 'mb-2'
+																}
+															>
 																<TimeEntryElement
 																	key={key}
 																	id={key}
@@ -311,29 +321,31 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 															{isLastEntry &&
 																hours !== 0 &&
 																hours !== undefined && (
-																	<Button
-																		key={`new-entry-${dailyEntries.length + 1}`}
-																		tabIndex={-1}
-																		variant={'link'}
-																		size={'small'}
-																		onClick$={() =>
-																			setNewTimeEntry(
-																				formattedDate,
-																				customer,
-																				project,
-																				task
-																			)
-																		}
-																	>
-																		<div class='flex flex-row items-center gap-1 [&_svg]:w-[10px]'>
-																			{getIcon('Add')}
-																			<span class='text-[8px] font-bold'>
-																				{t(
-																					'ADD_TIME_ENTRY_LABEL'
-																				)}
-																			</span>
-																		</div>
-																	</Button>
+																	<div class='absolute -bottom-10 left-1'>
+																		<Button
+																			key={`new-entry-${dailyEntries.length + 1}`}
+																			tabIndex={-1}
+																			variant={'link'}
+																			size={'xsmall'}
+																			onClick$={() =>
+																				setNewTimeEntry(
+																					formattedDate,
+																					customer,
+																					project,
+																					task
+																				)
+																			}
+																		>
+																			<div class='flex flex-row items-center gap-1 [&_svg]:w-[10px]'>
+																				{getIcon('Add')}
+																				<span class='text-[8px] font-bold'>
+																					{t(
+																						'ADD_TIME_ENTRY_LABEL'
+																					)}
+																				</span>
+																			</div>
+																		</Button>
+																	</div>
 																)}
 														</div>
 													);
