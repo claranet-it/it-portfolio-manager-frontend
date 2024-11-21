@@ -1,4 +1,4 @@
-import { $, component$, QRL, useSignal, useStore } from '@builder.io/qwik';
+import { $, component$, QRL, useComputed$, useSignal, useStore } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { Project } from '@models/project';
@@ -6,6 +6,8 @@ import { Task } from '@models/task';
 import { useNotification } from 'src/hooks/useNotification';
 import { useTasks } from 'src/hooks/useTasks';
 import { t } from 'src/locale/labels';
+import { limitRoleAccess } from 'src/utils/acl';
+import { Roles } from 'src/utils/constants';
 import { Button } from '../Button';
 import { EditTaskForm } from '../form/editTaskFrom';
 import { getIcon } from '../icons';
@@ -23,6 +25,8 @@ export const TaskAccordion = component$<TaskAccordionProps>(
 		const { updateTask } = useTasks();
 		const { addEvent } = useNotification();
 		const taskName = useSignal(task.name);
+
+		const canAccess = useComputed$(async () => limitRoleAccess(Roles.ADMIN));
 
 		const initFormSignals = $(() => {
 			taskName.value = task.name;
@@ -53,18 +57,20 @@ export const TaskAccordion = component$<TaskAccordionProps>(
 					<div class='flex flex-row gap-3'>
 						<span>{task.name}</span>
 					</div>
-					<div class='flex flex-row gap-3'>
-						{/* <Button variant={'outline'} onClick$={() => {}}>
-						{getIcon('Bin')}
-					</Button> */}
+					{canAccess.value && (
+						<div class='flex flex-row gap-3'>
+							{/* <Button variant={'outline'} onClick$={() => {}}>
+								{getIcon('Bin')}
+							</Button> */}
 
-						<Button
-							variant={'outline'}
-							onClick$={() => (taskModalState.isVisible = true)}
-						>
-							{getIcon('Edit')}
-						</Button>
-					</div>
+							<Button
+								variant={'outline'}
+								onClick$={() => (taskModalState.isVisible = true)}
+							>
+								{getIcon('Edit')}
+							</Button>
+						</div>
+					)}
 				</div>
 
 				<Modal state={taskModalState}>

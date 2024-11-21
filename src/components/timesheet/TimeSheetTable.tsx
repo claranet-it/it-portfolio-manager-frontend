@@ -27,15 +27,18 @@ interface TimeSheetTableProps {
 	days: Signal<Day[]>;
 	from: Signal<Date>;
 	to: Signal<Date>;
+	userImpersonationId?: Signal<string | undefined>;
 }
 
 const HOURS_PER_DAY = 8;
 const HOURS_PER_WEEK = 8 * 5;
 
 export const TimeSheetTable = component$<TimeSheetTableProps>(
-	({ newTimeEntry, days, from, to }) => {
-		const { loadTimeEntries, state, updateTimeEntries, deleteProjectEntries } =
-			useTimeEntries(newTimeEntry);
+	({ newTimeEntry, days, from, to, userImpersonationId }) => {
+		const { loadTimeEntries, state, updateTimeEntries, deleteProjectEntries } = useTimeEntries(
+			newTimeEntry,
+			userImpersonationId
+		);
 
 		const timeEntriesState = useStore<Record<string, Record<string, number>>>({});
 
@@ -126,7 +129,8 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		useTask$(async ({ track }) => {
 			track(() => from.value);
 			track(() => to.value);
-			await loadTimeEntries(from, to);
+			track(() => userImpersonationId?.value);
+			await loadTimeEntries(from, to, userImpersonationId);
 		});
 
 		const getTotalPerDay = (timeEntries: TimeEntry[]) => {

@@ -33,6 +33,7 @@
 	"legend": "legend",
 	"engineering_manager": "Engineering manager",
 	"my_type_skill": "My #skillType's skills",
+	"user_type_skill": "#user #skillType's skills",
 	"select_empty_label": "Select a option",
 	"input_empty_label": "Insert a value",
 	"service_line_label": "Service Line",
@@ -95,7 +96,8 @@
 	"PRODUCTIVITY_ABSENCE_LABEL": "absence",
 	"LOADING_LABEL": "Loading...",
 	"PRODUCTIVITY_DESCRIPTION_TEXT": "The productivity percentage is the sum of billable hours and non-billable but functional hours",
-	"GENERIC_BE_ERROR": "Something went wrog, please contact support.",
+	"GENERIC_BE_ERROR": "Something went wrong, please contact support.",
+	"PERMISSION_ERROR": "You don't have the permission to access this function.",
 	"EDIT_PROJECT_SUCCESS_MESSAGE": "Project has been updated successfully",
 	"EDIT_TASK_SUCCESS_MESSAGE": "Task has been updated successfully",
 	"EDIT_CUSTOMER_SUCCESS_MESSAGE": "Customer has been updated successfully",
@@ -161,5 +163,6 @@
 	"TIMESHEET_REPORT_AFTER_HOURS_ONLY_TITLE": "After",
 	"TIMESHEET_REPORT_AFTER_HOURS_ONLY_BODY": "After hours only",
 	"PLANNED_HOURS_LABEL": "Planned",
-	"PLANNED_HOURS_DESCRIPTION": "Duration hours reflect the selected time range. Select the full timeframe to see actual vs. planned hours."
+	"PLANNED_HOURS_DESCRIPTION": "Duration hours reflect the selected time range. Select the full timeframe to see actual vs. planned hours.",
+	"IMPERSONATE_USER_LABEL": "Impersonate user"
 }

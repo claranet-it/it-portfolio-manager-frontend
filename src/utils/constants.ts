@@ -2,6 +2,9 @@ import { Project } from '@models/project';
 import { Task } from '@models/task';
 
 export const AUTH_TOKEN_KEY = 'auth_token';
+export const AUTH_ROLE_KEY = 'auth_role';
+export const AUTH_CREW_KEY = 'auth_crew';
+
 export const CHATBOT_COOKIE_KEY = 'token';
 
 export const SKILL_LEVEL_SCORE_LIMIT = 2;
@@ -30,3 +33,10 @@ export const CSV_REPORT_GROUPBY_FILE_NAME = 'Brickly_groupby_report';
 
 export const WORK_START_HOUR = '09:00';
 export const WORK_END_HOUR = '18:00';
+
+export enum Roles {
+	SUPERADMIN = 'SUPERADMIN',
+	ADMIN = 'ADMIN',
+	TEAM_LEADER = 'TEAM_LEADER',
+	USER = 'USER',
+}

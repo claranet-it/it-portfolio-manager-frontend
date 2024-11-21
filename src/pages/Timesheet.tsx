@@ -1,13 +1,17 @@
-import { $, component$, useSignal, useStore } from '@builder.io/qwik';
+import { $, component$, useComputed$, useSignal, useStore } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { TimeEntry } from '@models/timeEntry';
 import { Button } from 'src/components/Button';
 import { NewTaskForm } from 'src/components/form/NewTaskForm';
+import { Select } from 'src/components/form/Select';
 import { WeekSelector } from 'src/components/form/WeekSelector';
 import { NewTimeEntryModal } from 'src/components/modals/NewTimeEntryModal';
 import { ProjectCategoryLegend } from 'src/components/timesheet/ProjectCategoryLegend';
 import { TimeSheetTable } from 'src/components/timesheet/TimeSheetTable';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
+import { usePermissionAccess } from 'src/hooks/usePermissionAccess';
+import { limitRoleAccess } from 'src/utils/acl';
+import { Roles } from 'src/utils/constants';
 import { Modal } from '../components/modals/Modal';
 import { t } from '../locale/labels';
 
@@ -21,6 +25,9 @@ export const Timesheet = component$(() => {
 	const alertMessageState = useStore<ModalState>({});
 	const newTimeEntry = useSignal<TimeEntry>();
 	const { days, from, to, nextWeek, prevWeek, currentWeek, setWeek } = useGetTimeSheetDays();
+	const { usersOptions, userSelected, userIdSelected } = usePermissionAccess();
+
+	const canImpersonate = useComputed$(async () => limitRoleAccess(Roles.TEAM_LEADER));
 
 	return (
 		<>
@@ -29,10 +36,22 @@ export const Timesheet = component$(() => {
 					<h1 class='text-2xl font-bold text-darkgray-900'>
 						{t('TIMESHEET_PAGE_TITLE')}
 					</h1>
-					<div class='items-between flex items-end justify-between'>
+					<div class='items-between flex items-end justify-between sm:flex-col sm:items-start'>
 						<ProjectCategoryLegend />
 
-						<div class='flex items-end justify-end gap-2'>
+						<div class='flex items-end justify-end gap-2 sm:flex-col sm:items-start'>
+							{canImpersonate.value && (
+								<div class='mr-4 w-60 min-w-56 sm:w-full'>
+									<Select
+										id='user-timesheet'
+										label='Select user timesheet'
+										size='m'
+										placeholder='Select user'
+										options={usersOptions}
+										value={userSelected}
+									/>
+								</div>
+							)}
 							<WeekSelector
 								title={t('DATARANGE_SELECT_WEEK_LABEL')}
 								from={from}
@@ -48,7 +67,13 @@ export const Timesheet = component$(() => {
 					</div>
 				</div>
 
-				<TimeSheetTable newTimeEntry={newTimeEntry} days={days} from={from} to={to}>
+				<TimeSheetTable
+					newTimeEntry={newTimeEntry}
+					days={days}
+					from={from}
+					to={to}
+					userImpersonationId={userIdSelected}
+				>
 					<NewTimeEntryModal q:slot='newProject'>
 						<NewTaskForm
 							timeEntry={newTimeEntry}

@@ -1,7 +1,8 @@
 import { $, useSignal, useTask$ } from '@builder.io/qwik';
 import { AuthProviderButton, Provider } from '@models/auth';
-import { CHATBOT_COOKIE_KEY } from 'src/utils/constants';
+import { AUTH_CREW_KEY, AUTH_ROLE_KEY, CHATBOT_COOKIE_KEY, Roles } from 'src/utils/constants';
 import { removeCookie, setCookie } from 'src/utils/cookie';
+import { set } from 'src/utils/localStorage/localStorage';
 import { auth0 } from '../app';
 import { navigateTo } from '../router';
 import { getAuthValidation } from '../services/auth';
@@ -29,6 +30,16 @@ export const useAuth = () => {
 
 	const handleBricklyToken = $(async (provider: Provider, providerToken: string) => {
 		const response = await getAuthValidation(provider, providerToken);
+
+		if (response.role) {
+			await set(AUTH_ROLE_KEY, response.role);
+		} else {
+			await set(AUTH_ROLE_KEY, Roles.USER);
+		}
+
+		if (response.crew) {
+			await set(AUTH_CREW_KEY, response.crew);
+		}
 
 		if (response.token) {
 			await setAuthToken(response.token);

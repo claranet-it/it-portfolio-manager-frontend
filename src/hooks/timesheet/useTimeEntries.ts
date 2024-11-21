@@ -8,7 +8,10 @@ import { formatDateString } from '../../utils/dates';
 import { isEqualEntries } from '../../utils/timesheet';
 import { useNotification } from '../useNotification';
 
-export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
+export const useTimeEntries = (
+	newTimeEntry: Signal<TimeEntry | undefined>,
+	userImpersonationId?: Signal<string | undefined>
+) => {
 	const appStore = useContext(AppContext);
 	const state = useStore({
 		dataTimeEntries: [] as TimeEntry[],
@@ -19,34 +22,41 @@ export const useTimeEntries = (newTimeEntry: Signal<TimeEntry | undefined>) => {
 
 	const { addEvent } = useNotification();
 
-	const loadTimeEntries = $(async (from: Signal<Date>, to: Signal<Date>) => {
-		state.from = from;
-		state.to = to;
-		try {
-			appStore.isLoading = true;
-			const timeEntries = await getTimeEntries(
-				formatDateString(from.value),
-				formatDateString(to.value)
-			);
+	const loadTimeEntries = $(
+		async (
+			from: Signal<Date>,
+			to: Signal<Date>,
+			userImpersonationId?: Signal<string | undefined>
+		) => {
+			state.from = from;
+			state.to = to;
+			try {
+				appStore.isLoading = true;
+				const timeEntries = await getTimeEntries(
+					formatDateString(from.value),
+					formatDateString(to.value),
+					userImpersonationId?.value
+				);
 
-			state.dataTimeEntries = timeEntries;
+				state.dataTimeEntries = timeEntries;
 
-			appStore.isLoading = false;
-		} catch (err) {
-			state.error = (err as Error).message;
-			appStore.isLoading = false;
+				appStore.isLoading = false;
+			} catch (err) {
+				state.error = (err as Error).message;
+				appStore.isLoading = false;
+			}
 		}
-	});
+	);
 
 	const updateTimeEntries = $(async (timeEntry: TimeEntryObject) => {
 		try {
-			if (await postTimeEntries(timeEntry)) {
+			if (await postTimeEntries(timeEntry, userImpersonationId?.value)) {
 				addEvent({
 					message: t('EFFORT_SUCCESSFULLY_UPDATED'),
 					type: 'success',
 					autoclose: true,
 				});
-				loadTimeEntries(state.from, state.to);
+				loadTimeEntries(state.from, state.to, userImpersonationId);
 			}
 		} catch (error) {
 			const { message } = error as Error;

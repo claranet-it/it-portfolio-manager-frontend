@@ -4,6 +4,7 @@ import {
 	QRL,
 	Signal,
 	sync$,
+	useComputed$,
 	useSignal,
 	useStore,
 	useVisibleTask$,
@@ -14,6 +15,8 @@ import { useCustomers } from 'src/hooks/useCustomers';
 import { useNotification } from 'src/hooks/useNotification';
 import { useProjects } from 'src/hooks/useProjects';
 import { t, tt } from 'src/locale/labels';
+import { limitRoleAccess } from 'src/utils/acl';
+import { Roles } from 'src/utils/constants';
 import { Button } from '../Button';
 import { EditCustomerForm } from '../form/editCustomerFrom';
 import { getIcon } from '../icons';
@@ -44,6 +47,8 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 		const visibleBody = useSignal(false);
 
 		const name = useSignal(customer);
+
+		const canAccess = useComputed$(async () => limitRoleAccess(Roles.ADMIN));
 
 		const initFormSignals = $(() => {
 			name.value = customer;
@@ -124,23 +129,27 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 							<span>{customer}</span> {isLoading.value && <LoadingSpinnerInline />}
 						</div>
 						<div class='flex flex-row gap-3'>
-							<Button
-								variant={'outline'}
-								onClick$={() => (customerDeleteModalState.isVisible = true)}
-							>
-								{getIcon('Bin')}
-							</Button>
+							{canAccess.value && (
+								<>
+									<Button
+										variant={'outline'}
+										onClick$={() => (customerDeleteModalState.isVisible = true)}
+									>
+										{getIcon('Bin')}
+									</Button>
 
-							<Button
-								variant={'outline'}
-								onClick$={() => (customerModalState.isVisible = true)}
-							>
-								{getIcon('Edit')}
-							</Button>
+									<Button
+										variant={'outline'}
+										onClick$={() => (customerModalState.isVisible = true)}
+									>
+										{getIcon('Edit')}
+									</Button>
 
-							<Button variant={'outline'} onClick$={selectPreselected}>
-								{getIcon('Add')}
-							</Button>
+									<Button variant={'outline'} onClick$={selectPreselected}>
+										{getIcon('Add')}
+									</Button>
+								</>
+							)}
 
 							<AccordionOpenButton onClick$={openBody} accordionState={visibleBody} />
 						</div>

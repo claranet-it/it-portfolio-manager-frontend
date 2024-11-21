@@ -12,4 +12,6 @@ export type TokenConfiguration = {
 
 export type BricklyTokenResponse = {
 	token: string;
+	role: string;
+	crew: string;
 };

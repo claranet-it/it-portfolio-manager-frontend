@@ -1,9 +1,13 @@
 import { TimeEntry, TimeEntryObject } from '../models/timeEntry';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
-export const getTimeEntries = async (from: string, to: string): Promise<TimeEntry[]> =>
+export const getTimeEntries = async (
+	from: string,
+	to: string,
+	impersonateId?: string
+): Promise<TimeEntry[]> =>
 	getHttpResponse<TimeEntry[]>({
-		path: `time-entry/mine`,
+		path: impersonateId ? `time-entry/${impersonateId}` : `time-entry/mine`,
 		params: {
 			from,
 			to,
@@ -16,12 +20,20 @@ export const deleteTimeEntry = async (entry: TimeEntry): Promise<Boolean> =>
 		project: entry.project.name,
 	});
 
-export const postTimeEntries = async (timeEntry: TimeEntryObject): Promise<boolean> => {
+export const postTimeEntries = async (
+	timeEntry: TimeEntryObject,
+	impersonateId?: string
+): Promise<boolean> => {
 	const _timeEntry = {
 		...timeEntry,
 		project: timeEntry.project.name,
 		task: typeof timeEntry.task === 'string' ? timeEntry.task : timeEntry.task.name,
 	};
 
-	return checkHttpResponseStatus('time-entry/mine', 204, 'POST', _timeEntry);
+	return checkHttpResponseStatus(
+		impersonateId ? `time-entry/${impersonateId}` : 'time-entry/mine',
+		204,
+		'POST',
+		_timeEntry
+	);
 };

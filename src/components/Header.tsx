@@ -1,19 +1,30 @@
-import { component$ } from '@builder.io/qwik';
+import { component$, useComputed$ } from '@builder.io/qwik';
+import { limitRoleAccess } from 'src/utils/acl';
 import { auth0 } from '../app';
 import { t } from '../locale/labels';
 import { navigateTo, Route } from '../router';
-import { CHATBOT_COOKIE_KEY } from '../utils/constants';
+import { CHATBOT_COOKIE_KEY, Roles } from '../utils/constants';
 import { removeCookie } from '../utils/cookie';
 import { removeAuthToken } from '../utils/token';
 import { getIcon } from './icons';
 
 type MenuRoutes = Exclude<Route, 'auth'>;
 
-const MENU = ['effort', 'profile', 'skills', 'timesheet', 'report', 'search'] as const;
-
 const redirect_uri = window.location.origin;
 
 export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }) => {
+	const isAdmin = useComputed$(async () => await limitRoleAccess(Roles.ADMIN));
+
+	const MENU = [
+		'effort',
+		'profile',
+		'skills',
+		'timesheet',
+		'report',
+		'search',
+		isAdmin.value ? 'registry' : '',
+	] as const;
+
 	return (
 		<header>
 			<div class='items-center justify-between border-b border-b-darkgray-300 bg-white md:flex lg:flex'>
@@ -22,7 +33,7 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 				</div>
 
 				<div class='justify-end pr-6 sm:w-[100%] sm:text-center md:flex lg:flex'>
-					{MENU.map((section, key) => {
+					{MENU.filter((v) => v !== '').map((section, key) => {
 						const textColor =
 							section === currentRoute ? 'text-darkgray-500' : 'text-clara-red';
 						return (
