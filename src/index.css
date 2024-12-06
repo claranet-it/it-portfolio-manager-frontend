@@ -73,3 +73,20 @@ input[type='time']::-webkit-calendar-picker-indicator {
 		display: table-footer-group;
 	}
 }
+
+/* SNOW */
+@keyframes fall {
+	to {
+		transform: translateY(100vh) rotate(360deg);
+		opacity: 0;
+	}
+}
+
+.snowflake {
+	position: absolute;
+	top: -50px;
+	width: 10px;
+	height: 10px;
+	animation: fall linear infinite;
+	transform-origin: center;
+}
