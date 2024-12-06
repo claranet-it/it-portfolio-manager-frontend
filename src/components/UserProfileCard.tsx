@@ -150,10 +150,10 @@ export const UserProfileCard = component$<UserProfileProps>(
 
 						<div
 							id='user-dropdown'
-							class='z-10 hidden w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700'
+							class='z-10 hidden w-max divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700'
 						>
 							<ul
-								class='py-2 text-sm text-gray-700 dark:text-gray-200'
+								class='max-h-96 overflow-y-auto py-2 text-sm text-gray-700 dark:text-gray-200'
 								aria-labelledby='states-button'
 							>
 								{usersOptions.value.map((user, key) => (
@@ -168,6 +168,31 @@ export const UserProfileCard = component$<UserProfileProps>(
 									</li>
 								))}
 							</ul>
+							{userSelected.value && (
+								<div
+									class='flex cursor-pointer flex-row space-x-1 px-4 py-2 hover:bg-gray-100'
+									onClick$={() => updateUserImpersonate('')}
+								>
+									<svg
+										class='my-[5px] h-3 w-3 text-clara-red'
+										aria-hidden='true'
+										xmlns='http://www.w3.org/2000/svg'
+										fill='none'
+										viewBox='0 0 10 18'
+									>
+										<path
+											stroke='currentColor'
+											stroke-linecap='round'
+											stroke-linejoin='round'
+											stroke-width='2'
+											d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'
+										/>
+									</svg>
+									<span class='block text-sm text-clara-red'>
+										{t('clear_filter_label')}
+									</span>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>

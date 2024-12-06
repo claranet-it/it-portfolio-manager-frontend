@@ -50,11 +50,15 @@ export const NewTaskForm = component$<NewTaskForm>(
 		const _projectSelected = useSignal(projectSelected.value.name);
 
 		const _dataTasksSign = useComputed$(() => {
-			return dataTasksSign.value.map((dataTasks) => dataTasks.name);
+			return dataTasksSign.value
+				.filter((dataTasks) => dataTasks.completed === false)
+				.map((dataTasks) => dataTasks.name);
 		});
 
 		const _projectOptions = useComputed$(() => {
-			return dataProjectsSig.value.map((project) => project.name);
+			return dataProjectsSig.value
+				.filter((dataProject) => dataProject.completed === false)
+				.map((project) => project.name);
 		});
 
 		const _onCancel = $(() => {
@@ -119,7 +123,11 @@ export const NewTaskForm = component$<NewTaskForm>(
 						<Select
 							id={UUID()}
 							label={t('PROJECT_LABEL')}
-							placeholder={t('SELECT_PROJECT_PLACEHOLDER')}
+							placeholder={
+								projectEnableSig.value && _projectOptions.value.length === 0
+									? t('NO_ACTIVE_PROJECT_PLACEHOLDER')
+									: t('SELECT_PROJECT_PLACEHOLDER')
+							}
 							value={_projectSelected}
 							options={_projectOptions}
 							disabled={!projectEnableSig.value}
@@ -131,7 +139,11 @@ export const NewTaskForm = component$<NewTaskForm>(
 							id={UUID()}
 							disabled={!taskEnableSig.value}
 							label={t('TASK_LABEL')}
-							placeholder={t('SELECT_TASK_PLACEHOLDER')}
+							placeholder={
+								taskEnableSig.value && _dataTasksSign.value.length === 0
+									? t('NO_ACTIVE_TASK_PLACEHOLDER')
+									: t('SELECT_TASK_PLACEHOLDER')
+							}
 							value={_taskSelected}
 							options={_dataTasksSign}
 							onChange$={_onChangeTask}

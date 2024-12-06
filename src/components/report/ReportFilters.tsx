@@ -195,7 +195,7 @@ export const ReportFilters = component$<{
 					const project = await getProjectSig(projName);
 					selectedProjects.value = [
 						...selectedProjects.value,
-						project ?? { name: projName, type: '', plannedHours: 0 },
+						project ?? { name: projName, type: '', plannedHours: 0, completed: false },
 					];
 				}
 			} else {

@@ -16,14 +16,12 @@ export const usePermissionAccess = () => {
 		);
 	});
 
-	const usersOptions = useComputed$(() => ['-', ...usersSig.value.map((user) => user.name)]);
+	const usersOptions = useComputed$(() => [...usersSig.value.map((user) => user.name)]);
 
 	const userIdSelected = useComputed$(
 		() =>
 			usersSig.value.find((user) =>
-				userSelected.value === '' || userSelected.value === '-'
-					? false
-					: user.name === userSelected.value
+				userSelected.value === '' ? false : user.name === userSelected.value
 			)?.id
 	);
 

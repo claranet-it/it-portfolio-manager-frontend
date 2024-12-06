@@ -1,7 +1,7 @@
 import en from './en.json';
 
 type Locales = 'en';
-type Labels = keyof typeof en;
+export type Labels = keyof typeof en;
 const allLabels: Record<Locales, Record<Labels, string>> = { en };
 
 export const t = (label: Labels) => {

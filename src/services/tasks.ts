@@ -12,17 +12,32 @@ export const getTasks = async (customer: Customer, project: Project | string): P
 		},
 	});
 
-export const editTask = async (
+export const editTaskName = async (
 	customer: Customer,
 	project: Project,
 	task: string,
-	editedTask: string
+	newTaskName: string
 ) =>
 	checkHttpResponseStatus('task/task', 200, 'PUT', {
 		customer: customer,
 		project: project.name,
 		task: task,
-		newTask: editedTask,
+		newTask: newTaskName,
+	});
+
+export const editTask = async (
+	customer: Customer,
+	project: Project,
+	task: string,
+	completed: boolean,
+	plannedHours: number
+) =>
+	checkHttpResponseStatus('task/task-properties', 200, 'POST', {
+		customer: customer,
+		project: project.name,
+		task: task,
+		completed: completed,
+		plannedHours: plannedHours,
 	});
 
 export const getAllTasks = async (): Promise<TaskProjectCustomer[]> =>

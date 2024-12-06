@@ -1,6 +1,7 @@
 export type Project = {
 	name: string;
 	type: ProjectType;
+	completed: boolean;
 	plannedHours: number;
 };
 

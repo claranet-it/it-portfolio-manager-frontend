@@ -119,6 +119,8 @@
 	"SEARCH": "Search...",
 	"SELECT_PROJECT_PLACEHOLDER": "Select a project",
 	"SELECT_TASK_PLACEHOLDER": "Select a task",
+	"NO_ACTIVE_PROJECT_PLACEHOLDER": "No active project",
+	"NO_ACTIVE_TASK_PLACEHOLDER": "No active task",
 	"NOTE_LABEL": "note",
 	"PROJECT_BILLABLE_LABEL": "billable",
 	"PROJECT_NON_BILLABLE_LABEL": "non billable",
@@ -164,5 +166,7 @@
 	"TIMESHEET_REPORT_AFTER_HOURS_ONLY_BODY": "After hours only",
 	"PLANNED_HOURS_LABEL": "Planned",
 	"PLANNED_HOURS_DESCRIPTION": "Duration hours reflect the selected time range. Select the full timeframe to see actual vs. planned hours.",
-	"IMPERSONATE_USER_LABEL": "Impersonate user"
+	"IMPERSONATE_USER_LABEL": "Impersonate user",
+	"PLANNED_HOURS_TITLE": "Planned hours",
+	"COMPLETED_LABEL": "Completed"
 }

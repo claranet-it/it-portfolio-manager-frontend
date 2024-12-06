@@ -53,9 +53,9 @@ export const getReportTimeEntry = async (from: string, to: string): Promise<Repo
 				name: entry.project,
 				plannedHours: entry.plannedHours,
 				type: entry.projectType,
+				completed: false,
 			},
 			task: {
-				// TODO: Remove after BE has fully implemented tasks
 				name: entry.task,
 				plannedHours: 0,
 				completed: false,

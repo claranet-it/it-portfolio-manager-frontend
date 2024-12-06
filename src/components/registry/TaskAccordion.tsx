@@ -6,6 +6,7 @@ import { Task } from '@models/task';
 import { useNotification } from 'src/hooks/useNotification';
 import { useTasks } from 'src/hooks/useTasks';
 import { t } from 'src/locale/labels';
+import { getCurrentRoute, navigateTo } from 'src/router';
 import { limitRoleAccess } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
 import { Button } from '../Button';
@@ -20,63 +21,113 @@ interface TaskAccordionProps {
 	refresh?: QRL;
 }
 
-export const TaskAccordion = component$<TaskAccordionProps>(
-	({ customer, project, task, refresh }) => {
-		const { updateTask } = useTasks();
-		const { addEvent } = useNotification();
-		const taskName = useSignal(task.name);
+export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project, task }) => {
+	const { renameTask, updateTask } = useTasks();
+	const { addEvent } = useNotification();
 
-		const canAccess = useComputed$(async () => limitRoleAccess(Roles.ADMIN));
+	const newTaskName = useSignal(task.name);
+	const newCompleted = useSignal(task.completed);
+	const newPlannedHours = useSignal(task.plannedHours);
 
-		const initFormSignals = $(() => {
-			taskName.value = task.name;
-		});
+	const canAccess = useComputed$(async () => limitRoleAccess(Roles.ADMIN));
 
-		const taskModalState = useStore<ModalState>({
-			title: t('TASK_EDIT_TITLE'),
-			onCancel$: $(() => {
-				initFormSignals();
-			}),
-			onConfirm$: $(async () => {
-				if (await updateTask(customer, project, task.name, taskName.value)) {
-					refresh && refresh();
+	const initFormSignals = $(() => {
+		newTaskName.value = task.name;
+	});
+
+	const taskModalState = useStore<ModalState>({
+		title: t('TASK_EDIT_TITLE'),
+		onCancel$: $(() => {
+			initFormSignals();
+		}),
+		onConfirm$: $(async () => {
+			if (newTaskName.value !== task.name) {
+				if (await renameTask(customer, project, task.name, newTaskName.value)) {
 					addEvent({
 						type: 'success',
 						message: t('EDIT_TASK_SUCCESS_MESSAGE'),
 						autoclose: true,
 					});
 				}
-			}),
-			cancelLabel: t('ACTION_CANCEL'),
-			confirmLabel: t('ACTION_CONFIRM'),
-		});
+			}
 
-		return (
-			<>
-				<div class='flex w-full items-center justify-between gap-3 border border-gray-200 p-5 font-medium text-gray-500 focus:ring-4 focus:ring-gray-200 rtl:text-right'>
-					<div class='flex flex-row gap-3'>
-						<span>{task.name}</span>
+			if (
+				newCompleted.value !== task.completed ||
+				newPlannedHours.value !== task.plannedHours
+			) {
+				if (
+					await updateTask(
+						customer,
+						project,
+						task.name,
+						newCompleted.value,
+						newPlannedHours.value
+					)
+				) {
+					addEvent({
+						type: 'success',
+						message: t('EDIT_TASK_SUCCESS_MESSAGE'),
+						autoclose: true,
+					});
+				}
+			}
+
+			if (getCurrentRoute() === 'registry') {
+				navigateTo('registry', {
+					customer: customer,
+					project: project.name,
+				});
+			}
+		}),
+		cancelLabel: t('ACTION_CANCEL'),
+		confirmLabel: t('ACTION_CONFIRM'),
+	});
+
+	return (
+		<>
+			<div class='flex w-full items-center justify-between gap-3 border border-gray-200 p-5 font-medium text-gray-500 focus:ring-4 focus:ring-gray-200 rtl:text-right'>
+				<div class='flex flex-row gap-3'>
+					<div class='flex flex-col gap-2'>
+						<div class='flex flex-row gap-2'>
+							<span>{task.name}</span>{' '}
+							{task.completed ? (
+								<span class='uppercase text-gray-400'>
+									({t('COMPLETED_LABEL')})
+								</span>
+							) : (
+								''
+							)}
+						</div>
+						{task.plannedHours !== 0 ? (
+							<span class='text-sm text-gray-400'>({task.plannedHours}h)</span>
+						) : (
+							''
+						)}
 					</div>
-					{canAccess.value && (
-						<div class='flex flex-row gap-3'>
-							{/* <Button variant={'outline'} onClick$={() => {}}>
+				</div>
+				{canAccess.value && (
+					<div class='flex flex-row gap-3'>
+						{/* <Button variant={'outline'} onClick$={() => {}}>
 								{getIcon('Bin')}
 							</Button> */}
 
-							<Button
-								variant={'outline'}
-								onClick$={() => (taskModalState.isVisible = true)}
-							>
-								{getIcon('Edit')}
-							</Button>
-						</div>
-					)}
-				</div>
+						<Button
+							variant={'outline'}
+							onClick$={() => (taskModalState.isVisible = true)}
+						>
+							{getIcon('Edit')}
+						</Button>
+					</div>
+				)}
+			</div>
 
-				<Modal state={taskModalState}>
-					<EditTaskForm name={taskName} />
-				</Modal>
-			</>
-		);
-	}
-);
+			<Modal state={taskModalState}>
+				<EditTaskForm
+					name={newTaskName}
+					completed={newCompleted}
+					plannedHours={newPlannedHours}
+				/>
+			</Modal>
+		</>
+	);
+});

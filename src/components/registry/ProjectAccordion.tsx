@@ -53,11 +53,13 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 
 		const name = useSignal(project.name);
 		const type = useSignal(project.type);
+		const completed = useSignal(project.completed);
 		const plannedHours = useSignal(project.plannedHours);
 
 		const initFormSignals = $(() => {
 			name.value = project.name;
 			type.value = project.type;
+			completed.value = project.completed;
 		});
 
 		const projectModalState = useStore<ModalState>({
@@ -70,6 +72,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 					name: name.value,
 					type: type.value,
 					plannedHours: Number(plannedHours.value),
+					completed: completed.value,
 				};
 				if (await updateProject(customer, project, editedProject)) {
 					addEvent({
@@ -139,7 +142,16 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 					>
 						<div class='flex flex-row gap-3'>
 							<div class='flex flex-col gap-2'>
-								<span>{project.name}</span>{' '}
+								<div class='flex flex-row gap-2'>
+									<span>{project.name}</span>{' '}
+									{project.completed ? (
+										<span class='uppercase text-gray-400'>
+											({t('COMPLETED_LABEL')})
+										</span>
+									) : (
+										''
+									)}
+								</div>
 								{project.plannedHours !== 0 ? (
 									<span class='text-sm text-gray-400'>
 										({project.plannedHours}h)
@@ -191,7 +203,12 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 				</div>
 
 				<Modal state={projectModalState}>
-					<EditProjectForm name={name} type={type} plannedHours={plannedHours} />
+					<EditProjectForm
+						name={name}
+						type={type}
+						completed={completed}
+						plannedHours={plannedHours}
+					/>
 				</Modal>
 
 				<Modal state={projectDeleteModalState} />

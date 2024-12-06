@@ -3,7 +3,7 @@ import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
 import { AppContext } from 'src/app';
-import { editTask, getTasks } from 'src/services/tasks';
+import { editTask, editTaskName, getTasks } from 'src/services/tasks';
 
 export const useTasks = () => {
 	const appStore = useContext(AppContext);
@@ -17,14 +17,29 @@ export const useTasks = () => {
 		isLoading.value = false;
 	});
 
-	const updateTask = $(
+	const renameTask = $(
 		async (customer: Customer, project: Project, task: string, editedTask: string) => {
 			appStore.isLoading = true;
-			const response = await editTask(customer, project, task, editedTask);
+			const response = await editTaskName(customer, project, task, editedTask);
 			appStore.isLoading = false;
 			return response;
 		}
 	);
 
-	return { tasks, fetchTasks, isLoading, updateTask };
+	const updateTask = $(
+		async (
+			customer: Customer,
+			project: Project,
+			task: string,
+			completed: boolean,
+			plannedHours: number
+		) => {
+			appStore.isLoading = true;
+			const response = await editTask(customer, project, task, completed, plannedHours);
+			appStore.isLoading = false;
+			return response;
+		}
+	);
+
+	return { tasks, fetchTasks, isLoading, renameTask, updateTask };
 };
