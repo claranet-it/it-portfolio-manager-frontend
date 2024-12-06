@@ -1,5 +1,16 @@
-import { $, component$, Signal, useContext, useId, useStore, useTask$ } from '@builder.io/qwik';
+import {
+	$,
+	component$,
+	Signal,
+	useComputed$,
+	useContext,
+	useId,
+	useStore,
+	useTask$,
+} from '@builder.io/qwik';
 import { UserMe } from '@models/user';
+import { limitRoleAccess } from 'src/utils/acl';
+import { Roles } from 'src/utils/constants';
 import { AppContext } from '../app';
 import { t } from '../locale/labels';
 import { getConfiguration } from '../services/configuration';
@@ -15,6 +26,8 @@ interface UserProfileProps {
 export const UserProfileCard = component$<UserProfileProps>(
 	({ usersOptions, userSelected, userIdSelected }) => {
 		const appStore = useContext(AppContext);
+		const canImpersonate = useComputed$(async () => limitRoleAccess(Roles.TEAM_LEADER));
+
 		const uniqueId = useId();
 
 		let userStore = useStore<UserMe>(
@@ -130,71 +143,72 @@ export const UserProfileCard = component$<UserProfileProps>(
 					<p class='text-base font-bold text-dark-grey'>
 						{userStore.crewLeader ? t('engineering_manager') : ''}
 					</p>
-
 					{/* Impersonate Area */}
-					<div class='mb-2 flex items-baseline'>
-						<span class='mr-1 text-xs uppercase text-dark-grey'>
-							{t('IMPERSONATE_USER_LABEL')}
-						</span>
-						<span class='text-lg font-bold text-dark-grey'>
-							{userSelected.value || '-'}
-						</span>
+					{canImpersonate.value && (
+						<div class='mb-2 flex items-baseline'>
+							<span class='mr-1 text-xs uppercase text-dark-grey'>
+								{t('IMPERSONATE_USER_LABEL')}
+							</span>
+							<span class='text-lg font-bold text-dark-grey'>
+								{userSelected.value || '-'}
+							</span>
 
-						<button
-							id='triggerUserDropdown'
-							data-dropdown-toggle='user-dropdown'
-							class='inline-flex rounded border-0 bg-transparent p-0 font-semibold text-gray-400 hover:text-white'
-						>
-							{getIcon('Expand')}
-						</button>
-
-						<div
-							id='user-dropdown'
-							class='z-10 hidden w-max divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700'
-						>
-							<ul
-								class='max-h-96 overflow-y-auto py-2 text-sm text-gray-700 dark:text-gray-200'
-								aria-labelledby='states-button'
+							<button
+								id='triggerUserDropdown'
+								data-dropdown-toggle='user-dropdown'
+								class='inline-flex rounded border-0 bg-transparent p-0 font-semibold text-gray-400 hover:text-white'
 							>
-								{usersOptions.value.map((user, key) => (
-									<li key={`${uniqueId}-${key}-${user}`}>
-										<button
-											type='button'
-											onClick$={() => updateUserImpersonate(user)}
-											class='inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white'
-										>
-											<div class='inline-flex items-center'>{user}</div>
-										</button>
-									</li>
-								))}
-							</ul>
-							{userSelected.value && (
-								<div
-									class='flex cursor-pointer flex-row space-x-1 px-4 py-2 hover:bg-gray-100'
-									onClick$={() => updateUserImpersonate('')}
+								{getIcon('Expand')}
+							</button>
+
+							<div
+								id='user-dropdown'
+								class='z-10 hidden w-max divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700'
+							>
+								<ul
+									class='max-h-96 overflow-y-auto py-2 text-sm text-gray-700 dark:text-gray-200'
+									aria-labelledby='states-button'
 								>
-									<svg
-										class='my-[5px] h-3 w-3 text-clara-red'
-										aria-hidden='true'
-										xmlns='http://www.w3.org/2000/svg'
-										fill='none'
-										viewBox='0 0 10 18'
+									{usersOptions.value.map((user, key) => (
+										<li key={`${uniqueId}-${key}-${user}`}>
+											<button
+												type='button'
+												onClick$={() => updateUserImpersonate(user)}
+												class='inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white'
+											>
+												<div class='inline-flex items-center'>{user}</div>
+											</button>
+										</li>
+									))}
+								</ul>
+								{userSelected.value && (
+									<div
+										class='flex cursor-pointer flex-row space-x-1 px-4 py-2 hover:bg-gray-100'
+										onClick$={() => updateUserImpersonate('')}
 									>
-										<path
-											stroke='currentColor'
-											stroke-linecap='round'
-											stroke-linejoin='round'
-											stroke-width='2'
-											d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'
-										/>
-									</svg>
-									<span class='block text-sm text-clara-red'>
-										{t('clear_filter_label')}
-									</span>
-								</div>
-							)}
+										<svg
+											class='my-[5px] h-3 w-3 text-clara-red'
+											aria-hidden='true'
+											xmlns='http://www.w3.org/2000/svg'
+											fill='none'
+											viewBox='0 0 10 18'
+										>
+											<path
+												stroke='currentColor'
+												stroke-linecap='round'
+												stroke-linejoin='round'
+												stroke-width='2'
+												d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'
+											/>
+										</svg>
+										<span class='block text-sm text-clara-red'>
+											{t('clear_filter_label')}
+										</span>
+									</div>
+								)}
+							</div>
 						</div>
-					</div>
+					)}
 				</div>
 			</div>
 		);
