@@ -238,8 +238,14 @@ export const getReportTotalHours = (data: ReportTimeEntry[]): number => {
 };
 
 export const getReportTotalPlannedHours = (data: ReportTimeEntry[]): number => {
+	const projectList: string[] = [];
+
 	return data.reduce((prev: number, time: ReportTimeEntry) => {
-		prev = prev + time.project.plannedHours;
+		if (!projectList.includes(time.project.name)) {
+			prev = prev + time.project.plannedHours;
+			projectList.push(time.project.name);
+		}
+
 		return prev;
 	}, 0);
 };
