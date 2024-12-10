@@ -194,11 +194,18 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 				{/* accordion body */}
 				<div class={visibleBody.value && !isLoading.value ? '' : 'hidden'}>
 					<div class='border border-b-0 border-gray-200 p-5 dark:border-gray-700'>
-						{tasks.value.map((task) => {
-							return (
-								<TaskAccordion customer={customer} project={project} task={task} />
-							);
-						})}
+						{tasks.value
+							.sort((taskA, taskB) => taskA.name.localeCompare(taskB.name))
+							.map((task) => {
+								return (
+									<TaskAccordion
+										key={`task-${customer}-${project.name}-${task.name}`}
+										customer={customer}
+										project={project}
+										task={task}
+									/>
+								);
+							})}
 					</div>
 				</div>
 

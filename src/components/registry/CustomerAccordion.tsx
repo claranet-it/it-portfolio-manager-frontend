@@ -160,17 +160,22 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 				<div class={visibleBody.value && !isLoading.value ? '' : 'hidden'}>
 					<div class='border border-gray-200 p-5'>
 						<div id='accordion-nested-collapse' data-accordion='collapse'>
-							{projects.value.map((project) => {
-								return (
-									<ProjectAccordion
-										customer={customer}
-										project={project}
-										refresh={refresh}
-										preSelectedData={preSelectedData}
-										preOpenData={preOpenData}
-									/>
-								);
-							})}
+							{projects.value
+								.sort((projectA, projectB) =>
+									projectA.name.localeCompare(projectB.name)
+								)
+								.map((project) => {
+									return (
+										<ProjectAccordion
+											key={`project-${customer}-${project.name}`}
+											customer={customer}
+											project={project}
+											refresh={refresh}
+											preSelectedData={preSelectedData}
+											preOpenData={preOpenData}
+										/>
+									);
+								})}
 						</div>
 					</div>
 				</div>

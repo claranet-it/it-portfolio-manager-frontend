@@ -12,6 +12,19 @@ export const getTasks = async (customer: Customer, project: Project | string): P
 		},
 	});
 
+export const saveTask = async (
+	customer: Customer,
+	project: Project,
+	task: string,
+	index?: number
+): Promise<boolean> =>
+	checkHttpResponseStatus(`task/task`, 200, 'POST', {
+		customer: customer,
+		project: project,
+		task: task,
+		index: index,
+	});
+
 export const editTaskName = async (
 	customer: Customer,
 	project: Project,

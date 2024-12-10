@@ -18,7 +18,7 @@ import { Task } from '../../models/task';
 import { TimeEntry } from '../../models/timeEntry';
 import { getCustomers } from '../../services/customer';
 import { getProjects } from '../../services/projects';
-import { getTasks } from '../../services/tasks';
+import { getTasks, saveTask } from '../../services/tasks';
 import { useNotification } from '../useNotification';
 
 export const useNewTimeEntry = (
@@ -111,37 +111,52 @@ export const useNewTimeEntry = (
 	});
 
 	const insertNewTimeEntry = $(async () => {
-		newTimeEntry.value = {
-			date: '',
-			company: 'it', //TODO: Replace with the company value
-			customer: customerSelected.value,
-			project: projectSelected.value,
-			task: taskSelected.value,
-			hours: 0,
-			isUnsaved: true,
-		};
+		const savingResult = await saveTask(
+			customerSelected.value,
+			projectSelected.value,
+			taskSelected.value.name
+		);
 
-		addEvent({
-			type: 'success',
-			message: tt('INSERT_NEW_PROJECT_SUCCESS_MESSAGE', {
+		if (!savingResult) {
+			// Show error
+			addEvent({
+				type: 'danger',
+				message: t('GENERIC_BE_ERROR'),
+			});
+		} else {
+			// add new timeEntry to store
+			newTimeEntry.value = {
+				date: '',
+				company: 'it', //TODO: Replace with the company value
 				customer: customerSelected.value,
-				project: projectSelected.value.name ?? '',
-				task: taskSelected.value.name,
-			}),
-			autoclose: true,
-		});
+				project: projectSelected.value,
+				task: taskSelected.value,
+				hours: 0,
+				isUnsaved: true,
+			};
 
-		if (allowNewEntry) {
-			if (getCurrentRoute() === 'registry') {
-				navigateTo('registry', {
+			addEvent({
+				type: 'success',
+				message: tt('INSERT_NEW_PROJECT_SUCCESS_MESSAGE', {
 					customer: customerSelected.value,
-					project: projectSelected.value.name,
-				});
-			}
-		}
+					project: projectSelected.value.name ?? '',
+					task: taskSelected.value.name,
+				}),
+				autoclose: true,
+			});
 
-		clearForm();
-		closeForm && closeForm();
+			if (allowNewEntry) {
+				if (getCurrentRoute() === 'registry') {
+					navigateTo('registry', {
+						customer: customerSelected.value,
+						project: projectSelected.value.name,
+					});
+				}
+			}
+
+			clearForm();
+			closeForm && closeForm();
+		}
 	});
 
 	const newEntityExist = (): boolean => {
