@@ -123,16 +123,34 @@ export const useReportProject = (
 		return true;
 	});
 
-	useVisibleTask$(async ({ track }) => {
-		track(() => customer.value);
-		track(() => project.value);
-		track(() => task.value);
-		track(() => users.value);
-		track(() => afterHours.value);
-		track(() => from.value);
-		track(() => to.value);
-		track(() => tab.value);
-		(await fetchValidation()) && (await fetchProjects());
+	useVisibleTask$(async ({ track, cleanup }) => {
+		let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+		const result = track(() =>
+			JSON.stringify([
+				customer.value,
+				project.value,
+				task.value,
+				users.value,
+				afterHours.value,
+				from.value,
+				to.value,
+				tab.value,
+			])
+		);
+
+		cleanup(() => {
+			console.log('Brickly Debug - Timeout Cleanup');
+			if (timeoutId) clearTimeout(timeoutId);
+		});
+
+		if (await fetchValidation()) {
+			console.log('Brickly Debug - A ', result);
+			timeoutId = setTimeout(async () => {
+				console.log('Brickly Debug - B ', result);
+				await fetchProjects();
+			}, 500);
+		}
 	});
 
 	return { results };

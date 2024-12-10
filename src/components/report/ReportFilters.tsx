@@ -305,9 +305,7 @@ export const ReportFilters = component$<{
 				optionsSig: Signal<string[]>,
 				selectedList: Signal<string[]>
 			) => {
-				if (params[paramKey] && params[paramKey][0] === 'all') {
-					selectedList.value = optionsSig.value;
-				} else {
+				if (!(params[paramKey] && params[paramKey][0] === 'all')) {
 					params[paramKey]?.forEach((item) => {
 						const matchedItem = optionsSig.value.find(
 							(option) => option.toLowerCase() === item.toLowerCase()

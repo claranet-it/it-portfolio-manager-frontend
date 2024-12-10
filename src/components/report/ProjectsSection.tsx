@@ -49,10 +49,15 @@ export const ProjectsSection = component$<ReportProps>(
 		);
 
 		useVisibleTask$(({ track }) => {
-			track(() => selectedCustomersSig.value);
-			track(() => selectedProjectsSig.value);
-			track(() => selectedTasksSig.value);
-			track(() => selectedUsersSig.value);
+			track(() =>
+				JSON.stringify([
+					selectedCustomersSig.value,
+					selectedProjectsSig.value,
+					selectedTasksSig.value,
+					selectedUsersSig.value,
+				])
+			);
+
 			showProjectsDetails.value =
 				selectedCustomersSig.value.length !== 0 ||
 				selectedProjectsSig.value.length !== 0 ||

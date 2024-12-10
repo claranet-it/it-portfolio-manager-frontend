@@ -206,14 +206,29 @@ export const useProductivity = (
 		return true;
 	});
 
-	useTask$(async ({ track }) => {
-		track(() => customers.value);
-		track(() => projects.value);
-		track(() => tasks.value);
-		track(() => from.value);
-		track(() => to.value);
-		track(() => tab.value);
-		(await fetchValidation()) && fetchProductivityResults();
+	useTask$(async ({ track, cleanup }) => {
+		let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+		track(() =>
+			JSON.stringify([
+				customers.value,
+				projects.value,
+				tasks.value,
+				from.value,
+				to.value,
+				tab.value,
+			])
+		);
+
+		cleanup(() => {
+			if (timeoutId) clearTimeout(timeoutId);
+		});
+
+		if (await fetchValidation()) {
+			timeoutId = setTimeout(async () => {
+				await fetchProductivityResults();
+			}, 300);
+		}
 	});
 
 	useTask$(({ track }) => {

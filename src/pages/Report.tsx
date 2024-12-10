@@ -48,8 +48,7 @@ export const Report = component$(() => {
 	});
 
 	useVisibleTask$(({ track }) => {
-		track(() => from.value);
-		track(() => to.value);
+		track(() => JSON.stringify([from.value, to.value]));
 
 		const formatDate = (date: Date) => date.toLocaleDateString('en-CA');
 		const [fixedFrom, fixedTo] = [from.value, to.value].map(formatDate);
