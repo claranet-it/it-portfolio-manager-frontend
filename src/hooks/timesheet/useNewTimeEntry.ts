@@ -111,18 +111,37 @@ export const useNewTimeEntry = (
 	});
 
 	const insertNewTimeEntry = $(async () => {
-		const savingResult = await saveTask(
-			customerSelected.value,
-			projectSelected.value,
-			taskSelected.value.name
-		);
+		if (allowNewEntry) {
+			const savingResult = await saveTask(
+				customerSelected.value,
+				projectSelected.value,
+				taskSelected.value.name
+			);
 
-		if (!savingResult) {
-			// Show error
-			addEvent({
-				type: 'danger',
-				message: t('GENERIC_BE_ERROR'),
-			});
+			if (!savingResult) {
+				// Show error
+				addEvent({
+					type: 'danger',
+					message: t('GENERIC_BE_ERROR'),
+				});
+			} else {
+				addEvent({
+					type: 'success',
+					message: tt('INSERT_NEW_PROJECT_SUCCESS_MESSAGE', {
+						customer: customerSelected.value,
+						project: projectSelected.value.name ?? '',
+						task: taskSelected.value.name,
+					}),
+					autoclose: true,
+				});
+
+				if (getCurrentRoute() === 'registry') {
+					navigateTo('registry', {
+						customer: customerSelected.value,
+						project: projectSelected.value.name,
+					});
+				}
+			}
 		} else {
 			// add new timeEntry to store
 			newTimeEntry.value = {
@@ -134,29 +153,10 @@ export const useNewTimeEntry = (
 				hours: 0,
 				isUnsaved: true,
 			};
-
-			addEvent({
-				type: 'success',
-				message: tt('INSERT_NEW_PROJECT_SUCCESS_MESSAGE', {
-					customer: customerSelected.value,
-					project: projectSelected.value.name ?? '',
-					task: taskSelected.value.name,
-				}),
-				autoclose: true,
-			});
-
-			if (allowNewEntry) {
-				if (getCurrentRoute() === 'registry') {
-					navigateTo('registry', {
-						customer: customerSelected.value,
-						project: projectSelected.value.name,
-					});
-				}
-			}
-
-			clearForm();
-			closeForm && closeForm();
 		}
+
+		clearForm();
+		closeForm && closeForm();
 	});
 
 	const newEntityExist = (): boolean => {
