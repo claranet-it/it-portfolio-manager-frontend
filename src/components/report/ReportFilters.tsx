@@ -319,14 +319,14 @@ export const ReportFilters = component$<{
 			addMatchingItems('customer', customerOptionsSig, selectedCustomers);
 			addMatchingItems('project', _projectOptionsSig, _selectedProjects);
 			addMatchingItems('task', _taskOptionsSig, _selectedTasks);
-			addMatchingItems('user', _usersOptionsSig, _selectedUsers);
+			addMatchingItems('users', _usersOptionsSig, _selectedUsers);
 
 			// Special handling for 'crew' parameter with custom logic
 			params['crew']?.forEach((item) => {
-				const matchedCrew = usersSig.value.find(
-					(user) => user.crew.toLowerCase() === item.toLowerCase()
-				);
-				if (matchedCrew) _selectedUsers.value = [..._selectedUsers.value, matchedCrew.name];
+				const matchedCrew = usersSig.value
+					.filter((user) => user.crew.toLowerCase() === item.toLowerCase())
+					.map((user) => user.name);
+				if (matchedCrew) _selectedUsers.value = [..._selectedUsers.value, ...matchedCrew];
 			});
 
 			// Set afterHours toggle state
