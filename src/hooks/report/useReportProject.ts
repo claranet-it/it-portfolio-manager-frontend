@@ -1,14 +1,14 @@
-import { $, Signal, useContext, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { $, Signal, useComputed$, useContext, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { ReportTab, ReportTimeEntry } from '@models/report';
 import { AppContext } from 'src/app';
-import { getReportTimeEntry } from 'src/services/report';
 import { formatDateString } from 'src/utils/dates';
 
 import { Task } from '@models/task';
 import { UserProfile } from '@models/user';
 import { ToggleState } from 'src/components/form/RadioDropdown';
+import { getReportTimeEntry } from 'src/services/report';
 import { WORK_END_HOUR, WORK_START_HOUR } from 'src/utils/constants';
 
 export const useReportProject = (
@@ -103,12 +103,26 @@ export const useReportProject = (
 
 	const fetchProjects = $(async () => {
 		appStore.isLoading = true;
+
 		try {
-			const response = await getReportTimeEntry(
-				formatDateString(from.value),
-				formatDateString(to.value)
-			);
-			results.value = await setFilters(response);
+			const startDate = new Date(from.value);
+			const endDate = new Date(to.value);
+
+			let current = new Date(startDate);
+			let calls = [];
+
+			while (current <= endDate) {
+				const endOfMonth = new Date(current.getFullYear(), current.getMonth() + 1, 0);
+
+				const rangeStart = formatDateString(current);
+				const rangeEnd = formatDateString(endOfMonth < endDate ? endOfMonth : endDate);
+
+				calls.push(getReportTimeEntry(rangeStart, rangeEnd));
+
+				current = new Date(current.getFullYear(), current.getMonth() + 1, 1);
+			}
+			const responses = await Promise.all(calls);
+			results.value = await setFilters(responses.flat());
 		} catch (error) {
 			const errorObject = error as Error;
 			console.error(errorObject.message);
@@ -117,16 +131,15 @@ export const useReportProject = (
 		appStore.isLoading = false;
 	});
 
-	const fetchValidation = $((): boolean => {
-		if (tab.value !== 'project') return false;
-
-		return true;
+	const isRightTab = useComputed$(() => {
+		return tab.value === 'project';
 	});
 
 	useVisibleTask$(async ({ track, cleanup }) => {
 		let timeoutId: ReturnType<typeof setTimeout> | null = null;
+		let isFetching = false;
 
-		const result = track(() =>
+		track(() =>
 			JSON.stringify([
 				customer.value,
 				project.value,
@@ -140,15 +153,15 @@ export const useReportProject = (
 		);
 
 		cleanup(() => {
-			console.log('Brickly Debug - Timeout Cleanup');
 			if (timeoutId) clearTimeout(timeoutId);
 		});
 
-		if (await fetchValidation()) {
-			console.log('Brickly Debug - A ', result);
+		if (isRightTab.value && !isFetching) {
+			isFetching = true;
+
 			timeoutId = setTimeout(async () => {
-				console.log('Brickly Debug - B ', result);
 				await fetchProjects();
+				isFetching = false;
 			}, 500);
 		}
 	});

@@ -200,10 +200,8 @@ export const useProductivity = (
 		appStore.isLoading = false;
 	});
 
-	const fetchValidation = $((): boolean => {
-		if (tab.value !== 'productivity') return false;
-
-		return true;
+	const isRightTab = useComputed$(() => {
+		return tab.value === 'productivity';
 	});
 
 	useTask$(async ({ track, cleanup }) => {
@@ -224,7 +222,7 @@ export const useProductivity = (
 			if (timeoutId) clearTimeout(timeoutId);
 		});
 
-		if (await fetchValidation()) {
+		if (isRightTab.value) {
 			timeoutId = setTimeout(async () => {
 				await fetchProductivityResults();
 			}, 300);

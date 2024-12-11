@@ -1,4 +1,4 @@
-import { component$, Signal, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { component$, Signal, useComputed$, useSignal } from '@builder.io/qwik';
 import { Project } from '@models/project';
 import { ReportTab } from '@models/report';
 import { Task } from '@models/task';
@@ -35,7 +35,6 @@ export const ProjectsSection = component$<ReportProps>(
 	}) => {
 		const projectReportDetailsRef = useSignal<HTMLElement>();
 		const projectReportPreviewRef = useSignal<HTMLElement>();
-		const showProjectsDetails = useSignal(false);
 
 		const { results: projectResults } = useReportProject(
 			selectedCustomersSig,
@@ -48,21 +47,13 @@ export const ProjectsSection = component$<ReportProps>(
 			selectedTab
 		);
 
-		useVisibleTask$(({ track }) => {
-			track(() =>
-				JSON.stringify([
-					selectedCustomersSig.value,
-					selectedProjectsSig.value,
-					selectedTasksSig.value,
-					selectedUsersSig.value,
-				])
-			);
-
-			showProjectsDetails.value =
+		const showProjectsDetails = useComputed$(() => {
+			return (
 				selectedCustomersSig.value.length !== 0 ||
 				selectedProjectsSig.value.length !== 0 ||
 				selectedTasksSig.value.length !== 0 ||
-				selectedUsersSig.value.length !== 0;
+				selectedUsersSig.value.length !== 0
+			);
 		});
 
 		return (
