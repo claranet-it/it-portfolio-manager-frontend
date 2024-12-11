@@ -23,6 +23,7 @@ export const useReportProject = (
 ) => {
 	const appStore = useContext(AppContext);
 	const results = useSignal<ReportTimeEntry[]>([]);
+	const response = useSignal<ReportTimeEntry[]>([]);
 
 	const setFilters = $(async (data: ReportTimeEntry[]) => {
 		let results = data;
@@ -121,7 +122,9 @@ export const useReportProject = (
 
 				current = new Date(current.getFullYear(), current.getMonth() + 1, 1);
 			}
+
 			const responses = await Promise.all(calls);
+			response.value = responses.flat();
 			results.value = await setFilters(responses.flat());
 		} catch (error) {
 			const errorObject = error as Error;
@@ -135,17 +138,35 @@ export const useReportProject = (
 		return tab.value === 'project';
 	});
 
+	useVisibleTask$(async ({ track }) => {
+		track(() =>
+			JSON.stringify([
+				/* Not using date filters to filter locally */
+				customer.value,
+				project.value,
+				task.value,
+				users.value,
+				afterHours.value,
+			])
+		);
+
+		if (isRightTab.value) {
+			results.value = await setFilters(response.value);
+		}
+	});
+
 	useVisibleTask$(async ({ track, cleanup }) => {
 		let timeoutId: ReturnType<typeof setTimeout> | null = null;
 		let isFetching = false;
 
 		track(() =>
 			JSON.stringify([
-				customer.value,
-				project.value,
-				task.value,
-				users.value,
-				afterHours.value,
+				/* Not using this to fetch data but only filter */
+				// customer.value,
+				// project.value,
+				// task.value,
+				// users.value,
+				// afterHours.value,
 				from.value,
 				to.value,
 				tab.value,
