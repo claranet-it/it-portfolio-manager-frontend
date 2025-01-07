@@ -1,5 +1,4 @@
-import { component$, useComputed$, useSignal } from '@builder.io/qwik';
-import { useSnowEffect } from 'src/hooks/useSnowEffect';
+import { component$, useComputed$ } from '@builder.io/qwik';
 import { limitRoleAccess } from 'src/utils/acl';
 import { auth0 } from '../app';
 import { Labels, t } from '../locale/labels';
@@ -7,7 +6,6 @@ import { navigateTo, Route } from '../router';
 import { CHATBOT_COOKIE_KEY, Roles } from '../utils/constants';
 import { removeCookie } from '../utils/cookie';
 import { removeAuthToken } from '../utils/token';
-import { Button } from './Button';
 import { getIcon } from './icons';
 
 type MenuRoutes = Exclude<Route, 'auth'>;
@@ -15,9 +13,6 @@ type MenuRoutes = Exclude<Route, 'auth'>;
 const redirect_uri = window.location.origin;
 
 export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }) => {
-	const isSnowing = useSignal(true);
-	const toggleSnow = useSnowEffect(isSnowing);
-
 	const MENU = [
 		'effort',
 		'profile',
@@ -90,15 +85,6 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 								</button>
 							);
 						})}
-					<Button
-						class='m-2 items-center rounded border-0 bg-transparent'
-						onClick$={() => {
-							isSnowing.value = !isSnowing.value;
-							toggleSnow();
-						}}
-					>
-						{!isSnowing.value ? getIcon('DarkSnow') : getIcon('Snow')}
-					</Button>
 
 					<button
 						class='m-2 inline-flex min-w-[100px] items-center gap-2 rounded border-0 bg-transparent p-2 font-semibold text-dark-grey'

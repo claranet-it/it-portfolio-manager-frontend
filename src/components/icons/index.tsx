@@ -12,7 +12,6 @@ import { Calendar } from './Calendar';
 import { Claranet } from './Claranet';
 import { Clear } from './Clear';
 import { Close } from './Close';
-import { DarkSnow } from './DarkSnow';
 import { Design } from './Design';
 import { DownArrow } from './DownArrow';
 import { Downalod } from './Download';
@@ -35,7 +34,6 @@ import { Ruby } from './Ruby';
 import { Rust } from './Rust';
 import { Search } from './Search';
 import { Send } from './Send';
-import { Snow } from './Snow';
 import { TypeScript } from './TypeScript';
 import { UserGroup } from './UserGroup';
 import { V3Dots } from './V3Dots';
@@ -130,10 +128,6 @@ export const getIcon = (skill: string) => {
 			return <Downalod />;
 		case 'Downarrow':
 			return <DownArrow />;
-		case 'Snow':
-			return <Snow />;
-		case 'DarkSnow':
-			return <DarkSnow />;
 		default:
 			return <AWS />;
 	}
