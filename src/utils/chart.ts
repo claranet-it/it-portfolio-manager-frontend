@@ -289,6 +289,47 @@ export const getTopCustomer = (data: ReportTimeEntry[]): string => {
 	}, '');
 };
 
+const sortGroupedBySurname = (grouped: {
+	[key: string]: ReportGroupedData;
+}): { [key: string]: ReportGroupedData } => {
+	const getSurname = (fullName: string): string => {
+		const parts = fullName.split(' ');
+		return parts[parts.length - 1];
+	};
+
+	const sortData = (data: ReportGroupedData): void => {
+		if (data.subGroups && Array.isArray(data.subGroups)) {
+			data.subGroups.sort((a, b) => {
+				const surnameA = getSurname(Object.keys(a)[0] || '');
+				const surnameB = getSurname(Object.keys(b)[0] || '');
+				return surnameA.localeCompare(surnameB);
+			});
+
+			data.subGroups.forEach((subGroup) => {
+				Object.values(subGroup).forEach(sortData);
+			});
+		}
+	};
+
+	const sortedGrouped = Object.entries(grouped)
+		.sort(([keyA], [keyB]) => {
+			const surnameA = getSurname(keyA);
+			const surnameB = getSurname(keyB);
+			return surnameA.localeCompare(surnameB);
+		})
+		.reduce(
+			(acc, [key, value]) => {
+				acc[key] = value;
+				return acc;
+			},
+			{} as { [key: string]: ReportGroupedData }
+		);
+
+	Object.values(sortedGrouped).forEach(sortData);
+
+	return sortedGrouped;
+};
+
 /*
 Recursive function that groups data based on the current key
 */
@@ -336,6 +377,10 @@ const groupByKeys = async (
 			grouped[groupKey].subGroups = await groupByKeys(filteredData, keys, level + 1);
 		}
 	});
+	if (keys.includes('name')) {
+		const sortedGrouped = sortGroupedBySurname(grouped);
+		return Promise.resolve(Object.values(sortedGrouped));
+	}
 
 	return Promise.resolve(Object.values(grouped));
 };
