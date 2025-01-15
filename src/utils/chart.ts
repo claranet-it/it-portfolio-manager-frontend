@@ -297,6 +297,14 @@ const sortGroupedBySurname = (grouped: {
 		return parts[parts.length - 1];
 	};
 
+	const swapNameOrder = (fullName: string): string => {
+		const parts = fullName.split(' ');
+		if (parts.length > 1) {
+			return `${parts[parts.length - 1]} ${parts[0]}`;
+		}
+		return fullName;
+	};
+
 	const sortData = (data: ReportGroupedData): void => {
 		if (data.subGroups && Array.isArray(data.subGroups)) {
 			data.subGroups.sort((a, b) => {
@@ -319,7 +327,11 @@ const sortGroupedBySurname = (grouped: {
 		})
 		.reduce(
 			(acc, [key, value]) => {
-				acc[key] = value;
+				const swappedKey = swapNameOrder(key);
+				acc[swappedKey] = {
+					...value,
+					key: swappedKey,
+				};
 				return acc;
 			},
 			{} as { [key: string]: ReportGroupedData }
