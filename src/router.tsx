@@ -3,6 +3,7 @@ import { AuthManager } from './pages/AuthManager';
 import { ChartPreview } from './pages/ChartPreview';
 import { Company } from './pages/Company';
 import { Effort } from './pages/Effort';
+import { Networking } from './pages/Networking';
 import { People } from './pages/People';
 import { Profile } from './pages/Profile';
 import { Registry } from './pages/Registry';
@@ -17,6 +18,7 @@ export const routes = {
 	auth: <AuthManager />,
 	effort: <Effort />,
 	timesheet: <Timesheet />,
+	networking: <Networking />,
 	report: <Report />,
 	profile: <Profile />,
 	company: <Company />,

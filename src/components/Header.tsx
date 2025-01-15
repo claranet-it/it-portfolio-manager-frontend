@@ -16,6 +16,7 @@ export const MENU = [
 	'effort',
 	'profile',
 	'company',
+	'networking',
 	'skills',
 	'timesheet',
 	'report',
@@ -32,6 +33,10 @@ const roleBasedMenu: Array<{ route: (typeof MENU)[number]; role?: Roles }> = [
 	},
 	{
 		route: 'company',
+		role: Roles.ADMIN,
+	},
+	{
+		route: 'networking',
 		role: Roles.ADMIN,
 	},
 	{
@@ -91,7 +96,7 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 							return (
 								<button
 									key={key}
-									class={`bg-transparent ${textColor} m-2 min-w-[100px] rounded border-0 p-2 font-semibold hover:text-red-500`}
+									class={`bg-transparent ${textColor} m-2 rounded border-0 p-2 font-semibold hover:text-red-500`}
 									onClick$={() => {
 										navigateTo(section as Route);
 									}}
@@ -102,7 +107,7 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 						})}
 
 					<button
-						class='m-2 inline-flex min-w-[100px] items-center gap-2 rounded border-0 bg-transparent p-2 font-semibold text-dark-grey'
+						class='m-2 inline-flex items-center gap-2 rounded border-0 bg-transparent p-2 font-semibold text-dark-grey'
 						onClick$={() => {
 							auth0.logout({
 								openUrl: async () => {

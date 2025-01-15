@@ -14,29 +14,32 @@ interface AutocompleteInterface {
 	id: string;
 	label?: string;
 	selected: Signal<string>;
-	data: Signal<string[]>;
+	data: string[] | Signal<string[]>;
 	placeholder: string;
 	disabled?: boolean;
 	required?: boolean | undefined;
+	showAll?: boolean;
 	onChange$?: QRL<(value: string) => Promise<void>>;
 }
 
 export const Autocomplete = component$<AutocompleteInterface>(
-	({ id, label, selected, data, placeholder, disabled, required, onChange$ }) => {
+	({ id, label, selected, data, placeholder, disabled, required, showAll, onChange$ }) => {
 		const AUTOCOMPLETE_FIELD_ID = `autocomplete-field-${id}`;
 		const AUTOCOMPLETE_RESULTS_ID = `autocomplete-results-${id}`;
+		const autocompleteData = useSignal(Array.isArray(data) ? data : data.value);
 
 		const results = useSignal<string[]>([]);
 		const debounced = useDebounce(selected, 300);
 
 		const showResults = $(() => {
 			const searchValue = selected.value.toLowerCase().trim();
-			if (searchValue === '') results.value = [];
-			// data filtering
-			else
-				results.value = data.value
-					.filter((result) => result.toLocaleLowerCase().startsWith(searchValue))
+			if (searchValue === '') {
+				results.value = showAll ? autocompleteData.value : [];
+			} else {
+				results.value = autocompleteData.value
+					.filter((result) => result.toLocaleLowerCase().includes(searchValue))
 					.sort();
+			}
 		});
 
 		const clearText = $(() => {
@@ -72,6 +75,11 @@ export const Autocomplete = component$<AutocompleteInterface>(
 			onChange$ && onChange$(debounced.value);
 		});
 
+		useVisibleTask$(({ track }) => {
+			track(() => (Array.isArray(data) ? data : data.value));
+			autocompleteData.value = Array.isArray(data) ? data : data.value;
+		});
+
 		return (
 			<div class='space-y-1'>
 				{label && (
@@ -93,6 +101,7 @@ export const Autocomplete = component$<AutocompleteInterface>(
 						onKeyUp$={showResults}
 						disabled={disabled}
 						required={required}
+						onMouseUp$={showAll ? showResults : undefined}
 					/>
 
 					{/* Clear icon */}

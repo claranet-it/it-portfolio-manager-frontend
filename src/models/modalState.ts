@@ -9,4 +9,5 @@ export type ModalState = {
 	cancelLabel?: string;
 	onConfirm$?: QRL;
 	onCancel$?: QRL;
+	onClose$?: QRL;
 };

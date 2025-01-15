@@ -143,7 +143,7 @@ export const Company = component$(() => {
 							<img
 								src={company.value.image_url}
 								alt={t('profile_picture')}
-								class='aspect-squar h-auto w-20 rounded-full object-cover sm:m-auto'
+								class='aspect-square h-auto w-20 rounded-full object-cover sm:m-auto'
 							/>
 						</div>
 						<div class='pt-0 md:px-4 lg:px-4'>

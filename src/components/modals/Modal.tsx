@@ -21,6 +21,7 @@ export const Modal = component$<ModalProps>(({ state }) => {
 	const onClose = $(() => {
 		state.isVisible = false;
 		state.body = undefined;
+		state.onClose$ && state.onClose$();
 	});
 
 	const isVisible = useComputed$(() => {
