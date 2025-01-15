@@ -78,18 +78,25 @@ export const Company = component$(() => {
 		confirmLabel: t('ACTION_CONFIRM'),
 	});
 
-	const skillSig = useComputed$(() =>
-		company.value.skills.reduce(
+	const skillSig = useComputed$(() => {
+		const skillList = appStore.configuration.skills;
+
+		return company.value.skills.reduce(
 			(acc, obj) => {
 				if (!acc[obj.serviceLine]) {
 					acc[obj.serviceLine] = [];
 				}
-				acc[obj.serviceLine].push(obj);
+				acc[obj.serviceLine].push({
+					...obj,
+					description:
+						skillList[obj.serviceLine].find((skill) => skill.name === obj.name)
+							?.description ?? '',
+				});
 				return acc;
 			},
 			{} as Record<string, CompanySkill[]>
-		)
-	);
+		);
+	});
 
 	const noCrewLeader = useComputed$(() => {
 		const crewsWithoutTeamLeader = crewOptionsSig.value.filter(
@@ -209,7 +216,7 @@ export const Company = component$(() => {
 																	{skill.name}
 																</h2>
 																<h3 class='text-sm font-normal text-darkgray-900'>
-																	{skill.serviceLine}
+																	{skill.description}
 																</h3>
 															</div>
 														</div>

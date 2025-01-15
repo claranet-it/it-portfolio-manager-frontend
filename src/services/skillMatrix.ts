@@ -1,17 +1,23 @@
-import { Skill, SkillMatrix } from '@models/skill';
+import { Skill, SkillMatrix, UserSkill } from '@models/skill';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
-export const getSkillMatrixMine = async (): Promise<Skill[]> =>
-	getHttpResponse<Skill[]>('skill-matrix/mine');
+export const getSkillMatrixMine = async (): Promise<UserSkill[]> =>
+	getHttpResponse<UserSkill[]>('skill-matrix/mine');
 
-export const getSkillMatrixUser = async (userId: string): Promise<Skill[]> =>
-	getHttpResponse<Skill[]>(`skill-matrix/${userId}`);
+export const getSkillMatrixUser = async (userId: string): Promise<UserSkill[]> =>
+	getHttpResponse<UserSkill[]>(`skill-matrix/${userId}`);
 
 export const pathSkillMatrixMine = async (skill: Skill): Promise<boolean> =>
-	checkHttpResponseStatus('skill-matrix/mine', 204, 'PATCH', skill);
+	checkHttpResponseStatus('skill-matrix/mine', 204, 'PATCH', {
+		...skill,
+		skill: skill.skill.name,
+	});
 
 export const pathSkillMatrixUser = async (skill: Skill, userId: string): Promise<boolean> =>
-	checkHttpResponseStatus(`skill-matrix/${userId}`, 204, 'PATCH', skill);
+	checkHttpResponseStatus(`skill-matrix/${userId}`, 204, 'PATCH', {
+		...skill,
+		skill: skill.skill.name,
+	});
 
 export const getSkills = async (): Promise<SkillMatrix> => [
 	...(await getCompanySkills()),

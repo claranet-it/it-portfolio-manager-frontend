@@ -9,6 +9,7 @@ export type Company = {
 export type CompanySkill = {
 	id: number;
 	name: string;
+	description: string;
 	serviceLine: string;
 	visible: boolean;
 };

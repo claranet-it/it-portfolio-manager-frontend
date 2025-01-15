@@ -25,12 +25,15 @@ export const Filters = component$<{
 	});
 
 	const skillsSig = useComputed$(() => {
-		const skills: string[] = selectedServiceLine.value
+		const skilllist = selectedServiceLine.value
 			? appStore.configuration.skills[selectedServiceLine.value]
 			: Object.values(appStore.configuration.skills).reduce((result, value) => {
 					result.push(...value);
 					return result;
 				}, []);
+
+		const skills: string[] = skilllist.map((skill) => skill.name);
+
 		return skills;
 	});
 

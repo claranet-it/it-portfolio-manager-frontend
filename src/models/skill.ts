@@ -1,7 +1,21 @@
 export type Skill = {
-	skill: string;
+	skill: {
+		name: string;
+		description: string;
+	};
 	score: number;
 	skillCategory: string;
+};
+
+export type UserSkill = {
+	uid: string;
+	company: string;
+	crew: string;
+	name: string;
+	skill: string;
+	skillCategory: string;
+	score: number;
+	updatedAt: string;
 };
 
 export type personalSkill = number;

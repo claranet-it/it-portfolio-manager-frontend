@@ -8,11 +8,8 @@ export const SkillRow = component$(
 	(props: { key: string; skill: Skill; onClick$: QRL<(value: number) => void> }) => {
 		const appStore = useContext(AppContext);
 		const titleSkill = props.skill.skill;
-		const mainTitleSkill = titleSkill.split('(')[0].trim();
-		const subTitleSkill = titleSkill.substring(
-			titleSkill.indexOf('('),
-			titleSkill.indexOf(')') + 1
-		);
+		const mainTitleSkill = titleSkill.name;
+		const subTitleSkill = titleSkill.description;
 
 		return (
 			<div
@@ -21,7 +18,7 @@ export const SkillRow = component$(
 			>
 				<div class='flex items-center justify-center space-x-2'>
 					<span class='skill-icon text-2xl text-darkgray-900'>
-						{getIcon(props.skill.skill)}
+						{getIcon(props.skill.skill.name)}
 					</span>
 
 					<div class='flex flex-col'>

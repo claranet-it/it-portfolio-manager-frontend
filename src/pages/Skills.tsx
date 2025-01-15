@@ -59,7 +59,7 @@ export const Skills = component$(() => {
 		const rawData: Record<string, string[]> = Object.fromEntries(
 			Object.entries(appStore.configuration.skills)
 				.map(([key, value]) => {
-					return [key, value.filter((skill) => activeSkills.includes(skill))];
+					return [key, value.filter((skill) => activeSkills.includes(skill.name))];
 				})
 				.filter(([_, value]) => value.length > 0)
 		);

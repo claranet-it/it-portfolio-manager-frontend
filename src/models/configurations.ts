@@ -9,7 +9,7 @@ export type AppStore = {
 export type Configuration = {
 	company: string;
 	crews: { name: string; service_line: string }[];
-	skills: Record<string, string[]>;
+	skills: Record<string, { name: string; description: string }[]>;
 	scoreRange: {
 		min: number;
 		max: number;

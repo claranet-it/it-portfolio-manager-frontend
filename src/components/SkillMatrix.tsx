@@ -7,7 +7,7 @@ import {
 	useSignal,
 	useTask$,
 } from '@builder.io/qwik';
-import { Skill } from '@models/skill';
+import { Skill, UserSkill } from '@models/skill';
 import { useCompany } from 'src/hooks/useCompany';
 import { AppContext } from '../app';
 import { tt } from '../locale/labels';
@@ -28,7 +28,7 @@ export const SkillMatrix = component$<SkillMatrixProps>(({ userIdSelected, userS
 	const appStore = useContext(AppContext);
 	const { company, fetchCompany } = useCompany();
 
-	const skillSig = useSignal<Skill[]>([]);
+	const skillSig = useSignal<UserSkill[]>([]);
 
 	const fetchSkillMatrix = $(async () => {
 		const userId = userIdSelected.value;
@@ -42,10 +42,16 @@ export const SkillMatrix = component$<SkillMatrixProps>(({ userIdSelected, userS
 			.filter((skill) => skill.visible)
 			.map((skill) => skill.name);
 
-		const rawData: Record<string, string[]> = Object.fromEntries(
+		const rawData: Record<
+			string,
+			{
+				name: string;
+				description: string;
+			}[]
+		> = Object.fromEntries(
 			Object.entries(appStore.configuration.skills)
 				.map(([key, value]) => {
-					return [key, value.filter((skill) => activeSkills.includes(skill))];
+					return [key, value.filter((skill) => activeSkills.includes(skill.name))];
 				})
 				.filter(([_, value]) => value.length > 0)
 		);
@@ -53,7 +59,7 @@ export const SkillMatrix = component$<SkillMatrixProps>(({ userIdSelected, userS
 		Object.entries(rawData).forEach(([skillCategory, skills]) => {
 			result[skillCategory] = [];
 			skills.forEach((skill) => {
-				const score = skillSig.value.find((s) => s.skill === skill)?.score || 0;
+				const score = skillSig.value.find((s) => s.skill === skill.name)?.score || 0;
 				result[skillCategory].push({ skill, score, skillCategory });
 			});
 		});
@@ -78,7 +84,7 @@ export const SkillMatrix = component$<SkillMatrixProps>(({ userIdSelected, userS
 	return (
 		<div
 			key={`skillmatrix-${userIdSelected.value ?? 'mine'}`}
-			class='sm: flex flex-col sm:space-y-4 md:flex-row md:space-x-5 lg:flex-row lg:space-x-5'
+			class='flex flex-col sm:space-y-4 md:gap-5 lg:grid lg:grid-cols-2 lg:gap-5'
 		>
 			{Object.entries(skillMatrixSig.value).map(([category, skills], key) => (
 				<div
