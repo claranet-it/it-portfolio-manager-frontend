@@ -105,6 +105,11 @@ export const useReportProject = (
 	const fetchProjects = $(async () => {
 		appStore.isLoading = true;
 
+		const reverseName = (fullName: string): string => {
+			const [name, surname] = fullName.split(' ');
+			return `${surname} ${name}`;
+		};
+
 		try {
 			const startDate = new Date(from.value);
 			const endDate = new Date(to.value);
@@ -124,8 +129,13 @@ export const useReportProject = (
 			}
 
 			const responses = await Promise.all(calls);
-			response.value = responses.flat();
-			results.value = await setFilters(responses.flat());
+			const flatResponse = responses.flat().map((item) => ({
+				...item,
+				name: reverseName(item.name ?? ''),
+			}));
+			response.value = flatResponse;
+
+			results.value = await setFilters(flatResponse);
 		} catch (error) {
 			const errorObject = error as Error;
 			console.error(errorObject.message);
