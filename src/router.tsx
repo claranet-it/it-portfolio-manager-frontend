@@ -1,6 +1,7 @@
 import { Signal, useSignal, useTask$ } from '@builder.io/qwik';
 import { AuthManager } from './pages/AuthManager';
 import { ChartPreview } from './pages/ChartPreview';
+import { Company } from './pages/Company';
 import { Effort } from './pages/Effort';
 import { People } from './pages/People';
 import { Profile } from './pages/Profile';
@@ -18,6 +19,7 @@ export const routes = {
 	timesheet: <Timesheet />,
 	report: <Report />,
 	profile: <Profile />,
+	company: <Company />,
 	skills: <Skills />,
 	search: <Search />,
 	registry: <Registry />,

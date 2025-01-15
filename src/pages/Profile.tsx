@@ -8,7 +8,7 @@ export const Profile = component$(() => {
 	const { usersOptions, userSelected, userIdSelected } = usePermissionAccess();
 
 	return (
-		<div class='w-full space-y-3 px-6 pt-2.5'>
+		<div class='w-full space-y-3 px-6 pb-10 pt-2.5'>
 			<div class='flex sm:flex-col sm:space-y-3 md:flex-row md:justify-between lg:flex-row lg:justify-between'>
 				<UserProfileCard
 					userSelected={userSelected}

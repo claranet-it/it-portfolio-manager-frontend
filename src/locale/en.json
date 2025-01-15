@@ -9,6 +9,7 @@
 	"edit": "Edit",
 	"search": "Search",
 	"profile": "Profile",
+	"company": "Company",
 	"name": "Name",
 	"effort": "Effort",
 	"registry": "Registry",
@@ -168,5 +169,19 @@
 	"PLANNED_HOURS_DESCRIPTION": "Duration hours reflect the selected time range. Select the full timeframe to see actual vs. planned hours.",
 	"IMPERSONATE_USER_LABEL": "Impersonate user",
 	"PLANNED_HOURS_TITLE": "Planned hours",
-	"COMPLETED_LABEL": "Completed"
+	"COMPLETED_LABEL": "Completed",
+	"SKILL_VISIBILITY_SUCCESSFULLY_UPDATED": "Skill visibility has been updated successfully",
+	"COMPANY_LOGO_SUCCESSFULLY_UPDATED": "Company logo has been updated successfully",
+	"LOGO_LABEL": "Logo",
+	"LOGO_EDIT_LABEL": "Edit logo",
+	"LOGO_URL_LABEL": "Logo URL",
+	"COMPANY_SKILL_LABEL": "Company skills",
+	"USERS_LABEL": "Users",
+	"USER_CREW_LABEL": "Crew",
+	"USER_ROLE_LABEL": "Role",
+	"ROLE_USER": "User",
+	"ROLE_ADMIN": "Admin",
+	"ROLE_TEAM_LEADER": "Team leader",
+	"ROLE_SUPERADMIN": "Superadmin",
+	"CREW_WITH_NO_LEADER_MESSAGE": "There are crews with no Leader"
 }

@@ -1,5 +1,14 @@
-import { $, component$, Signal, useContext, useSignal, useTask$ } from '@builder.io/qwik';
+import {
+	$,
+	component$,
+	Signal,
+	useComputed$,
+	useContext,
+	useSignal,
+	useTask$,
+} from '@builder.io/qwik';
 import { Skill } from '@models/skill';
+import { useCompany } from 'src/hooks/useCompany';
 import { AppContext } from '../app';
 import { tt } from '../locale/labels';
 import {
@@ -17,32 +26,53 @@ interface SkillMatrixProps {
 
 export const SkillMatrix = component$<SkillMatrixProps>(({ userIdSelected, userSelected }) => {
 	const appStore = useContext(AppContext);
-	const skillsMineSig = useSignal<Record<string, Skill[]>>({});
+	const { company, fetchCompany } = useCompany();
 
-	const loadSkillsMatrix = $(async (userEmail?: string) => {
-		let skillList: Skill[] = [];
+	const skillSig = useSignal<Skill[]>([]);
 
-		if (userEmail) {
-			skillList = await getSkillMatrixUser(userEmail);
-		} else {
-			skillList = await getSkillMatrixMine();
-		}
+	const fetchSkillMatrix = $(async () => {
+		const userId = userIdSelected.value;
+		skillSig.value = userId ? await getSkillMatrixUser(userId) : await getSkillMatrixMine();
+	});
 
+	const skillMatrixSig = useComputed$(async () => {
 		const result: Record<string, Skill[]> = {};
-		Object.entries(appStore.configuration.skills).forEach(([skillCategory, skills]) => {
+
+		const activeSkills = company.value.skills
+			.filter((skill) => skill.visible)
+			.map((skill) => skill.name);
+
+		const rawData: Record<string, string[]> = Object.fromEntries(
+			Object.entries(appStore.configuration.skills)
+				.map(([key, value]) => {
+					return [key, value.filter((skill) => activeSkills.includes(skill))];
+				})
+				.filter(([_, value]) => value.length > 0)
+		);
+
+		Object.entries(rawData).forEach(([skillCategory, skills]) => {
 			result[skillCategory] = [];
 			skills.forEach((skill) => {
-				const score = skillList.find((s) => s.skill === skill)?.score || 0;
+				const score = skillSig.value.find((s) => s.skill === skill)?.score || 0;
 				result[skillCategory].push({ skill, score, skillCategory });
 			});
 		});
 		return result;
 	});
 
+	const updateSkill = $(async (skill: Skill) => {
+		if (userIdSelected.value) {
+			await pathSkillMatrixUser(skill, userIdSelected.value);
+		} else {
+			await pathSkillMatrixMine(skill);
+		}
+
+		await fetchSkillMatrix();
+	});
+
 	useTask$(async ({ track }) => {
 		track(() => userIdSelected.value);
-
-		skillsMineSig.value = await loadSkillsMatrix(userIdSelected.value);
+		await Promise.all([fetchSkillMatrix(), fetchCompany()]);
 	});
 
 	return (
@@ -50,8 +80,11 @@ export const SkillMatrix = component$<SkillMatrixProps>(({ userIdSelected, userS
 			key={`skillmatrix-${userIdSelected.value ?? 'mine'}`}
 			class='sm: flex flex-col sm:space-y-4 md:flex-row md:space-x-5 lg:flex-row lg:space-x-5'
 		>
-			{Object.entries(skillsMineSig.value).map(([category, skills], key) => (
-				<div key={key} class='flex-1'>
+			{Object.entries(skillMatrixSig.value).map(([category, skills], key) => (
+				<div
+					key={`skillmatrix-${userIdSelected.value ?? 'mine'}-${category}`}
+					class='flex-1'
+				>
 					{/* title label area  */}
 					<div key={key} class='mb-1 w-full items-center justify-center'>
 						<span class='text-2xl font-bold text-dark-grey sm:mt-2'>
@@ -69,23 +102,11 @@ export const SkillMatrix = component$<SkillMatrixProps>(({ userIdSelected, userS
 					<div class='justify-content flex flex-col place-content-evenly space-y-1'>
 						{skills.map((skill, key) => (
 							<SkillRow
-								key={key}
+								key={`${userIdSelected.value ?? 'mine'}-${category}-${key}`}
 								skill={skill}
 								onClick$={async (newScore) => {
 									skill.score = newScore;
-									if (userIdSelected.value) {
-										await pathSkillMatrixUser(skill, userIdSelected.value);
-									} else {
-										await pathSkillMatrixMine(skill);
-									}
-									const newSkills = skillsMineSig.value;
-									newSkills[category] = skillsMineSig.value[category].map(
-										(s) => ({
-											...s,
-											score: s.skill === skill.skill ? newScore : s.score,
-										})
-									);
-									skillsMineSig.value = { ...newSkills };
+									await updateSkill(skill);
 								}}
 							/>
 						))}

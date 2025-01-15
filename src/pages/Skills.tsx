@@ -1,5 +1,6 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { SkillMatrix } from '@models/skill';
+import { useCompany } from 'src/hooks/useCompany';
 import { getSkillScore } from 'src/utils/skill';
 import { AppContext } from '../app';
 import { Filters } from '../components/Filters';
@@ -11,6 +12,7 @@ import { getSkills } from '../services/skillMatrix';
 
 export const Skills = component$(() => {
 	const appStore = useContext(AppContext);
+	const { company, fetchCompany } = useCompany();
 
 	const selectedServiceLineSig = useSignal('');
 	const selectedCrewSig = useSignal('');
@@ -50,7 +52,17 @@ export const Skills = component$(() => {
 	});
 
 	const tableStructure = useComputed$<Record<string, string[]>>(() => {
-		const rawData = appStore.configuration.skills;
+		const activeSkills = company.value.skills
+			.filter((skill) => skill.visible)
+			.map((skill) => skill.name);
+
+		const rawData: Record<string, string[]> = Object.fromEntries(
+			Object.entries(appStore.configuration.skills)
+				.map(([key, value]) => {
+					return [key, value.filter((skill) => activeSkills.includes(skill))];
+				})
+				.filter(([_, value]) => value.length > 0)
+		);
 
 		if (!selectedSkillSig.value) {
 			return rawData;
@@ -67,7 +79,6 @@ export const Skills = component$(() => {
 			.reduce(
 				(result, row) => {
 					const { serviceLine, skills } = row;
-
 					result[serviceLine] = skills;
 					return result;
 				},
@@ -85,8 +96,12 @@ export const Skills = component$(() => {
 		originalSkillMatrixSig.value = skills;
 	});
 
+	useTask$(async () => {
+		await fetchCompany();
+	});
+
 	return (
-		<div class='w-full flex-col space-y-6 px-6 pt-5'>
+		<div class='w-full flex-col space-y-6 px-6 pb-10 pt-5'>
 			<div class='flex sm:flex-col sm:space-y-1 md:flex-row md:justify-between md:space-x-5 lg:flex-row lg:justify-between lg:space-x-5'>
 				<h1 class='me-4 text-2xl font-bold text-darkgray-900'>{t('SKILLS_PAGE_TITLE')}</h1>
 

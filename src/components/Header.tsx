@@ -12,46 +12,61 @@ type MenuRoutes = Exclude<Route, 'auth'>;
 
 const redirect_uri = window.location.origin;
 
+export const MENU = [
+	'effort',
+	'profile',
+	'company',
+	'skills',
+	'timesheet',
+	'report',
+	'search',
+	'registry',
+] as const;
+
+const roleBasedMenu: Array<{ route: (typeof MENU)[number]; role?: Roles }> = [
+	{
+		route: 'effort',
+	},
+	{
+		route: 'profile',
+	},
+	{
+		route: 'company',
+		role: Roles.ADMIN,
+	},
+	{
+		route: 'skills',
+	},
+	{
+		route: 'timesheet',
+	},
+	{
+		route: 'report',
+	},
+	{
+		route: 'search',
+		role: Roles.ADMIN,
+	},
+	{
+		route: 'registry',
+		role: Roles.ADMIN,
+	},
+];
+
+export const getRoleBasedMenu = () => {
+	return roleBasedMenu.map((item) => {
+		return {
+			...item,
+			role: item.role ?? Roles.USER,
+		};
+	});
+};
+
 export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }) => {
-	const MENU = [
-		'effort',
-		'profile',
-		'skills',
-		'timesheet',
-		'report',
-		'search',
-		'registry',
-	] as const;
-
-	const roleItems: Array<{ route: (typeof MENU)[number]; role?: Roles }> = [
-		{
-			route: 'effort',
-		},
-		{
-			route: 'profile',
-		},
-		{
-			route: 'skills',
-		},
-		{
-			route: 'timesheet',
-		},
-		{
-			route: 'report',
-		},
-		{
-			route: 'search',
-		},
-		{
-			route: 'registry',
-			role: Roles.ADMIN,
-		},
-	];
-
 	const menu = useComputed$(async () => {
 		const filteredItems = await Promise.all(
-			roleItems.map(async (item) => {
-				const isAuthorized = await limitRoleAccess(item.role ?? Roles.USER);
+			getRoleBasedMenu().map(async (item) => {
+				const isAuthorized = await limitRoleAccess(item.role);
 				return isAuthorized ? item.route : '';
 			})
 		);

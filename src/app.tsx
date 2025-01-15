@@ -9,10 +9,13 @@ import {
 } from '@builder.io/qwik';
 import { AppStore } from '@models/configurations';
 import { initFlowbite } from 'flowbite';
+import { getRoleBasedMenu } from './components/Header';
 import { Layout } from './components/Layout';
 import { addHttpErrorListener } from './network/httpResponseHandler';
 import { routes, useRouter } from './router';
 import { getConfiguration } from './services/configuration';
+import { getACLValues, roleHierarchy } from './utils/acl';
+import { Roles } from './utils/constants';
 import { getAuthToken, removeAuthToken } from './utils/token';
 
 const {
@@ -61,6 +64,27 @@ export const App = component$(() => {
 		track(currentRouteSignal);
 		// run this
 		initFlowbite();
+	});
+
+	useTask$(async () => {
+		if (currentRouteSignal.value === 'auth') return;
+
+		const user = await getACLValues();
+
+		const hasAccess = (item: { route: string; role?: Roles }) => {
+			const requiredRole = item.role ?? 'USER';
+			return (
+				item.route === currentRouteSignal.value &&
+				roleHierarchy[requiredRole] <= roleHierarchy[user.role]
+			);
+		};
+
+		const res = getRoleBasedMenu().find(hasAccess);
+
+		if (!res) {
+			currentRouteSignal.value = 'timesheet';
+			window.history.pushState({}, '', '/timesheet');
+		}
 	});
 
 	useTask$(async () => {

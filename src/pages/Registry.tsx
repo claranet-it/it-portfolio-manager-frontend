@@ -70,7 +70,7 @@ export const Registry = component$(() => {
 
 	return (
 		<>
-			<div class='mb-32 w-full space-y-3 px-6 pt-2.5'>
+			<div class='mb-32 w-full space-y-3 px-6 pb-10 pt-2.5'>
 				<div class='flex sm:flex-col sm:space-y-3 md:flex-row md:justify-between lg:flex-row lg:justify-between'>
 					<h1 class='me-4 text-2xl font-bold text-darkgray-900'>
 						{t('REGISTRY_PAGE_TITLE')}

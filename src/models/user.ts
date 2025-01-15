@@ -12,7 +12,10 @@ export type UserProfile = {
 	email: string;
 	id: string;
 	name: string;
+	role?: string;
 	crew: string;
+	disabled?: boolean;
+	disabledAt?: string;
 };
 
 export type User = Omit<UserMe, 'crew' | 'company' | 'place' | 'crewLeader'>;

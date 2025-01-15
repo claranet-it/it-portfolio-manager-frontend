@@ -8,3 +8,19 @@ export const setUserProfile = async (body: SetUserProfile): Promise<boolean> =>
 
 export const getUserProfiles = async (): Promise<UserProfile[]> =>
 	getHttpResponse<UserProfile[]>('user/list');
+
+export const deactivateUser = async (userId: string): Promise<boolean> =>
+	checkHttpResponseStatus(`user/${userId}`, 200, 'DELETE', {});
+
+export const activateUser = async (userId: string): Promise<boolean> =>
+	checkHttpResponseStatus(`user/reactivate-user/${userId}`, 200, 'POST', {});
+
+export const editUserProfile = async (
+	userId: string,
+	crew: string,
+	role: string
+): Promise<boolean> =>
+	checkHttpResponseStatus(`user/${userId}`, 200, 'PATCH', {
+		crew: crew,
+		role: role,
+	});

@@ -1,3 +1,4 @@
+import { Company } from '@models/company';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
 
@@ -25,6 +26,14 @@ export const INIT_TASK_VALUE = {
 	plannedHours: 0,
 	completed: false,
 } as Task;
+
+export const INIT_COMPANY_VALUE = {
+	id: '',
+	domain: '',
+	name: '',
+	image_url: '',
+	skills: [],
+} as Company;
 
 export const REPORT_LIST_RESULTS_PER_PAGE = 10;
 

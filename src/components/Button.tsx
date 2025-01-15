@@ -4,10 +4,11 @@ import { cva, type VariantProps } from 'class-variance-authority';
 const buttonVariants = cva('py-2 px-4 rounded-md font-bold text-base text-nowrap', {
 	variants: {
 		variant: {
-			primary: 'bg-clara-red text-white-100',
+			primary:
+				'bg-clara-red text-white-100 disabled:bg-disabled disabled:text-disabled disabled:bg-clara-red-200',
 			outline:
-				'border border-clara-red text-clara-red bg-transparent  disabled:text-disabled disabled:border-disabled',
-			link: 'text-clara-red',
+				'border border-clara-red text-clara-red bg-transparent disabled:text-disabled disabled:border-disabled disabled:text-clara-red-200',
+			link: 'text-clara-red disabled:text-disabled disabled:text-clara-red-200',
 		},
 		size: {
 			default: 'h-11 px-6 py-2',
@@ -28,14 +29,15 @@ export interface ButtonInterface
 }
 
 export const Button = component$<ButtonInterface>(
-	({ onClick$, asChild = false, variant, size, ...props }) => {
+	({ onClick$, asChild = false, variant, size, disabled, ...props }) => {
 		const Comp = asChild ? Slot : 'button';
 
 		return (
 			<Comp
-				onClick$={onClick$ && onClick$}
+				onClick$={!disabled && onClick$ ? onClick$ : undefined}
 				class={buttonVariants({ variant, size })}
 				type='button'
+				disabled={disabled}
 				{...props}
 			>
 				<Slot />

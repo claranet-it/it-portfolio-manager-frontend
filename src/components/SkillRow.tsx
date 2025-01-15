@@ -5,7 +5,7 @@ import { SfRating } from './SfRating';
 import { getIcon } from './icons';
 
 export const SkillRow = component$(
-	(props: { key: number; skill: Skill; onClick$: QRL<(value: number) => void> }) => {
+	(props: { key: string; skill: Skill; onClick$: QRL<(value: number) => void> }) => {
 		const appStore = useContext(AppContext);
 		const titleSkill = props.skill.skill;
 		const mainTitleSkill = titleSkill.split('(')[0].trim();

@@ -108,7 +108,7 @@ export const Effort = component$(() => {
 	});
 
 	return (
-		<div class='w-full space-y-5 px-6 pt-5'>
+		<div class='w-full space-y-5 px-6 pb-10 pt-5'>
 			<h1 class='me-4 text-2xl font-bold text-darkgray-900'>{t('EFFORT_PAGE_TITLE')}</h1>
 
 			<Filters

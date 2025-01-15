@@ -9,6 +9,10 @@ export const usePermissionAccess = () => {
 	const userAcl = useComputed$(async () => getACLValues());
 
 	const usersSig = useComputed$(async () => {
+		if (userAcl.value.role === Roles.USER) {
+			return [];
+		}
+
 		const users = await getUserProfiles();
 		const sortedUsers = users.sort((a, b) => a.name.localeCompare(b.name));
 		return sortedUsers.filter((user) =>
