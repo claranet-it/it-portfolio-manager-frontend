@@ -1,10 +1,12 @@
 export type Skill = {
-	skill: {
-		name: string;
-		description: string;
-	};
+	skill: SkillData;
 	score: number;
 	skillCategory: string;
+};
+
+export type SkillData = {
+	name: string;
+	description: string;
 };
 
 export type UserSkill = {

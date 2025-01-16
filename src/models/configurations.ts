@@ -1,4 +1,5 @@
 import { ToastEvent } from './event';
+import { SkillData } from './skill';
 
 export type AppStore = {
 	configuration: Configuration;
@@ -9,7 +10,7 @@ export type AppStore = {
 export type Configuration = {
 	company: string;
 	crews: { name: string; service_line: string }[];
-	skills: Record<string, { name: string; description: string }[]>;
+	skills: Record<string, SkillData[]>;
 	scoreRange: {
 		min: number;
 		max: number;

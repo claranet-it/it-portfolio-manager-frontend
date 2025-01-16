@@ -1,5 +1,5 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
-import { SkillMatrix } from '@models/skill';
+import { SkillData, SkillMatrix } from '@models/skill';
 import { useCompany } from 'src/hooks/useCompany';
 import { getSkillScore } from 'src/utils/skill';
 import { AppContext } from '../app';
@@ -51,12 +51,12 @@ export const Skills = component$(() => {
 		return result;
 	});
 
-	const tableStructure = useComputed$<Record<string, string[]>>(() => {
+	const tableStructure = useComputed$<Record<string, SkillData[]>>(() => {
 		const activeSkills = company.value.skills
 			.filter((skill) => skill.visible)
 			.map((skill) => skill.name);
 
-		const rawData: Record<string, string[]> = Object.fromEntries(
+		const rawData: Record<string, SkillData[]> = Object.fromEntries(
 			Object.entries(appStore.configuration.skills)
 				.map(([key, value]) => {
 					return [key, value.filter((skill) => activeSkills.includes(skill.name))];
@@ -72,7 +72,9 @@ export const Skills = component$(() => {
 			.map(([serviceLine, configurationSkills]) => {
 				return {
 					serviceLine,
-					skills: configurationSkills.filter((skill) => skill === selectedSkillSig.value),
+					skills: configurationSkills.filter(
+						(skill) => skill.name === selectedSkillSig.value
+					),
 				};
 			})
 			.filter(({ skills }) => skills.length > 0)
@@ -82,7 +84,7 @@ export const Skills = component$(() => {
 					result[serviceLine] = skills;
 					return result;
 				},
-				{} as Record<string, string[]>
+				{} as Record<string, SkillData[]>
 			);
 	});
 
