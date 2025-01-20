@@ -4,6 +4,7 @@ import { SkillLegend } from '../components/SkillLegend';
 import { SkillMatrix } from '../components/SkillMatrix';
 import { BusinessCardGenerator } from '../components/BusinessCardGenerator';
 import { UserProfileCard } from '../components/UserProfileCard';
+import { t } from '../locale/labels';
 
 export const Profile = component$(() => {
 	const { usersOptions, userSelected, userIdSelected } = usePermissionAccess();
@@ -37,7 +38,7 @@ export const Profile = component$(() => {
 							aria-controls='skill-matrix'
 							aria-selected='false'
 						>
-							Skill Matrix
+							{t('skills')}
 						</button>
 					</li>
 					<li class='me-2' role='presentation'>
@@ -50,7 +51,7 @@ export const Profile = component$(() => {
 							aria-controls='business-card'
 							aria-selected='false'
 						>
-							Business Card Generator
+							{t('BUSINESS_CARD')}
 						</button>
 					</li>
 				</ul>

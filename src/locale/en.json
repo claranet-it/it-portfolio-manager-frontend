@@ -182,6 +182,8 @@
 	"USERS_LABEL": "Users",
 	"USER_CREW_LABEL": "Crew",
 	"USER_ROLE_LABEL": "Role",
+	"USER_EMAIL_LABEL": "E-mail",
+	"USER_MOBILE_LABEL": "Mobile",
 	"ROLE_USER": "User",
 	"ROLE_ADMIN": "Admin",
 	"ROLE_TEAM_LEADER": "Team leader",
@@ -197,5 +199,6 @@
 	"NETWORKING_ADD_CONNECTION_LABEL": "New connection",
 	"NETWORKING_DELETE_MODAL_BODY": "Are you sure you want to remove this connection?",
 	"NETWORKING_REQUESTER_LABEL": "Requester id",
-	"NETWORKING_CORRESPONDENT_LABEL": "Correspondent id"
+	"NETWORKING_CORRESPONDENT_LABEL": "Correspondent id",
+	"BUSINESS_CARD": "Business card"
 }

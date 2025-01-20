@@ -73,3 +73,16 @@ input[type='time']::-webkit-calendar-picker-indicator {
 		display: table-footer-group;
 	}
 }
+
+@font-face {
+	font-family: 'Inter-Bold';
+	src: url('/fonts/Inter-Bold.otf');
+}
+@font-face {
+	font-family: 'Inter-Semibold';
+	src: url('/fonts/Inter-Semibold.otf');
+}
+@font-face {
+	font-family: 'Inter-Light';
+	src: url('/fonts/Inter-Light.otf');
+}

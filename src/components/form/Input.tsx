@@ -13,6 +13,7 @@ interface inputInterface {
 	disabled?: boolean;
 	hidden?: boolean;
 	onChange$?: (event: Event, element: HTMLInputElement) => any;
+	onInput$?: (event: Event, element: HTMLInputElement) => any;
 }
 
 export const Input = component$<inputInterface>(
@@ -29,6 +30,7 @@ export const Input = component$<inputInterface>(
 		disabled = false,
 		hidden = false,
 		onChange$,
+		onInput$,
 	}) => {
 		const _bindValue = bindValue ? bindValue : useSignal(undefined);
 
@@ -51,10 +53,11 @@ export const Input = component$<inputInterface>(
 					id={id}
 					placeholder={placeholder}
 					class={`block w-full rounded-md border ${borderBgColor.value} p-2.5 text-sm ${textColor.value}`}
-					bind:value={_bindValue}
+					{...(bindValue ? { 'bind:value': _bindValue } : {})}
 					value={value}
 					disabled={disabled}
 					onChange$={onChange$}
+					onInput$={onInput$}
 				/>
 			</form>
 		);
