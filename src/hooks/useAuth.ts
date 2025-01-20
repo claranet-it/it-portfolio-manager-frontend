@@ -1,11 +1,18 @@
 import { $, useSignal, useTask$ } from '@builder.io/qwik';
 import { AuthProviderButton, Provider } from '@models/auth';
-import { AUTH_CREW_KEY, AUTH_ROLE_KEY, CHATBOT_COOKIE_KEY, Roles } from 'src/utils/constants';
+import {
+	AUTH_CREW_KEY,
+	AUTH_ROLE_KEY,
+	AUTH_USER_KEY,
+	CHATBOT_COOKIE_KEY,
+	Roles,
+} from 'src/utils/constants';
 import { removeCookie, setCookie } from 'src/utils/cookie';
 import { set } from 'src/utils/localStorage/localStorage';
 import { auth0 } from '../app';
 import { navigateTo } from '../router';
 import { getAuthValidation } from '../services/auth';
+import { getUserMe } from '../services/user';
 import { getProvider, removeProvider, setProvider } from '../utils/provider';
 import { getAuthToken, setAuthToken } from '../utils/token';
 
@@ -58,6 +65,8 @@ export const useAuth = () => {
 
 			if (token) {
 				await handleBricklyToken('Claranet', token.__raw);
+				const user = await getUserMe();
+				set(AUTH_USER_KEY, JSON.stringify(user));
 			}
 		} catch (error) {
 			console.log('claranet-authentication', error);
