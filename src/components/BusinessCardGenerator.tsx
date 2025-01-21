@@ -10,7 +10,7 @@ import {
 import { UserMe } from '@models/user';
 import { get } from 'src/utils/localStorage/localStorage';
 import { AUTH_USER_KEY } from 'src/utils/constants';
-import { BusinessCardCanvas } from 'src/utils/business-card-canvas';
+import { BUSINESS_CARD_WIDTH, BusinessCardCanvas } from 'src/utils/business-card-canvas';
 import { download } from 'src/utils/download';
 import { BusinessCardData } from '@models/businessCard';
 import { Input } from './form/Input';
@@ -20,12 +20,14 @@ import { Button } from './Button';
 type BusinessCardGeneratorStore = {
 	businessCardData: BusinessCardData;
 	canvas: NoSerialize<BusinessCardCanvas>;
+	imageSrc: string;
 };
 
 export const BusinessCardGenerator = component$(() => {
 	const store = useStore<BusinessCardGeneratorStore>({
 		businessCardData: {} as BusinessCardData,
 		canvas: {} as NoSerialize<BusinessCardCanvas>,
+		imageSrc: '',
 	});
 
 	useTask$(async () => {
@@ -35,9 +37,9 @@ export const BusinessCardGenerator = component$(() => {
 		store.businessCardData.email = user.email;
 	});
 
-	const refreshBusinessCard = $(() => {
+	const refreshBusinessCard = $(async () => {
 		if (store.canvas) {
-			store.canvas.print({
+			await store.canvas.print({
 				image: document.getElementById('business-card-tpl') as HTMLImageElement,
 				data: {
 					name: store.businessCardData.name,
@@ -46,6 +48,7 @@ export const BusinessCardGenerator = component$(() => {
 					mobile: store.businessCardData.mobile,
 				},
 			});
+			store.imageSrc = store.canvas.getImage();
 		}
 	});
 
@@ -118,6 +121,9 @@ export const BusinessCardGenerator = component$(() => {
 			<div id='business-card-preview' class='mt-4'>
 				<span class='text-xl font-bold text-dark-grey'>{t('PREVIEW')}</span>
 				<img id='business-card-tpl' src='/business-card-tpl.jpg' style='display: none' />
+				<div style={{ width: '100%', maxWidth: BUSINESS_CARD_WIDTH }}>
+					<img src={store.imageSrc} />
+				</div>
 			</div>
 		</>
 	);

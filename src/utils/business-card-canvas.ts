@@ -6,8 +6,8 @@ const FONTS = [
 	new FontFace('Inter-Light', 'url(/fonts/Inter-Light.otf)'),
 ];
 
-const WIDTH = 874;
-const HEIGHT = 574;
+export const BUSINESS_CARD_WIDTH = 874;
+const BUSINESS_CARD_HEIGHT = 574;
 
 const LEFT_COLUMN_X = 65;
 const RIGHT_COLUMN_X = 565;
@@ -22,17 +22,13 @@ const PRIMARY_COLOR = '#e21e26';
 const SECONDARY_COLOR = '#253742';
 
 export class BusinessCardCanvas {
-	private domCanvas: HTMLCanvasElement;
-	private previewCanvas: HTMLCanvasElement;
+	private canvas: HTMLCanvasElement;
 	private detailsY = DETAILS_Y;
 
 	constructor(private container: HTMLElement) {
-		this.domCanvas = document.createElement('canvas');
-		this.domCanvas.style.display = 'none';
-		this.container.appendChild(this.domCanvas);
-
-		this.previewCanvas = document.createElement('canvas');
-		this.container.appendChild(this.previewCanvas);
+		this.canvas = document.createElement('canvas');
+		this.canvas.style.display = 'none';
+		this.container.appendChild(this.canvas);
 	}
 
 	private async waitForImageLoaded(image: HTMLImageElement): Promise<void> {
@@ -105,18 +101,15 @@ export class BusinessCardCanvas {
 		image: HTMLImageElement;
 		data: BusinessCardData;
 	}): Promise<void> {
-		this.domCanvas.width = WIDTH;
-		this.domCanvas.height = HEIGHT;
+		this.canvas.width = BUSINESS_CARD_WIDTH;
+		this.canvas.height = BUSINESS_CARD_HEIGHT;
 
-		this.previewCanvas.width = WIDTH;
-		this.previewCanvas.height = HEIGHT;
-
-		const ctx = this.domCanvas.getContext('2d');
+		const ctx = this.canvas.getContext('2d');
 		if (!ctx) return;
 
 		await this.waitForImageLoaded(image);
 		await this.loadFonts();
-		this.drawBackground(ctx, image, WIDTH, HEIGHT);
+		this.drawBackground(ctx, image, BUSINESS_CARD_WIDTH, BUSINESS_CARD_HEIGHT);
 
 		this.drawName(ctx, data.name);
 		data.role && this.drawRole(ctx, data.role);
@@ -128,14 +121,9 @@ export class BusinessCardCanvas {
 
 		this.detailsY = DETAILS_Y;
 		this.drawAddress(ctx);
-
-		const previewCtx = this.previewCanvas.getContext('2d');
-		if (previewCtx) {
-			previewCtx.drawImage(this.domCanvas, 0, 0, WIDTH, HEIGHT);
-		}
 	}
 
 	public getImage(): string {
-		return this.domCanvas.toDataURL();
+		return this.canvas.toDataURL();
 	}
 }
