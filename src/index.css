@@ -80,7 +80,7 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 @font-face {
 	font-family: 'Inter-Semibold';
-	src: url('/fonts/Inter-Semibold.otf');
+	src: url('/fonts/Inter-SemiBold.otf');
 }
 @font-face {
 	font-family: 'Inter-Light';

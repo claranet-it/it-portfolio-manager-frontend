@@ -5,7 +5,7 @@
 	"timesheet": "Timesheet",
 	"report": "Report",
 	"score": "Score",
-	"chartpreview": "Chart Prewview",
+	"chartpreview": "Chart Preview",
 	"edit": "Edit",
 	"search": "Search",
 	"profile": "Profile",
@@ -182,7 +182,7 @@
 	"USERS_LABEL": "Users",
 	"USER_CREW_LABEL": "Crew",
 	"USER_ROLE_LABEL": "Role",
-	"USER_EMAIL_LABEL": "E-mail",
+	"USER_EMAIL_LABEL": "Email",
 	"USER_MOBILE_LABEL": "Mobile",
 	"ROLE_USER": "User",
 	"ROLE_ADMIN": "Admin",
@@ -200,5 +200,8 @@
 	"NETWORKING_DELETE_MODAL_BODY": "Are you sure you want to remove this connection?",
 	"NETWORKING_REQUESTER_LABEL": "Requester id",
 	"NETWORKING_CORRESPONDENT_LABEL": "Correspondent id",
-	"BUSINESS_CARD": "Business card"
+	"BUSINESS_CARD": "Business card",
+	"BUSINESS_CARD_TITLE": "My business card",
+	"PREVIEW": "Preview",
+	"DOWNLOAD": "Download"
 }

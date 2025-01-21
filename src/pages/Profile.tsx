@@ -59,7 +59,7 @@ export const Profile = component$(() => {
 
 			<div id='default-tab-content'>
 				<div
-					class='hidden rounded-lg bg-gray-50 p-4 dark:bg-gray-800'
+					class='hidden rounded-lg p-4'
 					id='skill-matrix'
 					role='tabpanel'
 					aria-labelledby='skill-matrix-tab'
@@ -67,7 +67,7 @@ export const Profile = component$(() => {
 					<SkillMatrix userSelected={userSelected} userIdSelected={userIdSelected} />
 				</div>
 				<div
-					class='hidden rounded-lg bg-gray-50 p-4 dark:bg-gray-800'
+					class='hidden rounded-lg p-4'
 					id='business-card'
 					role='tabpanel'
 					aria-labelledby='business-card-tab'
