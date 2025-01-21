@@ -50,3 +50,5 @@ export enum Roles {
 	TEAM_LEADER = 'TEAM_LEADER',
 	USER = 'USER',
 }
+
+export const ITALY_COMPANY_ID = 'it'; // TODO: temporary, change when final company id is defined
