@@ -1,5 +1,11 @@
 import { BusinessCardData } from '@models/businessCard';
 
+const FONTS = [
+	new FontFace('Inter-Bold', 'url(/fonts/Inter-Bold.otf)'),
+	new FontFace('Inter-SemiBold', 'url(/fonts/Inter-SemiBold.otf)'),
+	new FontFace('Inter-Light', 'url(/fonts/Inter-Light.otf)'),
+];
+
 const WIDTH = 874;
 const HEIGHT = 574;
 
@@ -9,7 +15,7 @@ const DETAILS_Y = 370;
 const DETAILS_NEW_LINE = 38;
 
 const NAME_FONT = '32px Inter-Bold';
-const ROLE_FONT = '20px Inter-Semibold';
+const ROLE_FONT = '20px Inter-SemiBold';
 const DETAILS_FONT = '22px Inter-Light';
 
 const PRIMARY_COLOR = '#e21e26';
@@ -32,6 +38,11 @@ export class BusinessCardCanvas {
 	private async waitForImageLoaded(image: HTMLImageElement): Promise<void> {
 		if (image.complete) return;
 		await new Promise<void>((resolve) => (image.onload = () => resolve()));
+	}
+
+	private async loadFonts() {
+		const fonts = await Promise.all(FONTS.map((font) => font.load()));
+		fonts.forEach((font) => document.fonts.add(font));
 	}
 
 	private drawBackground(
@@ -104,6 +115,7 @@ export class BusinessCardCanvas {
 		if (!ctx) return;
 
 		await this.waitForImageLoaded(image);
+		await this.loadFonts();
 		this.drawBackground(ctx, image, WIDTH, HEIGHT);
 
 		this.drawName(ctx, data.name);
