@@ -2,7 +2,7 @@ import { QRL, Signal, component$ } from '@builder.io/qwik';
 
 interface AccordionOpenButtonProps {
 	onClick$: QRL;
-	accordionState: Signal<Boolean>;
+	accordionState: Signal<boolean>;
 }
 
 export const AccordionOpenButton = component$<AccordionOpenButtonProps>(

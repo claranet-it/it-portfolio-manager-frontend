@@ -37,7 +37,7 @@ export const getHttpResponse = async <Response>(
 	path: { path: string; params?: Record<string, string> } | string,
 	method?: HttpMethods,
 	body?: Object,
-	plain?: Boolean
+	plain?: boolean
 ): Promise<Response> => {
 	const response = await executeRequest(requestPath(path), method, body);
 	return plain ? await response?.text() : await response?.json();

@@ -34,7 +34,7 @@ export const Button = component$<ButtonInterface>(
 
 		return (
 			<Comp
-				onClick$={!disabled && onClick$ ? onClick$ : undefined}
+				onClick$={onClick$}
 				class={buttonVariants({ variant, size })}
 				type='button'
 				disabled={disabled}

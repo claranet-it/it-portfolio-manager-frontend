@@ -8,7 +8,7 @@ import { getProjects } from 'src/services/projects';
 export const useCustomers = () => {
 	const appStore = useContext(AppContext);
 
-	const isLoading = useSignal<Boolean>(false);
+	const isLoading = useSignal<boolean>(false);
 	const customers = useSignal<Customer[]>([]);
 
 	const fetchCustomers = $(async () => {

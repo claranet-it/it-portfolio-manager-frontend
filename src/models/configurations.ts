@@ -4,7 +4,7 @@ import { SkillData } from './skill';
 export type AppStore = {
 	configuration: Configuration;
 	events: ToastEvent[];
-	isLoading: Boolean;
+	isLoading: boolean;
 };
 
 export type Configuration = {

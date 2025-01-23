@@ -203,5 +203,7 @@
 	"BUSINESS_CARD": "Business card",
 	"BUSINESS_CARD_TITLE": "My business card",
 	"PREVIEW": "Preview",
-	"DOWNLOAD": "Download"
+	"DOWNLOAD": "Download",
+	"SAVE": "Save",
+	"BUSINESS_CARD_SAVED": "Business card saved successfully"
 }

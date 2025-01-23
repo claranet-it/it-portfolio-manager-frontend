@@ -7,7 +7,7 @@ import { deleteProject, editProject, getProjects } from 'src/services/projects';
 export const useProjects = () => {
 	const appStore = useContext(AppContext);
 
-	const isLoading = useSignal<Boolean>(false);
+	const isLoading = useSignal<boolean>(false);
 	const projects = useSignal<Project[]>([]);
 
 	const fetchProjects = $(async (customer: Customer) => {

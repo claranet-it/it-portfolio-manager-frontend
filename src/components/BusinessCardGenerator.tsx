@@ -3,22 +3,28 @@ import {
 	component$,
 	NoSerialize,
 	noSerialize,
+	useComputed$,
+	useContext,
 	useStore,
 	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
+import { AppContext } from 'src/app';
 import { UserMe } from '@models/user';
 import { get } from 'src/utils/localStorage/localStorage';
 import { AUTH_USER_KEY } from 'src/utils/constants';
 import { BUSINESS_CARD_WIDTH, BusinessCardCanvas } from 'src/utils/business-card-canvas';
 import { download } from 'src/utils/download';
+import { getMyBusinessCardData, saveMyBusinessCardData } from 'src/services/businessCard';
 import { BusinessCardData } from '@models/businessCard';
 import { Input } from './form/Input';
 import { t } from 'src/locale/labels';
 import { Button } from './Button';
+import { useNotification } from 'src/hooks/useNotification';
 
 type BusinessCardGeneratorStore = {
 	businessCardData: BusinessCardData;
+	initialBusinessCardData: BusinessCardData;
 	canvas: NoSerialize<BusinessCardCanvas>;
 	imageSrc: string;
 };
@@ -26,15 +32,33 @@ type BusinessCardGeneratorStore = {
 export const BusinessCardGenerator = component$(() => {
 	const store = useStore<BusinessCardGeneratorStore>({
 		businessCardData: {} as BusinessCardData,
+		initialBusinessCardData: {} as BusinessCardData,
 		canvas: {} as NoSerialize<BusinessCardCanvas>,
 		imageSrc: '',
 	});
 
-	useTask$(async () => {
-		const user = JSON.parse((await get(AUTH_USER_KEY)) || '') as UserMe;
+	const appStore = useContext(AppContext);
+	const { addEvent } = useNotification();
 
-		store.businessCardData.name = user.name;
-		store.businessCardData.email = user.email;
+	useTask$(async () => {
+		appStore.isLoading = true;
+		const businessCardData = await getMyBusinessCardData();
+		appStore.isLoading = false;
+		if (businessCardData) {
+			store.businessCardData = { ...businessCardData };
+			store.initialBusinessCardData = { ...businessCardData };
+		} else {
+			const user = JSON.parse((await get(AUTH_USER_KEY)) || '') as UserMe;
+			store.businessCardData.name = user.name;
+			store.businessCardData.email = user.email;
+			store.initialBusinessCardData = { ...store.businessCardData };
+		}
+	});
+
+	const isBusinessCardModified = useComputed$(() => {
+		return (
+			JSON.stringify(store.businessCardData) !== JSON.stringify(store.initialBusinessCardData)
+		);
 	});
 
 	const refreshBusinessCard = $(async () => {
@@ -67,6 +91,15 @@ export const BusinessCardGenerator = component$(() => {
 				`${store.businessCardData.name.toLowerCase().replace(' ', '-')}-business-card.png`
 			);
 		}
+	});
+
+	const saveBusinessCard = $(async () => {
+		appStore.isLoading = true;
+		console.log('store.businessCardData', store.businessCardData);
+		await saveMyBusinessCardData(store.businessCardData);
+		store.initialBusinessCardData = { ...store.businessCardData };
+		appStore.isLoading = false;
+		addEvent({ type: 'success', message: t('BUSINESS_CARD_SAVED'), autoclose: true });
 	});
 
 	return (
@@ -115,6 +148,13 @@ export const BusinessCardGenerator = component$(() => {
 				/>
 				<Button onClick$={downloadBusinessCard} size={'small'}>
 					{t('DOWNLOAD')}
+				</Button>
+				<Button
+					size={'small'}
+					onClick$={saveBusinessCard}
+					disabled={!isBusinessCardModified.value || appStore.isLoading}
+				>
+					{t('SAVE')}
 				</Button>
 			</div>
 
