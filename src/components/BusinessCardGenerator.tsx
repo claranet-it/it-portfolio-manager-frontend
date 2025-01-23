@@ -44,7 +44,7 @@ export const BusinessCardGenerator = component$(() => {
 		appStore.isLoading = true;
 		const businessCardData = await getMyBusinessCardData();
 		appStore.isLoading = false;
-		if (businessCardData) {
+		if (Object.keys(businessCardData).length) {
 			store.businessCardData = { ...businessCardData };
 			store.initialBusinessCardData = { ...businessCardData };
 		} else {
