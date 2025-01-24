@@ -12,7 +12,7 @@ import { initFlowbite } from 'flowbite';
 import { getRoleBasedMenu } from './components/Header';
 import { Layout } from './components/Layout';
 import { addHttpErrorListener } from './network/httpResponseHandler';
-import { routes, useRouter } from './router';
+import { isPublicRoute, routes, useRouter } from './router';
 import { getConfiguration } from './services/configuration';
 import { getACLValues, roleHierarchy } from './utils/acl';
 import { Roles } from './utils/constants';
@@ -67,7 +67,7 @@ export const App = component$(() => {
 	});
 
 	useTask$(async () => {
-		if (currentRouteSignal.value === 'auth') return;
+		if (isPublicRoute(currentRouteSignal.value)) return;
 
 		const user = await getACLValues();
 
@@ -103,7 +103,7 @@ export const App = component$(() => {
 		});
 	});
 
-	return currentRouteSignal.value === 'auth' ? (
+	return isPublicRoute(currentRouteSignal.value) ? (
 		routes[currentRouteSignal.value]
 	) : (
 		<Layout currentRoute={currentRouteSignal.value}>{routes[currentRouteSignal.value]}</Layout>

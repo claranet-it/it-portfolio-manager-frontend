@@ -1,6 +1,7 @@
 import { Company } from '@models/company';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
+import { Route } from 'src/router';
 
 export const AUTH_TOKEN_KEY = 'auth_token';
 export const AUTH_ROLE_KEY = 'auth_role';
@@ -52,3 +53,5 @@ export enum Roles {
 }
 
 export const ITALY_COMPANY_ID = 'it'; // TODO: temporary, change when final company id is defined
+
+export const PUBLIC_ROUTES: Route[] = ['auth', 'public-profile'] as const;

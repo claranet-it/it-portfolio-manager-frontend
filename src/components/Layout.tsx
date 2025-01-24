@@ -3,12 +3,12 @@ import { ToastEvent } from '@models/event';
 import { AppContext } from 'src/app';
 import { addHttpErrorListener } from 'src/network/httpResponseHandler';
 import { useNotification } from '../hooks/useNotification';
-import { Route } from '../router';
+import { PrivateRoutes } from '../router';
 import { Header } from './Header';
 import { LoadingSpinner } from './LoadingSpinner';
 import { Toast } from './Toast';
 
-export const Layout = component$<{ currentRoute: Exclude<Route, 'auth'> }>(({ currentRoute }) => {
+export const Layout = component$<{ currentRoute: PrivateRoutes }>(({ currentRoute }) => {
 	const { eventsList, removeEvent, addEvent } = useNotification();
 	const appStore = useContext(AppContext);
 

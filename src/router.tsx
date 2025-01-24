@@ -11,8 +11,12 @@ import { Report } from './pages/Report';
 import { Search } from './pages/Search';
 import { Skills } from './pages/Skills';
 import { Timesheet } from './pages/Timesheet';
+import { PublicProfile } from './pages/PublicProfile';
+import { PUBLIC_ROUTES } from './utils/constants';
 
 export type Route = keyof typeof routes;
+export type PublicRoutes = (typeof PUBLIC_ROUTES)[number];
+export type PrivateRoutes = Exclude<Route, 'auth'>;
 
 export const routes = {
 	auth: <AuthManager />,
@@ -27,6 +31,11 @@ export const routes = {
 	registry: <Registry />,
 	chartpreview: <ChartPreview />,
 	people: <People />,
+	'public-profile': <PublicProfile />,
+};
+
+export const isPublicRoute = (route: string): route is Route => {
+	return PUBLIC_ROUTES.includes(route as Route);
 };
 
 export const navigateTo = (route: Route, params?: Record<string, string>): void => {
