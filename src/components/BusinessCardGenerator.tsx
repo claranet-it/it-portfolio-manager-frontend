@@ -5,6 +5,7 @@ import {
 	noSerialize,
 	useComputed$,
 	useContext,
+	useSignal,
 	useStore,
 	useTask$,
 	useVisibleTask$,
@@ -15,7 +16,11 @@ import { get } from 'src/utils/localStorage/localStorage';
 import { AUTH_USER_KEY } from 'src/utils/constants';
 import { BUSINESS_CARD_WIDTH, BusinessCardCanvas } from 'src/utils/business-card-canvas';
 import { download } from 'src/utils/download';
-import { getMyBusinessCardData, saveMyBusinessCardData } from 'src/services/businessCard';
+import {
+	deleteMyBusinessCardData,
+	getMyBusinessCardData,
+	saveMyBusinessCardData,
+} from 'src/services/businessCard';
 import { BusinessCardData } from '@models/businessCard';
 import { Input } from './form/Input';
 import { t } from 'src/locale/labels';
@@ -37,21 +42,31 @@ export const BusinessCardGenerator = component$(() => {
 		imageSrc: '',
 	});
 
+	const isBusinessCardPresent = useSignal<boolean>(false);
+
 	const appStore = useContext(AppContext);
 	const { addEvent } = useNotification();
+
+	const initBusinessCardFromStorage = $(async () => {
+		const user = JSON.parse((await get(AUTH_USER_KEY)) || '') as UserMe;
+		const businessCardData = {
+			name: user.name,
+			email: user.email,
+		};
+		store.businessCardData = { ...businessCardData };
+		store.initialBusinessCardData = { ...store.businessCardData };
+	});
 
 	useTask$(async () => {
 		appStore.isLoading = true;
 		const businessCardData = await getMyBusinessCardData();
 		appStore.isLoading = false;
 		if (Object.keys(businessCardData).length) {
+			isBusinessCardPresent.value = true;
 			store.businessCardData = { ...businessCardData };
 			store.initialBusinessCardData = { ...businessCardData };
 		} else {
-			const user = JSON.parse((await get(AUTH_USER_KEY)) || '') as UserMe;
-			store.businessCardData.name = user.name;
-			store.businessCardData.email = user.email;
-			store.initialBusinessCardData = { ...store.businessCardData };
+			initBusinessCardFromStorage();
 		}
 	});
 
@@ -61,7 +76,7 @@ export const BusinessCardGenerator = component$(() => {
 		);
 	});
 
-	const refreshBusinessCard = $(async () => {
+	const refreshBusinessCardPreview = $(async () => {
 		if (store.canvas) {
 			await store.canvas.print({
 				image: document.getElementById('business-card-tpl') as HTMLImageElement,
@@ -80,7 +95,7 @@ export const BusinessCardGenerator = component$(() => {
 		const canvasContainer = document.getElementById('business-card-preview');
 		if (canvasContainer) {
 			store.canvas = noSerialize(new BusinessCardCanvas(canvasContainer));
-			refreshBusinessCard();
+			refreshBusinessCardPreview();
 		}
 	});
 
@@ -99,7 +114,18 @@ export const BusinessCardGenerator = component$(() => {
 		await saveMyBusinessCardData(store.businessCardData);
 		store.initialBusinessCardData = { ...store.businessCardData };
 		appStore.isLoading = false;
+		isBusinessCardPresent.value = true;
 		addEvent({ type: 'success', message: t('BUSINESS_CARD_SAVED'), autoclose: true });
+	});
+
+	const deleteBusinessCard = $(async () => {
+		appStore.isLoading = true;
+		await deleteMyBusinessCardData();
+		appStore.isLoading = false;
+		isBusinessCardPresent.value = false;
+		await initBusinessCardFromStorage();
+		refreshBusinessCardPreview();
+		addEvent({ type: 'success', message: t('BUSINESS_CARD_DELETED'), autoclose: true });
 	});
 
 	return (
@@ -111,7 +137,7 @@ export const BusinessCardGenerator = component$(() => {
 					value={store.businessCardData.name}
 					onInput$={(_, el) => {
 						store.businessCardData.name = el.value;
-						refreshBusinessCard();
+						refreshBusinessCardPreview();
 					}}
 					label={t('name_label')}
 					disabled
@@ -121,7 +147,7 @@ export const BusinessCardGenerator = component$(() => {
 					value={store.businessCardData.role}
 					onInput$={(_, el) => {
 						store.businessCardData.role = el.value;
-						refreshBusinessCard();
+						refreshBusinessCardPreview();
 					}}
 					label={t('USER_ROLE_LABEL')}
 					placeholder={t('input_empty_label')}
@@ -131,7 +157,7 @@ export const BusinessCardGenerator = component$(() => {
 					value={store.businessCardData.email}
 					onInput$={(_, el) => {
 						store.businessCardData.email = el.value;
-						refreshBusinessCard();
+						refreshBusinessCardPreview();
 					}}
 					label={t('USER_EMAIL_LABEL')}
 					disabled
@@ -141,26 +167,43 @@ export const BusinessCardGenerator = component$(() => {
 					value={store.businessCardData.mobile}
 					onInput$={(_, el) => {
 						store.businessCardData.mobile = el.value;
-						refreshBusinessCard();
+						refreshBusinessCardPreview();
 					}}
 					label={t('USER_MOBILE_LABEL')}
 					placeholder={t('input_empty_label')}
 				/>
-				<Button onClick$={downloadBusinessCard} size={'small'}>
-					{t('DOWNLOAD')}
-				</Button>
 				<Button
 					size={'small'}
 					onClick$={saveBusinessCard}
 					disabled={!isBusinessCardModified.value || appStore.isLoading}
 				>
-					{t('SAVE')}
+					{t('BUSINESS_CARD_SAVE')}
 				</Button>
 			</div>
 
 			<div id='business-card-preview' class='mt-4'>
-				<span class='text-xl font-bold text-dark-grey'>{t('PREVIEW')}</span>
 				<img id='business-card-tpl' src='/business-card-tpl.jpg' style='display: none' />
+				<div
+					class='flex items-center justify-between'
+					style={{ width: '100%', maxWidth: BUSINESS_CARD_WIDTH }}
+				>
+					<span class='text-xl font-bold text-dark-grey'>{t('PREVIEW')}</span>
+					<div>
+						<Button variant={'outline'} size={'small'} onClick$={downloadBusinessCard}>
+							{t('DOWNLOAD')}
+						</Button>
+						{isBusinessCardPresent.value && (
+							<Button
+								variant={'outline'}
+								size={'small'}
+								class='ml-2'
+								onClick$={deleteBusinessCard}
+							>
+								{t('BUSINESS_CARD_DELETE')}
+							</Button>
+						)}
+					</div>
+				</div>
 				<div style={{ width: '100%', maxWidth: BUSINESS_CARD_WIDTH }}>
 					<img src={store.imageSrc} />
 				</div>

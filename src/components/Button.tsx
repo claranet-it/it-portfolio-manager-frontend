@@ -29,13 +29,13 @@ export interface ButtonInterface
 }
 
 export const Button = component$<ButtonInterface>(
-	({ onClick$, asChild = false, variant, size, disabled, ...props }) => {
+	({ onClick$, asChild = false, variant, size, disabled, class: additionalClass, ...props }) => {
 		const Comp = asChild ? Slot : 'button';
 
 		return (
 			<Comp
 				onClick$={onClick$}
-				class={buttonVariants({ variant, size })}
+				class={`${buttonVariants({ variant, size })} ${additionalClass ?? ''}`}
 				type='button'
 				disabled={disabled}
 				{...props}

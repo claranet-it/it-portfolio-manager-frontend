@@ -204,6 +204,8 @@
 	"BUSINESS_CARD_TITLE": "My business card",
 	"PREVIEW": "Preview",
 	"DOWNLOAD": "Download",
-	"SAVE": "Save",
-	"BUSINESS_CARD_SAVED": "Business card saved successfully"
+	"BUSINESS_CARD_SAVE": "Save and publish",
+	"BUSINESS_CARD_DELETE": "Unpublish",
+	"BUSINESS_CARD_SAVED": "Business card saved successfully",
+	"BUSINESS_CARD_DELETED": "Business card deleted successfully"
 }

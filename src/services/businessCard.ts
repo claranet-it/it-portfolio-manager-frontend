@@ -6,3 +6,6 @@ export const getMyBusinessCardData = async (): Promise<BusinessCardData> =>
 
 export const saveMyBusinessCardData = async (data: BusinessCardData): Promise<boolean> =>
 	checkHttpResponseStatus('business-card', 201, 'POST', data);
+
+export const deleteMyBusinessCardData = async (): Promise<boolean> =>
+	checkHttpResponseStatus('business-card', 204, 'DELETE');
