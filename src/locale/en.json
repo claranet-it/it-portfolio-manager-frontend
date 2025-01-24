@@ -206,6 +206,8 @@
 	"DOWNLOAD": "Download",
 	"BUSINESS_CARD_SAVE": "Save and publish",
 	"BUSINESS_CARD_DELETE": "Unpublish",
+	"BUSINESS_CARD_DELETE_CONFIRM_TITLE": "Unpublish business card",
+	"BUSINESS_CARD_DELETE_CONFIRM_MESSAGE": "Are you sure you want to unpublish your business card?",
 	"BUSINESS_CARD_SAVED": "Business card saved successfully",
 	"BUSINESS_CARD_DELETED": "Business card deleted successfully"
 }
