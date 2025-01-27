@@ -16,7 +16,7 @@ import { PUBLIC_ROUTES } from './utils/constants';
 
 export type Route = keyof typeof routes;
 export type PublicRoutes = (typeof PUBLIC_ROUTES)[number];
-export type PrivateRoutes = Exclude<Route, 'auth'>;
+export type PrivateRoutes = Exclude<Route, PublicRoutes>;
 
 export const routes = {
 	auth: <AuthManager />,
