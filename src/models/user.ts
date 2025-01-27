@@ -5,7 +5,7 @@ export type UserMe = {
 	crew?: string;
 	company?: string;
 	place?: string;
-	crewLeader: Boolean;
+	crewLeader: boolean;
 };
 
 export type UserProfile = {

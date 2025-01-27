@@ -29,7 +29,7 @@ export const convertTimeToDecimal = (time: string): number => {
 	return hours + minutes / 60;
 };
 
-export const isEqualEntries = (entryA: TimeEntry, entryB: TimeEntry): Boolean => {
+export const isEqualEntries = (entryA: TimeEntry, entryB: TimeEntry): boolean => {
 	return (
 		entryA.customer === entryB.customer &&
 		entryA.project === entryB.project &&
@@ -37,7 +37,7 @@ export const isEqualEntries = (entryA: TimeEntry, entryB: TimeEntry): Boolean =>
 	);
 };
 
-export const isEqualEntriesDeep = (entryA: TimeEntry, entryB: TimeEntry): Boolean => {
+export const isEqualEntriesDeep = (entryA: TimeEntry, entryB: TimeEntry): boolean => {
 	return isEqualEntries(entryA, entryB) && entryA.date === entryB.date;
 };
 

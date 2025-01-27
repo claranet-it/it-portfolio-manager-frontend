@@ -1,4 +1,5 @@
 import { Company } from '@models/company';
+import { NetworkCompany } from '@models/networking';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
 
@@ -49,3 +50,10 @@ export enum Roles {
 	TEAM_LEADER = 'TEAM_LEADER',
 	USER = 'USER',
 }
+
+export const INIT_NETWORK_COMPANY_VALUE: NetworkCompany = {
+	domain: '',
+	id: '',
+	image_url: 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==',
+	name: '',
+};

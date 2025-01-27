@@ -26,7 +26,7 @@ export const Autocomplete = component$<AutocompleteInterface>(
 	({ id, label, selected, data, placeholder, disabled, required, showAll, onChange$ }) => {
 		const AUTOCOMPLETE_FIELD_ID = `autocomplete-field-${id}`;
 		const AUTOCOMPLETE_RESULTS_ID = `autocomplete-results-${id}`;
-		const autocompleteData = useSignal(Array.isArray(data) ? data : data.value);
+		const autocompleteData = Array.isArray(data) ? useSignal(data) : data;
 
 		const results = useSignal<string[]>([]);
 		const debounced = useDebounce(selected, 300);
@@ -73,11 +73,6 @@ export const Autocomplete = component$<AutocompleteInterface>(
 		useVisibleTask$(({ track }) => {
 			track(debounced);
 			onChange$ && onChange$(debounced.value);
-		});
-
-		useVisibleTask$(({ track }) => {
-			track(() => (Array.isArray(data) ? data : data.value));
-			autocompleteData.value = Array.isArray(data) ? data : data.value;
 		});
 
 		return (

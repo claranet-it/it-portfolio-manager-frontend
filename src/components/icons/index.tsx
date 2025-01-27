@@ -82,6 +82,8 @@ export const getIcon = (skill: string) => {
 			return <Lambda />;
 		case 'UI Development (HTML/CSS/SCSS)':
 			return <Design />;
+		case 'Design':
+			return <Design />;
 		case 'Exit':
 			return <Exit />;
 		case 'Edit':

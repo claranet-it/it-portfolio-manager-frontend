@@ -186,7 +186,6 @@
 	"ROLE_ADMIN": "Admin",
 	"ROLE_TEAM_LEADER": "Team leader",
 	"ROLE_SUPERADMIN": "Superadmin",
-	"CREW_WITH_NO_LEADER_MESSAGE": "There are crews with no Leader",
 	"NETWORKING_NEW_MODAL_TITLE": "New connection",
 	"NETWORKING_DELETE_MODAL_TITLE": "Remove connection",
 	"NETWORKING_MANAGE_MODAL_TITLE": "Manage connections",

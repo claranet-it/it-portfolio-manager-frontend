@@ -7,7 +7,7 @@ import { editTask, editTaskName, getTasks } from 'src/services/tasks';
 
 export const useTasks = () => {
 	const appStore = useContext(AppContext);
-	const isLoading = useSignal<Boolean>(false);
+	const isLoading = useSignal<boolean>(false);
 	const tasks = useSignal<Task[]>([]);
 
 	const fetchTasks = $(async (customer: Customer, project: Project) => {
