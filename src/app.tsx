@@ -53,7 +53,7 @@ const initialState: AppStore = {
 	isLoading: false,
 };
 
-const WHITELIST_ROUTES = ['auth', 'privacy_policy'];
+const WHITELIST_ROUTES = ['auth', 'privacy_policy', 'maintenance'];
 
 export const App = component$(() => {
 	const appStore = useStore<AppStore>(initialState);
@@ -109,7 +109,12 @@ export const App = component$(() => {
 		routes[currentRouteSignal.value]
 	) : (
 		<Layout
-			currentRoute={currentRouteSignal.value as Exclude<Route, 'auth' | 'privacy_policy'>}
+			currentRoute={
+				currentRouteSignal.value as Exclude<
+					Route,
+					'auth' | 'privacy_policy' | 'maintenance'
+				>
+			}
 		>
 			{routes[currentRouteSignal.value]}
 		</Layout>

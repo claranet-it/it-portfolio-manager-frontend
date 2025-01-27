@@ -3,6 +3,7 @@ import { AuthManager } from './pages/AuthManager';
 import { ChartPreview } from './pages/ChartPreview';
 import { Company } from './pages/Company';
 import { Effort } from './pages/Effort';
+import { Maintenance } from './pages/Maintenance';
 import { Networking } from './pages/Networking';
 import { People } from './pages/People';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
@@ -12,6 +13,7 @@ import { Report } from './pages/Report';
 import { Search } from './pages/Search';
 import { Skills } from './pages/Skills';
 import { Timesheet } from './pages/Timesheet';
+import { isMaintenanceMode } from './utils/maintenance';
 
 export type Route = keyof typeof routes;
 
@@ -29,6 +31,7 @@ export const routes = {
 	chartpreview: <ChartPreview />,
 	people: <People />,
 	privacy_policy: <PrivacyPolicy />,
+	maintenance: <Maintenance />,
 };
 
 export const navigateTo = (route: Route, params?: Record<string, string>): void => {
@@ -62,11 +65,16 @@ export const useRouter = (defaultRoute: Route = 'auth'): Signal<Route> => {
 	useTask$(() => {
 		window.onpopstate = () => (currentRouteSignal.value = getCurrentRoute());
 		const route = getCurrentRoute();
-		if (route === currentRouteSignal.value) return;
-		if (Object.keys(routes).includes(route)) {
-			currentRouteSignal.value = route;
-		} else if (route) {
-			window.history.replaceState({}, '', `/${defaultRoute}`);
+		if (isMaintenanceMode()) {
+			currentRouteSignal.value = 'maintenance';
+			window.history.replaceState({}, '', `/maintenance`);
+		} else {
+			if (route === currentRouteSignal.value) return;
+			if (Object.keys(routes).includes(route) && route !== 'maintenance') {
+				currentRouteSignal.value = route;
+			} else if (route) {
+				window.history.replaceState({}, '', `/${defaultRoute}`);
+			}
 		}
 	});
 
