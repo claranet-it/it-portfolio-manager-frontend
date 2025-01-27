@@ -5,6 +5,7 @@ import { Company } from './pages/Company';
 import { Effort } from './pages/Effort';
 import { Networking } from './pages/Networking';
 import { People } from './pages/People';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { Profile } from './pages/Profile';
 import { Registry } from './pages/Registry';
 import { Report } from './pages/Report';
@@ -27,6 +28,7 @@ export const routes = {
 	registry: <Registry />,
 	chartpreview: <ChartPreview />,
 	people: <People />,
+	privacy_policy: <PrivacyPolicy />,
 };
 
 export const navigateTo = (route: Route, params?: Record<string, string>): void => {
