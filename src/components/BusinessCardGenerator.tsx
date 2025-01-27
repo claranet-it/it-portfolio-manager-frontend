@@ -8,7 +8,7 @@ import {
 	useVisibleTask$,
 } from '@builder.io/qwik';
 import { AppContext } from 'src/app';
-import { BUSINESS_CARD_WIDTH, BusinessCardCanvas } from 'src/utils/business-card-canvas';
+import { BUSINESS_CARD_CONF, BusinessCardCanvas } from 'src/utils/business-card-canvas';
 import { download } from 'src/utils/download';
 import { Input } from './form/Input';
 import { t } from 'src/locale/labels';
@@ -44,13 +44,10 @@ export const BusinessCardGenerator = component$(() => {
 	const refreshBusinessCardPreview = $(async () => {
 		if (store.canvas) {
 			await store.canvas.print({
-				image: document.getElementById('business-card-tpl') as HTMLImageElement,
-				data: {
-					name: businessCard.value.name,
-					role: businessCard.value.role,
-					email: businessCard.value.email,
-					mobile: businessCard.value.mobile,
-				},
+				name: businessCard.value.name,
+				role: businessCard.value.role,
+				email: businessCard.value.email,
+				mobile: businessCard.value.mobile,
 			});
 			store.imageSrc = store.canvas.getImage();
 		}
@@ -73,7 +70,13 @@ export const BusinessCardGenerator = component$(() => {
 		await fetchBusinessCard();
 		const canvasContainer = document.getElementById('business-card-preview');
 		if (canvasContainer) {
-			store.canvas = noSerialize(new BusinessCardCanvas(canvasContainer));
+			store.canvas = noSerialize(
+				new BusinessCardCanvas(
+					canvasContainer,
+					document.getElementById('business-card-landscape-tpl') as HTMLImageElement,
+					'landscape'
+				)
+			);
 			refreshBusinessCardPreview();
 		}
 	});
@@ -141,10 +144,14 @@ export const BusinessCardGenerator = component$(() => {
 			</div>
 
 			<div id='business-card-preview' class='mt-4'>
-				<img id='business-card-tpl' src='/business-card-tpl.jpg' style='display: none' />
+				<img
+					id='business-card-landscape-tpl'
+					src='/business-card-landscape-tpl.jpeg'
+					style='display: none'
+				/>
 				<div
 					class='flex items-center justify-between'
-					style={{ width: '100%', maxWidth: BUSINESS_CARD_WIDTH }}
+					style={{ width: '100%', maxWidth: BUSINESS_CARD_CONF.landscape.width }}
 				>
 					<span class='text-xl font-bold text-dark-grey'>{t('PREVIEW')}</span>
 					<div>
@@ -163,7 +170,10 @@ export const BusinessCardGenerator = component$(() => {
 						)}
 					</div>
 				</div>
-				<div style={{ width: '100%', maxWidth: BUSINESS_CARD_WIDTH }}>
+				<div
+					style={{ width: '100%', maxWidth: BUSINESS_CARD_CONF.landscape.width }}
+					class='mt-4 block max-w-sm rounded-lg border border-gray-200 bg-gray-100 p-6 shadow-sm'
+				>
 					<img src={store.imageSrc} />
 				</div>
 			</div>

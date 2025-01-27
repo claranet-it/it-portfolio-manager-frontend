@@ -1,34 +1,126 @@
 import { BusinessCardData } from '@models/businessCard';
 
+type canvasType = 'landscape' | 'portrait';
+type BusinessCardConf = {
+	width: number;
+	height: number;
+	name: {
+		x: number;
+		y: number;
+		font: string;
+		color: string;
+	};
+	role: {
+		x: number;
+		y: number;
+		font: string;
+		color: string;
+	};
+	details: {
+		x: number;
+		y: number;
+		font: string;
+		color: string;
+		newLine: number;
+	};
+	address: {
+		x: number;
+		y: number;
+		font: string;
+		color: string;
+		newLine: number;
+	};
+};
+
 const FONTS = [
 	new FontFace('Inter-Bold', 'url(/fonts/Inter-Bold.otf)'),
 	new FontFace('Inter-SemiBold', 'url(/fonts/Inter-SemiBold.otf)'),
 	new FontFace('Inter-Light', 'url(/fonts/Inter-Light.otf)'),
 ];
 
-export const BUSINESS_CARD_WIDTH = 874;
-const BUSINESS_CARD_HEIGHT = 574;
-
-const LEFT_COLUMN_X = 65;
-const RIGHT_COLUMN_X = 565;
-const DETAILS_Y = 370;
-const DETAILS_NEW_LINE = 38;
-
-const NAME_FONT = '32px Inter-Bold';
-const ROLE_FONT = '20px Inter-SemiBold';
-const DETAILS_FONT = '22px Inter-Light';
+const BOLD_FONT = '32px Inter-Bold';
+const SEMIBOLD_FONT = '20px Inter-SemiBold';
+const LIGHT_FONT = '22px Inter-Light';
 
 const PRIMARY_COLOR = '#e21e26';
 const SECONDARY_COLOR = '#253742';
 
+export const BUSINESS_CARD_CONF: Record<canvasType, BusinessCardConf> = {
+	landscape: {
+		width: 850,
+		height: 550,
+		name: {
+			x: 55,
+			y: 240,
+			font: BOLD_FONT,
+			color: PRIMARY_COLOR,
+		},
+		role: {
+			x: 55,
+			y: 280,
+			font: SEMIBOLD_FONT,
+			color: SECONDARY_COLOR,
+		},
+		details: {
+			x: 55,
+			y: 370,
+			font: LIGHT_FONT,
+			color: SECONDARY_COLOR,
+			newLine: 38,
+		},
+		address: {
+			x: 555,
+			y: 370,
+			font: LIGHT_FONT,
+			color: SECONDARY_COLOR,
+			newLine: 38,
+		},
+	},
+	portrait: {
+		width: 550,
+		height: 850,
+		name: {
+			x: 55,
+			y: 260,
+			font: BOLD_FONT,
+			color: PRIMARY_COLOR,
+		},
+		role: {
+			x: 55,
+			y: 300,
+			font: SEMIBOLD_FONT,
+			color: SECONDARY_COLOR,
+		},
+		details: {
+			x: 55,
+			y: 410,
+			font: LIGHT_FONT,
+			color: SECONDARY_COLOR,
+			newLine: 38,
+		},
+		address: {
+			x: 55,
+			y: 590,
+			font: LIGHT_FONT,
+			color: SECONDARY_COLOR,
+			newLine: 38,
+		},
+	},
+};
+
 export class BusinessCardCanvas {
 	private canvas: HTMLCanvasElement;
-	private detailsY = DETAILS_Y;
+	private conf: BusinessCardConf;
 
-	constructor(private container: HTMLElement) {
+	constructor(
+		private container: HTMLElement,
+		private image: HTMLImageElement,
+		canvasType: canvasType
+	) {
 		this.canvas = document.createElement('canvas');
 		this.canvas.style.display = 'none';
 		this.container.appendChild(this.canvas);
+		this.conf = BUSINESS_CARD_CONF[canvasType];
 	}
 
 	private async waitForImageLoaded(image: HTMLImageElement): Promise<void> {
@@ -50,77 +142,114 @@ export class BusinessCardCanvas {
 		ctx.drawImage(background, 0, 0, width, height);
 	}
 
-	private drawName(ctx: CanvasRenderingContext2D, name: string): void {
-		ctx.fillStyle = PRIMARY_COLOR;
-		ctx.font = NAME_FONT;
-		ctx.fillText(name, LEFT_COLUMN_X, 240);
+	private drawText(
+		ctx: CanvasRenderingContext2D,
+		text: string,
+		x: number,
+		y: number,
+		font: string,
+		color: string
+	): void {
+		ctx.fillStyle = color;
+		ctx.font = font;
+		ctx.fillText(text, x, y);
 	}
 
-	private drawRole(ctx: CanvasRenderingContext2D, role: string): void {
-		ctx.fillStyle = SECONDARY_COLOR;
-		ctx.font = ROLE_FONT;
-		ctx.fillText(role, LEFT_COLUMN_X, 280);
-	}
-
-	private drawEmail(ctx: CanvasRenderingContext2D, email: string): void {
-		ctx.fillStyle = SECONDARY_COLOR;
-		ctx.font = DETAILS_FONT;
-		ctx.fillText(`Email: ${email}`, LEFT_COLUMN_X, this.detailsY);
-		this.detailsY += DETAILS_NEW_LINE;
-	}
-
-	private drawMobile(ctx: CanvasRenderingContext2D, mobile: string): void {
-		ctx.fillStyle = SECONDARY_COLOR;
-		ctx.font = DETAILS_FONT;
-		ctx.fillText(`Mobile: ${mobile}`, LEFT_COLUMN_X, this.detailsY);
-		this.detailsY += DETAILS_NEW_LINE;
-	}
-
-	private drawWebsite(ctx: CanvasRenderingContext2D, website: string): void {
-		ctx.fillStyle = SECONDARY_COLOR;
-		ctx.font = DETAILS_FONT;
-		ctx.fillText(`Web: ${website}`, LEFT_COLUMN_X, this.detailsY);
-	}
-
-	private drawAddress(ctx: CanvasRenderingContext2D): void {
-		ctx.fillStyle = SECONDARY_COLOR;
-		ctx.font = DETAILS_FONT;
-		ctx.fillText('Claranet Italia', RIGHT_COLUMN_X, this.detailsY);
-		this.detailsY += DETAILS_NEW_LINE;
-		ctx.fillText('Corso Europa, 13', RIGHT_COLUMN_X, this.detailsY);
-		this.detailsY += DETAILS_NEW_LINE;
-		ctx.fillText('20122, Milan', RIGHT_COLUMN_X, this.detailsY);
-		this.detailsY += DETAILS_NEW_LINE;
-		ctx.fillText('Italy', RIGHT_COLUMN_X, this.detailsY);
-	}
-
-	public async print({
-		image,
-		data,
-	}: {
-		image: HTMLImageElement;
-		data: BusinessCardData;
-	}): Promise<void> {
-		this.canvas.width = BUSINESS_CARD_WIDTH;
-		this.canvas.height = BUSINESS_CARD_HEIGHT;
+	public async print(data: BusinessCardData): Promise<void> {
+		this.canvas.width = this.conf.width;
+		this.canvas.height = this.conf.height;
 
 		const ctx = this.canvas.getContext('2d');
 		if (!ctx) return;
 
-		await this.waitForImageLoaded(image);
+		await this.waitForImageLoaded(this.image);
 		await this.loadFonts();
-		this.drawBackground(ctx, image, BUSINESS_CARD_WIDTH, BUSINESS_CARD_HEIGHT);
+		this.drawBackground(ctx, this.image, this.canvas.width, this.canvas.height);
 
-		this.drawName(ctx, data.name);
-		data.role && this.drawRole(ctx, data.role);
+		this.drawText(
+			ctx,
+			data.name,
+			this.conf.name.x,
+			this.conf.name.y,
+			this.conf.name.font,
+			this.conf.name.color
+		);
+		data.role &&
+			this.drawText(
+				ctx,
+				data.role,
+				this.conf.role.x,
+				this.conf.role.y,
+				this.conf.role.font,
+				this.conf.role.color
+			);
 
-		this.detailsY = DETAILS_Y;
-		this.drawEmail(ctx, data.email);
-		data.mobile && this.drawMobile(ctx, data.mobile);
-		this.drawWebsite(ctx, 'www.claranet.com');
+		let detailsY = this.conf.details.y;
+		this.drawText(
+			ctx,
+			'Email: ' + data.email,
+			this.conf.details.x,
+			detailsY,
+			this.conf.details.font,
+			this.conf.details.color
+		);
+		detailsY += this.conf.details.newLine;
+		if (data.mobile) {
+			this.drawText(
+				ctx,
+				'Mobile: ' + data.mobile,
+				this.conf.details.x,
+				detailsY,
+				this.conf.details.font,
+				this.conf.details.color
+			);
+			detailsY += this.conf.details.newLine;
+		}
+		this.drawText(
+			ctx,
+			'Web: www.claranet.com',
+			this.conf.details.x,
+			detailsY,
+			this.conf.details.font,
+			this.conf.details.color
+		);
 
-		this.detailsY = DETAILS_Y;
-		this.drawAddress(ctx);
+		let addressY = this.conf.address.y;
+		this.drawText(
+			ctx,
+			'Claranet Italia',
+			this.conf.address.x,
+			addressY,
+			this.conf.address.font,
+			this.conf.address.color
+		);
+		addressY += this.conf.address.newLine;
+		this.drawText(
+			ctx,
+			'Corso Europa, 13',
+			this.conf.address.x,
+			addressY,
+			this.conf.address.font,
+			this.conf.address.color
+		);
+		addressY += this.conf.address.newLine;
+		this.drawText(
+			ctx,
+			'20122, Milan',
+			this.conf.address.x,
+			addressY,
+			this.conf.address.font,
+			this.conf.address.color
+		);
+		addressY += this.conf.address.newLine;
+		this.drawText(
+			ctx,
+			'Italy',
+			this.conf.address.x,
+			addressY,
+			this.conf.address.font,
+			this.conf.address.color
+		);
 	}
 
 	public getImage(): string {
