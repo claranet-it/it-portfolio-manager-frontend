@@ -6,9 +6,9 @@ import {
 	useSignal,
 	useVisibleTask$,
 } from '@builder.io/qwik';
-import QRCode from 'qrcode';
 import { BusinessCardData } from '@models/businessCard';
-import { getRouteParams } from 'src/router';
+import QRCode from 'qrcode';
+import { getCurrentUrlSegments } from 'src/router';
 import { getBusinessCardDataByEmail } from 'src/services/businessCard';
 import { BUSINESS_CARD_CONF, BusinessCardCanvas } from 'src/utils/business-card-canvas';
 import { validateEmail } from 'src/utils/email';
@@ -44,8 +44,8 @@ export const PublicProfile = component$(() => {
 	});
 
 	useVisibleTask$(async () => {
-		const params = getRouteParams();
-		const email = params.email ? params.email[0] : null;
+		const params = getCurrentUrlSegments(['email']);
+		const email = params.email ?? null;
 		if (!email || !validateEmail(email)) return;
 		businessCard.value = await getBusinessCardDataByEmail(email);
 		if (!Object.keys(businessCard.value).length) return;

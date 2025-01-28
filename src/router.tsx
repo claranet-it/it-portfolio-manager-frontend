@@ -6,12 +6,12 @@ import { Effort } from './pages/Effort';
 import { Networking } from './pages/Networking';
 import { People } from './pages/People';
 import { Profile } from './pages/Profile';
+import { PublicProfile } from './pages/PublicProfile';
 import { Registry } from './pages/Registry';
 import { Report } from './pages/Report';
 import { Search } from './pages/Search';
 import { Skills } from './pages/Skills';
 import { Timesheet } from './pages/Timesheet';
-import { PublicProfile } from './pages/PublicProfile';
 import { PUBLIC_ROUTES } from './utils/constants';
 
 export type Route = keyof typeof routes;
@@ -61,7 +61,22 @@ export const getRouteParams = (): Record<string, string[]> => {
 	return result;
 };
 
-export const getCurrentRoute = (): Route => window.location.pathname.replaceAll('/', '') as Route;
+export const getCurrentRoute = (): Route => window.location.pathname.split('/')[1] as Route;
+
+export function getCurrentUrlSegments(keys: string[]): Record<string, string> {
+	const segments = window.location.pathname.split('/').filter(Boolean).slice(1);
+	const params: Record<string, string> = {};
+
+	keys.forEach((key, index) => {
+		params[key] = segments[index] || '';
+	});
+
+	if (segments.length > keys.length) {
+		params['extra'] = segments.slice(keys.length).join('/');
+	}
+
+	return params;
+}
 
 export const useRouter = (defaultRoute: Route = 'auth'): Signal<Route> => {
 	const currentRouteSignal = useSignal<Route>(defaultRoute);

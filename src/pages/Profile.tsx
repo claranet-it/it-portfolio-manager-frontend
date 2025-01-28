@@ -1,20 +1,20 @@
-import { component$, useSignal, useTask$, $ } from '@builder.io/qwik';
-import { usePermissionAccess } from 'src/hooks/usePermissionAccess';
-import { SkillMatrix } from '../components/SkillMatrix';
-import { BusinessCardGenerator } from '../components/BusinessCardGenerator';
-import { UserProfileCard } from '../components/UserProfileCard';
-import { t } from '../locale/labels';
+import { $, component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { UserMe } from '@models/user';
+import { Tabs } from 'src/components/Tabs';
+import { usePermissionAccess } from 'src/hooks/usePermissionAccess';
 import { AUTH_USER_KEY, ITALY_COMPANY_ID } from 'src/utils/constants';
 import { get } from 'src/utils/localStorage/localStorage';
-import { Tabs } from 'src/components/Tabs';
+import { BusinessCardGenerator } from '../components/BusinessCardGenerator';
+import { SkillMatrix } from '../components/SkillMatrix';
+import { UserProfileCard } from '../components/UserProfileCard';
+import { t } from '../locale/labels';
 
 export const Profile = component$(() => {
 	const { usersOptions, userSelected, userIdSelected } = usePermissionAccess();
 	const currentUser = useSignal<UserMe | undefined>(undefined);
 
 	useTask$(async () => {
-		currentUser.value = JSON.parse((await get(AUTH_USER_KEY)) || '') as UserMe;
+		currentUser.value = JSON.parse((await get(AUTH_USER_KEY)) || '{}') as UserMe;
 	});
 
 	const tabs = [
