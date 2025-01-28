@@ -4,6 +4,7 @@ import {
 	NoSerialize,
 	noSerialize,
 	useContext,
+	useSignal,
 	useStore,
 	useVisibleTask$,
 } from '@builder.io/qwik';
@@ -17,6 +18,9 @@ import { useNotification } from 'src/hooks/useNotification';
 import { Modal } from './modals/Modal';
 import { ModalState } from '@models/modalState';
 import { useBusinessCard } from 'src/hooks/useBusinessCard';
+import QRCode from 'qrcode';
+import { PUBLIC_PROFILE_ROUTE } from 'src/utils/constants';
+import { CopyToClipboard } from './CopyToClipboard';
 
 type BusinessCardGeneratorStore = {
 	canvas: NoSerialize<BusinessCardCanvas>;
@@ -28,6 +32,9 @@ export const BusinessCardGenerator = component$(() => {
 		canvas: {} as NoSerialize<BusinessCardCanvas>,
 		imageSrc: '',
 	});
+
+	const profilePublicUrl = useSignal<string>('');
+	const QRCodeSrc = useSignal<string>('');
 
 	const {
 		businessCard,
@@ -66,6 +73,11 @@ export const BusinessCardGenerator = component$(() => {
 		confirmLabel: t('ACTION_CONFIRM'),
 	});
 
+	const shareState = useStore<ModalState>({
+		isVisible: false,
+		title: t('BUSINESS_CARD_SHARE_MODAL_TITLE'),
+	});
+
 	useVisibleTask$(async () => {
 		await fetchBusinessCard();
 		const canvasContainer = document.getElementById('business-card-preview');
@@ -79,6 +91,9 @@ export const BusinessCardGenerator = component$(() => {
 			);
 			refreshBusinessCardPreview();
 		}
+
+		profilePublicUrl.value = `${window.location.origin}/${PUBLIC_PROFILE_ROUTE.replace(':email', businessCard.value.email)}`;
+		QRCodeSrc.value = await QRCode.toDataURL(profilePublicUrl.value, { width: 400 });
 	});
 
 	const downloadBusinessCard = $(() => {
@@ -141,6 +156,16 @@ export const BusinessCardGenerator = component$(() => {
 				>
 					{t('BUSINESS_CARD_SAVE')}
 				</Button>
+				{isBusinessCardPresent.value && (
+					<Button
+						variant={'outline'}
+						size={'small'}
+						class='ml-2'
+						onClick$={() => (deleteConfirmState.isVisible = true)}
+					>
+						{t('BUSINESS_CARD_DELETE')}
+					</Button>
+				)}
 			</div>
 
 			<div id='business-card-preview' class='mt-4'>
@@ -153,35 +178,39 @@ export const BusinessCardGenerator = component$(() => {
 					class='flex items-center justify-between'
 					style={{ width: '100%', maxWidth: BUSINESS_CARD_CONF.landscape.width }}
 				>
-					<span class='text-xl font-bold text-dark-grey'>{t('PREVIEW')}</span>
+					<span class='text-xl font-bold text-dark-grey'>
+						{t('BUSINESS_CARD_PREVIEW')}
+					</span>
 					<div>
 						<Button variant={'outline'} size={'small'} onClick$={downloadBusinessCard}>
-							{t('DOWNLOAD')}
+							{t('BUSINESS_CARD_DOWNLOAD')}
 						</Button>
 						{isBusinessCardPresent.value && (
 							<Button
-								variant={'outline'}
 								size={'small'}
 								class='ml-2'
-								onClick$={() => (deleteConfirmState.isVisible = true)}
+								onClick$={() => (shareState.isVisible = true)}
 							>
-								{t('BUSINESS_CARD_DELETE')}
+								{t('BUSINESS_CARD_SHARE')}
 							</Button>
 						)}
 					</div>
 				</div>
 				<div
 					style={{ width: '100%', maxWidth: BUSINESS_CARD_CONF.landscape.width }}
-					class='mt-4 block max-w-sm rounded-lg border border-gray-200 bg-gray-100 p-6 shadow-sm'
+					class='mt-4 block max-w-sm rounded-lg border border-gray-200 shadow-lg'
 				>
 					<img src={store.imageSrc} />
 				</div>
 			</div>
 
-			<Modal state={deleteConfirmState}>
-				<p q:slot='modalBody' class='text-dark-gray text-base leading-relaxed'>
-					{deleteConfirmState.message}
-				</p>
+			<Modal state={deleteConfirmState}></Modal>
+
+			<Modal state={shareState}>
+				<div class='flex flex-col items-center justify-center'>
+					<CopyToClipboard text={profilePublicUrl.value} />
+					<img src={QRCodeSrc.value} />
+				</div>
 			</Modal>
 		</>
 	);

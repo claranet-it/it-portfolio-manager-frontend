@@ -202,12 +202,16 @@
 	"NETWORKING_CORRESPONDENT_LABEL": "Correspondent id",
 	"BUSINESS_CARD": "Business card",
 	"BUSINESS_CARD_TITLE": "My business card",
-	"PREVIEW": "Preview",
-	"DOWNLOAD": "Download",
+	"BUSINESS_CARD_PREVIEW": "Preview",
+	"BUSINESS_CARD_DOWNLOAD": "Download",
 	"BUSINESS_CARD_SAVE": "Save and publish",
 	"BUSINESS_CARD_DELETE": "Unpublish",
 	"BUSINESS_CARD_DELETE_CONFIRM_TITLE": "Unpublish business card",
 	"BUSINESS_CARD_DELETE_CONFIRM_MESSAGE": "Are you sure you want to unpublish your business card?",
+	"BUSINESS_CARD_SHARE": "Share",
+	"BUSINESS_CARD_SHARE_MODAL_TITLE": "Share business card",
 	"BUSINESS_CARD_SAVED": "Business card saved successfully",
-	"BUSINESS_CARD_DELETED": "Business card deleted successfully"
+	"BUSINESS_CARD_DELETED": "Business card deleted successfully",
+	"COPY_TO_CLIPBOARD": "Copy to clipboard",
+	"COPY_TO_CLIPBOARD_SUCCESS": "Copied!"
 }

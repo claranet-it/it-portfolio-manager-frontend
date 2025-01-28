@@ -73,7 +73,7 @@ export const PublicProfile = component$(() => {
 			refreshBusinessCardPreview();
 		}
 
-		QRCodeSrc.value = await QRCode.toDataURL(window.location.href);
+		QRCodeSrc.value = await QRCode.toDataURL(window.location.href, { width: 250 });
 
 		isPortrait.value = window.matchMedia('(orientation: portrait)').matches;
 		window.matchMedia('(orientation: portrait)').addEventListener('change', (e) => {
@@ -97,7 +97,7 @@ export const PublicProfile = component$(() => {
 				{!isPortrait.value && isBusinessCardPresent.value && (
 					<div
 						style={{ width: '100%', maxWidth: BUSINESS_CARD_CONF.landscape.width }}
-						class='block max-w-sm rounded-lg border border-gray-200 bg-gray-100 p-6 shadow-sm'
+						class='m-1 block max-w-sm rounded-lg border border-gray-200 shadow-lg'
 					>
 						<img src={landscapeImageSrc.value} />
 					</div>
@@ -112,13 +112,15 @@ export const PublicProfile = component$(() => {
 				{isPortrait.value && isBusinessCardPresent.value && (
 					<div
 						style={{ width: '100%', maxWidth: BUSINESS_CARD_CONF.portrait.width }}
-						class='block max-w-sm rounded-lg border border-gray-200 bg-gray-100 p-6 shadow-sm'
+						class='m-1 block max-w-sm rounded-lg border border-gray-200 shadow-lg'
 					>
 						<img src={portraitImageSrc.value} />
 					</div>
 				)}
 			</div>
-			<img src={QRCodeSrc.value} />
+			<div class='mt-6 flex flex-col items-center justify-center'>
+				<img src={QRCodeSrc.value} />
+			</div>
 		</>
 	);
 });

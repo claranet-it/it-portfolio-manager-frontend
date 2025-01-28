@@ -12,7 +12,7 @@ import { Report } from './pages/Report';
 import { Search } from './pages/Search';
 import { Skills } from './pages/Skills';
 import { Timesheet } from './pages/Timesheet';
-import { PUBLIC_ROUTES } from './utils/constants';
+import { PUBLIC_ROUTES, PUBLIC_PROFILE_ROUTE } from './utils/constants';
 
 export type Route = keyof typeof routes;
 export type PublicRoutes = (typeof PUBLIC_ROUTES)[number];
@@ -31,7 +31,7 @@ export const routes = {
 	registry: <Registry />,
 	chartpreview: <ChartPreview />,
 	people: <People />,
-	'public-profile/:email': <PublicProfile />,
+	[PUBLIC_PROFILE_ROUTE]: <PublicProfile />,
 };
 
 export const isPublicRoute = (route: string): route is Route => {
