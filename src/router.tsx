@@ -63,7 +63,6 @@ export const getRouteParams = (): Record<string, string[]> => {
 
 export const getCurrentRoute = (): Route => {
 	const match = findMatchingRoute();
-	console.log(match);
 	return match ? match[0] : ('' as Route);
 };
 
