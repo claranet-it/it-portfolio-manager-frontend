@@ -54,4 +54,4 @@ export enum Roles {
 
 export const ITALY_COMPANY_ID = 'it'; // TODO: temporary, change when final company id is defined
 
-export const PUBLIC_ROUTES: Route[] = ['auth', 'public-profile'] as const;
+export const PUBLIC_ROUTES: Route[] = ['auth', 'public-profile/:email'] as const;

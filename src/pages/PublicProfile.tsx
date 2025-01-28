@@ -3,18 +3,20 @@ import {
 	component$,
 	noSerialize,
 	NoSerialize,
+	useComputed$,
 	useSignal,
 	useVisibleTask$,
 } from '@builder.io/qwik';
 import { BusinessCardData } from '@models/businessCard';
 import QRCode from 'qrcode';
-import { getCurrentUrlSegments } from 'src/router';
+import { findMatchingRoute } from 'src/router';
 import { getBusinessCardDataByEmail } from 'src/services/businessCard';
 import { BUSINESS_CARD_CONF, BusinessCardCanvas } from 'src/utils/business-card-canvas';
 import { validateEmail } from 'src/utils/email';
 
 export const PublicProfile = component$(() => {
 	const businessCard = useSignal<BusinessCardData>({} as BusinessCardData);
+	const isBusinessCardPresent = useComputed$(() => Object.keys(businessCard.value).length > 0);
 	const landscapeImageSrc = useSignal<string>('');
 	const landscapeCanvas = useSignal<NoSerialize<BusinessCardCanvas> | undefined>();
 	const portraitImageSrc = useSignal<string>('');
@@ -44,8 +46,9 @@ export const PublicProfile = component$(() => {
 	});
 
 	useVisibleTask$(async () => {
-		const params = getCurrentUrlSegments(['email']);
-		const email = params.email ?? null;
+		const match = findMatchingRoute();
+		if (!match) return;
+		const email = match[1].email ?? null;
 		if (!email || !validateEmail(email)) return;
 		businessCard.value = await getBusinessCardDataByEmail(email);
 		if (!Object.keys(businessCard.value).length) return;
@@ -91,7 +94,7 @@ export const PublicProfile = component$(() => {
 					src='/business-card-landscape-tpl.jpeg'
 					style='display: none'
 				/>
-				{!isPortrait.value && (
+				{!isPortrait.value && isBusinessCardPresent.value && (
 					<div
 						style={{ width: '100%', maxWidth: BUSINESS_CARD_CONF.landscape.width }}
 						class='block max-w-sm rounded-lg border border-gray-200 bg-gray-100 p-6 shadow-sm'
@@ -106,7 +109,7 @@ export const PublicProfile = component$(() => {
 					src='/business-card-portrait-tpl.jpeg'
 					style='display: none'
 				/>
-				{isPortrait.value && (
+				{isPortrait.value && isBusinessCardPresent.value && (
 					<div
 						style={{ width: '100%', maxWidth: BUSINESS_CARD_CONF.portrait.width }}
 						class='block max-w-sm rounded-lg border border-gray-200 bg-gray-100 p-6 shadow-sm'

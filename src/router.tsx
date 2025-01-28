@@ -31,7 +31,7 @@ export const routes = {
 	registry: <Registry />,
 	chartpreview: <ChartPreview />,
 	people: <People />,
-	'public-profile': <PublicProfile />,
+	'public-profile/:email': <PublicProfile />,
 };
 
 export const isPublicRoute = (route: string): route is Route => {
@@ -61,22 +61,38 @@ export const getRouteParams = (): Record<string, string[]> => {
 	return result;
 };
 
-export const getCurrentRoute = (): Route => window.location.pathname.split('/')[1] as Route;
+export const getCurrentRoute = (): Route => {
+	const match = findMatchingRoute();
+	console.log(match);
+	return match ? match[0] : ('' as Route);
+};
 
-export function getCurrentUrlSegments(keys: string[]): Record<string, string> {
-	const segments = window.location.pathname.split('/').filter(Boolean).slice(1);
-	const params: Record<string, string> = {};
+export const findMatchingRoute = (): [Route, Record<string, string>] | null => {
+	const segments = window.location.pathname.split('/').filter(Boolean);
+	for (const [route] of Object.entries(routes)) {
+		const routeSegments = route.split('/').filter(Boolean);
 
-	keys.forEach((key, index) => {
-		params[key] = segments[index] || '';
-	});
+		if (routeSegments.length === segments.length) {
+			const params: Record<string, string> = {};
+			let isMatch = true;
 
-	if (segments.length > keys.length) {
-		params['extra'] = segments.slice(keys.length).join('/');
+			for (let i = 0; i < routeSegments.length; i++) {
+				if (routeSegments[i].startsWith(':')) {
+					params[routeSegments[i].substring(1)] = segments[i];
+				} else if (routeSegments[i] !== segments[i]) {
+					isMatch = false;
+					break;
+				}
+			}
+
+			if (isMatch) {
+				return [route as Route, params];
+			}
+		}
 	}
 
-	return params;
-}
+	return null;
+};
 
 export const useRouter = (defaultRoute: Route = 'auth'): Signal<Route> => {
 	const currentRouteSignal = useSignal<Route>(defaultRoute);
