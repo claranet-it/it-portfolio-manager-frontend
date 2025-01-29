@@ -19,8 +19,10 @@ import { Modal } from './modals/Modal';
 import { ModalState } from '@models/modalState';
 import { useBusinessCard } from 'src/hooks/useBusinessCard';
 import QRCode from 'qrcode';
-import { PUBLIC_PROFILE_ROUTE } from 'src/utils/constants';
+import { AUTH_USER_KEY, PUBLIC_PROFILE_ROUTE } from 'src/utils/constants';
 import { CopyToClipboard } from './CopyToClipboard';
+import { get } from 'src/utils/localStorage/localStorage';
+import { UserMe } from '@models/user';
 
 type BusinessCardGeneratorStore = {
 	canvas: NoSerialize<BusinessCardCanvas>;
@@ -33,7 +35,7 @@ export const BusinessCardGenerator = component$(() => {
 		imageSrc: '',
 	});
 
-	const profilePublicUrl = useSignal<string>('');
+	const publicProfileUrl = useSignal<string>('');
 	const QRCodeSrc = useSignal<string>('');
 
 	const {
@@ -92,8 +94,10 @@ export const BusinessCardGenerator = component$(() => {
 			refreshBusinessCardPreview();
 		}
 
-		profilePublicUrl.value = `${window.location.origin}/${PUBLIC_PROFILE_ROUTE.replace(':email', businessCard.value.email)}`;
-		QRCodeSrc.value = await QRCode.toDataURL(profilePublicUrl.value, { width: 400 });
+		const user = JSON.parse((await get(AUTH_USER_KEY)) || '') as UserMe;
+
+		publicProfileUrl.value = `${window.location.origin}/${PUBLIC_PROFILE_ROUTE.replace(':email', user.email)}`;
+		QRCodeSrc.value = await QRCode.toDataURL(publicProfileUrl.value, { width: 400 });
 	});
 
 	const downloadBusinessCard = $(() => {
@@ -208,7 +212,7 @@ export const BusinessCardGenerator = component$(() => {
 
 			<Modal state={shareState}>
 				<div class='flex flex-col items-center justify-center'>
-					<CopyToClipboard text={profilePublicUrl.value} />
+					<CopyToClipboard text={publicProfileUrl.value} />
 					<img src={QRCodeSrc.value} />
 				</div>
 			</Modal>
