@@ -1,6 +1,7 @@
 import {
 	$,
 	component$,
+	sync$,
 	useComputed$,
 	useContext,
 	useSignal,
@@ -24,6 +25,7 @@ import { t } from 'src/locale/labels';
 import { getUserMe, getUserProfiles } from 'src/services/user';
 import { getACLValues, roleHierarchy } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
+import { generateIcon } from 'src/utils/image';
 
 const roles: Record<Roles, string> = {
 	USER: t('ROLE_USER'),
@@ -44,7 +46,7 @@ export const Company = component$(() => {
 		updateSkillVisibility,
 	} = useCompany();
 
-	const logoUrl = useSignal(company.value.image_url);
+	const logoUrl = useSignal(company.value.image_url ?? generateIcon(company.value.id));
 
 	const userSig = useSignal<UserProfile[]>([]);
 
@@ -98,17 +100,6 @@ export const Company = component$(() => {
 		);
 	});
 
-	const noCrewLeader = useComputed$(() => {
-		const crewsWithoutTeamLeader = crewOptionsSig.value.filter(
-			(crewName) =>
-				!userSig.value.some(
-					(user) => user.crew === crewName && user.role === Roles.TEAM_LEADER
-				)
-		);
-
-		return crewsWithoutTeamLeader;
-	});
-
 	const handleTeamLeader = $(async (user: UserProfile, crew: string) => {
 		const userCrew = crew;
 		const prevCrewLeader = userSig.value.find(
@@ -134,6 +125,18 @@ export const Company = component$(() => {
 	const updateUserVisibility = $(async (user: UserProfile, visible: boolean) => {
 		await userEdit.updateUserActivation(user.id, visible);
 		userSig.value = (await getUserProfiles()).sort((a, b) => a.name.localeCompare(b.name));
+	});
+
+	const getSkillIcon = sync$((serviceLine: string, skill: string) => {
+		if (serviceLine.toLowerCase() === 'design') {
+			return getIcon('Design');
+		}
+
+		if (serviceLine.toLowerCase() === 'softskill') {
+			return getIcon('UserGroup');
+		}
+
+		return getIcon(skill);
 	});
 
 	useTask$(async () => {
@@ -208,7 +211,10 @@ export const Company = component$(() => {
 													>
 														<div class='flex items-center justify-center space-x-2'>
 															<span class='skill-icon text-2xl text-darkgray-900'>
-																{getIcon(skill.name)}
+																{getSkillIcon(
+																	serviceLine,
+																	skill.name
+																)}
 															</span>
 
 															<div class='flex flex-col'>
@@ -246,11 +252,6 @@ export const Company = component$(() => {
 							<span class='text-2xl font-bold text-dark-grey sm:mt-2'>
 								{t('USERS_LABEL')}
 							</span>
-							{noCrewLeader.value.length > 0 && (
-								<span class='text-xl font-bold text-clara-red'>
-									{t('CREW_WITH_NO_LEADER_MESSAGE')}
-								</span>
-							)}
 						</div>
 						<div class='justify-content flex flex-col place-content-evenly space-y-1'>
 							{userSig.value
@@ -286,53 +287,54 @@ export const Company = component$(() => {
 													</h3>
 												</div>
 											</div>
-											{user.email !== loggedUserEmail.value && (
-												<div class='ml-4 flex flex-row items-center gap-2 text-center'>
-													<OptionDropdown
-														id={`user-dropdown-${index}-crew`}
-														icon={<DownArrow />}
-														label={user.crew ?? t('USER_CREW_LABEL')}
-														disabled={!userActive}
-														options={crewOptionsSig.value.map(
-															(crew) => ({
-																value: crew,
-																onChange: $(
-																	async () =>
-																		await updateUserValues(
-																			user,
-																			user.role!,
-																			crew
-																		)
-																),
-															})
-														)}
-													/>
-													<OptionDropdown
-														id={`user-dropdown-${index}-role`}
-														icon={<DownArrow />}
-														label={
-															roles[user.role] ?? t('USER_ROLE_LABEL')
-														}
-														disabled={!userActive}
-														options={Object.entries(roles)
-															.filter(
-																([role, _]) =>
-																	roleHierarchy[
-																		userAcl.value.role
-																	] > roleHierarchy[role as Roles]
-															)
-															.map(([role, name]) => ({
-																value: name,
-																onChange: $(
-																	async () =>
-																		await updateUserValues(
-																			user,
-																			role,
-																			user.crew
-																		)
-																),
-															}))}
-													/>
+											<div class='ml-4 flex flex-row items-center gap-2 text-center'>
+												<OptionDropdown
+													id={`user-dropdown-${index}-crew`}
+													icon={<DownArrow />}
+													label={user.crew ?? t('USER_CREW_LABEL')}
+													disabled={
+														!userActive ||
+														user.email === loggedUserEmail.value
+													}
+													options={crewOptionsSig.value.map((crew) => ({
+														value: crew,
+														onChange: $(
+															async () =>
+																await updateUserValues(
+																	user,
+																	user.role!,
+																	crew
+																)
+														),
+													}))}
+												/>
+												<OptionDropdown
+													id={`user-dropdown-${index}-role`}
+													icon={<DownArrow />}
+													label={roles[user.role] ?? t('USER_ROLE_LABEL')}
+													disabled={
+														!userActive ||
+														user.email === loggedUserEmail.value
+													}
+													options={Object.entries(roles)
+														.filter(
+															([role, _]) =>
+																roleHierarchy[userAcl.value.role] >
+																roleHierarchy[role as Roles]
+														)
+														.map(([role, name]) => ({
+															value: name,
+															onChange: $(
+																async () =>
+																	await updateUserValues(
+																		user,
+																		role,
+																		user.crew
+																	)
+															),
+														}))}
+												/>
+												{user.email !== loggedUserEmail.value && (
 													<ToggleSwitch
 														key={`company-user-toggle-${user.id}`}
 														isChecked={userActive}
@@ -340,8 +342,8 @@ export const Company = component$(() => {
 															await updateUserVisibility(user, active)
 														}
 													/>
-												</div>
-											)}
+												)}
+											</div>
 										</div>
 									);
 								})}

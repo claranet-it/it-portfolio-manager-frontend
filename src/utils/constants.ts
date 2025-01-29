@@ -1,4 +1,5 @@
 import { Company } from '@models/company';
+import { NetworkCompany } from '@models/networking';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
 import { Route } from 'src/router';
@@ -55,4 +56,16 @@ export enum Roles {
 export const ITALY_COMPANY_ID = 'it'; // TODO: temporary, change when final company id is defined
 
 export const PUBLIC_PROFILE_ROUTE = 'public-profile/:email';
-export const PUBLIC_ROUTES: Route[] = ['auth', PUBLIC_PROFILE_ROUTE] as const;
+export const PUBLIC_ROUTES: Route[] = [
+	'auth',
+	PUBLIC_PROFILE_ROUTE,
+	'privacy_policy',
+	'maintenance',
+] as const;
+
+export const INIT_NETWORK_COMPANY_VALUE: NetworkCompany = {
+	domain: '',
+	id: '',
+	image_url: 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==',
+	name: '',
+};

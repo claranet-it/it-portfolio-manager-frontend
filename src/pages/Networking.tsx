@@ -10,14 +10,8 @@ import { useCompany } from 'src/hooks/useCompany';
 import { useNetworking } from 'src/hooks/useNetworking';
 import { t } from 'src/locale/labels';
 import { limitRoleAccess } from 'src/utils/acl';
-import { Roles } from 'src/utils/constants';
-
-const defaultSelected: NetworkCompany = {
-	domain: '',
-	id: '',
-	image_url: 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==',
-	name: '',
-};
+import { INIT_NETWORK_COMPANY_VALUE, Roles } from 'src/utils/constants';
+import { generateIcon } from 'src/utils/image';
 
 export const Networking = component$(() => {
 	const {
@@ -32,7 +26,7 @@ export const Networking = component$(() => {
 
 	const availableOptions = useSignal<string[]>([]);
 	const selectedAvailableName = useSignal('');
-	const selectedAvailable = useSignal<NetworkCompany>(defaultSelected);
+	const selectedAvailable = useSignal<NetworkCompany>(INIT_NETWORK_COMPANY_VALUE);
 
 	const firstConnectionName = useSignal('');
 	const firstConnection = useSignal<NetworkCompany>();
@@ -45,8 +39,8 @@ export const Networking = component$(() => {
 		const subject = type === 'add' ? '[Brickly] New Connection' : '[Brickly] Remove Connection';
 		const body =
 			type === 'add'
-				? `Company ${company.value.domain} - [ ${company.value.id} ] requires a connection with ${correspondent.domain} - [ ${correspondent.id} ]`
-				: `Company ${company.value.domain} - [ ${company.value.id} ] requires the removal of the connection with ${correspondent.domain} - [ ${correspondent.id} ]`;
+				? `Company ${company.value.domain} requires a connection with ${correspondent.domain}`
+				: `Company ${company.value.domain} requires the removal of the connection with ${correspondent.domain}`;
 
 		const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
@@ -54,7 +48,7 @@ export const Networking = component$(() => {
 	});
 
 	const resetSelected = $(() => {
-		selectedAvailable.value = defaultSelected;
+		selectedAvailable.value = INIT_NETWORK_COMPANY_VALUE;
 		selectedAvailableName.value = '';
 		firstConnection.value = undefined;
 		firstConnectionName.value = '';
@@ -108,7 +102,7 @@ export const Networking = component$(() => {
 		const foundAvailable = connections.value.available.find(
 			(company) => company.name === companyName
 		);
-		selectedAvailable.value = foundAvailable ?? defaultSelected;
+		selectedAvailable.value = foundAvailable ?? INIT_NETWORK_COMPANY_VALUE;
 	});
 
 	const handleConnectionAction = $(async (action: 'connect' | 'disconnect') => {
@@ -179,7 +173,11 @@ export const Networking = component$(() => {
 											<div class='flex items-center justify-center space-x-2'>
 												<span class='skill-icon text-2xl text-darkgray-900'>
 													<img
-														src={connection.image_url}
+														src={
+															connection.image_url !== ''
+																? connection.image_url
+																: generateIcon(connection.domain)
+														}
 														alt={t('profile_picture')}
 														class='aspect-square h-auto w-10 rounded-full object-cover sm:m-auto'
 													/>
@@ -229,7 +227,10 @@ export const Networking = component$(() => {
 					<Tab
 						id={`available-company-${selectedAvailableName.value}`}
 						image={{
-							url: selectedAvailable.value.image_url,
+							url:
+								selectedAvailable.value.image_url !== ''
+									? selectedAvailable.value.image_url
+									: generateIcon(selectedAvailable.value.id),
 							alt: selectedAvailable.value.name,
 						}}
 						title={selectedAvailable.value.name}

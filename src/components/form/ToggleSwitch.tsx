@@ -7,7 +7,7 @@ interface ToogleSwitchProps {
 }
 
 export const ToggleSwitch = component$<ToogleSwitchProps>(({ isChecked, label, onChange$ }) => {
-	const checked = useSignal(typeof isChecked === 'boolean' ? isChecked : isChecked.value);
+	const checked = typeof isChecked === 'boolean' ? useSignal(isChecked) : isChecked;
 
 	return (
 		<label class='items-left flex cursor-pointer'>

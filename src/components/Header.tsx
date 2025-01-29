@@ -1,5 +1,6 @@
 import { component$, useComputed$ } from '@builder.io/qwik';
 import { limitRoleAccess } from 'src/utils/acl';
+import { formatDateTime, isMaintenanceScheduled } from 'src/utils/maintenance';
 import { auth0 } from '../app';
 import { Labels, t } from '../locale/labels';
 import { navigateTo, Route } from '../router';
@@ -68,6 +69,9 @@ export const getRoleBasedMenu = () => {
 };
 
 export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }) => {
+	const startTime: number = Number(import.meta.env.VITE_MAINTENANCE_START);
+	const endTime: number = Number(import.meta.env.VITE_MAINTENANCE_END);
+
 	const menu = useComputed$(async () => {
 		const filteredItems = await Promise.all(
 			getRoleBasedMenu().map(async (item) => {
@@ -81,6 +85,12 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 
 	return (
 		<header>
+			{isMaintenanceScheduled() && (
+				<div class='w-full border-b border-b-darkgray-300 bg-clara-red px-6 py-2 text-white'>
+					<b>NOTICE:</b> Maintenance mode is scheduled from{' '}
+					<b>{formatDateTime(startTime)}</b> to <b>{formatDateTime(endTime)}</b>
+				</div>
+			)}
 			<div class='items-center justify-between border-b border-b-darkgray-300 bg-white md:flex lg:flex'>
 				<div class='px-6 py-4 sm:text-center [&_svg]:sm:inline'>
 					{getIcon('BricklyRedLogo')}

@@ -3,8 +3,10 @@ import { AuthManager } from './pages/AuthManager';
 import { ChartPreview } from './pages/ChartPreview';
 import { Company } from './pages/Company';
 import { Effort } from './pages/Effort';
+import { Maintenance } from './pages/Maintenance';
 import { Networking } from './pages/Networking';
 import { People } from './pages/People';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { Profile } from './pages/Profile';
 import { PublicProfile } from './pages/PublicProfile';
 import { Registry } from './pages/Registry';
@@ -13,6 +15,7 @@ import { Search } from './pages/Search';
 import { Skills } from './pages/Skills';
 import { Timesheet } from './pages/Timesheet';
 import { PUBLIC_ROUTES, PUBLIC_PROFILE_ROUTE } from './utils/constants';
+import { isMaintenanceMode } from './utils/maintenance';
 
 export type Route = keyof typeof routes;
 export type PublicRoutes = (typeof PUBLIC_ROUTES)[number];
@@ -32,6 +35,8 @@ export const routes = {
 	chartpreview: <ChartPreview />,
 	people: <People />,
 	[PUBLIC_PROFILE_ROUTE]: <PublicProfile />,
+	privacy_policy: <PrivacyPolicy />,
+	maintenance: <Maintenance />,
 };
 
 export const isPublicRoute = (route: string): route is Route => {
@@ -99,11 +104,16 @@ export const useRouter = (defaultRoute: Route = 'auth'): Signal<Route> => {
 	useTask$(() => {
 		window.onpopstate = () => (currentRouteSignal.value = getCurrentRoute());
 		const route = getCurrentRoute();
-		if (route === currentRouteSignal.value) return;
-		if (Object.keys(routes).includes(route)) {
-			currentRouteSignal.value = route;
-		} else if (route) {
-			window.history.replaceState({}, '', `/${defaultRoute}`);
+		if (isMaintenanceMode()) {
+			currentRouteSignal.value = 'maintenance';
+			window.history.replaceState({}, '', `/maintenance`);
+		} else {
+			if (route === currentRouteSignal.value) return;
+			if (Object.keys(routes).includes(route) && route !== 'maintenance') {
+				currentRouteSignal.value = route;
+			} else if (route) {
+				window.history.replaceState({}, '', `/${defaultRoute}`);
+			}
 		}
 	});
 
