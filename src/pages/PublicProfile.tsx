@@ -5,6 +5,7 @@ import {
 	NoSerialize,
 	useComputed$,
 	useSignal,
+	useStore,
 	useVisibleTask$,
 } from '@builder.io/qwik';
 import { BusinessCardData } from '@models/businessCard';
@@ -13,6 +14,11 @@ import { findMatchingRoute } from 'src/router';
 import { getBusinessCardDataByEmail } from 'src/services/businessCard';
 import { BUSINESS_CARD_CONF, BusinessCardCanvas } from 'src/utils/business-card-canvas';
 import { validateEmail } from 'src/utils/email';
+import { Modal } from 'src/components/modals/Modal';
+import { ModalState } from '@models/modalState';
+import { t, tt } from 'src/locale/labels';
+import { CopyToClipboard } from 'src/components/CopyToClipboard';
+import { Button } from 'src/components/Button';
 
 export const PublicProfile = component$(() => {
 	const businessCard = useSignal<BusinessCardData>({} as BusinessCardData);
@@ -23,6 +29,19 @@ export const PublicProfile = component$(() => {
 	const portraitCanvas = useSignal<NoSerialize<BusinessCardCanvas> | undefined>();
 	const QRCodeSrc = useSignal<string>('');
 	const isPortrait = useSignal<boolean>();
+	const mobileShareData = useComputed$<ShareData>(() => ({
+		title: tt('BUSINESS_CARD_SHARE_TITLE', { name: businessCard.value.name }),
+		text: tt('BUSINESS_CARD_SHARE_TEXT', { name: businessCard.value.name }),
+		url: window.location.href,
+	}));
+	const canUseMobileShare = useComputed$<boolean>(() => {
+		return navigator.canShare && navigator.canShare(mobileShareData.value);
+	});
+
+	const shareState = useStore<ModalState>({
+		isVisible: false,
+		title: t('BUSINESS_CARD_SHARE_MODAL_TITLE'),
+	});
 
 	const refreshBusinessCardPreview = $(async () => {
 		if (landscapeCanvas.value) {
@@ -76,6 +95,7 @@ export const PublicProfile = component$(() => {
 		QRCodeSrc.value = await QRCode.toDataURL(window.location.href, { width: 250 });
 
 		isPortrait.value = window.matchMedia('(orientation: portrait)').matches;
+
 		window.matchMedia('(orientation: portrait)').addEventListener('change', (e) => {
 			const portrait = e.matches;
 			if (portrait) {
@@ -118,9 +138,34 @@ export const PublicProfile = component$(() => {
 					</div>
 				)}
 			</div>
-			<div class='mt-6 flex flex-col items-center justify-center'>
-				<img src={QRCodeSrc.value} />
-			</div>
+			{isBusinessCardPresent.value && (
+				<div class='mt-6 flex flex-col items-center justify-center'>
+					<Button
+						size={'small'}
+						class='ml-2'
+						onClick$={() => (shareState.isVisible = true)}
+					>
+						{t('BUSINESS_CARD_SHARE')}
+					</Button>
+				</div>
+			)}
+
+			<Modal state={shareState}>
+				<div class='flex flex-col items-center justify-center'>
+					<CopyToClipboard text={window.location.href} />
+					<img src={QRCodeSrc.value} />
+					{canUseMobileShare.value && (
+						<Button
+							variant={'outline'}
+							size={'small'}
+							class='ml-2'
+							onClick$={() => navigator.share(mobileShareData.value)}
+						>
+							{t('BUSINESS_CARD_SHARE')}
+						</Button>
+					)}
+				</div>
+			</Modal>
 		</>
 	);
 });
