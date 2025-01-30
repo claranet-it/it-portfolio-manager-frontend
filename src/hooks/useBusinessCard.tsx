@@ -22,7 +22,7 @@ export const useBusinessCard = () => {
 	);
 
 	const initBusinessCardFromStorage = $(async () => {
-		const user = JSON.parse((await get(AUTH_USER_KEY)) || '') as UserMe;
+		const user = JSON.parse((await get(AUTH_USER_KEY)) || '{}') as UserMe;
 		const businessCardData = {
 			name: user.name,
 			email: user.email,

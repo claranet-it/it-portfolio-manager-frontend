@@ -8,21 +8,21 @@ import {
 	useStore,
 	useVisibleTask$,
 } from '@builder.io/qwik';
-import { AppContext } from 'src/app';
-import { BUSINESS_CARD_CONF, BusinessCardCanvas } from 'src/utils/business-card-canvas';
-import { download } from 'src/utils/download';
-import { Input } from './form/Input';
-import { t } from 'src/locale/labels';
-import { Button } from './Button';
-import { useNotification } from 'src/hooks/useNotification';
-import { Modal } from './modals/Modal';
 import { ModalState } from '@models/modalState';
-import { useBusinessCard } from 'src/hooks/useBusinessCard';
-import QRCode from 'qrcode';
-import { AUTH_USER_KEY, PUBLIC_PROFILE_ROUTE } from 'src/utils/constants';
-import { CopyToClipboard } from './CopyToClipboard';
-import { get } from 'src/utils/localStorage/localStorage';
 import { UserMe } from '@models/user';
+import QRCode from 'qrcode';
+import { AppContext } from 'src/app';
+import { useBusinessCard } from 'src/hooks/useBusinessCard';
+import { useNotification } from 'src/hooks/useNotification';
+import { t } from 'src/locale/labels';
+import { BUSINESS_CARD_CONF, BusinessCardCanvas } from 'src/utils/business-card-canvas';
+import { AUTH_USER_KEY, PUBLIC_PROFILE_ROUTE } from 'src/utils/constants';
+import { download } from 'src/utils/download';
+import { get } from 'src/utils/localStorage/localStorage';
+import { Button } from './Button';
+import { CopyToClipboard } from './CopyToClipboard';
+import { Input } from './form/Input';
+import { Modal } from './modals/Modal';
 
 type BusinessCardGeneratorStore = {
 	canvas: NoSerialize<BusinessCardCanvas>;
@@ -94,7 +94,7 @@ export const BusinessCardGenerator = component$(() => {
 			refreshBusinessCardPreview();
 		}
 
-		const user = JSON.parse((await get(AUTH_USER_KEY)) || '') as UserMe;
+		const user = JSON.parse((await get(AUTH_USER_KEY)) || '{}') as UserMe;
 
 		publicProfileUrl.value = `${window.location.origin}/${PUBLIC_PROFILE_ROUTE.replace(':email', user.email)}`;
 		QRCodeSrc.value = await QRCode.toDataURL(publicProfileUrl.value, { width: 400 });
