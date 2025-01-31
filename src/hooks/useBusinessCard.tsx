@@ -40,7 +40,7 @@ export const useBusinessCard = () => {
 			businessCard.value = { ...businessCardData };
 			initialBusinessCard.value = { ...businessCardData };
 		} else {
-			initBusinessCardFromStorage();
+			await initBusinessCardFromStorage();
 		}
 	});
 
