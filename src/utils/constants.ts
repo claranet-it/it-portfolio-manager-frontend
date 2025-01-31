@@ -2,10 +2,12 @@ import { Company } from '@models/company';
 import { NetworkCompany } from '@models/networking';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
+import { Route } from 'src/router';
 
 export const AUTH_TOKEN_KEY = 'auth_token';
 export const AUTH_ROLE_KEY = 'auth_role';
 export const AUTH_CREW_KEY = 'auth_crew';
+export const AUTH_USER_KEY = 'auth_user';
 
 export const CHATBOT_COOKIE_KEY = 'token';
 
@@ -50,6 +52,16 @@ export enum Roles {
 	TEAM_LEADER = 'TEAM_LEADER',
 	USER = 'USER',
 }
+
+export const ITALY_COMPANY_ID = 'it'; // TODO: temporary, change when final company id is defined
+
+export const PUBLIC_PROFILE_ROUTE = 'public-profile/:email';
+export const PUBLIC_ROUTES: Route[] = [
+	'auth',
+	PUBLIC_PROFILE_ROUTE,
+	'privacy_policy',
+	'maintenance',
+] as const;
 
 export const INIT_NETWORK_COMPANY_VALUE: NetworkCompany = {
 	domain: '',

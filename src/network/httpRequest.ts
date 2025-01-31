@@ -13,6 +13,9 @@ const getHeaders = async () => {
 
 const executeRequest = async (path: string, method: HttpMethods = 'GET', body?: Object) => {
 	const headers = await getHeaders();
+	if (method === 'DELETE' && !body) {
+		headers.delete('Content-Type');
+	}
 	const options: RequestInit = {
 		method,
 		headers,

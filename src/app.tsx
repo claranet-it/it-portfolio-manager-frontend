@@ -12,7 +12,7 @@ import { initFlowbite } from 'flowbite';
 import { getRoleBasedMenu } from './components/Header';
 import { Layout } from './components/Layout';
 import { addHttpErrorListener } from './network/httpResponseHandler';
-import { Route, routes, useRouter } from './router';
+import { isPublicRoute, routes, useRouter } from './router';
 import { getConfiguration } from './services/configuration';
 import { getACLValues, roleHierarchy } from './utils/acl';
 import { Roles } from './utils/constants';
@@ -53,8 +53,6 @@ const initialState: AppStore = {
 	isLoading: false,
 };
 
-const WHITELIST_ROUTES = ['auth', 'privacy_policy', 'maintenance'];
-
 export const App = component$(() => {
 	const appStore = useStore<AppStore>(initialState);
 	const currentRouteSignal = useRouter();
@@ -69,7 +67,7 @@ export const App = component$(() => {
 	});
 
 	useTask$(async () => {
-		if (WHITELIST_ROUTES.includes(currentRouteSignal.value)) return;
+		if (isPublicRoute(currentRouteSignal.value)) return;
 
 		const user = await getACLValues();
 
@@ -105,18 +103,9 @@ export const App = component$(() => {
 		});
 	});
 
-	return WHITELIST_ROUTES.includes(currentRouteSignal.value) ? (
+	return isPublicRoute(currentRouteSignal.value) ? (
 		routes[currentRouteSignal.value]
 	) : (
-		<Layout
-			currentRoute={
-				currentRouteSignal.value as Exclude<
-					Route,
-					'auth' | 'privacy_policy' | 'maintenance'
-				>
-			}
-		>
-			{routes[currentRouteSignal.value]}
-		</Layout>
+		<Layout currentRoute={currentRouteSignal.value}>{routes[currentRouteSignal.value]}</Layout>
 	);
 });
