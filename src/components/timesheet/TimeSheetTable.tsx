@@ -47,7 +47,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			message: t('TIMESHEET_DELETE_ALERT_MESSAGE'),
 		});
 
-		const handleTimeChange = $((timeEntryObject: TimeEntryObject) => {
+		const handleTimeChange = $(async (timeEntryObject: TimeEntryObject) => {
 			const { project, date, hours } = timeEntryObject;
 
 			if (!timeEntriesState[project.name]) {
@@ -108,7 +108,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 				return;
 			}
 
-			updateTimeEntries(timeEntryObject);
+			await updateTimeEntries(timeEntryObject);
 		});
 
 		const deleteHandler = $((entries: TimeEntry[]) => {
@@ -321,7 +321,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 															{isLastEntry &&
 																hours !== 0 &&
 																hours !== undefined && (
-																	<div class='absolute -bottom-10 left-1'>
+																	<div
+																		class={`absolute ${dEntry?.startHour !== '00:00' ? '-bottom-8 left-2' : '-bottom-9 left-4'} `}
+																	>
 																		<Button
 																			key={`new-entry-${dailyEntries.length + 1}`}
 																			tabIndex={-1}

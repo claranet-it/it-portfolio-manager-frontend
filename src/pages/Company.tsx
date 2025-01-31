@@ -151,7 +151,11 @@ export const Company = component$(() => {
 					<div class='gap-3 p-0 md:inline-flex lg:inline-flex'>
 						<div class='grid content-center text-center md:flex-none lg:flex-none'>
 							<img
-								src={company.value.image_url}
+								src={
+									company.value.image_url !== ''
+										? company.value.image_url
+										: generateIcon(company.value.domain)
+								}
 								alt={t('profile_picture')}
 								class='aspect-square h-auto w-20 rounded-full object-cover sm:m-auto'
 							/>

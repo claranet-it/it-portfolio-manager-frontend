@@ -42,7 +42,7 @@ export const EffortTable = component$<EffortTableInterface>(
 							</th>
 							{Object.keys(averageEffortByMonth.value).map((monthYear, index) => (
 								<th
-									key={index}
+									key={`${index}_${monthYear}`}
 									scope='col'
 									class='border-l border-r border-surface-50 px-4 py-3 font-normal'
 								>
@@ -145,38 +145,50 @@ export const EffortTable = component$<EffortTableInterface>(
 											</p>
 										</div>
 									</td>
-									{effort.map((month, efforKey) => (
+									{effort.map((month, effortKey) => (
 										<td
 											class='border-l border-r border-surface-50 px-4 py-3'
-											key={efforKey}
+											key={effortKey}
 										>
 											<div class='grid grid-cols-2 gap-2'>
-												<form class='max-w min-w-16'>
+												<form
+													key={`confirmed_${month.confirmedEffort}_${uid}`}
+													class='max-w min-w-16'
+												>
 													<label
 														class='text-sm font-normal'
-														for={'confirmed_' + efforKey}
+														for={'confirmed_' + effortKey}
 													>
 														{t('effort_table_confirmed')}
 													</label>
 													<input
 														disabled={data.isCompany}
 														type='number'
-														id={'confirmed' + efforKey}
+														id={'confirmed' + effortKey}
 														class={
 															'block w-full rounded-md border border-darkgray-500 p-2.5 text-sm text-gray-900'
 														}
 														value={month.confirmedEffort}
 														onChange$={async (event, { value }) => {
+															const confirmedEffortValue = parseInt(
+																value,
+																10
+															);
+															const fallbackTentativeEffort =
+																100 - confirmedEffortValue;
+															if (
+																fallbackTentativeEffort <
+																month.tentativeEffort
+															) {
+																month.tentativeEffort =
+																	fallbackTentativeEffort;
+															}
 															const result = await updateEffortField(
-																userKey,
-																efforKey,
 																uid,
 																{
 																	...month,
-																	confirmedEffort: parseInt(
-																		value,
-																		10
-																	),
+																	confirmedEffort:
+																		confirmedEffortValue,
 																},
 																data
 															);
@@ -189,32 +201,42 @@ export const EffortTable = component$<EffortTableInterface>(
 													/>
 												</form>
 
-												<form class='max-w min-w-16'>
+												<form
+													key={`tentative_${month.tentativeEffort}_${uid}`}
+													class='max-w min-w-16'
+												>
 													<label
 														class='text-sm font-normal'
-														for={'tentative_' + efforKey}
+														for={'tentative_' + effortKey}
 													>
 														{t('effort_table_tentative')}
 													</label>
 													<input
 														disabled={data.isCompany}
 														type='number'
-														id={'tentative_' + efforKey}
+														id={'tentative_' + effortKey}
 														class={
 															'block w-full rounded-md border border-darkgray-500 p-2.5 text-sm text-gray-900'
 														}
 														value={month.tentativeEffort}
 														onChange$={async (event, { value }) => {
+															const confirmedTentativeEffort =
+																parseInt(value, 10);
+															const fallbackConfirmedEffort =
+																100 - confirmedTentativeEffort;
+															if (
+																fallbackConfirmedEffort <
+																month.confirmedEffort
+															) {
+																month.confirmedEffort =
+																	fallbackConfirmedEffort;
+															}
 															const result = await updateEffortField(
-																userKey,
-																efforKey,
 																uid,
 																{
 																	...month,
-																	tentativeEffort: parseInt(
-																		value,
-																		10
-																	),
+																	tentativeEffort:
+																		confirmedTentativeEffort,
 																},
 																data
 															);
@@ -229,16 +251,19 @@ export const EffortTable = component$<EffortTableInterface>(
 
 												{!data.isCompany && (
 													<div class='col-span-2'>
-														<form class='w-full'>
+														<form
+															key={`table_note_${month.notes.length}_${uid}`}
+															class='w-full'
+														>
 															<label
 																class='text-sm font-normal'
-																for={'note_' + efforKey}
+																for={'note_' + effortKey}
 															>
 																{t('effort_table_note')}
 															</label>
 															<input
 																type='string'
-																id={'note_' + efforKey}
+																id={'note_' + effortKey}
 																placeholder={t(
 																	'effort_table_in_note'
 																)}
@@ -246,11 +271,12 @@ export const EffortTable = component$<EffortTableInterface>(
 																	'block w-full rounded-md border border-darkgray-500 p-2.5 text-sm text-gray-900'
 																}
 																value={month.notes}
-																onChange$={(event, { value }) => {
+																onChange$={async (
+																	event,
+																	{ value }
+																) => {
 																	const result =
-																		updateEffortField(
-																			userKey,
-																			efforKey,
+																		await updateEffortField(
 																			uid,
 																			{
 																				...month,

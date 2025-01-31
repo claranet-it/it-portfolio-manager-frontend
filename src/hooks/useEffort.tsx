@@ -21,23 +21,21 @@ export const useEffort = () => {
 	});
 
 	const loadEffort = $(async () => {
+		appStore.isLoading = true;
+
 		if (!Object.keys(appStore.configuration.skills).length) {
 			const configuration = await getConfiguration();
 			appStore.configuration = configuration;
 		}
 
 		effortSig.value = await getEffort();
+		appStore.isLoading = false;
 	});
 
 	const updateEffortField = $(
-		async (
-			userKey: number,
-			effortKey: number,
-			uid: string,
-			month: Month,
-			data: Omit<Effort, 'effort' | 'skill'>
-		) => {
+		async (uid: string, month: Month, data: Omit<Effort, 'effort' | 'skill'>) => {
 			let result = false;
+			appStore.isLoading = true;
 
 			try {
 				await putEffort(uid, data, month);
@@ -56,18 +54,10 @@ export const useEffort = () => {
 				result = false;
 			}
 
-			// In case of a successful update,
-			// the effort signal is updated with the new values and load from
-			// BE accurate values from the backend
 			if (result) {
-				effortSig.value[userKey][uid].effort[effortKey].confirmedEffort =
-					month.confirmedEffort;
-				effortSig.value[userKey][uid].effort[effortKey].tentativeEffort =
-					month.tentativeEffort;
-				effortSig.value[userKey][uid].effort[effortKey].notes = month.notes;
-
 				await loadEffort();
 			}
+			appStore.isLoading = false;
 
 			return Promise.resolve(result);
 		}

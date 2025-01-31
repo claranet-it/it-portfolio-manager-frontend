@@ -49,6 +49,8 @@ export const useTimeEntries = (
 	);
 
 	const updateTimeEntries = $(async (timeEntry: TimeEntryObject) => {
+		appStore.isLoading = true;
+
 		try {
 			if (await postTimeEntries(timeEntry, userImpersonationId?.value)) {
 				addEvent({
@@ -56,7 +58,7 @@ export const useTimeEntries = (
 					type: 'success',
 					autoclose: true,
 				});
-				loadTimeEntries(state.from, state.to, userImpersonationId);
+				await loadTimeEntries(state.from, state.to, userImpersonationId);
 			}
 		} catch (error) {
 			const { message } = error as Error;
@@ -65,6 +67,7 @@ export const useTimeEntries = (
 				type: 'danger',
 			});
 		}
+		appStore.isLoading = false;
 	});
 
 	const deleteProjectEntries = $((entry: TimeEntry) => {
