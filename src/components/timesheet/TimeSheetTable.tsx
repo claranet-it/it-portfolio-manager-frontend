@@ -304,13 +304,13 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																hours !== 0 &&
 																hours !== undefined && (
 																	<div
-																		class={`absolute ${dEntry?.startHour !== '00:00' ? '-bottom-8 left-2' : '-bottom-9 left-4'} `}
+																		class={'relative bottom-1'}
 																	>
 																		<Button
 																			key={`new-entry-${dailyEntries.length + 1}`}
 																			tabIndex={-1}
 																			variant={'link'}
-																			size={'xsmall'}
+																			size={'xxsmall'}
 																			onClick$={() =>
 																				setNewTimeEntry(
 																					formattedDate,
