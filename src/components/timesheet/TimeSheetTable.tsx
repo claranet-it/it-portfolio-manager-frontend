@@ -56,58 +56,39 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			timeEntriesState[project.name][date] = hours;
 
 			// This functions will ignore the change if the user passes over a time entry without editing it
-			// const ignoreChange = () => {
-			// 	const { index, hours, date, project, task, startHour, endHour, description } =
-			// 		timeEntryObject;
+			const ignoreChange = () => {
+				const { index, hours, date, project, task, startHour, endHour, description } =
+					timeEntryObject;
 
-			// 	if (timeEntriesState[project.name][date] !== hours) return false;
-			// 	// Check if the entry already exists
-			// 	const entryExists = state.dataTimeEntries.find(
-			// 		(entry) =>
-			// 			entry.index === index &&
-			// 			entry.date === date &&
-			// 			entry.project.name === project.name &&
-			// 			entry.project.type === project.type &&
-			// 			entry.task.name === task.name &&
-			// 			entry.description === description
-			// 	);
-			// 	// If the entry exists
-			// 	if (entryExists) {
-			// 		// If the start/end hours are the same (and exist), then the hours too have not changed
-			// 		if (startHour !== '00:00' && endHour !== '00:00') {
-			// 			if (
-			// 				entryExists.startHour === startHour &&
-			// 				entryExists.endHour === endHour
-			// 			) {
-			// 				return true;
-			// 			}
-			// 			return false;
-			// 		} else if (
-			// 			startHour === '00:00' &&
-			// 			endHour === '00:00' &&
-			// 			entryExists.startHour !== '00:00' &&
-			// 			entryExists.endHour !== '00:00'
-			// 		) {
-			// 			return false;
-			// 		} else if (
-			// 			startHour !== entryExists.startHour ||
-			// 			endHour !== entryExists.endHour
-			// 		) {
-			// 			return false;
-			// 		}
-			// 		// Return true if the new hours are the same as the existing hours
-			// 		return entryExists.hours === hours;
-			// 	} else {
-			// 		// If the entry does not exist
-			// 		// return true if the hours are 0
-			// 		return hours === 0;
-			// 	}
-			// };
+				// If the recorded hours for the date differ from the current state, return false
+				if (timeEntriesState[project.name][date] !== hours) return false;
 
-			// TODO: temporarily removing the ignoreChange function for debug purpose
-			// if (ignoreChange()) {
-			// 	return;
-			// }
+				// Find an existing entry matching the given criteria
+				const entryExists = state.dataTimeEntries.find(
+					(entry) =>
+						entry.index === index &&
+						entry.date === date &&
+						entry.project.name === project.name &&
+						entry.project.type === project.type &&
+						entry.task.name === task.name
+				);
+
+				// If no entry exists, ignore only if hours are zero
+				if (!entryExists) return hours === 0;
+
+				// Check if any of the key values have changed
+				const hasChanged =
+					entryExists.hours !== hours ||
+					entryExists.startHour !== startHour ||
+					entryExists.endHour !== endHour ||
+					entryExists.description !== description;
+
+				return !hasChanged;
+			};
+
+			if (ignoreChange()) {
+				return;
+			}
 
 			await updateTimeEntries(timeEntryObject);
 		});
