@@ -7,6 +7,7 @@ import {
 	removeCompaniesConnection,
 	setCompaniesConnection,
 } from 'src/services/networking';
+import { generateIcon } from 'src/utils/image';
 import { useNotification } from './useNotification';
 
 export type NetworkConnections = {
@@ -24,8 +25,20 @@ export const useNetworking = () => {
 	const fetchConnections = $(async () => {
 		appStore.isLoading = true;
 		try {
-			const existing = await getExistingConnections();
-			const available = await getAvailableConnections();
+			const existing = (await getExistingConnections()).map((company) => ({
+				...company,
+				image_url:
+					company.image_url && company.image_url !== ''
+						? company.image_url
+						: generateIcon(company.domain),
+			}));
+			const available = (await getAvailableConnections()).map((company) => ({
+				...company,
+				image_url:
+					company.image_url && company.image_url !== ''
+						? company.image_url
+						: generateIcon(company.domain),
+			}));
 
 			connections.value = { existing, available };
 		} catch (error) {

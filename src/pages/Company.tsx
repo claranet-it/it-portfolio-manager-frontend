@@ -152,7 +152,7 @@ export const Company = component$(() => {
 						<div class='grid content-center text-center md:flex-none lg:flex-none'>
 							<img
 								src={
-									company.value.image_url !== ''
+									company.value.image_url !== '' && company.value.image_url
 										? company.value.image_url
 										: generateIcon(company.value.domain)
 								}
