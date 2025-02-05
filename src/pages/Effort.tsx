@@ -1,6 +1,7 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { EffortMatrix } from '@models/effort';
 import { Month } from '@models/month';
+import { UserProfile } from '@models/user';
 import { AppContext } from 'src/app';
 import { EffortTable } from 'src/components/EffortTable';
 import { Filters } from 'src/components/Filters';
@@ -16,17 +17,18 @@ export const Effort = component$(() => {
 
 	const selectedCrewSig = useSignal('');
 	//const selectedSkillSig = useSignal('');
-	const selectedNameSig = useSignal('');
+	const selectedUsersSig = useSignal<UserProfile[]>([]);
 	const selectedServiceLineSig = useSignal('');
 	const onlyCompanySig = useSignal(false);
 
 	const filteredEffortSig = useComputed$<EffortMatrix>(() => {
 		let result = effortSig.value;
 		//Filter by Name
-		if (selectedNameSig.value) {
+		if (selectedUsersSig.value.length > 0) {
+			const selectedNames = selectedUsersSig.value.map((user) => user.name.toLowerCase());
 			result = result.filter((el) => {
 				const [{ name }] = Object.values(el);
-				return name.toLowerCase().includes(selectedNameSig.value.toLowerCase());
+				return selectedNames.includes(name.toLowerCase());
 			});
 		}
 
@@ -113,7 +115,7 @@ export const Effort = component$(() => {
 
 			<Filters
 				selectedCrew={selectedCrewSig}
-				selectedName={selectedNameSig}
+				selectedUsers={selectedUsersSig}
 				selectedServiceLine={selectedServiceLineSig}
 				onlyCompany={onlyCompanySig}
 			/>

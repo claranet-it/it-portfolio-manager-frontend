@@ -1,5 +1,6 @@
 import { component$, useComputed$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { SkillData, SkillMatrix } from '@models/skill';
+import { UserProfile } from '@models/user';
 import { useCompany } from 'src/hooks/useCompany';
 import { getSkillScore } from 'src/utils/skill';
 import { AppContext } from '../app';
@@ -17,15 +18,16 @@ export const Skills = component$(() => {
 	const selectedServiceLineSig = useSignal('');
 	const selectedCrewSig = useSignal('');
 	const selectedSkillSig = useSignal('');
-	const selectedNameSig = useSignal('');
+	const selectedUsersSig = useSignal<UserProfile[]>([]);
 
 	const originalSkillMatrixSig = useSignal<SkillMatrix>([]);
 	const filteredSkillMatrixSig = useComputed$<SkillMatrix>(() => {
 		let result = originalSkillMatrixSig.value;
-		if (selectedNameSig.value) {
+		if (selectedUsersSig.value.length > 0) {
+			const selectedNames = selectedUsersSig.value.map((user) => user.name.toLowerCase());
 			result = result.filter((sk) => {
 				const name = Object.keys(sk)[0];
-				return name.toLowerCase().indexOf(selectedNameSig.value.toLowerCase()) >= 0;
+				return selectedNames.indexOf(name.toLowerCase()) >= 0;
 			});
 		}
 		if (selectedCrewSig.value) {
@@ -43,9 +45,10 @@ export const Skills = component$(() => {
 		}
 
 		if (selectedServiceLineSig.value) {
+			const selectedNames = selectedUsersSig.value.map((user) => user.name.toLowerCase());
 			result = result.filter((sk) => {
 				const name = Object.keys(sk)[0];
-				return name.toLowerCase().indexOf(selectedNameSig.value.toLowerCase()) >= 0;
+				return selectedNames.indexOf(name.toLowerCase()) >= 0;
 			});
 		}
 		return result;
@@ -112,7 +115,7 @@ export const Skills = component$(() => {
 
 			<Filters
 				selectedCrew={selectedCrewSig}
-				selectedName={selectedNameSig}
+				selectedUsers={selectedUsersSig}
 				selectedServiceLine={selectedServiceLineSig}
 				selectedSkill={selectedSkillSig}
 			/>
