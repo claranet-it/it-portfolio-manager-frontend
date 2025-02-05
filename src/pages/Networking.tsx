@@ -39,8 +39,8 @@ export const Networking = component$(() => {
 		const subject = type === 'add' ? '[Brickly] New Connection' : '[Brickly] Remove Connection';
 		const body =
 			type === 'add'
-				? `Company ${company.value.domain} requires a connection with ${correspondent.domain}`
-				: `Company ${company.value.domain} requires the removal of the connection with ${correspondent.domain}`;
+				? `Company ${company.value.domain} requested a connection with ${correspondent.domain}`
+				: `Company ${company.value.domain} requested the removal of the connection with ${correspondent.domain}`;
 
 		const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
