@@ -33,6 +33,10 @@ export const useAuth = () => {
 			name: 'Google',
 			onClick: $(() => (selectedProvider.value = 'Google')),
 		},
+		{
+			name: 'Microsoft',
+			onClick: $(() => (selectedProvider.value = 'Microsoft')),
+		},
 	];
 
 	const handleBricklyToken = $(async (provider: Provider, providerToken: string) => {
@@ -84,6 +88,16 @@ export const useAuth = () => {
 		window.location.replace(`${import.meta.env.VITE_BACKEND_URL}/api/auth/google`);
 	});
 
+	const handleMicrosoftAuth = $(async (token: string | null) => {
+		if (token) {
+			await handleBricklyToken('Microsoft', token);
+		}
+	});
+
+	const redirectToMicrosoftAuth = $(() => {
+		window.location.replace(`${import.meta.env.VITE_BACKEND_URL}/api/auth/microsoft`);
+	});
+
 	useTask$(async () => {
 		const url = new URL(window.location.href);
 		const code = url.searchParams.get('code');
@@ -117,6 +131,10 @@ export const useAuth = () => {
 						await handleGoogleAuth(token);
 						break;
 					}
+					case 'Microsoft': {
+						await handleMicrosoftAuth(token);
+						break;
+					}
 					default: {
 						await removeProvider();
 						isLoading.value = false;
@@ -147,6 +165,10 @@ export const useAuth = () => {
 						}
 						case 'Google': {
 							redirectToGoogleAuth();
+							break;
+						}
+						case 'Microsoft': {
+							redirectToMicrosoftAuth();
 							break;
 						}
 					}

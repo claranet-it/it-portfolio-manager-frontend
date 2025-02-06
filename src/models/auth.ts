@@ -1,4 +1,4 @@
-export type Provider = 'Claranet' | 'Google';
+export type Provider = 'Claranet' | 'Google' | 'Microsoft';
 
 export interface AuthProviderButton {
 	name: Provider;
