@@ -27,6 +27,7 @@ import { JavaScript } from './JavaScript';
 import { Kotlin } from './Kotlin';
 import { Kubernetes } from './Kubernetes';
 import { Lambda } from './Lamda';
+import { Microsoft } from './Microsoft';
 import { PHP } from './PHP';
 import { Python } from './Python';
 import { QuickSight } from './QuickSight';
@@ -116,6 +117,8 @@ export const getIcon = (skill: string) => {
 			return <Claranet />;
 		case 'Google':
 			return <Google />;
+		case 'Microsoft':
+			return <Microsoft />;
 		case 'BricklyLogo':
 			return <BricklyLogo />;
 		case 'BricklyNaming':
