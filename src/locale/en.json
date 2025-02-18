@@ -74,6 +74,7 @@
 	"ACTION_CONFIRM": "Confirm",
 	"ACTION_CANCEL": "Cancel",
 	"ACTION_DELETE": "Delete",
+	"ACTION_SAVE": "Save",
 	"CLARANET_CREDITS": "Made by",
 	"LOGIN_TITLE": "Login with",
 	"UNAUTHORIZED": "Unauthorized, please try again",
@@ -214,5 +215,8 @@
 	"BUSINESS_CARD_SHARE_TITLE": "Connect with #name",
 	"BUSINESS_CARD_SHARE_TEXT": "Check out #name's digital business card. Tap the link to save the contact and get in touch anytime!",
 	"COPY_TO_CLIPBOARD": "Copy to clipboard",
-	"COPY_TO_CLIPBOARD_SUCCESS": "Copied!"
+	"COPY_TO_CLIPBOARD_SUCCESS": "Copied!",
+	"EDUCATION": "Education",
+	"EDUCATION_TITLE": "My education",
+	"ADD_NEW_EDUCATION_ENTRY": "Add new education"
 }
