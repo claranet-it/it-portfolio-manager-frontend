@@ -323,7 +323,7 @@ export const Company = component$(() => {
 													options={Object.entries(roles)
 														.filter(
 															([role, _]) =>
-																roleHierarchy[userAcl.value.role] >
+																roleHierarchy[userAcl.value.role] >=
 																roleHierarchy[role as Roles]
 														)
 														.map(([role, name]) => ({
