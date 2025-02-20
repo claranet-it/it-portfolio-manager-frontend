@@ -8,6 +8,7 @@ import { BusinessCardGenerator } from '../components/BusinessCardGenerator';
 import { SkillMatrix } from '../components/SkillMatrix';
 import { UserProfileCard } from '../components/UserProfileCard';
 import { t } from '../locale/labels';
+import { WallpaperGenerator } from 'src/components/WallpaperGenerator';
 
 export const Profile = component$(() => {
 	const { usersOptions, userSelected, userIdSelected } = usePermissionAccess();
@@ -34,6 +35,11 @@ export const Profile = component$(() => {
 					},
 				]
 			: []),
+		{
+			id: 'wallpaper',
+			label: t('WALLPAPER'),
+			content: $(() => <WallpaperGenerator />),
+		},
 	];
 
 	return (
