@@ -220,5 +220,7 @@
 	"WALLPAPER": "Wallpaper",
 	"WALLPAPER_TITLE": "My wallpaper",
 	"WALLPAPER_PREVIEW": "Preview",
-	"WALLPAPER_DOWNLOAD": "Download"
+	"WALLPAPER_DOWNLOAD": "Download",
+	"WALLPAPER_DEPARTMENT": "Department",
+	"WALLPAPER_IMAGE": "Image"
 }
