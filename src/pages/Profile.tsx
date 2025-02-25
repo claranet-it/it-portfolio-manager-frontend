@@ -1,14 +1,14 @@
 import { $, component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { UserMe } from '@models/user';
+import { BackgroundGenerator } from 'src/components/BackgroundGenerator';
 import { Tabs } from 'src/components/Tabs';
 import { usePermissionAccess } from 'src/hooks/usePermissionAccess';
-import { AUTH_USER_KEY, ITALY_COMPANY_ID, FRANCE_COMPANY_ID } from 'src/utils/constants';
+import { AUTH_USER_KEY, FRANCE_COMPANY_ID, ITALY_COMPANY_ID } from 'src/utils/constants';
 import { get } from 'src/utils/localStorage/localStorage';
 import { BusinessCardGenerator } from '../components/BusinessCardGenerator';
 import { SkillMatrix } from '../components/SkillMatrix';
 import { UserProfileCard } from '../components/UserProfileCard';
 import { t } from '../locale/labels';
-import { WallpaperGenerator } from 'src/components/WallpaperGenerator';
 
 export const Profile = component$(() => {
 	const { usersOptions, userSelected, userIdSelected } = usePermissionAccess();
@@ -39,9 +39,9 @@ export const Profile = component$(() => {
 		currentUser.value?.company?.toLowerCase() === ITALY_COMPANY_ID
 			? [
 					{
-						id: 'wallpaper',
-						label: t('WALLPAPER'),
-						content: $(() => <WallpaperGenerator />),
+						id: 'background',
+						label: t('BACKGROUND'),
+						content: $(() => <BackgroundGenerator />),
 					},
 				]
 			: []),

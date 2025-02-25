@@ -1,7 +1,7 @@
-import { WallpaperData } from '@models/wallpaper';
+import { BackgroundData } from '@models/background';
 import { drawBackground, drawText } from './canvas';
 
-type WallpaperConf = {
+type BackgroundConf = {
 	width: number;
 	height: number;
 	name: {
@@ -28,7 +28,7 @@ const SMALL_FONT = '20pt Arial';
 const FONT_COLOR_FOR_DARK_BG = '#FFFFFF';
 const FONT_COLOR_FOR_LIGHT_BG = '#243842';
 
-export const WALLPAPER_CONF: WallpaperConf = {
+export const BACKGROUND_CONF: BackgroundConf = {
 	width: 1920,
 	height: 1080,
 	name: {
@@ -48,16 +48,16 @@ export const WALLPAPER_CONF: WallpaperConf = {
 	},
 };
 
-export class WallpaperCanvas {
+export class BackgroundCanvas {
 	private canvas: HTMLCanvasElement;
-	private conf: WallpaperConf;
+	private conf: BackgroundConf;
 	private backgroundImage: HTMLImageElement = new Image();
 
 	constructor(private container: HTMLElement) {
 		this.canvas = document.createElement('canvas');
 		this.canvas.style.display = 'none';
 		this.container.appendChild(this.canvas);
-		this.conf = WALLPAPER_CONF;
+		this.conf = BACKGROUND_CONF;
 	}
 
 	private getTextColor(ctx: CanvasRenderingContext2D, x: number, y: number) {
@@ -81,7 +81,7 @@ export class WallpaperCanvas {
 		return img;
 	}
 
-	public async print(data: WallpaperData): Promise<void> {
+	public async print(data: BackgroundData): Promise<void> {
 		this.canvas.width = this.conf.width;
 		this.canvas.height = this.conf.height;
 

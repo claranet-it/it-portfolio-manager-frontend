@@ -217,10 +217,10 @@
 	"COPY_TO_CLIPBOARD_SUCCESS": "Copied!",
 	"JOIN_CTA_TITLE": "Interested in joining?",
 	"JOIN_CTA_BUTTON": "Contact us!",
-	"WALLPAPER": "Wallpaper",
-	"WALLPAPER_TITLE": "My wallpaper",
-	"WALLPAPER_PREVIEW": "Preview",
-	"WALLPAPER_DOWNLOAD": "Download",
-	"WALLPAPER_DEPARTMENT": "Department",
-	"WALLPAPER_IMAGE": "Image"
+	"BACKGROUND": "Background",
+	"BACKGROUND_TITLE": "My background",
+	"BACKGROUND_PREVIEW": "Preview",
+	"BACKGROUND_DOWNLOAD": "Download",
+	"BACKGROUND_DEPARTMENT": "Department",
+	"BACKGROUND_IMAGE": "Image"
 }
