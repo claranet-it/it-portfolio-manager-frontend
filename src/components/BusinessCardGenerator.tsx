@@ -15,7 +15,7 @@ import { AppContext } from 'src/app';
 import { useBusinessCard } from 'src/hooks/useBusinessCard';
 import { useNotification } from 'src/hooks/useNotification';
 import { t } from 'src/locale/labels';
-import { BUSINESS_CARD_CONF, BusinessCardCanvas } from 'src/utils/business-card-canvas';
+import { BUSINESS_CARD_CONF, BusinessCardCanvas } from 'src/utils/canvas/business-card-canvas';
 import { AUTH_USER_KEY, PUBLIC_PROFILE_ROUTE } from 'src/utils/constants';
 import { download } from 'src/utils/download';
 import { get } from 'src/utils/localStorage/localStorage';

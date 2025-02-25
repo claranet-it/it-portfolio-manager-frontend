@@ -216,5 +216,11 @@
 	"COPY_TO_CLIPBOARD": "Copy to clipboard",
 	"COPY_TO_CLIPBOARD_SUCCESS": "Copied!",
 	"JOIN_CTA_TITLE": "Interested in joining?",
-	"JOIN_CTA_BUTTON": "Contact us!"
+	"JOIN_CTA_BUTTON": "Contact us!",
+	"BACKGROUND": "Background",
+	"BACKGROUND_TITLE": "My background",
+	"BACKGROUND_PREVIEW": "Preview",
+	"BACKGROUND_DOWNLOAD": "Download",
+	"BACKGROUND_DEPARTMENT": "Department",
+	"BACKGROUND_IMAGE": "Image"
 }
