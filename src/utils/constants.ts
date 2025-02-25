@@ -54,6 +54,7 @@ export enum Roles {
 }
 
 export const ITALY_COMPANY_ID = 'it'; // TODO: temporary, change when final company id is defined
+export const FRANCE_COMPANY_ID = 'fr'; // TODO: temporary, change when final company id is defined
 
 export const PUBLIC_PROFILE_ROUTE = 'public-profile/:email';
 export const PUBLIC_ROUTES: Route[] = [
