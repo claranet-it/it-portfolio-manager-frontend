@@ -218,5 +218,8 @@
 	"COPY_TO_CLIPBOARD_SUCCESS": "Copied!",
 	"EDUCATION": "Education",
 	"EDUCATION_TITLE": "My education",
-	"ADD_NEW_EDUCATION_ENTRY": "Add new education"
+	"ADD_NEW_EDUCATION_ENTRY": "Add new education",
+	"SCHOOL": "School/University",
+	"SCHOOL_INSERT_LABEL": "Insert school...",
+	"SELECT_YEAR": "Select a year"
 }

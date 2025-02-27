@@ -2,6 +2,7 @@ import { Signal, useSignal, useTask$ } from '@builder.io/qwik';
 import { AuthManager } from './pages/AuthManager';
 import { ChartPreview } from './pages/ChartPreview';
 import { Company } from './pages/Company';
+import { CurriculumVitae } from './pages/CurriculumVitae';
 import { Effort } from './pages/Effort';
 import { Maintenance } from './pages/Maintenance';
 import { Networking } from './pages/Networking';
@@ -14,7 +15,7 @@ import { Report } from './pages/Report';
 import { Search } from './pages/Search';
 import { Skills } from './pages/Skills';
 import { Timesheet } from './pages/Timesheet';
-import { PUBLIC_ROUTES, PUBLIC_PROFILE_ROUTE } from './utils/constants';
+import { CURRICULUM_VITAE_ROUTE, PUBLIC_PROFILE_ROUTE, PUBLIC_ROUTES } from './utils/constants';
 import { isMaintenanceMode } from './utils/maintenance';
 
 export type Route = keyof typeof routes;
@@ -37,6 +38,7 @@ export const routes = {
 	[PUBLIC_PROFILE_ROUTE]: <PublicProfile />,
 	privacy_policy: <PrivacyPolicy />,
 	maintenance: <Maintenance />,
+	[CURRICULUM_VITAE_ROUTE]: <CurriculumVitae />,
 };
 
 export const isPublicRoute = (route: string): route is Route => {
