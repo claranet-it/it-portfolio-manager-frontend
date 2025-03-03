@@ -68,7 +68,9 @@ export const Company = component$(() => {
 			logoUrl.value = company.value.image_url;
 		}),
 		onConfirm$: $(async () => {
-			if (await updateCompanyLogo(logoUrl.value)) {
+			const newLogo = logoUrl.value;
+			console.log('New logo sent! ', newLogo);
+			if (await updateCompanyLogo(newLogo)) {
 				addEvent({
 					type: 'success',
 					message: t('COMPANY_LOGO_SUCCESSFULLY_UPDATED'),

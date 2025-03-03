@@ -1,11 +1,11 @@
-import { $, useContext, useSignal } from '@builder.io/qwik';
+import { $, Signal, useContext, useSignal } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { AppContext } from 'src/app';
 import { deleteCustomer, editCustomer, getCustomers } from 'src/services/customer';
 import { getProjects } from 'src/services/projects';
 
-export const useCustomers = () => {
+export const useCustomers = (hideCompleted?: Signal<boolean>) => {
 	const appStore = useContext(AppContext);
 
 	const isLoading = useSignal<boolean>(false);
@@ -14,7 +14,7 @@ export const useCustomers = () => {
 	const fetchCustomers = $(async () => {
 		customers.value = [];
 		isLoading.value = true;
-		customers.value = await getCustomers();
+		customers.value = await getCustomers(hideCompleted?.value);
 		isLoading.value = false;
 	});
 
