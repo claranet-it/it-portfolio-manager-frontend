@@ -68,9 +68,7 @@ export const Company = component$(() => {
 			logoUrl.value = company.value.image_url;
 		}),
 		onConfirm$: $(async () => {
-			const newLogo = logoUrl.value;
-			console.log('New logo sent! ', newLogo);
-			if (await updateCompanyLogo(newLogo)) {
+			if (await updateCompanyLogo(logoUrl.value)) {
 				addEvent({
 					type: 'success',
 					message: t('COMPANY_LOGO_SUCCESSFULLY_UPDATED'),
@@ -360,7 +358,13 @@ export const Company = component$(() => {
 
 			<Modal state={companyLogoModalState}>
 				<form class='space-y-3'>
-					<Input label={t('LOGO_URL_LABEL')} bindValue={logoUrl} />
+					<Input
+						label={t('LOGO_URL_LABEL')}
+						bindValue={logoUrl}
+						onChange$={(event) =>
+							(logoUrl.value = (event.target as HTMLInputElement).value)
+						}
+					/>
 				</form>
 			</Modal>
 		</>
