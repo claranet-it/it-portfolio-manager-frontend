@@ -2,9 +2,15 @@ import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
-export const getCustomers = async (): Promise<Customer[]> =>
+export const getCustomers = async (hideCompleted?: boolean): Promise<Customer[]> =>
 	getHttpResponse<Customer[]>({
 		path: `task/customer`,
+		params: {
+			...(hideCompleted !== undefined &&
+				hideCompleted !== false && {
+					completed: 'false',
+				}),
+		},
 	});
 
 export const editCustomer = async (

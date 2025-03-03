@@ -40,14 +40,15 @@ interface ProjectAccordionProps {
 		project?: string;
 		beenOpened?: boolean;
 	}>;
+	hideCompleted: Signal<boolean>;
 }
 
 export const ProjectAccordion = component$<ProjectAccordionProps>(
-	({ customer, project, refresh, preSelectedData, preOpenData }) => {
+	({ customer, project, refresh, preSelectedData, preOpenData, hideCompleted }) => {
 		const visibleBody = useSignal(false);
 		const { addEvent } = useNotification();
-		const { tasks, fetchTasks, isLoading } = useTasks();
-		const { updateProject, removeProject } = useProjects();
+		const { tasks, fetchTasks, isLoading } = useTasks(hideCompleted);
+		const { updateProject, removeProject } = useProjects(hideCompleted);
 
 		const canAccess = useComputed$(async () => limitRoleAccess(Roles.ADMIN));
 

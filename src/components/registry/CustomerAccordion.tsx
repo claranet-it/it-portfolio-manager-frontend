@@ -37,13 +37,14 @@ interface CustomerAccordionProps {
 		project?: string;
 		beenOpened?: boolean;
 	}>;
+	hideCompleted: Signal<boolean>;
 }
 
 export const CustomerAccordion = component$<CustomerAccordionProps>(
-	({ customer, refresh, preSelectedData, preOpenData }) => {
+	({ customer, refresh, preSelectedData, preOpenData, hideCompleted }) => {
 		const { addEvent } = useNotification();
 		const { updateCustomer, removeCustomer } = useCustomers();
-		const { projects, fetchProjects, isLoading } = useProjects();
+		const { projects, fetchProjects, isLoading } = useProjects(hideCompleted);
 		const visibleBody = useSignal(false);
 
 		const name = useSignal(customer);
@@ -173,6 +174,7 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 											refresh={refresh}
 											preSelectedData={preSelectedData}
 											preOpenData={preOpenData}
+											hideCompleted={hideCompleted}
 										/>
 									);
 								})}
