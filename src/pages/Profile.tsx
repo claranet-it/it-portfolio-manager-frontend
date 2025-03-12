@@ -1,6 +1,6 @@
 import { $, component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { UserMe } from '@models/user';
-import { Education } from 'src/components/Education';
+import { MyCurriculum } from 'src/components/curriculum/MyCurriculum';
 import { Tabs } from 'src/components/Tabs';
 import { usePermissionAccess } from 'src/hooks/usePermissionAccess';
 import { AUTH_USER_KEY, ITALY_COMPANY_ID } from 'src/utils/constants';
@@ -30,8 +30,8 @@ export const Profile = component$(() => {
 			? [
 					{
 						id: 'education',
-						label: t('EDUCATION'),
-						content: $(() => <Education />),
+						label: t('CV'),
+						content: $(() => <MyCurriculum />),
 					},
 					{
 						id: 'business-card',

@@ -1,16 +1,22 @@
 export type CurriculumVitaeData = {
 	name: string;
 	email: string;
-	role?: string;
-	intro?: string;
-	main_skills?: string[];
-	education?: ExperienceData[];
-	work?: ExperienceData[];
+	role: string;
+	summary?: string;
+	main_skills?: string;
+	education?: Education[];
+	work?: Work[];
 };
 
-export type ExperienceData = {
-	description?: string;
-	year_start?: number;
+export type Education = {
+	note?: string;
+	year_start: number;
 	year_end?: number;
-	institution?: string;
+	institution: string;
+	current?: boolean;
+	id: string;
+};
+
+export type Work = Education & {
+	role?: string;
 };
