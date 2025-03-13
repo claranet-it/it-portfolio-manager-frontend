@@ -18,14 +18,6 @@ export const EducationForm = component$<NewEducationFormProps>(() => {
 		endYear.value = date;
 	});
 
-	const _handleSubmit = $(() => {
-		console.log('##### form');
-		console.log('##### title', title.value);
-		console.log('##### description', description.value);
-		console.log('##### start year', startYear.value);
-		console.log('##### end year', startYear.value);
-	});
-
 	return (
 		<div class='w-96'>
 			<form class='space-y-3'>

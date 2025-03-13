@@ -1,15 +1,10 @@
-import { $, component$, useSignal } from '@builder.io/qwik';
+import { component$, useSignal } from '@builder.io/qwik';
 import { t } from '../../locale/labels';
 
 interface AboutMeFormProps {}
 
 export const SkillsForm = component$<AboutMeFormProps>(() => {
 	const description = useSignal<string>('');
-
-	const _handleSubmit = $(() => {
-		console.log('##### form');
-		console.log('##### description', description.value);
-	});
 
 	return (
 		<div class='w-96'>
