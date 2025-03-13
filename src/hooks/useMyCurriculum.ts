@@ -34,6 +34,7 @@ export const useMyCurriculum = () => {
 				main_skills: 'Agile, Management, jira',
 				education: [
 					{
+						id: '1',
 						note: "Master's degree",
 						institution: 'University',
 						year_start: 2015,
@@ -43,6 +44,7 @@ export const useMyCurriculum = () => {
 				],
 				work: [
 					{
+						id: '2',
 						note: 'R&D',
 						role: 'developer',
 						institution: 'Company',
@@ -51,6 +53,7 @@ export const useMyCurriculum = () => {
 						current: false,
 					},
 					{
+						id: '3',
 						note: 'Ricercatore',
 						role: 'stage',
 						institution: 'Company X',

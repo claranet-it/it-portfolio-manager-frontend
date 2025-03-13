@@ -18,60 +18,69 @@ export const CurriculumVitae = component$(() => {
 				</div>
 			</header>
 			<div class='w-full space-y-6 px-6 pb-16 pt-2.5'>
-				<div>
-					<h1 class='me-4 text-3xl font-bold text-darkgray-900'>
-						{curriculumVitae.value.name}
-					</h1>
-					<p class='text-xl text-gray-600'>
-						<em>{curriculumVitae.value.role}</em>
-					</p>
-				</div>
-				<div class='space-y-4 text-gray-600'>
-					<p class='text-justify'>{curriculumVitae.value.summary}</p>
-				</div>
-				<div class='space-y-4 text-gray-600'>
-					<h2 class='me-4 text-2xl font-bold text-darkgray-900'>Main skills</h2>
+				{JSON.stringify(curriculumVitae.value) === '{}' ? (
+					<div>Nessun dato salvato</div>
+				) : (
+					<>
+						<div>
+							<h1 class='me-4 text-3xl font-bold text-darkgray-900'>
+								{curriculumVitae.value.name}
+							</h1>
+							<p class='text-xl text-gray-600'>
+								<em>{curriculumVitae.value.role}</em>
+							</p>
+						</div>
+						<div class='space-y-4 text-gray-600'>
+							<p class='text-justify'>{curriculumVitae.value.summary}</p>
+						</div>
+						<div class='space-y-4 text-gray-600'>
+							<h2 class='me-4 text-2xl font-bold text-darkgray-900'>Main skills</h2>
 
-					{curriculumVitae.value.main_skills}
-				</div>
+							{curriculumVitae.value.main_skills}
+						</div>
 
-				<div class='space-y-4 text-gray-600'>
-					<h2 class='me-4 text-2xl font-bold text-darkgray-900'>Education</h2>
-					{curriculumVitae.value.education?.map(
-						({ year_start, year_end, note, institution }) => {
-							return (
-								<div>
-									<div>
-										{year_start} - {year_end}
-									</div>
+						<div class='space-y-4 text-gray-600'>
+							<h2 class='me-4 text-2xl font-bold text-darkgray-900'>Education</h2>
+							{curriculumVitae.value.education?.map(
+								({ year_start, year_end, note, institution }) => {
+									return (
+										<div>
+											<div>
+												{year_start} - {year_end}
+											</div>
 
-									<strong>{institution}</strong>
-									<div>{note}</div>
-								</div>
-							);
-						}
-					)}
-				</div>
+											<strong>{institution}</strong>
+											<div>{note}</div>
+										</div>
+									);
+								}
+							)}
+						</div>
 
-				<div class='space-y-4 text-gray-600'>
-					<h2 class='me-4 text-2xl font-bold text-darkgray-900'>Work experience</h2>
-					{curriculumVitae.value.work?.map(
-						({ year_start, year_end, role, note, institution }) => {
-							return (
-								<div>
-									<div>
-										{year_start} - {year_end}
-									</div>
+						<div class='space-y-4 text-gray-600'>
+							<h2 class='me-4 text-2xl font-bold text-darkgray-900'>
+								Work experience
+							</h2>
+							{curriculumVitae.value.work?.map(
+								({ year_start, year_end, role, note, institution }) => {
+									return (
+										<div>
+											<div>
+												{year_start} - {year_end}
+											</div>
 
-									<strong>{institution}</strong>
-									<div>{role}</div>
-									<div>{note}</div>
-								</div>
-							);
-						}
-					)}
-				</div>
+											<strong>{institution}</strong>
+											<div>{role}</div>
+											<div>{note}</div>
+										</div>
+									);
+								}
+							)}
+						</div>
+					</>
+				)}
 			</div>
+
 			<footer class='space-y-6 border-t border-t-darkgray-300 bg-white px-6 pb-2 pt-2 text-[8px] print:fixed print:bottom-0 print:left-0'>
 				<span class='font-bold text-red-600'> Claranet S.r.l. </span> Società con socio
 				unico Claranet Group Limited Capitale Sociale €10.000 interamente versato. Corso
