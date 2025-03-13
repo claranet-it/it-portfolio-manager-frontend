@@ -27,21 +27,18 @@ export const CurriculumVitae = component$(() => {
 					</p>
 				</div>
 				<div class='space-y-4 text-gray-600'>
-					<p class='text-justify'>{curriculumVitae.value.intro}</p>
+					<p class='text-justify'>{curriculumVitae.value.summary}</p>
 				</div>
 				<div class='space-y-4 text-gray-600'>
 					<h2 class='me-4 text-2xl font-bold text-darkgray-900'>Main skills</h2>
-					<ul>
-						{curriculumVitae.value.main_skills?.map((skill: any) => (
-							<li class='ml-6 list-disc'>{skill}</li>
-						))}
-					</ul>
+
+					{curriculumVitae.value.main_skills}
 				</div>
 
 				<div class='space-y-4 text-gray-600'>
 					<h2 class='me-4 text-2xl font-bold text-darkgray-900'>Education</h2>
 					{curriculumVitae.value.education?.map(
-						({ year_start, year_end, description, institution }) => {
+						({ year_start, year_end, note, institution }) => {
 							return (
 								<div>
 									<div>
@@ -49,7 +46,7 @@ export const CurriculumVitae = component$(() => {
 									</div>
 
 									<strong>{institution}</strong>
-									<div>{description}</div>
+									<div>{note}</div>
 								</div>
 							);
 						}
@@ -59,7 +56,7 @@ export const CurriculumVitae = component$(() => {
 				<div class='space-y-4 text-gray-600'>
 					<h2 class='me-4 text-2xl font-bold text-darkgray-900'>Work experience</h2>
 					{curriculumVitae.value.work?.map(
-						({ year_start, year_end, description, institution }) => {
+						({ year_start, year_end, role, note, institution }) => {
 							return (
 								<div>
 									<div>
@@ -67,7 +64,8 @@ export const CurriculumVitae = component$(() => {
 									</div>
 
 									<strong>{institution}</strong>
-									<div>{description}</div>
+									<div>{role}</div>
+									<div>{note}</div>
 								</div>
 							);
 						}
