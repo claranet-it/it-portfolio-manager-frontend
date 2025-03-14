@@ -2,14 +2,14 @@ import { $, useStore, useTask$ } from '@builder.io/qwik';
 import { Education as EducationType } from '@models/curriculumVitae';
 import { ModalState } from '@models/modalState';
 import { t } from 'src/locale/labels';
-type FormWEducationType = {
+type FormEducationType = {
 	startYear?: number;
 	endYear?: number;
 	institution?: string;
 	notes?: string;
 };
 export const useEducation = (work: EducationType[] | undefined) => {
-	const formGroup = useStore({} as FormWEducationType);
+	const formGroup = useStore({} as FormEducationType);
 	const resetForm = $(() => {
 		formGroup.startYear = undefined;
 		formGroup.endYear = undefined;

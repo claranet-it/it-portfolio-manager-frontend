@@ -1,6 +1,6 @@
 import { component$, useVisibleTask$ } from '@builder.io/qwik';
 import { getIcon } from 'src/components/icons';
-import { useCurriculumVitae } from 'src/hooks/useCurriculumVitae';
+import { useCurriculumVitae } from 'src/hooks/curriculum/useCurriculumVitae';
 
 export const CurriculumVitae = component$(() => {
 	const { curriculumVitae, initCurriculumVitae } = useCurriculumVitae();
@@ -69,8 +69,9 @@ export const CurriculumVitae = component$(() => {
 												{year_start} - {year_end}
 											</div>
 
-											<strong>{institution}</strong>
-											<div>{role}</div>
+											<strong>
+												{role} &#64;{institution}
+											</strong>
 											<div>{note}</div>
 										</div>
 									);

@@ -1,24 +1,26 @@
-import { component$, useSignal } from '@builder.io/qwik';
+import { component$ } from '@builder.io/qwik';
 import { t } from '../../locale/labels';
 import { Input } from '../form/Input';
 
-interface AboutMeFormProps {}
+interface Props {
+	formGroup: {
+		role?: string;
+		summary?: string;
+	};
+}
 
-export const AboutMeForm = component$<AboutMeFormProps>(() => {
-	const title = useSignal<string>('');
-	const description = useSignal<string>('');
-
+export const AboutMeForm = component$<Props>(({ formGroup }) => {
 	return (
 		<div class='w-96'>
 			<form class='space-y-3'>
 				<Input
 					type='text'
-					value={title.value}
+					value={formGroup.role}
 					label={t('ROLE_LABEL')}
 					styleClass='w-full'
 					placeholder={t('ROLE_INSERT_LABEL')}
 					onInput$={(_, el) => {
-						title.value = el.value;
+						formGroup.role = el.value;
 					}}
 				/>
 				<div>
@@ -31,11 +33,11 @@ export const AboutMeForm = component$<AboutMeFormProps>(() => {
 					<textarea
 						id='education-description'
 						rows={4}
-						value={description.value}
+						value={formGroup.summary}
 						class='mt-0 block w-full rounded-md border border-gray-500 bg-white-100 p-2.5 text-sm text-gray-900'
 						placeholder={t('SUMMARY_INSERT_LABEL')}
 						onInput$={(_, el) => {
-							description.value = el.value;
+							formGroup.summary = el.value;
 						}}
 					></textarea>
 				</div>

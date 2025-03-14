@@ -1,5 +1,5 @@
-import { $, component$, useComputed$, useStore } from '@builder.io/qwik';
-import { ModalState } from '@models/modalState';
+import { component$ } from '@builder.io/qwik';
+import { useSkills } from 'src/hooks/curriculum/useSkills';
 import { t } from 'src/locale/labels';
 import { getIcon } from '../icons';
 import { Modal } from '../modals/Modal';
@@ -10,17 +10,7 @@ interface Props {
 }
 
 export const Skills = component$<Props>(({ skills }) => {
-	const mode = useComputed$(() => {
-		return skills ? 'edit' : 'new';
-	});
-
-	const newFormModalState = useStore<ModalState>({
-		title: mode.value === 'edit' ? t('SKILLS_EDIT') : t('SKILLS_ADD'),
-		onCancel$: $(() => {}),
-		onConfirm$: $(() => {}),
-		cancelLabel: t('ACTION_CANCEL'),
-		confirmLabel: t('ACTION_SAVE'),
-	});
+	const { formModalState, mode, skillSignal, openDialog } = useSkills(skills);
 
 	return (
 		<>
@@ -28,13 +18,7 @@ export const Skills = component$<Props>(({ skills }) => {
 				<div class='font-bold text-dark-grey'>{t('SKILLS_TITLE')}</div>
 				<div>
 					<div class='flex w-full flex-row'>
-						<button
-							id='open-new-education-bt'
-							onClick$={() => {
-								newFormModalState.isVisible = true;
-							}}
-							type='button'
-						>
+						<button id='open-new-education-bt' onClick$={openDialog} type='button'>
 							<div class='content flex flex-row space-x-1 text-clara-red'>
 								<span class='content-center text-xl'>
 									{mode.value === 'edit' ? getIcon('EditRed') : getIcon('Add')}
@@ -50,8 +34,8 @@ export const Skills = component$<Props>(({ skills }) => {
 
 			<div class='m-0 mt-2 w-full'>{skills}</div>
 
-			<Modal state={newFormModalState}>
-				<SkillsForm />
+			<Modal state={formModalState}>
+				<SkillsForm description={skillSignal} />
 			</Modal>
 		</>
 	);

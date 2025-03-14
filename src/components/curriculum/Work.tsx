@@ -39,35 +39,35 @@ export const Work = component$<Props>(({ work }) => {
 				</div>
 			</div>
 			<div class='m-0 mt-2 w-full'>
-				{work?.map((wrk) => {
+				{work?.map(({ year_start, year_end, role, note, institution, id }) => {
 					return (
 						<div
-							key={wrk.id}
+							key={id}
 							class='mb-4 flex items-center justify-between border-b border-gray-200 p-2 pl-0'
 						>
 							<div>
 								<h2 class='text-xs text-darkgray-900'>
-									{wrk.year_start} - {wrk.year_end}
+									{year_start} - {year_end}
 								</h2>
 								<h1 class='text-xl font-bold text-darkgray-900'>
-									{wrk.institution}
+									{role} &#64;{institution}
 								</h1>
-								<h3 class='text-base font-normal text-darkgray-900'>{wrk.role}</h3>
-								<h3 class='text-base font-normal text-darkgray-900'>{wrk.note}</h3>
+
+								<h3 class='text-base font-normal text-darkgray-900'>{note}</h3>
 							</div>
 							<div>
 								<OptionDropdown
-									id={`work-${wrk.id}`}
+									id={`work-${id}`}
 									icon={getIcon('V3DotsBlack')}
 									label={''}
 									options={[
 										{
 											value: t('WORK_EDIT'),
-											onChange: $(() => openEditDialog(wrk.id)),
+											onChange: $(() => openEditDialog(id)),
 										},
 										{
 											value: t('WORK_DELETE'),
-											onChange: $(() => openDeleteDialog(wrk.id)),
+											onChange: $(() => openDeleteDialog(id)),
 											class: 'text-red-500',
 										},
 									]}

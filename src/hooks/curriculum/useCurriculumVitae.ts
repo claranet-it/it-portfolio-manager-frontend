@@ -2,7 +2,6 @@ import { $, useContext, useSignal } from '@builder.io/qwik';
 import { CurriculumVitaeData } from '@models/curriculumVitae';
 import { AppContext } from 'src/app';
 import { findMatchingRoute } from 'src/router';
-import { getCurriculumByEmail } from 'src/services/curriculum';
 import { validateEmail } from 'src/utils/email';
 import { useNotification } from '../useNotification';
 
@@ -20,8 +19,8 @@ export const useCurriculumVitae = () => {
 		if (!email || !validateEmail(email)) return;
 
 		try {
-			curriculumVitae.value = await getCurriculumByEmail(email);
-			/* curriculumVitae.value = {
+			/* curriculumVitae.value = await getCurriculumByEmail(email); */
+			curriculumVitae.value = {
 				name: 'Maria Teresa Graziano',
 				email: 'maria.teresa.graziano@claranet.com',
 				role: 'Frontend Developer',
@@ -57,7 +56,7 @@ export const useCurriculumVitae = () => {
 						current: false,
 					},
 				],
-			}; */
+			};
 		} catch (error) {
 			const { message } = error as Error;
 			addEvent({
