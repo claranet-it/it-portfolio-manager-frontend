@@ -4,7 +4,7 @@ import { AppContext } from 'src/app';
 import { findMatchingRoute } from 'src/router';
 import { getCurriculumByEmail } from 'src/services/curriculum';
 import { validateEmail } from 'src/utils/email';
-import { useNotification } from './useNotification';
+import { useNotification } from '../useNotification';
 
 export const useCurriculumVitae = () => {
 	const appStore = useContext(AppContext);

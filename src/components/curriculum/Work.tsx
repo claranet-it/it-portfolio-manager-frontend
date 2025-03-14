@@ -1,6 +1,6 @@
-import { $, component$, useStore } from '@builder.io/qwik';
+import { $, component$ } from '@builder.io/qwik';
 import { Work as WorkType } from '@models/curriculumVitae';
-import { ModalState } from '@models/modalState';
+import { useWork } from 'src/hooks/curriculum/useWork';
 import { t } from 'src/locale/labels';
 import { OptionDropdown } from '../form/OptionDropdown';
 import { getIcon } from '../icons';
@@ -10,18 +10,16 @@ import { WorkForm } from './WorkForm';
 interface Props {
 	work?: WorkType[];
 }
-export const Work = component$<Props>(({ work }) => {
-	const newFormModalState = useStore<ModalState>({
-		title: t('WORK_ADD'),
-		onCancel$: $(() => {}),
-		onConfirm$: $(() => {}),
-		cancelLabel: t('ACTION_CANCEL'),
-		confirmLabel: t('ACTION_SAVE'),
-	});
 
-	const change = $(() => {
-		console.log('click');
-	});
+export const Work = component$<Props>(({ work }) => {
+	const {
+		formGroup,
+		formModalState,
+		deleteModalState,
+		openDeleteDialog,
+		openAddDialog,
+		openEditDialog,
+	} = useWork(work);
 
 	return (
 		<>
@@ -29,13 +27,7 @@ export const Work = component$<Props>(({ work }) => {
 				<div class='font-bold text-dark-grey'>{t('WORK_TITLE')}</div>
 				<div>
 					<div class='flex w-full flex-row'>
-						<button
-							id='open-new-education-bt'
-							onClick$={() => {
-								newFormModalState.isVisible = true;
-							}}
-							type='button'
-						>
+						<button id='open-new-education-bt' onClick$={openAddDialog} type='button'>
 							<div class='content flex flex-row space-x-1 text-clara-red'>
 								<span class='content-center text-xl'>{getIcon('Add')}</span>
 								<span class='content-center text-base font-bold'>
@@ -47,33 +39,35 @@ export const Work = component$<Props>(({ work }) => {
 				</div>
 			</div>
 			<div class='m-0 mt-2 w-full'>
-				{work?.map(({ year_end, year_start, role, note, institution, id }) => {
+				{work?.map((wrk) => {
 					return (
 						<div
-							key={id}
+							key={wrk.id}
 							class='mb-4 flex items-center justify-between border-b border-gray-200 p-2 pl-0'
 						>
 							<div>
 								<h2 class='text-xs text-darkgray-900'>
-									{year_start} - {year_end}
+									{wrk.year_start} - {wrk.year_end}
 								</h2>
-								<h1 class='text-xl font-bold text-darkgray-900'>{institution}</h1>
-								<h3 class='text-base font-normal text-darkgray-900'>{role}</h3>
-								<h3 class='text-base font-normal text-darkgray-900'>{note}</h3>
+								<h1 class='text-xl font-bold text-darkgray-900'>
+									{wrk.institution}
+								</h1>
+								<h3 class='text-base font-normal text-darkgray-900'>{wrk.role}</h3>
+								<h3 class='text-base font-normal text-darkgray-900'>{wrk.note}</h3>
 							</div>
 							<div>
 								<OptionDropdown
-									id={`work-${id}`}
+									id={`work-${wrk.id}`}
 									icon={getIcon('V3DotsBlack')}
 									label={''}
 									options={[
 										{
 											value: t('WORK_EDIT'),
-											onChange: change,
+											onChange: $(() => openEditDialog(wrk.id)),
 										},
 										{
 											value: t('WORK_DELETE'),
-											onChange: change,
+											onChange: $(() => openDeleteDialog(wrk.id)),
 											class: 'text-red-500',
 										},
 									]}
@@ -84,9 +78,11 @@ export const Work = component$<Props>(({ work }) => {
 				})}
 			</div>
 
-			<Modal state={newFormModalState}>
-				<WorkForm />
+			<Modal state={formModalState}>
+				<WorkForm formID={formModalState.workIdToEdit || 'new'} formGroup={formGroup} />
 			</Modal>
+
+			<Modal state={deleteModalState}></Modal>
 		</>
 	);
 });
