@@ -1,4 +1,4 @@
-import { $, component$, useSignal } from '@builder.io/qwik';
+import { $, component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { t } from '../../locale/labels';
 import { Input } from '../form/Input';
 import { YearSelector } from '../form/YearSelector';
@@ -8,17 +8,13 @@ interface Props {
 		endYear?: number;
 		institution?: string;
 		notes?: string;
+		current?: boolean;
 	};
 	formID: string;
 }
 
 export const EducationForm = component$<Props>(({ formGroup, formID }) => {
-	const startYearForm = useSignal<Date>(
-		formGroup.startYear ? new Date(formGroup.startYear) : new Date()
-	);
-	const endYearForm = useSignal<Date>(
-		formGroup.endYear ? new Date(formGroup.endYear) : new Date()
-	);
+	const isDisabled = useSignal<boolean>(formGroup.current || false);
 
 	const setStartYear = $((date: Date) => {
 		formGroup.startYear = date.getFullYear();
@@ -28,22 +24,50 @@ export const EducationForm = component$<Props>(({ formGroup, formID }) => {
 		formGroup.endYear = date.getFullYear();
 	});
 
+	const toogleOngoing = $(() => {
+		formGroup.endYear = undefined;
+		formGroup.current = true;
+		isDisabled.value = !isDisabled.value;
+	});
+
+	useTask$(({ track }) => {
+		track(() => formGroup.current);
+		isDisabled.value = formGroup.current || false;
+	});
+
 	return (
 		<div class='w-96'>
 			<form class='space-y-3'>
 				<div class='flex flex-row space-x-4'>
 					<YearSelector
-						year={startYearForm}
+						year={formGroup.startYear ? new Date(formGroup.startYear, 0) : undefined}
 						title={t('TIME_ENTRY_START')}
 						confirmChangeYear={setStartYear}
 						modalId={`start-education-${formID}`}
 					/>
 					<YearSelector
-						year={endYearForm}
+						year={formGroup.endYear ? new Date(formGroup.endYear, 0) : undefined}
 						title={t('TIME_ENTRY_END')}
 						confirmChangeYear={setEndYear}
 						modalId={`end-education-${formID}`}
+						disabled={isDisabled.value}
 					/>
+				</div>
+				<div class='block py-2'>
+					<input
+						checked={formGroup.current}
+						id={`education-checkbox-ongoing-${formID}`}
+						type='checkbox'
+						value=''
+						onChange$={toogleOngoing}
+						class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
+					/>
+					<label
+						for={`education-checkbox-ongoing-${formID}`}
+						class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
+					>
+						Ongoing
+					</label>
 				</div>
 				<Input
 					type='text'

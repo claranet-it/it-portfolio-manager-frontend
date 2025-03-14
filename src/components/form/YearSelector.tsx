@@ -3,7 +3,6 @@ import {
 	component$,
 	noSerialize,
 	QRL,
-	Signal,
 	useComputed$,
 	useSignal,
 	useStore,
@@ -18,18 +17,19 @@ import { Modal } from '../modals/Modal';
 
 interface YearSelectorProps {
 	title: string;
-	year: Signal<Date>;
+	year?: Date;
 	confirmChangeYear: QRL;
 	modalId: string;
+	disabled?: boolean;
 }
 
 export const YearSelector = component$<YearSelectorProps>(
-	({ title, year, confirmChangeYear, modalId }) => {
+	({ title, year, confirmChangeYear, modalId, disabled }) => {
 		const yearPicker = useSignal<Datepicker>();
-		const yearSelected = useSignal<Date>();
+
 		const yearSelectedString = useComputed$(() => {
-			if (yearSelected?.value) {
-				return formatDateStringYear(yearSelected.value);
+			if (year) {
+				return formatDateStringYear(year);
 			}
 			return null;
 		});
@@ -37,15 +37,11 @@ export const YearSelector = component$<YearSelectorProps>(
 		const selectDataModalState = useStore<ModalState>({
 			title: title,
 			onCancel$: $(() => {
-				yearPicker.value?.setDate(formatDateStringMDY(year.value));
+				year && yearPicker.value?.setDate(formatDateStringMDY(year));
 			}),
 			onConfirm$: $(async () => {
 				const newYear = new Date(yearPicker.value?.getDate() ?? '');
-				year.value = newYear;
-				yearSelected.value = newYear;
-				if (confirmChangeYear) {
-					confirmChangeYear(newYear);
-				}
+				confirmChangeYear && confirmChangeYear(newYear);
 			}),
 			cancelLabel: t('ACTION_CANCEL'),
 			confirmLabel: t('ACTION_CONFIRM'),
@@ -56,7 +52,7 @@ export const YearSelector = component$<YearSelectorProps>(
 		});
 
 		useVisibleTask$(({ track }) => {
-			track(() => year.value);
+			track(() => year);
 
 			const $yearPickerEl = document.getElementById(
 				`yearPicker_${modalId}`
@@ -68,7 +64,7 @@ export const YearSelector = component$<YearSelectorProps>(
 				})
 			);
 
-			yearPicker.value?.setDate(formatDateStringMDY(year.value));
+			year && yearPicker.value?.setDate(formatDateStringMDY(year));
 
 			return () => {
 				yearPicker.value?.destroy();
@@ -90,9 +86,10 @@ export const YearSelector = component$<YearSelectorProps>(
 								onClick$={showDataSelectionModal}
 								id='datepicker'
 								type='text'
-								class='block w-full cursor-pointer rounded-md border border-darkgray-500 bg-white px-2.5 py-2.5 ps-8 text-sm text-dark-grey'
+								class='block w-full cursor-pointer rounded-md border border-darkgray-500 bg-white px-2.5 py-2.5 ps-8 text-sm text-dark-grey disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 disabled:shadow-none'
 								placeholder={t('SELECT_YEAR')}
-								value={yearSelectedString.value}
+								value={disabled ? t('PRESENT') : yearSelectedString.value}
+								disabled={disabled}
 							></input>
 						</div>
 					</div>

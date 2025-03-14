@@ -7,6 +7,7 @@ type FormEducationType = {
 	endYear?: number;
 	institution?: string;
 	notes?: string;
+	current?: boolean;
 };
 export const useEducation = (work: EducationType[] | undefined) => {
 	const formGroup = useStore({} as FormEducationType);
@@ -15,6 +16,7 @@ export const useEducation = (work: EducationType[] | undefined) => {
 		formGroup.endYear = undefined;
 		formGroup.institution = undefined;
 		formGroup.notes = undefined;
+		formGroup.current = undefined;
 	});
 
 	const formModalState = useStore<
@@ -33,7 +35,7 @@ export const useEducation = (work: EducationType[] | undefined) => {
 
 	const deleteModalState = useStore<ModalState & { educationIdToDelete?: string }>({
 		title: t('EDUCATION_DELETE'),
-		message: 'Are you sure you want to delete this education? ',
+		message: t('EDUCATION_DELETE_MESSAGE'),
 		cancelLabel: t('ACTION_CANCEL'),
 		confirmLabel: t('ACTION_CONFIRM'),
 		educationIdToDelete: undefined,
@@ -52,6 +54,7 @@ export const useEducation = (work: EducationType[] | undefined) => {
 			formGroup.startYear = workElement.year_start;
 			formGroup.institution = workElement.institution;
 			formGroup.notes = workElement.note;
+			formGroup.current = workElement.current;
 		}
 	});
 

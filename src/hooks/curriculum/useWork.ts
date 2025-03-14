@@ -8,6 +8,7 @@ type FormWorkType = {
 	role?: string;
 	company?: string;
 	notes?: string;
+	current?: boolean;
 };
 export const useWork = (work: WorkType[] | undefined) => {
 	const formGroup = useStore({} as FormWorkType);
@@ -17,6 +18,7 @@ export const useWork = (work: WorkType[] | undefined) => {
 		formGroup.role = undefined;
 		formGroup.company = undefined;
 		formGroup.notes = undefined;
+		formGroup.current = undefined;
 	});
 
 	const formModalState = useStore<ModalState & { workIdToEdit?: string; mode: 'edit' | 'new' }>({
@@ -33,7 +35,7 @@ export const useWork = (work: WorkType[] | undefined) => {
 
 	const deleteModalState = useStore<ModalState & { workIdToDelete?: string }>({
 		title: t('WORK_DELETE'),
-		message: 'Are you sure you want to delete this work experience? ',
+		message: t('WORK_DELETE_MESSAGE'),
 		cancelLabel: t('ACTION_CANCEL'),
 		confirmLabel: t('ACTION_CONFIRM'),
 		workIdToDelete: undefined,
@@ -53,6 +55,7 @@ export const useWork = (work: WorkType[] | undefined) => {
 			formGroup.role = workElement.role;
 			formGroup.company = workElement.institution;
 			formGroup.notes = workElement.note;
+			formGroup.current = workElement.current;
 		}
 	});
 
