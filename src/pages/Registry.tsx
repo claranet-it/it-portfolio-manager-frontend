@@ -22,7 +22,7 @@ import { getRouteParams } from 'src/router';
 export const Registry = component$(() => {
 	const appStore = useContext(AppContext);
 	const alertMessageState = useStore<ModalState>({});
-	const hideCompleted = useSignal(false);
+	const hideCompleted = useSignal(true);
 	const { customers, isLoading, fetchCustomers } = useCustomers(hideCompleted);
 
 	const newProjectCancelAction = $(() => {
