@@ -1,4 +1,15 @@
-import { $, component$, noSerialize, useSignal, useStore } from '@builder.io/qwik';
+import {
+	$,
+	component$,
+	noSerialize,
+	useContext,
+	useSignal,
+	useStore,
+	useTask$,
+} from '@builder.io/qwik';
+import { AppContext } from 'src/app';
+import { getConfiguration } from 'src/services/configuration';
+import { getUserMe } from 'src/services/user';
 import { getIcon } from '../components/icons';
 import { t } from '../locale/labels';
 import { CheshireCatClient } from '../utils/cheshire-cat';
@@ -7,9 +18,25 @@ import { KEYBOARD_ENTER, SEARCH_TEXT_AREA_ROWS } from '../utils/constants';
 type ChatItem = { question: string; answer: string };
 
 export const Search = component$(() => {
+	const appStore = useContext(AppContext);
 	const searchValueSig = useSignal('');
 	const chatStore = useStore<ChatItem[]>([], { deep: true });
 	const loadingSig = useSignal(false);
+	const userPicture = useSignal('');
+
+	const updateUserMe = $(async () => {
+		const user = await getUserMe();
+		userPicture.value = user.picture;
+	});
+
+	useTask$(async () => {
+		if (!Object.keys(appStore.configuration.skills).length) {
+			const configuration = await getConfiguration();
+			appStore.configuration = configuration;
+		}
+
+		updateUserMe();
+	});
 
 	const cheshireCatClient = noSerialize(
 		new CheshireCatClient('Human', (msg) => {
@@ -62,11 +89,20 @@ export const Search = component$(() => {
 
 				{chatStore.map(({ answer, question }, index) => (
 					<section key={index}>
-						<div class='leading-1.5 my-2 ml-auto flex w-3/4 flex-col whitespace-pre-line rounded-s-xl rounded-ee-xl border-gray-200 bg-red-100 p-4'>
+						<div class='leading-1.5 relative my-2 ml-auto flex w-3/4 flex-col whitespace-pre-line rounded-s-xl rounded-ee-xl border-gray-200 bg-red-100 p-4'>
 							<p class='text-sm font-normal text-gray-900'>{question}</p>
+							<img
+								class='absolute -right-12 top-2 h-8 w-8'
+								src={userPicture.value}
+								alt={t('profile_picture')}
+							></img>
 						</div>
-						<div class='leading-1.5 my-2 flex w-3/4 flex-col whitespace-pre-line rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4'>
+						<div class='leading-1.5 relative my-2 flex w-3/4 flex-col whitespace-pre-line rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4'>
 							<p class='text-sm font-normal text-gray-900'>{answer}</p>
+							<img
+								class='absolute -left-12 top-2 w-5 object-contain'
+								src={'/logotipo.png'}
+							></img>
 						</div>
 					</section>
 				))}
