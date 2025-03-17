@@ -11,6 +11,7 @@ export class CheshireCatClient {
 			baseUrl: import.meta.env.VITE_CHESHIRE_CAT_BASE_URL,
 			userId: this.userMail,
 			secure: true,
+			port: undefined,
 		});
 		this.cat.init().onMessage(onMessage);
 	}
