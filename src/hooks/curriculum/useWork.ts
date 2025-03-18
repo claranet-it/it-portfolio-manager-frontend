@@ -1,6 +1,7 @@
-import { $, useStore, useTask$ } from '@builder.io/qwik';
-import { Work as WorkType } from '@models/curriculumVitae';
+import { $, QRL, useContext, useStore, useTask$ } from '@builder.io/qwik';
+import { WorkData, Work as WorkType } from '@models/curriculumVitae';
 import { ModalState } from '@models/modalState';
+import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 type FormWorkType = {
 	startYear?: number;
@@ -10,7 +11,14 @@ type FormWorkType = {
 	notes?: string;
 	current?: boolean;
 };
-export const useWork = (work: WorkType[] | undefined) => {
+export const useWork = (
+	work: WorkType[] | undefined,
+	onUpdate: QRL,
+	onCreate: QRL,
+	onDelete: QRL
+) => {
+	const appStore = useContext(AppContext);
+
 	const formGroup = useStore({} as FormWorkType);
 	const resetForm = $(() => {
 		formGroup.startYear = undefined;
@@ -25,7 +33,6 @@ export const useWork = (work: WorkType[] | undefined) => {
 		title: t('WORK_ADD'),
 		onCancel$: $(() => {
 			resetForm();
-			console.log('annulla operazione', JSON.stringify(formGroup));
 		}),
 		cancelLabel: t('ACTION_CANCEL'),
 		confirmLabel: t('ACTION_SAVE'),
@@ -77,20 +84,23 @@ export const useWork = (work: WorkType[] | undefined) => {
 			deleteModalState.workIdToDelete = undefined;
 		});
 
-		deleteModalState.onConfirm$ = $(() => {
+		deleteModalState.onConfirm$ = $(async () => {
 			if (deleteModalState.workIdToDelete) {
-				console.log('Delete api with id', deleteModalState.workIdToDelete);
+				appStore.isLoading = true;
+				await onDelete(deleteModalState.workIdToDelete);
+				appStore.isLoading = false;
 				deleteModalState.workIdToDelete = undefined;
 			}
 		});
 
-		formModalState.onConfirm$ = $(() => {
+		formModalState.onConfirm$ = $(async () => {
+			appStore.isLoading = true;
 			if (formModalState.mode === 'edit' && formModalState.workIdToEdit) {
-				console.log('patch id', formModalState.workIdToEdit, JSON.stringify(formGroup));
-				// Logica di salvataggio per la modifica
+				await onUpdate(formModalState.workIdToEdit, formGroup);
 			} else {
-				console.log('create id', JSON.stringify(formGroup));
+				await onCreate(formGroup as WorkData);
 			}
+			appStore.isLoading = false;
 			resetForm();
 		});
 	});

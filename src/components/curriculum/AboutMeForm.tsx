@@ -16,7 +16,7 @@ export const AboutMeForm = component$<Props>(({ formGroup }) => {
 				<Input
 					type='text'
 					value={formGroup.role}
-					label={t('ROLE_LABEL')}
+					label={`${t('ROLE_LABEL')}*`}
 					styleClass='w-full'
 					placeholder={t('ROLE_INSERT_LABEL')}
 					onInput$={(_, el) => {

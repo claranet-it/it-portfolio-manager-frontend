@@ -41,7 +41,7 @@ export const EducationForm = component$<Props>(({ formGroup, formID }) => {
 				<div class='flex flex-row space-x-4'>
 					<YearSelector
 						year={formGroup.startYear ? new Date(formGroup.startYear, 0) : undefined}
-						title={t('TIME_ENTRY_START')}
+						title={`${t('TIME_ENTRY_START')}*`}
 						confirmChangeYear={setStartYear}
 						modalId={`start-education-${formID}`}
 					/>
@@ -72,7 +72,7 @@ export const EducationForm = component$<Props>(({ formGroup, formID }) => {
 				<Input
 					type='text'
 					value={formGroup.institution}
-					label={t('SCHOOL_LABEL')}
+					label={`${t('SCHOOL_LABEL')}*`}
 					styleClass='w-full'
 					placeholder={t('SCHOOL_INSERT_LABEL')}
 					onInput$={(_, el) => {

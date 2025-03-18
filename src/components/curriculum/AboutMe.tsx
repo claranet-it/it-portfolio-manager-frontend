@@ -1,4 +1,4 @@
-import { component$ } from '@builder.io/qwik';
+import { component$, QRL } from '@builder.io/qwik';
 import { useAboutMe } from 'src/hooks/curriculum/useAboutMe';
 import { t } from 'src/locale/labels';
 import { getIcon } from '../icons';
@@ -8,10 +8,17 @@ import { AboutMeForm } from './AboutMeForm';
 interface Props {
 	role?: string;
 	summary?: string;
+	onUpdate: QRL;
+	onCreate: QRL;
 }
 
-export const AboutMe = component$<Props>(({ role, summary }) => {
-	const { formModalState, mode, formGroup, openDialog } = useAboutMe(role, summary);
+export const AboutMe = component$<Props>(({ role, summary, onCreate, onUpdate }) => {
+	const { formModalState, mode, formGroup, openDialog } = useAboutMe(
+		role,
+		summary,
+		onCreate,
+		onUpdate
+	);
 
 	return (
 		<>

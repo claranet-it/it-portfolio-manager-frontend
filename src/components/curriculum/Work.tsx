@@ -1,4 +1,4 @@
-import { $, component$ } from '@builder.io/qwik';
+import { $, component$, QRL } from '@builder.io/qwik';
 import { Work as WorkType } from '@models/curriculumVitae';
 import { useWork } from 'src/hooks/curriculum/useWork';
 import { t } from 'src/locale/labels';
@@ -9,9 +9,12 @@ import { WorkForm } from './WorkForm';
 
 interface Props {
 	work?: WorkType[];
+	onUpdate: QRL;
+	onCreate: QRL;
+	onDelete: QRL;
 }
 
-export const Work = component$<Props>(({ work }) => {
+export const Work = component$<Props>(({ work, onUpdate, onCreate, onDelete }) => {
 	const {
 		formGroup,
 		formModalState,
@@ -19,7 +22,7 @@ export const Work = component$<Props>(({ work }) => {
 		openDeleteDialog,
 		openAddDialog,
 		openEditDialog,
-	} = useWork(work);
+	} = useWork(work, onUpdate, onCreate, onDelete);
 
 	return (
 		<>

@@ -1,6 +1,7 @@
-import { $, useStore, useTask$ } from '@builder.io/qwik';
-import { Education as EducationType } from '@models/curriculumVitae';
+import { $, QRL, useContext, useStore, useTask$ } from '@builder.io/qwik';
+import { EducationData, Education as EducationType } from '@models/curriculumVitae';
 import { ModalState } from '@models/modalState';
+import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 type FormEducationType = {
 	startYear?: number;
@@ -9,7 +10,14 @@ type FormEducationType = {
 	notes?: string;
 	current?: boolean;
 };
-export const useEducation = (work: EducationType[] | undefined) => {
+export const useEducation = (
+	work: EducationType[] | undefined,
+	onUpdate: QRL,
+	onCreate: QRL,
+	onDelete: QRL
+) => {
+	const appStore = useContext(AppContext);
+
 	const formGroup = useStore({} as FormEducationType);
 	const resetForm = $(() => {
 		formGroup.startYear = undefined;
@@ -25,7 +33,6 @@ export const useEducation = (work: EducationType[] | undefined) => {
 		title: t('EDUCATION_ADD'),
 		onCancel$: $(() => {
 			resetForm();
-			console.log('annulla operazione', JSON.stringify(formGroup));
 		}),
 		cancelLabel: t('ACTION_CANCEL'),
 		confirmLabel: t('ACTION_SAVE'),
@@ -76,24 +83,23 @@ export const useEducation = (work: EducationType[] | undefined) => {
 			deleteModalState.educationIdToDelete = undefined;
 		});
 
-		deleteModalState.onConfirm$ = $(() => {
+		deleteModalState.onConfirm$ = $(async () => {
 			if (deleteModalState.educationIdToDelete) {
-				console.log('Delete api with id', deleteModalState.educationIdToDelete);
+				appStore.isLoading = true;
+				await onDelete(deleteModalState.educationIdToDelete);
+				appStore.isLoading = false;
 				deleteModalState.educationIdToDelete = undefined;
 			}
 		});
 
-		formModalState.onConfirm$ = $(() => {
+		formModalState.onConfirm$ = $(async () => {
+			appStore.isLoading = true;
 			if (formModalState.mode === 'edit' && formModalState.educationIdToEdit) {
-				console.log(
-					'patch id',
-					formModalState.educationIdToEdit,
-					JSON.stringify(formGroup)
-				);
-				// Logica di salvataggio per la modifica
+				await onUpdate(formModalState.educationIdToEdit, formGroup);
 			} else {
-				console.log('create id', JSON.stringify(formGroup));
+				await onCreate(formGroup as EducationData);
 			}
+			appStore.isLoading = false;
 			resetForm();
 		});
 	});

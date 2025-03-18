@@ -1,4 +1,4 @@
-import { $, component$ } from '@builder.io/qwik';
+import { $, component$, QRL } from '@builder.io/qwik';
 import { Education as EducationType } from '@models/curriculumVitae';
 import { useEducation } from 'src/hooks/curriculum/useEducation';
 import { t } from 'src/locale/labels';
@@ -8,8 +8,11 @@ import { Modal } from '../modals/Modal';
 import { EducationForm } from './EducationForm';
 interface Props {
 	education?: EducationType[];
+	onUpdate: QRL;
+	onCreate: QRL;
+	onDelete: QRL;
 }
-export const Education = component$<Props>(({ education }) => {
+export const Education = component$<Props>(({ education, onUpdate, onCreate, onDelete }) => {
 	const {
 		formGroup,
 		formModalState,
@@ -17,7 +20,7 @@ export const Education = component$<Props>(({ education }) => {
 		openDeleteDialog,
 		openAddDialog,
 		openEditDialog,
-	} = useEducation(education);
+	} = useEducation(education, onUpdate, onCreate, onDelete);
 
 	return (
 		<>

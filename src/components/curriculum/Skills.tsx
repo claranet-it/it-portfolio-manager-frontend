@@ -1,4 +1,4 @@
-import { component$ } from '@builder.io/qwik';
+import { component$, QRL } from '@builder.io/qwik';
 import { useSkills } from 'src/hooks/curriculum/useSkills';
 import { t } from 'src/locale/labels';
 import { getIcon } from '../icons';
@@ -7,10 +7,12 @@ import { SkillsForm } from './SkillsForm';
 
 interface Props {
 	skills?: string;
+	onUpdate: QRL;
+	onCreate: QRL;
 }
 
-export const Skills = component$<Props>(({ skills }) => {
-	const { formModalState, mode, skillSignal, openDialog } = useSkills(skills);
+export const Skills = component$<Props>(({ skills, onUpdate, onCreate }) => {
+	const { formModalState, mode, formGroup, openDialog } = useSkills(skills, onUpdate, onCreate);
 
 	return (
 		<>
@@ -35,7 +37,7 @@ export const Skills = component$<Props>(({ skills }) => {
 			<div class='m-0 mt-2 w-full'>{skills}</div>
 
 			<Modal state={formModalState}>
-				<SkillsForm description={skillSignal} />
+				<SkillsForm formGroup={formGroup} />
 			</Modal>
 		</>
 	);

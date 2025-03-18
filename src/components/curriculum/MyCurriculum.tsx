@@ -1,5 +1,5 @@
 import { $, component$, useTask$ } from '@builder.io/qwik';
-import { useMyCurriculum } from 'src/hooks/useMyCurriculum';
+import { useMyCurriculum } from 'src/hooks/curriculum/useMyCurriculum';
 import { t } from 'src/locale/labels';
 import { CURRICULUM_VITAE_ROUTE } from 'src/utils/constants';
 import { Accordion } from '../Accordion';
@@ -10,7 +10,20 @@ import { Skills } from './Skills';
 import { Work } from './Work';
 
 export const MyCurriculum = component$(() => {
-	const { curriculum, openedMap, fetchMyCurriculum, handleTitleClick } = useMyCurriculum();
+	const {
+		curriculum,
+		openedMap,
+		fetchMyCurriculum,
+		handleTitleClick,
+		update,
+		save,
+		newEducation,
+		newWork,
+		updateEducationItem,
+		updateWorkItem,
+		deleteWorkItem,
+		deleteEducationItem,
+	} = useMyCurriculum();
 	useTask$(async () => {
 		await fetchMyCurriculum();
 		console.log('####', curriculum.value);
@@ -42,6 +55,8 @@ export const MyCurriculum = component$(() => {
 								<AboutMe
 									role={curriculum.value.role}
 									summary={curriculum.value.summary}
+									onUpdate={update}
+									onCreate={save}
 								/>
 							),
 							opened: openedMap.ABM,
@@ -49,19 +64,39 @@ export const MyCurriculum = component$(() => {
 						},
 						{
 							title: 'Main skills',
-							body: <Skills skills={curriculum.value.main_skills} />,
+							body: (
+								<Skills
+									skills={curriculum.value.main_skills}
+									onUpdate={update}
+									onCreate={save}
+								/>
+							),
 							opened: openedMap.MSK,
 							onTitleClick: $(() => handleTitleClick('MSK')),
 						},
 						{
 							title: 'Education',
-							body: <Education education={curriculum.value.education} />,
+							body: (
+								<Education
+									education={curriculum.value.education}
+									onUpdate={updateEducationItem}
+									onCreate={newEducation}
+									onDelete={deleteEducationItem}
+								/>
+							),
 							opened: openedMap.EDU,
 							onTitleClick: $(() => handleTitleClick('EDU')),
 						},
 						{
 							title: 'Work experience',
-							body: <Work work={curriculum.value.work} />,
+							body: (
+								<Work
+									work={curriculum.value.work}
+									onUpdate={updateWorkItem}
+									onCreate={newWork}
+									onDelete={deleteWorkItem}
+								/>
+							),
 							opened: openedMap.WRK,
 							onTitleClick: $(() => handleTitleClick('WRK')),
 						},

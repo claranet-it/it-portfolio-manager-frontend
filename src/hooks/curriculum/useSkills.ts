@@ -1,24 +1,38 @@
-import { $, useComputed$, useSignal, useStore } from '@builder.io/qwik';
+import { $, QRL, useComputed$, useContext, useStore } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 
-export const useSkills = (skills: string | undefined) => {
+type FormSkillsType = {
+	main_skills?: string;
+};
+
+export const useSkills = (skills: string | undefined, onUpdate: QRL, onCreate: QRL) => {
+	const appStore = useContext(AppContext);
+
 	const mode = useComputed$(() => {
 		return skills ? 'edit' : 'new';
 	});
 
-	const skillSignal = useSignal<string>(skills || '');
+	const formGroup = useStore({} as FormSkillsType);
+	const resetForm = $(() => {
+		formGroup.main_skills = undefined;
+	});
 
 	const formModalState = useStore<ModalState>({
 		title: mode.value === 'edit' ? t('SKILLS_EDIT') : t('SKILLS_ADD'),
-		onCancel$: $(() => {}),
-		onConfirm$: $(() => {
+		onCancel$: $(() => {
+			resetForm();
+		}),
+		onConfirm$: $(async () => {
+			appStore.isLoading = true;
 			if (mode.value === 'edit') {
-				console.log('patch', JSON.stringify(skillSignal));
-				// Logica di salvataggio per la modifica
+				await onUpdate(formGroup);
 			} else {
-				console.log('create', JSON.stringify(skillSignal));
+				await onCreate(formGroup);
 			}
+			appStore.isLoading = false;
+			resetForm();
 		}),
 		cancelLabel: t('ACTION_CANCEL'),
 		confirmLabel: t('ACTION_SAVE'),
@@ -26,13 +40,13 @@ export const useSkills = (skills: string | undefined) => {
 
 	const openDialog = $(() => {
 		formModalState.isVisible = true;
-		skillSignal.value = skills || '';
+		formGroup.main_skills = skills || '';
 	});
 
 	return {
 		formModalState,
 		mode,
-		skillSignal,
+		formGroup,
 		openDialog,
 	};
 };

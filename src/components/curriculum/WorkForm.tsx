@@ -42,7 +42,7 @@ export const WorkForm = component$<Props>(({ formGroup, formID }) => {
 				<div class='flex flex-row space-x-4'>
 					<YearSelector
 						year={formGroup.startYear ? new Date(formGroup.startYear, 0) : undefined}
-						title={t('TIME_ENTRY_START')}
+						title={`${t('TIME_ENTRY_START')}*`}
 						confirmChangeYear={setStartYear}
 						modalId={`start-work-${formID}`}
 					/>
@@ -73,7 +73,7 @@ export const WorkForm = component$<Props>(({ formGroup, formID }) => {
 				<Input
 					type='text'
 					value={formGroup.company}
-					label={t('COMPANY_LABEL')}
+					label={`${t('COMPANY_LABEL')}*`}
 					styleClass='w-full'
 					placeholder={t('COMPANY_INSERT_LABEL')}
 					onInput$={(_, el) => {

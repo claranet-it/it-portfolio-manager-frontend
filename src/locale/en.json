@@ -226,7 +226,7 @@
 	"EDUCATION_ADD": "Add education",
 	"EDUCATION_EDIT": "Edit education",
 	"EDUCATION_DELETE": "Delete education",
-	"EDUCATION_DELETE_MESSAGE": "Are you sure you want to delete this work education?",
+	"EDUCATION_DELETE_MESSAGE": "Are you sure you want to delete this education?",
 	"WORK_TITLE": "My main work experience",
 	"WORK_ADD": "Add work experience",
 	"WORK_EDIT": "Edit experience",

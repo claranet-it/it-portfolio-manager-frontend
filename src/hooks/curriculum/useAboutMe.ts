@@ -1,11 +1,19 @@
-import { $, useComputed$, useStore } from '@builder.io/qwik';
+import { $, QRL, useComputed$, useContext, useStore } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 type FormAboutMeType = {
 	role?: string;
 	summary?: string;
 };
-export const useAboutMe = (role: string | undefined, summary: string | undefined) => {
+export const useAboutMe = (
+	role: string | undefined,
+	summary: string | undefined,
+	onCreate: QRL,
+	onUpdate: QRL
+) => {
+	const appStore = useContext(AppContext);
+
 	const mode = useComputed$(() => {
 		return role || summary ? 'edit' : 'new';
 	});
@@ -19,13 +27,14 @@ export const useAboutMe = (role: string | undefined, summary: string | undefined
 	const formModalState = useStore<ModalState>({
 		title: mode.value === 'edit' ? t('ABOUT_ME_EDIT') : t('ABOUT_ME_ADD'),
 		onCancel$: $(() => {}),
-		onConfirm$: $(() => {
+		onConfirm$: $(async () => {
+			appStore.isLoading = true;
 			if (mode.value === 'edit') {
-				console.log('patch', JSON.stringify(formGroup));
-				// Logica di salvataggio per la modifica
+				await onUpdate(formGroup);
 			} else {
-				console.log('create', JSON.stringify(formGroup));
+				await onCreate(formGroup);
 			}
+			appStore.isLoading = false;
 			resetForm();
 		}),
 		cancelLabel: t('ACTION_CANCEL'),
