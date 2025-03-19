@@ -31,6 +31,7 @@ export const useWork = (
 		confirmLabel: t('ACTION_SAVE'),
 		mode: 'new',
 		workIdToEdit: undefined,
+		isConfirmDisabled: true,
 	});
 
 	const deleteModalState = useStore<ModalState & { workIdToDelete?: string }>({
@@ -96,6 +97,13 @@ export const useWork = (
 			appStore.isLoading = false;
 			resetForm();
 		});
+	});
+
+	useTask$(({ track }) => {
+		track(() => formGroup.year_start);
+		track(() => formGroup.institution);
+
+		formModalState.isConfirmDisabled = !formGroup.year_start || !formGroup.institution;
 	});
 
 	return {

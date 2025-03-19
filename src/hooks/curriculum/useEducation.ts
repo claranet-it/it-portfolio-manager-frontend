@@ -32,6 +32,7 @@ export const useEducation = (
 		confirmLabel: t('ACTION_SAVE'),
 		mode: 'new',
 		educationIdToEdit: undefined,
+		isConfirmDisabled: true,
 	});
 
 	const deleteModalState = useStore<ModalState & { educationIdToDelete?: string }>({
@@ -95,6 +96,13 @@ export const useEducation = (
 			appStore.isLoading = false;
 			resetForm();
 		});
+	});
+
+	useTask$(({ track }) => {
+		track(() => formGroup.year_start);
+		track(() => formGroup.institution);
+
+		formModalState.isConfirmDisabled = !formGroup.year_start || !formGroup.institution;
 	});
 
 	return {

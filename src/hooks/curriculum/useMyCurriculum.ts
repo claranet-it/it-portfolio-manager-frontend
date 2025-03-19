@@ -47,7 +47,7 @@ export const useMyCurriculum = () => {
 		appStore.isLoading = true;
 		try {
 			curriculum.value = await getCurriculum();
-			/* curriculum.value = {
+			curriculum.value = {
 				name: 'Maria Teresa Graziano',
 				email: 'maria.teresa.graziano@claranet.com',
 				role: 'Frontend Developer',
@@ -83,7 +83,7 @@ export const useMyCurriculum = () => {
 						current: false,
 					},
 				],
-			}; */
+			};
 		} catch (error) {
 			const { message } = error as Error;
 			addEvent({

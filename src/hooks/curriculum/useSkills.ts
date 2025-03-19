@@ -1,4 +1,4 @@
-import { $, QRL, useComputed$, useContext, useStore } from '@builder.io/qwik';
+import { $, QRL, useComputed$, useContext, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
@@ -32,11 +32,17 @@ export const useSkills = (skills: string | undefined, onSave: QRL) => {
 		}),
 		cancelLabel: t('ACTION_CANCEL'),
 		confirmLabel: t('ACTION_SAVE'),
+		isConfirmDisabled: true,
 	});
 
 	const openDialog = $(() => {
 		formModalState.isVisible = true;
 		formGroup.main_skills = skills || '';
+	});
+
+	useTask$(({ track }) => {
+		track(() => formGroup.main_skills);
+		formModalState.isConfirmDisabled = !formGroup.main_skills;
 	});
 
 	return {

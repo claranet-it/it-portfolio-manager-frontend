@@ -1,5 +1,5 @@
 import { $, useContext, useSignal } from '@builder.io/qwik';
-import { CurriculumVitaeData } from '@models/curriculumVitae';
+import { CurriculumGetResponse } from '@models/curriculumVitae';
 import { AppContext } from 'src/app';
 import { findMatchingRoute } from 'src/router';
 import { getCurriculumByEmail } from 'src/services/curriculum';
@@ -10,7 +10,7 @@ export const useCurriculumVitae = () => {
 	const appStore = useContext(AppContext);
 	const { addEvent } = useNotification();
 
-	const curriculumVitae = useSignal<CurriculumVitaeData>({} as CurriculumVitaeData);
+	const curriculumVitae = useSignal<CurriculumGetResponse>({} as CurriculumGetResponse);
 
 	const initCurriculumVitae = $(async () => {
 		appStore.isLoading = true;

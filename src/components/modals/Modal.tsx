@@ -63,7 +63,9 @@ export const Modal = component$<ModalProps>(({ state }) => {
 					)}
 
 					{state.confirmLabel && (
-						<Button onClick$={onConfirm}>{state.confirmLabel}</Button>
+						<Button disabled={state.isConfirmDisabled} onClick$={onConfirm}>
+							{state.confirmLabel}
+						</Button>
 					)}
 				</div>
 			</div>
