@@ -7,12 +7,11 @@ import { SkillsForm } from './SkillsForm';
 
 interface Props {
 	skills?: string;
-	onUpdate: QRL;
-	onCreate: QRL;
+	onSave: QRL;
 }
 
-export const Skills = component$<Props>(({ skills, onUpdate, onCreate }) => {
-	const { formModalState, mode, formGroup, openDialog } = useSkills(skills, onUpdate, onCreate);
+export const Skills = component$<Props>(({ skills, onSave }) => {
+	const { formModalState, mode, formGroup, openDialog } = useSkills(skills, onSave);
 
 	return (
 		<>

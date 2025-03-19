@@ -1,29 +1,23 @@
 import { $, QRL, useContext, useStore, useTask$ } from '@builder.io/qwik';
-import { EducationData, Education as EducationType } from '@models/curriculumVitae';
+import { EducationGetResponse, EducationUpdateData } from '@models/curriculumVitae';
 import { ModalState } from '@models/modalState';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
-type FormEducationType = {
-	startYear?: number;
-	endYear?: number;
-	institution?: string;
-	notes?: string;
-	current?: boolean;
-};
+
 export const useEducation = (
-	work: EducationType[] | undefined,
+	education: EducationGetResponse[] | undefined,
 	onUpdate: QRL,
 	onCreate: QRL,
 	onDelete: QRL
 ) => {
 	const appStore = useContext(AppContext);
 
-	const formGroup = useStore({} as FormEducationType);
+	const formGroup = useStore({} as EducationUpdateData);
 	const resetForm = $(() => {
-		formGroup.startYear = undefined;
-		formGroup.endYear = undefined;
+		formGroup.year_start = undefined;
+		formGroup.year_end = undefined;
 		formGroup.institution = undefined;
-		formGroup.notes = undefined;
+		formGroup.note = undefined;
 		formGroup.current = undefined;
 	});
 
@@ -55,19 +49,18 @@ export const useEducation = (
 		formModalState.isVisible = true;
 		formModalState.mode = 'edit';
 		formModalState.title = t('EDUCATION_EDIT');
-		const workElement = work?.find((item) => item.id === id);
-		if (workElement) {
-			formGroup.endYear = workElement.year_end;
-			formGroup.startYear = workElement.year_start;
-			formGroup.institution = workElement.institution;
-			formGroup.notes = workElement.note;
-			formGroup.current = workElement.current;
+		const educationElement = education?.find((item) => item.id === id);
+		if (educationElement) {
+			formGroup.year_end = educationElement.year_end;
+			formGroup.year_start = educationElement.year_start;
+			formGroup.institution = educationElement.institution;
+			formGroup.note = educationElement.note;
+			formGroup.current = educationElement.current;
 		}
 	});
 
 	const openAddDialog = $(() => {
 		formModalState.educationIdToEdit = undefined;
-		console.log('open add', formModalState.educationIdToEdit, JSON.stringify(formGroup));
 		formModalState.isVisible = true;
 		formModalState.mode = 'new';
 		formModalState.title = t('EDUCATION_ADD');
@@ -97,7 +90,7 @@ export const useEducation = (
 			if (formModalState.mode === 'edit' && formModalState.educationIdToEdit) {
 				await onUpdate(formModalState.educationIdToEdit, formGroup);
 			} else {
-				await onCreate(formGroup as EducationData);
+				await onCreate(formGroup);
 			}
 			appStore.isLoading = false;
 			resetForm();

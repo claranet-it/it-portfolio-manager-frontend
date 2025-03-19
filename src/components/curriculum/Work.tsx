@@ -1,5 +1,5 @@
 import { $, component$, QRL } from '@builder.io/qwik';
-import { Work as WorkType } from '@models/curriculumVitae';
+import { WorkGetResponse } from '@models/curriculumVitae';
 import { useWork } from 'src/hooks/curriculum/useWork';
 import { t } from 'src/locale/labels';
 import { OptionDropdown } from '../form/OptionDropdown';
@@ -8,13 +8,13 @@ import { Modal } from '../modals/Modal';
 import { WorkForm } from './WorkForm';
 
 interface Props {
-	work?: WorkType[];
+	work?: WorkGetResponse[];
 	onUpdate: QRL;
-	onCreate: QRL;
+	onSave: QRL;
 	onDelete: QRL;
 }
 
-export const Work = component$<Props>(({ work, onUpdate, onCreate, onDelete }) => {
+export const Work = component$<Props>(({ work, onUpdate, onSave, onDelete }) => {
 	const {
 		formGroup,
 		formModalState,
@@ -22,7 +22,7 @@ export const Work = component$<Props>(({ work, onUpdate, onCreate, onDelete }) =
 		openDeleteDialog,
 		openAddDialog,
 		openEditDialog,
-	} = useWork(work, onUpdate, onCreate, onDelete);
+	} = useWork(work, onUpdate, onSave, onDelete);
 
 	return (
 		<>

@@ -8,17 +8,11 @@ import { AboutMeForm } from './AboutMeForm';
 interface Props {
 	role?: string;
 	summary?: string;
-	onUpdate: QRL;
-	onCreate: QRL;
+	onSave: QRL;
 }
 
-export const AboutMe = component$<Props>(({ role, summary, onCreate, onUpdate }) => {
-	const { formModalState, mode, formGroup, openDialog } = useAboutMe(
-		role,
-		summary,
-		onCreate,
-		onUpdate
-	);
+export const AboutMe = component$<Props>(({ role, summary, onSave }) => {
+	const { formModalState, mode, formGroup, openDialog } = useAboutMe(role, summary, onSave);
 
 	return (
 		<>

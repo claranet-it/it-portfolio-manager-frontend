@@ -6,12 +6,7 @@ type FormAboutMeType = {
 	role?: string;
 	summary?: string;
 };
-export const useAboutMe = (
-	role: string | undefined,
-	summary: string | undefined,
-	onCreate: QRL,
-	onUpdate: QRL
-) => {
+export const useAboutMe = (role: string | undefined, summary: string | undefined, onSave: QRL) => {
 	const appStore = useContext(AppContext);
 
 	const mode = useComputed$(() => {
@@ -29,11 +24,7 @@ export const useAboutMe = (
 		onCancel$: $(() => {}),
 		onConfirm$: $(async () => {
 			appStore.isLoading = true;
-			if (mode.value === 'edit') {
-				await onUpdate(formGroup);
-			} else {
-				await onCreate(formGroup);
-			}
+			await onSave(formGroup);
 			appStore.isLoading = false;
 			resetForm();
 		}),

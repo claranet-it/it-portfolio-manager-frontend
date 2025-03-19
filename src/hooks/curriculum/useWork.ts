@@ -1,31 +1,24 @@
 import { $, QRL, useContext, useStore, useTask$ } from '@builder.io/qwik';
-import { WorkData, Work as WorkType } from '@models/curriculumVitae';
+import { WorkGetResponse, WorkUpdateData } from '@models/curriculumVitae';
 import { ModalState } from '@models/modalState';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
-type FormWorkType = {
-	startYear?: number;
-	endYear?: number;
-	role?: string;
-	company?: string;
-	notes?: string;
-	current?: boolean;
-};
+
 export const useWork = (
-	work: WorkType[] | undefined,
+	work: WorkGetResponse[] | undefined,
 	onUpdate: QRL,
-	onCreate: QRL,
+	onSave: QRL,
 	onDelete: QRL
 ) => {
 	const appStore = useContext(AppContext);
 
-	const formGroup = useStore({} as FormWorkType);
+	const formGroup = useStore({} as WorkUpdateData);
 	const resetForm = $(() => {
-		formGroup.startYear = undefined;
-		formGroup.endYear = undefined;
+		formGroup.year_start = undefined;
+		formGroup.year_end = undefined;
 		formGroup.role = undefined;
-		formGroup.company = undefined;
-		formGroup.notes = undefined;
+		formGroup.institution = undefined;
+		formGroup.note = undefined;
 		formGroup.current = undefined;
 	});
 
@@ -57,11 +50,11 @@ export const useWork = (
 		formModalState.title = t('WORK_EDIT');
 		const workElement = work?.find((item) => item.id === id);
 		if (workElement) {
-			formGroup.endYear = workElement.year_end;
-			formGroup.startYear = workElement.year_start;
+			formGroup.year_end = workElement.year_end;
+			formGroup.year_start = workElement.year_start;
 			formGroup.role = workElement.role;
-			formGroup.company = workElement.institution;
-			formGroup.notes = workElement.note;
+			formGroup.institution = workElement.institution;
+			formGroup.note = workElement.note;
 			formGroup.current = workElement.current;
 		}
 	});
@@ -98,7 +91,7 @@ export const useWork = (
 			if (formModalState.mode === 'edit' && formModalState.workIdToEdit) {
 				await onUpdate(formModalState.workIdToEdit, formGroup);
 			} else {
-				await onCreate(formGroup as WorkData);
+				await onSave(formGroup);
 			}
 			appStore.isLoading = false;
 			resetForm();

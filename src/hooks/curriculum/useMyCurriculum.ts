@@ -1,11 +1,14 @@
 import { $, useContext, useSignal, useStore } from '@builder.io/qwik';
 import {
-	CurriculumVitaeData,
-	EducationData,
+	CurriculumGetResponse,
+	CurriculumSaveData,
+	CurriculumUpdateData,
+	EducationSaveData,
 	EducationUpdateData,
-	UpdateCurriculumData,
-	WorkData,
+	WorkSaveData,
+	WorkUpdateData,
 } from '@models/curriculumVitae';
+import { UserMe } from '@models/user';
 import { AppContext } from 'src/app';
 import {
 	addEducation,
@@ -13,14 +16,15 @@ import {
 	deleteEducation,
 	deleteWork,
 	getCurriculum,
-	saveCurriculum,
 	updateCurriculum,
 	updateEducation,
 	updateWork,
 } from 'src/services/curriculum';
+import { AUTH_USER_KEY } from 'src/utils/constants';
+import { get } from 'src/utils/localStorage/localStorage';
 import { useNotification } from '../useNotification';
 
-export const INIT_CV_VALUE = {} as CurriculumVitaeData;
+export const INIT_CV_VALUE = {} as CurriculumGetResponse;
 
 export const useMyCurriculum = () => {
 	const appStore = useContext(AppContext);
@@ -37,13 +41,13 @@ export const useMyCurriculum = () => {
 		openedMap[field] = !openedMap[field];
 	});
 
-	const curriculum = useSignal<CurriculumVitaeData>(INIT_CV_VALUE);
+	const curriculum = useSignal<CurriculumGetResponse>(INIT_CV_VALUE);
 
 	const fetchMyCurriculum = $(async () => {
 		appStore.isLoading = true;
 		try {
 			curriculum.value = await getCurriculum();
-			curriculum.value = {
+			/* curriculum.value = {
 				name: 'Maria Teresa Graziano',
 				email: 'maria.teresa.graziano@claranet.com',
 				role: 'Frontend Developer',
@@ -79,57 +83,61 @@ export const useMyCurriculum = () => {
 						current: false,
 					},
 				],
-			};
+			}; */
+		} catch (error) {
+			const { message } = error as Error;
+			addEvent({
+				message,
+				type: 'danger',
+				autoclose: true,
+			});
+		}
+		appStore.isLoading = false;
+	});
+
+	const save = $(async (formGroup: CurriculumSaveData) => {
+		appStore.isLoading = true;
+		try {
+			/* await saveCurriculum(formGroup); */
+			fetchMyCurriculum();
+		} catch (error) {
+			const { message } = error as Error;
+			addEvent({
+				message,
+				type: 'danger',
+				autoclose: true,
+			});
+		}
+		appStore.isLoading = false;
+	});
+
+	const createCurriculumVitae = $(async (fieldToUpdate: Partial<CurriculumSaveData>) => {
+		console.log('### qui lo creo');
+		appStore.isLoading = true;
+		const user = JSON.parse((await get(AUTH_USER_KEY)) || '{}') as UserMe;
+		const initCV = {
+			name: user.name,
+			email: user.email,
+			role: '',
+			summary: '',
+			main_skills: '',
+			education: [],
+			work: [],
+		};
+		const toSave = { ...initCV, ...fieldToUpdate };
+		await save(toSave);
+		console.log('##### createCV', JSON.stringify(toSave));
+	});
+
+	const update = $(async (formGroup: CurriculumUpdateData) => {
+		appStore.isLoading = true;
+		try {
 			if (JSON.stringify(curriculum.value) === '{}') {
-				console.log('### non ancora costruito a BE');
+				await createCurriculumVitae(formGroup);
+			} else {
+				console.log('### qui lo aggiorno', JSON.stringify(formGroup));
+				await updateCurriculum(formGroup);
 			}
-		} catch (error) {
-			const { message } = error as Error;
-			addEvent({
-				message,
-				type: 'danger',
-				autoclose: true,
-			});
-		}
-		appStore.isLoading = false;
-	});
-
-	const update = $(async (formGroup: UpdateCurriculumData) => {
-		appStore.isLoading = true;
-		try {
-			await updateCurriculum(formGroup);
-			fetchMyCurriculum();
-		} catch (error) {
-			const { message } = error as Error;
-			addEvent({
-				message,
-				type: 'danger',
-				autoclose: true,
-			});
-		}
-		appStore.isLoading = false;
-	});
-
-	const save = $(async (formGroup: CurriculumVitaeData) => {
-		appStore.isLoading = true;
-		try {
-			await saveCurriculum(formGroup);
-			fetchMyCurriculum();
-		} catch (error) {
-			const { message } = error as Error;
-			addEvent({
-				message,
-				type: 'danger',
-				autoclose: true,
-			});
-		}
-		appStore.isLoading = false;
-	});
-
-	const newEducation = $(async (formGroup: EducationData) => {
-		appStore.isLoading = true;
-		try {
-			await addEducation(formGroup);
 			await fetchMyCurriculum();
 		} catch (error) {
 			const { message } = error as Error;
@@ -142,10 +150,36 @@ export const useMyCurriculum = () => {
 		appStore.isLoading = false;
 	});
 
-	const newWork = $(async (formGroup: WorkData) => {
+	const addNewEducation = $(async (formGroup: EducationSaveData) => {
 		appStore.isLoading = true;
 		try {
-			await addWork(formGroup);
+			if (JSON.stringify(curriculum.value) === '{}') {
+				await createCurriculumVitae({ education: [formGroup] });
+			} else {
+				console.log('### qui lo aggiorno', JSON.stringify(formGroup));
+				await addEducation(formGroup);
+			}
+			await fetchMyCurriculum();
+		} catch (error) {
+			const { message } = error as Error;
+			addEvent({
+				message,
+				type: 'danger',
+				autoclose: true,
+			});
+		}
+		appStore.isLoading = false;
+	});
+
+	const addNewWork = $(async (formGroup: WorkSaveData) => {
+		appStore.isLoading = true;
+		try {
+			if (JSON.stringify(curriculum.value) === '{}') {
+				await createCurriculumVitae({ work: [formGroup] });
+			} else {
+				console.log('### qui lo aggiorno', JSON.stringify(formGroup));
+				await addWork(formGroup);
+			}
 			await fetchMyCurriculum();
 		} catch (error) {
 			const { message } = error as Error;
@@ -206,7 +240,7 @@ export const useMyCurriculum = () => {
 		appStore.isLoading = false;
 	});
 
-	const updateWorkItem = $(async (id: string, payload: EducationUpdateData) => {
+	const updateWorkItem = $(async (id: string, payload: WorkUpdateData) => {
 		appStore.isLoading = true;
 		try {
 			await updateWork(id, payload);
@@ -228,9 +262,8 @@ export const useMyCurriculum = () => {
 		fetchMyCurriculum,
 		handleTitleClick,
 		update,
-		save,
-		newEducation,
-		newWork,
+		addNewEducation,
+		addNewWork,
 		updateEducationItem,
 		updateWorkItem,
 		deleteWorkItem,

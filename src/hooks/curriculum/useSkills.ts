@@ -7,7 +7,7 @@ type FormSkillsType = {
 	main_skills?: string;
 };
 
-export const useSkills = (skills: string | undefined, onUpdate: QRL, onCreate: QRL) => {
+export const useSkills = (skills: string | undefined, onSave: QRL) => {
 	const appStore = useContext(AppContext);
 
 	const mode = useComputed$(() => {
@@ -26,11 +26,7 @@ export const useSkills = (skills: string | undefined, onUpdate: QRL, onCreate: Q
 		}),
 		onConfirm$: $(async () => {
 			appStore.isLoading = true;
-			if (mode.value === 'edit') {
-				await onUpdate(formGroup);
-			} else {
-				await onCreate(formGroup);
-			}
+			await onSave(formGroup);
 			appStore.isLoading = false;
 			resetForm();
 		}),

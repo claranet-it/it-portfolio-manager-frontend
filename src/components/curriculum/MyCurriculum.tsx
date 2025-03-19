@@ -16,9 +16,8 @@ export const MyCurriculum = component$(() => {
 		fetchMyCurriculum,
 		handleTitleClick,
 		update,
-		save,
-		newEducation,
-		newWork,
+		addNewEducation,
+		addNewWork,
 		updateEducationItem,
 		updateWorkItem,
 		deleteWorkItem,
@@ -55,8 +54,7 @@ export const MyCurriculum = component$(() => {
 								<AboutMe
 									role={curriculum.value.role}
 									summary={curriculum.value.summary}
-									onUpdate={update}
-									onCreate={save}
+									onSave={update}
 								/>
 							),
 							opened: openedMap.ABM,
@@ -64,13 +62,7 @@ export const MyCurriculum = component$(() => {
 						},
 						{
 							title: 'Main skills',
-							body: (
-								<Skills
-									skills={curriculum.value.main_skills}
-									onUpdate={update}
-									onCreate={save}
-								/>
-							),
+							body: <Skills skills={curriculum.value.main_skills} onSave={update} />,
 							opened: openedMap.MSK,
 							onTitleClick: $(() => handleTitleClick('MSK')),
 						},
@@ -80,7 +72,7 @@ export const MyCurriculum = component$(() => {
 								<Education
 									education={curriculum.value.education}
 									onUpdate={updateEducationItem}
-									onCreate={newEducation}
+									onCreate={addNewEducation}
 									onDelete={deleteEducationItem}
 								/>
 							),
@@ -93,7 +85,7 @@ export const MyCurriculum = component$(() => {
 								<Work
 									work={curriculum.value.work}
 									onUpdate={updateWorkItem}
-									onCreate={newWork}
+									onSave={addNewWork}
 									onDelete={deleteWorkItem}
 								/>
 							),

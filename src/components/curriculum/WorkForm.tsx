@@ -1,33 +1,27 @@
 import { $, component$, useSignal, useTask$ } from '@builder.io/qwik';
+import { WorkUpdateData } from '@models/curriculumVitae';
 import { t } from '../../locale/labels';
 import { Input } from '../form/Input';
 import { YearSelector } from '../form/YearSelector';
 
 interface Props {
-	formGroup: {
-		startYear?: number;
-		endYear?: number;
-		role?: string;
-		company?: string;
-		notes?: string;
-		current?: boolean;
-	};
+	formGroup: WorkUpdateData;
 	formID: string;
 }
 
 export const WorkForm = component$<Props>(({ formGroup, formID }) => {
 	const isDisabled = useSignal<boolean>(formGroup.current || false);
-	console.log('@@@ isdisabed', isDisabled.value);
+
 	const setStartYear = $((date: Date) => {
-		formGroup.startYear = date.getFullYear();
+		formGroup.year_start = date.getFullYear();
 	});
 
 	const setEndYear = $((date: Date) => {
-		formGroup.endYear = date.getFullYear();
+		formGroup.year_end = date.getFullYear();
 	});
 
 	const toogleOngoing = $(() => {
-		formGroup.endYear = undefined;
+		formGroup.year_end = undefined;
 		formGroup.current = true;
 		isDisabled.value = !isDisabled.value;
 	});
@@ -41,13 +35,13 @@ export const WorkForm = component$<Props>(({ formGroup, formID }) => {
 			<form class='space-y-3'>
 				<div class='flex flex-row space-x-4'>
 					<YearSelector
-						year={formGroup.startYear ? new Date(formGroup.startYear, 0) : undefined}
+						year={formGroup.year_start ? new Date(formGroup.year_start, 0) : undefined}
 						title={`${t('TIME_ENTRY_START')}*`}
 						confirmChangeYear={setStartYear}
 						modalId={`start-work-${formID}`}
 					/>
 					<YearSelector
-						year={formGroup.endYear ? new Date(formGroup.endYear, 0) : undefined}
+						year={formGroup.year_end ? new Date(formGroup.year_end, 0) : undefined}
 						title={t('TIME_ENTRY_END')}
 						confirmChangeYear={setEndYear}
 						modalId={`end-work-${formID}`}
@@ -72,12 +66,12 @@ export const WorkForm = component$<Props>(({ formGroup, formID }) => {
 				</div>
 				<Input
 					type='text'
-					value={formGroup.company}
+					value={formGroup.institution}
 					label={`${t('COMPANY_LABEL')}*`}
 					styleClass='w-full'
 					placeholder={t('COMPANY_INSERT_LABEL')}
 					onInput$={(_, el) => {
-						formGroup.company = el.value;
+						formGroup.institution = el.value;
 					}}
 				/>
 				<Input
@@ -100,11 +94,11 @@ export const WorkForm = component$<Props>(({ formGroup, formID }) => {
 					<textarea
 						id='education-description'
 						rows={4}
-						value={formGroup.notes}
+						value={formGroup.note}
 						class='mt-0 block w-full rounded-md border border-gray-500 bg-white-100 p-2.5 text-sm text-gray-900'
 						placeholder={t('NOTES_INSERT_LABEL')}
 						onInput$={(_, el) => {
-							formGroup.notes = el.value;
+							formGroup.note = el.value;
 						}}
 					></textarea>
 				</div>
