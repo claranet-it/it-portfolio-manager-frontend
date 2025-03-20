@@ -46,6 +46,9 @@ export const WorkForm = component$<Props>(({ formGroup, formID }) => {
 						confirmChangeYear={setEndYear}
 						modalId={`end-work-${formID}`}
 						disabled={isDisabled.value}
+						minDate={
+							formGroup.year_start ? new Date(formGroup.year_start, 0) : undefined
+						}
 					/>
 				</div>
 				<div class='block py-2'>

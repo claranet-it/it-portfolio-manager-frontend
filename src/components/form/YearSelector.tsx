@@ -21,10 +21,11 @@ interface YearSelectorProps {
 	confirmChangeYear: QRL;
 	modalId: string;
 	disabled?: boolean;
+	minDate?: Date;
 }
 
 export const YearSelector = component$<YearSelectorProps>(
-	({ title, year, confirmChangeYear, modalId, disabled }) => {
+	({ title, year, confirmChangeYear, modalId, disabled, minDate }) => {
 		const yearPicker = useSignal<Datepicker>();
 
 		const yearSelectedString = useComputed$(() => {
@@ -53,6 +54,7 @@ export const YearSelector = component$<YearSelectorProps>(
 
 		useVisibleTask$(({ track }) => {
 			track(() => year);
+			track(() => minDate);
 
 			const $yearPickerEl = document.getElementById(
 				`yearPicker_${modalId}`
@@ -61,6 +63,7 @@ export const YearSelector = component$<YearSelectorProps>(
 			yearPicker.value = noSerialize(
 				new Datepicker($yearPickerEl, {
 					pickLevel: 2,
+					minDate: minDate,
 				})
 			);
 

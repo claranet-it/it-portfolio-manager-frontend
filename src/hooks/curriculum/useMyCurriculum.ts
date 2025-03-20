@@ -16,6 +16,7 @@ import {
 	deleteEducation,
 	deleteWork,
 	getCurriculum,
+	saveCurriculum,
 	updateCurriculum,
 	updateEducation,
 	updateWork,
@@ -47,7 +48,7 @@ export const useMyCurriculum = () => {
 		appStore.isLoading = true;
 		try {
 			curriculum.value = await getCurriculum();
-			curriculum.value = {
+			/* curriculum.value = {
 				name: 'Maria Teresa Graziano',
 				email: 'maria.teresa.graziano@claranet.com',
 				role: 'Frontend Developer',
@@ -83,7 +84,7 @@ export const useMyCurriculum = () => {
 						current: false,
 					},
 				],
-			};
+			}; */
 		} catch (error) {
 			const { message } = error as Error;
 			addEvent({
@@ -98,7 +99,7 @@ export const useMyCurriculum = () => {
 	const save = $(async (formGroup: CurriculumSaveData) => {
 		appStore.isLoading = true;
 		try {
-			/* await saveCurriculum(formGroup); */
+			await saveCurriculum(formGroup);
 			fetchMyCurriculum();
 		} catch (error) {
 			const { message } = error as Error;
@@ -112,7 +113,6 @@ export const useMyCurriculum = () => {
 	});
 
 	const createCurriculumVitae = $(async (fieldToUpdate: Partial<CurriculumSaveData>) => {
-		console.log('### qui lo creo');
 		appStore.isLoading = true;
 		const user = JSON.parse((await get(AUTH_USER_KEY)) || '{}') as UserMe;
 		const initCV = {
@@ -126,7 +126,6 @@ export const useMyCurriculum = () => {
 		};
 		const toSave = { ...initCV, ...fieldToUpdate };
 		await save(toSave);
-		console.log('##### createCV', JSON.stringify(toSave));
 	});
 
 	const update = $(async (formGroup: CurriculumUpdateData) => {
@@ -135,7 +134,6 @@ export const useMyCurriculum = () => {
 			if (JSON.stringify(curriculum.value) === '{}') {
 				await createCurriculumVitae(formGroup);
 			} else {
-				console.log('### qui lo aggiorno', JSON.stringify(formGroup));
 				await updateCurriculum(formGroup);
 			}
 			await fetchMyCurriculum();
@@ -156,7 +154,6 @@ export const useMyCurriculum = () => {
 			if (JSON.stringify(curriculum.value) === '{}') {
 				await createCurriculumVitae({ education: [formGroup] });
 			} else {
-				console.log('### qui lo aggiorno', JSON.stringify(formGroup));
 				await addEducation(formGroup);
 			}
 			await fetchMyCurriculum();
@@ -177,7 +174,6 @@ export const useMyCurriculum = () => {
 			if (JSON.stringify(curriculum.value) === '{}') {
 				await createCurriculumVitae({ work: [formGroup] });
 			} else {
-				console.log('### qui lo aggiorno', JSON.stringify(formGroup));
 				await addWork(formGroup);
 			}
 			await fetchMyCurriculum();

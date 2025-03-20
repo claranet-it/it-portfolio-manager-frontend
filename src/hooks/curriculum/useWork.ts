@@ -43,8 +43,6 @@ export const useWork = (
 	});
 
 	const openEditDialog = $((id: string) => {
-		formModalState.workIdToEdit = undefined;
-		console.log('open edit', formModalState.workIdToEdit, JSON.stringify(formGroup));
 		formModalState.workIdToEdit = id;
 		formModalState.isVisible = true;
 		formModalState.mode = 'edit';
@@ -62,7 +60,6 @@ export const useWork = (
 
 	const openAddDialog = $(() => {
 		formModalState.workIdToEdit = undefined;
-		console.log('open add', formModalState.workIdToEdit, JSON.stringify(formGroup));
 		formModalState.isVisible = true;
 		formModalState.mode = 'new';
 		formModalState.title = t('WORK_ADD');

@@ -1,6 +1,7 @@
 import { component$, useVisibleTask$ } from '@builder.io/qwik';
 import { getIcon } from 'src/components/icons';
 import { useCurriculumVitae } from 'src/hooks/curriculum/useCurriculumVitae';
+import { t } from 'src/locale/labels';
 
 export const CurriculumVitae = component$(() => {
 	const { curriculumVitae, initCurriculumVitae } = useCurriculumVitae();
@@ -42,11 +43,11 @@ export const CurriculumVitae = component$(() => {
 						<div class='space-y-4 text-gray-600'>
 							<h2 class='me-4 text-2xl font-bold text-darkgray-900'>Education</h2>
 							{curriculumVitae.value.education?.map(
-								({ year_start, year_end, note, institution }) => {
+								({ year_start, year_end, note, institution, current }) => {
 									return (
 										<div>
 											<div>
-												{year_start} - {year_end}
+												{year_start} - {current ? t('PRESENT') : year_end}
 											</div>
 
 											<strong>{institution}</strong>
@@ -62,11 +63,11 @@ export const CurriculumVitae = component$(() => {
 								Work experience
 							</h2>
 							{curriculumVitae.value.work?.map(
-								({ year_start, year_end, role, note, institution }) => {
+								({ year_start, year_end, role, note, institution, current }) => {
 									return (
 										<div>
 											<div>
-												{year_start} - {year_end}
+												{year_start} - {current ? t('PRESENT') : year_end}
 											</div>
 
 											<strong>

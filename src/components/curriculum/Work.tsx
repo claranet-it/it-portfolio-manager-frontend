@@ -42,7 +42,7 @@ export const Work = component$<Props>(({ work, onUpdate, onSave, onDelete }) => 
 				</div>
 			</div>
 			<div class='m-0 mt-2 w-full'>
-				{work?.map(({ year_start, year_end, role, note, institution, id }) => {
+				{work?.map(({ year_start, year_end, role, note, institution, current, id }) => {
 					return (
 						<div
 							key={id}
@@ -50,7 +50,7 @@ export const Work = component$<Props>(({ work, onUpdate, onSave, onDelete }) => 
 						>
 							<div>
 								<h2 class='text-xs text-darkgray-900'>
-									{year_start} - {year_end}
+									{year_start} - {current ? t('PRESENT') : year_end}
 								</h2>
 								<h1 class='text-xl font-bold text-darkgray-900'>
 									{role} &#64;{institution}

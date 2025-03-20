@@ -1,5 +1,5 @@
 import { $, component$, QRL } from '@builder.io/qwik';
-import { Education as EducationType } from '@models/curriculumVitae';
+import { EducationGetResponse } from '@models/curriculumVitae';
 import { useEducation } from 'src/hooks/curriculum/useEducation';
 import { t } from 'src/locale/labels';
 import { OptionDropdown } from '../form/OptionDropdown';
@@ -7,7 +7,7 @@ import { getIcon } from '../icons';
 import { Modal } from '../modals/Modal';
 import { EducationForm } from './EducationForm';
 interface Props {
-	education?: EducationType[];
+	education?: EducationGetResponse[];
 	onUpdate: QRL;
 	onCreate: QRL;
 	onDelete: QRL;
@@ -40,7 +40,7 @@ export const Education = component$<Props>(({ education, onUpdate, onCreate, onD
 				</div>
 			</div>
 			<div class='m-0 mt-2 w-full'>
-				{education?.map(({ year_end, year_start, note, institution, id }) => {
+				{education?.map(({ year_end, year_start, note, institution, current, id }) => {
 					return (
 						<div
 							key={id}
@@ -48,7 +48,7 @@ export const Education = component$<Props>(({ education, onUpdate, onCreate, onD
 						>
 							<div>
 								<h2 class='text-xs text-darkgray-900'>
-									{year_start} - {year_end}
+									{year_start} - {current ? t('PRESENT') : year_end}
 								</h2>
 								<h1 class='text-xl font-bold text-darkgray-900'>{institution}</h1>
 								<h3 class='text-base font-normal text-darkgray-900'>{note}</h3>

@@ -23,9 +23,9 @@ export const MyCurriculum = component$(() => {
 		deleteWorkItem,
 		deleteEducationItem,
 	} = useMyCurriculum();
+
 	useTask$(async () => {
 		await fetchMyCurriculum();
-		console.log('####', curriculum.value);
 	});
 
 	return (

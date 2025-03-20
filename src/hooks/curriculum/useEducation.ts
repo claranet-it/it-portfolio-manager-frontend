@@ -44,8 +44,6 @@ export const useEducation = (
 	});
 
 	const openEditDialog = $((id: string) => {
-		formModalState.educationIdToEdit = undefined;
-		console.log('open edit', formModalState.educationIdToEdit, JSON.stringify(formGroup));
 		formModalState.educationIdToEdit = id;
 		formModalState.isVisible = true;
 		formModalState.mode = 'edit';
