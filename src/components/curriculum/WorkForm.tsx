@@ -34,38 +34,44 @@ export const WorkForm = component$<Props>(({ formGroup, formID }) => {
 		<div class='w-96'>
 			<form class='space-y-3'>
 				<div class='flex flex-row space-x-4'>
-					<YearSelector
-						year={formGroup.year_start ? new Date(formGroup.year_start, 0) : undefined}
-						title={`${t('TIME_ENTRY_START')}*`}
-						confirmChangeYear={setStartYear}
-						modalId={`start-work-${formID}`}
-					/>
-					<YearSelector
-						year={formGroup.year_end ? new Date(formGroup.year_end, 0) : undefined}
-						title={t('TIME_ENTRY_END')}
-						confirmChangeYear={setEndYear}
-						modalId={`end-work-${formID}`}
-						disabled={isDisabled.value}
-						minDate={
-							formGroup.year_start ? new Date(formGroup.year_start, 0) : undefined
-						}
-					/>
-				</div>
-				<div class='block py-2'>
-					<input
-						checked={formGroup.current}
-						id={`work-checkbox-ongoing-${formID}`}
-						type='checkbox'
-						value=''
-						onChange$={toogleOngoing}
-						class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
-					/>
-					<label
-						for={`work-checkbox-ongoing-${formID}`}
-						class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
-					>
-						Ongoing
-					</label>
+					<div>
+						<YearSelector
+							year={
+								formGroup.year_start ? new Date(formGroup.year_start, 0) : undefined
+							}
+							title={`${t('TIME_ENTRY_START')}*`}
+							confirmChangeYear={setStartYear}
+							modalId={`start-work-${formID}`}
+						/>
+					</div>
+					<div>
+						<YearSelector
+							year={formGroup.year_end ? new Date(formGroup.year_end, 0) : undefined}
+							title={t('TIME_ENTRY_END')}
+							confirmChangeYear={setEndYear}
+							modalId={`end-work-${formID}`}
+							disabled={isDisabled.value}
+							minDate={
+								formGroup.year_start ? new Date(formGroup.year_start, 0) : undefined
+							}
+						/>
+						<div class='mt-1 block'>
+							<input
+								checked={formGroup.current}
+								id={`work-checkbox-ongoing-${formID}`}
+								type='checkbox'
+								value=''
+								onChange$={toogleOngoing}
+								class='h-4 w-4 rounded border-gray-300 bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
+							/>
+							<label
+								for={`work-checkbox-ongoing-${formID}`}
+								class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
+							>
+								Ongoing
+							</label>
+						</div>
+					</div>
 				</div>
 				<Input
 					type='text'
