@@ -248,5 +248,6 @@
 	"COMPANY_INSERT_LABEL": "Insert company name...",
 	"NOTES_LABEL": "Notes",
 	"NOTES_INSERT_LABEL": "Insert notes...",
-	"PRESENT": "Present"
+	"PRESENT": "Present",
+	"NO_DATA": "No data inserted"
 }

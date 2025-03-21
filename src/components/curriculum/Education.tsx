@@ -9,10 +9,10 @@ import { EducationForm } from './EducationForm';
 interface Props {
 	education?: EducationGetResponse[];
 	onUpdate: QRL;
-	onCreate: QRL;
+	onSave: QRL;
 	onDelete: QRL;
 }
-export const Education = component$<Props>(({ education, onUpdate, onCreate, onDelete }) => {
+export const Education = component$<Props>(({ education, onUpdate, onSave, onDelete }) => {
 	const {
 		formGroup,
 		formModalState,
@@ -20,7 +20,7 @@ export const Education = component$<Props>(({ education, onUpdate, onCreate, onD
 		openDeleteDialog,
 		openAddDialog,
 		openEditDialog,
-	} = useEducation(education, onUpdate, onCreate, onDelete);
+	} = useEducation(education, onUpdate, onSave, onDelete);
 
 	return (
 		<>

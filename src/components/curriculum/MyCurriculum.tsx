@@ -72,7 +72,7 @@ export const MyCurriculum = component$(() => {
 								<Education
 									education={curriculum.value.education}
 									onUpdate={updateEducationItem}
-									onCreate={addNewEducation}
+									onSave={addNewEducation}
 									onDelete={deleteEducationItem}
 								/>
 							),

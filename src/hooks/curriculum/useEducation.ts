@@ -7,7 +7,7 @@ import { t } from 'src/locale/labels';
 export const useEducation = (
 	education: EducationGetResponse[] | undefined,
 	onUpdate: QRL,
-	onCreate: QRL,
+	onSave: QRL,
 	onDelete: QRL
 ) => {
 	const appStore = useContext(AppContext);
@@ -89,7 +89,7 @@ export const useEducation = (
 			if (formModalState.mode === 'edit' && formModalState.educationIdToEdit) {
 				await onUpdate(formModalState.educationIdToEdit, formGroup);
 			} else {
-				await onCreate(formGroup);
+				await onSave(formGroup);
 			}
 			appStore.isLoading = false;
 			resetForm();
