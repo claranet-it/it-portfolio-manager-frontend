@@ -28,6 +28,9 @@ export const useEducation = (
 		onCancel$: $(() => {
 			resetForm();
 		}),
+		onClose$: $(() => {
+			resetForm();
+		}),
 		cancelLabel: t('ACTION_CANCEL'),
 		confirmLabel: t('ACTION_SAVE'),
 		mode: 'new',
