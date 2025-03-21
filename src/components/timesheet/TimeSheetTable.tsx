@@ -275,12 +275,12 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 															key={`entry-${key}-${formattedDate}`}
 														>
 															<div
-																class={
+																class={`relative ${
 																	dEntries.length > 1 &&
 																	isLastEntry
 																		? 'mb-6'
 																		: 'mb-2'
-																}
+																}`}
 															>
 																<TimeEntryElement
 																	key={key}

@@ -1,4 +1,5 @@
 import { BusinessCardData } from '@models/businessCard';
+import { drawBackground, drawText } from './canvas';
 
 type canvasType = 'landscape' | 'portrait';
 type BusinessCardConf = {
@@ -133,28 +134,6 @@ export class BusinessCardCanvas {
 		fonts.forEach((font) => document.fonts.add(font));
 	}
 
-	private drawBackground(
-		ctx: CanvasRenderingContext2D,
-		background: HTMLImageElement,
-		width: number,
-		height: number
-	): void {
-		ctx.drawImage(background, 0, 0, width, height);
-	}
-
-	private drawText(
-		ctx: CanvasRenderingContext2D,
-		text: string,
-		x: number,
-		y: number,
-		font: string,
-		color: string
-	): void {
-		ctx.fillStyle = color;
-		ctx.font = font;
-		ctx.fillText(text, x, y);
-	}
-
 	public async print(data: BusinessCardData): Promise<void> {
 		this.canvas.width = this.conf.width;
 		this.canvas.height = this.conf.height;
@@ -164,9 +143,9 @@ export class BusinessCardCanvas {
 
 		await this.waitForImageLoaded(this.image);
 		await this.loadFonts();
-		this.drawBackground(ctx, this.image, this.canvas.width, this.canvas.height);
+		drawBackground(ctx, this.image, this.canvas.width, this.canvas.height);
 
-		this.drawText(
+		drawText(
 			ctx,
 			data.name,
 			this.conf.name.x,
@@ -175,7 +154,7 @@ export class BusinessCardCanvas {
 			this.conf.name.color
 		);
 		data.role &&
-			this.drawText(
+			drawText(
 				ctx,
 				data.role,
 				this.conf.role.x,
@@ -185,7 +164,7 @@ export class BusinessCardCanvas {
 			);
 
 		let detailsY = this.conf.details.y;
-		this.drawText(
+		drawText(
 			ctx,
 			'Email: ' + data.email,
 			this.conf.details.x,
@@ -195,7 +174,7 @@ export class BusinessCardCanvas {
 		);
 		detailsY += this.conf.details.newLine;
 		if (data.mobile) {
-			this.drawText(
+			drawText(
 				ctx,
 				'Mobile: ' + data.mobile,
 				this.conf.details.x,
@@ -205,7 +184,7 @@ export class BusinessCardCanvas {
 			);
 			detailsY += this.conf.details.newLine;
 		}
-		this.drawText(
+		drawText(
 			ctx,
 			'Web: www.claranet.com',
 			this.conf.details.x,
@@ -215,7 +194,7 @@ export class BusinessCardCanvas {
 		);
 
 		let addressY = this.conf.address.y;
-		this.drawText(
+		drawText(
 			ctx,
 			'Claranet Italia',
 			this.conf.address.x,
@@ -224,7 +203,7 @@ export class BusinessCardCanvas {
 			this.conf.address.color
 		);
 		addressY += this.conf.address.newLine;
-		this.drawText(
+		drawText(
 			ctx,
 			'Corso Europa, 13',
 			this.conf.address.x,
@@ -233,7 +212,7 @@ export class BusinessCardCanvas {
 			this.conf.address.color
 		);
 		addressY += this.conf.address.newLine;
-		this.drawText(
+		drawText(
 			ctx,
 			'20122, Milan',
 			this.conf.address.x,
@@ -242,7 +221,7 @@ export class BusinessCardCanvas {
 			this.conf.address.color
 		);
 		addressY += this.conf.address.newLine;
-		this.drawText(
+		drawText(
 			ctx,
 			'Italy',
 			this.conf.address.x,

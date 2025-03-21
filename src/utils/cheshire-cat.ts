@@ -5,12 +5,13 @@ export class CheshireCatClient {
 	cat: CatClient;
 
 	constructor(userMail: string, onMessage: (data: SocketResponse) => void) {
-		this.userMail = userMail;
+		this.userMail = localStorage.getItem('auth_token') ?? userMail;
+
 		this.cat = new CatClient({
 			baseUrl: import.meta.env.VITE_CHESHIRE_CAT_BASE_URL,
 			userId: this.userMail,
-			port: 443,
 			secure: true,
+			port: undefined,
 		});
 		this.cat.init().onMessage(onMessage);
 	}

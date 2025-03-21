@@ -9,16 +9,16 @@ import {
 	useVisibleTask$,
 } from '@builder.io/qwik';
 import { BusinessCardData } from '@models/businessCard';
+import { ModalState } from '@models/modalState';
 import QRCode from 'qrcode';
+import { Button } from 'src/components/Button';
+import { CopyToClipboard } from 'src/components/CopyToClipboard';
+import { Modal } from 'src/components/modals/Modal';
+import { t, tt } from 'src/locale/labels';
 import { findMatchingRoute } from 'src/router';
 import { getBusinessCardDataByEmail } from 'src/services/businessCard';
-import { BUSINESS_CARD_CONF, BusinessCardCanvas } from 'src/utils/business-card-canvas';
+import { BUSINESS_CARD_CONF, BusinessCardCanvas } from 'src/utils/canvas/business-card-canvas';
 import { validateEmail } from 'src/utils/email';
-import { Modal } from 'src/components/modals/Modal';
-import { ModalState } from '@models/modalState';
-import { t, tt } from 'src/locale/labels';
-import { CopyToClipboard } from 'src/components/CopyToClipboard';
-import { Button } from 'src/components/Button';
 
 export const PublicProfile = component$(() => {
 	const businessCard = useSignal<BusinessCardData>({} as BusinessCardData);

@@ -1,4 +1,4 @@
-import { component$, useTask$ } from '@builder.io/qwik';
+import { component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { LoadingSpinner } from 'src/components/LoadingSpinner';
 import { Toast } from '../components/Toast';
 import { getIcon } from '../components/icons';
@@ -14,6 +14,7 @@ const messages: Record<(typeof messageCodes)[number], string> = {
 
 export const AuthManager = component$(() => {
 	const { authProviders, isLoading, issueMessage } = useAuth();
+	const showIssueMessage = useSignal<boolean>(false);
 
 	useTask$(() => {
 		const url = new URL(window.location.href);
@@ -21,6 +22,7 @@ export const AuthManager = component$(() => {
 
 		if (msg) {
 			issueMessage.value = messages['401'];
+			showIssueMessage.value = true;
 		}
 	});
 
@@ -33,11 +35,11 @@ export const AuthManager = component$(() => {
 			)}
 
 			<div class='fixed right-0 top-0 flex flex-col items-end justify-end space-y-2 pr-2 pt-2'>
-				{issueMessage.value && (
+				{issueMessage.value && showIssueMessage.value && (
 					<Toast
 						type={'warning'}
 						message={issueMessage.value}
-						onClose$={() => (issueMessage.value = undefined)}
+						onClose$={() => (showIssueMessage.value = false)}
 						autoclose={true}
 					/>
 				)}
@@ -66,6 +68,20 @@ export const AuthManager = component$(() => {
 					))}
 				</div>
 			</div>
+
+			{issueMessage.value && issueMessage.value === messages['401'] && (
+				<div class='flex-center relative -bottom-[15%] flex w-max justify-center rounded-[4px] border border-clara-red bg-white-100 text-center text-sm shadow-lg'>
+					<span class='px-5 py-2'>
+						{t('JOIN_CTA_TITLE')}{' '}
+						<a
+							class='font-bold'
+							href={`mailto:IT-Brickly-Dev@claranet.com?subject=${encodeURIComponent('[Brickly] I want to join')}`}
+						>
+							{t('JOIN_CTA_BUTTON')}
+						</a>
+					</span>
+				</div>
+			)}
 
 			<div
 				class={`${isLoading.value ? 'hidden' : ''} 'h-[36px] mt-[12px] bg-white-100 text-sm font-normal text-dark-grey`}

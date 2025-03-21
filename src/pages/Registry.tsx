@@ -11,6 +11,7 @@ import { ModalState } from '@models/modalState';
 import { TimeEntry } from '@models/timeEntry';
 import { AppContext } from 'src/app';
 import { NewProjectForm } from 'src/components/form/NewProjectForm';
+import { ToggleSwitch } from 'src/components/form/ToggleSwitch';
 import { Modal } from 'src/components/modals/Modal';
 import { NewTimeEntryModal } from 'src/components/modals/NewTimeEntryModal';
 import { CustomerAccordion } from 'src/components/registry/CustomerAccordion';
@@ -21,7 +22,8 @@ import { getRouteParams } from 'src/router';
 export const Registry = component$(() => {
 	const appStore = useContext(AppContext);
 	const alertMessageState = useStore<ModalState>({});
-	const { customers, isLoading, fetchCustomers } = useCustomers();
+	const hideCompleted = useSignal(true);
+	const { customers, isLoading, fetchCustomers } = useCustomers(hideCompleted);
 
 	const newProjectCancelAction = $(() => {
 		const button = document.getElementById('open-new-project-bt');
@@ -51,6 +53,7 @@ export const Registry = component$(() => {
 
 	useTask$(async ({ track }) => {
 		track(() => update.value);
+		track(() => hideCompleted.value);
 		await fetchCustomers();
 	});
 
@@ -88,6 +91,7 @@ export const Registry = component$(() => {
 							preSelectedData={preselectedDataRegistry}
 						/>
 					</NewTimeEntryModal>
+					<ToggleSwitch isChecked={hideCompleted} label='Hide completed' />
 				</div>
 
 				<div id='accordion-nested-parent' data-accordion='collapse'>
@@ -98,11 +102,12 @@ export const Registry = component$(() => {
 						: []
 					).map((customer) => (
 						<CustomerAccordion
-							key={`customer-${customer}`}
+							key={`customer-${customer}-${hideCompleted.value ? 'only-not-completed' : 'all'}`}
 							preOpenData={preOpenDataRegistry}
 							preSelectedData={preselectedDataRegistry}
 							customer={customer}
 							refresh={refresh}
+							hideCompleted={hideCompleted}
 						/>
 					))}
 				</div>

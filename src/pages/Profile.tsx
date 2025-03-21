@@ -1,9 +1,10 @@
 import { $, component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { UserMe } from '@models/user';
+import { BackgroundGenerator } from 'src/components/BackgroundGenerator';
 import { MyCurriculum } from 'src/components/curriculum/MyCurriculum';
 import { Tabs } from 'src/components/Tabs';
 import { usePermissionAccess } from 'src/hooks/usePermissionAccess';
-import { AUTH_USER_KEY, ITALY_COMPANY_ID } from 'src/utils/constants';
+import { AUTH_USER_KEY, FRANCE_COMPANY_ID, ITALY_COMPANY_ID } from 'src/utils/constants';
 import { get } from 'src/utils/localStorage/localStorage';
 import { BusinessCardGenerator } from '../components/BusinessCardGenerator';
 import { SkillMatrix } from '../components/SkillMatrix';
@@ -26,7 +27,7 @@ export const Profile = component$(() => {
 				<SkillMatrix userSelected={userSelected} userIdSelected={userIdSelected} />
 			)),
 		},
-		...(currentUser.value?.company === ITALY_COMPANY_ID
+		...(currentUser.value?.company?.toLowerCase() === ITALY_COMPANY_ID
 			? [
 					{
 						id: 'education',
@@ -37,6 +38,16 @@ export const Profile = component$(() => {
 						id: 'business-card',
 						label: t('BUSINESS_CARD'),
 						content: $(() => <BusinessCardGenerator />),
+					},
+				]
+			: []),
+		...(currentUser.value?.company?.toLowerCase() === FRANCE_COMPANY_ID ||
+		currentUser.value?.company?.toLowerCase() === ITALY_COMPANY_ID
+			? [
+					{
+						id: 'background',
+						label: t('BACKGROUND'),
+						content: $(() => <BackgroundGenerator />),
 					},
 				]
 			: []),

@@ -323,7 +323,7 @@ export const Company = component$(() => {
 													options={Object.entries(roles)
 														.filter(
 															([role, _]) =>
-																roleHierarchy[userAcl.value.role] >
+																roleHierarchy[userAcl.value.role] >=
 																roleHierarchy[role as Roles]
 														)
 														.map(([role, name]) => ({
@@ -358,7 +358,13 @@ export const Company = component$(() => {
 
 			<Modal state={companyLogoModalState}>
 				<form class='space-y-3'>
-					<Input label={t('LOGO_URL_LABEL')} bindValue={logoUrl} />
+					<Input
+						label={t('LOGO_URL_LABEL')}
+						bindValue={logoUrl}
+						onChange$={(event) =>
+							(logoUrl.value = (event.target as HTMLInputElement).value)
+						}
+					/>
 				</form>
 			</Modal>
 		</>
