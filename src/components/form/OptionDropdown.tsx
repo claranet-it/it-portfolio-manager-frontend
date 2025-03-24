@@ -44,7 +44,7 @@ export const OptionDropdown = component$<optionDropdownInterface>(
 						{options.map((option, index) => (
 							<li
 								key={`${id}-dropdown-${index}`}
-								class={`${option.class} block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white`}
+								class={`${option.class} block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white`}
 								onClick$={option.onChange}
 							>
 								{option.value}

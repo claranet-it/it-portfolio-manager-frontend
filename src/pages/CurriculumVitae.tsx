@@ -10,15 +10,19 @@ export const CurriculumVitae = component$(() => {
 	});
 
 	return (
-		<div class='flex h-screen flex-col'>
-			<header>
+		<div>
+			<header class='w-full'>
 				<div class='items-center justify-between border-b border-b-darkgray-300 bg-white md:flex lg:flex'>
-					<div class='px-6 py-4 sm:text-center [&_svg]:sm:inline'>
+					<div
+						class='px-6 py-4 sm:text-center [&_svg]:sm:inline'
+						style={{ pageBreakInside: 'auto' }}
+					>
 						{getIcon('Claranet')}
 					</div>
 				</div>
 			</header>
-			<div class='w-2/3 space-y-6 px-6 pb-16 pt-2.5'>
+
+			<div class='space-y-6 px-6 pb-16 pt-2.5'>
 				{JSON.stringify(curriculumVitae.value) === '{}' ? (
 					<div>{t('NO_DATA')}</div>
 				) : (
@@ -83,7 +87,7 @@ export const CurriculumVitae = component$(() => {
 				)}
 			</div>
 
-			<footer class='fixed bottom-0 space-y-6 border-t border-t-darkgray-300 bg-white px-6 pb-2 pt-2 text-[8px] print:fixed print:bottom-0 print:left-0'>
+			<footer class='space-y-6 border-t border-t-darkgray-300 bg-white px-6 pb-2 pt-2 text-[8px]'>
 				<span class='font-bold text-red-600'> Claranet S.r.l. </span> Società con socio
 				unico Claranet Group Limited Capitale Sociale €10.000 interamente versato. Corso
 				Europa, 13 – 20122 Milano - P.IVA e C.F. 09725520960 Registro Imprese Milano REA
