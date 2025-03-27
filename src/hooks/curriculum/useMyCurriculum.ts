@@ -21,7 +21,7 @@ import {
 	updateEducation,
 	updateWork,
 } from 'src/services/curriculum';
-import { AUTH_USER_KEY } from 'src/utils/constants';
+import { AUTH_USER_KEY, CURRICULUM_VITAE_ROUTE } from 'src/utils/constants';
 import { get } from 'src/utils/localStorage/localStorage';
 import { useNotification } from '../useNotification';
 
@@ -43,6 +43,12 @@ export const useMyCurriculum = () => {
 	});
 
 	const curriculum = useSignal<CurriculumGetResponse>(INIT_CV_VALUE);
+
+	const goToCurriculum = $(async () => {
+		const user = JSON.parse((await get(AUTH_USER_KEY)) || '{}') as UserMe;
+		const url = `${window.location.origin}/${CURRICULUM_VITAE_ROUTE.replace(':email', user.email)}`;
+		window.open(url, '_blank');
+	});
 
 	const fetchMyCurriculum = $(async () => {
 		appStore.isLoading = true;
@@ -227,5 +233,6 @@ export const useMyCurriculum = () => {
 		updateWorkItem,
 		deleteWorkItem,
 		deleteEducationItem,
+		goToCurriculum,
 	};
 };

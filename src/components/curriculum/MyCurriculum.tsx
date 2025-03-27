@@ -1,7 +1,6 @@
 import { $, component$, useTask$ } from '@builder.io/qwik';
 import { useMyCurriculum } from 'src/hooks/curriculum/useMyCurriculum';
 import { t } from 'src/locale/labels';
-import { CURRICULUM_VITAE_ROUTE } from 'src/utils/constants';
 import { Accordion } from '../Accordion';
 import { Button } from '../Button';
 import { AboutMe } from './AboutMe';
@@ -22,6 +21,7 @@ export const MyCurriculum = component$(() => {
 		updateWorkItem,
 		deleteWorkItem,
 		deleteEducationItem,
+		goToCurriculum,
 	} = useMyCurriculum();
 
 	useTask$(async () => {
@@ -33,15 +33,7 @@ export const MyCurriculum = component$(() => {
 			<div class='flex items-center justify-between'>
 				<div class='text-2xl font-bold text-dark-grey'>{t('CV_TITLE')}</div>
 				<div>
-					<a
-						href={`${window.location.origin}/${CURRICULUM_VITAE_ROUTE.replace(
-							':email',
-							'maria.teresa.graziano@claranet.com'
-						)}`}
-						target='_blank'
-					>
-						<Button>{t('CV_GENERATE')}</Button>
-					</a>
+					<Button onClick$={goToCurriculum}>{t('CV_GENERATE')}</Button>
 				</div>
 			</div>
 
