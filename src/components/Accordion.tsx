@@ -1,4 +1,4 @@
-import { component$, JSXChildren } from '@builder.io/qwik';
+import { component$, JSXChildren, QRL } from '@builder.io/qwik';
 
 export interface AccordionProps {
 	cards: Card[];
@@ -8,7 +8,7 @@ export interface AccordionProps {
 
 interface Card {
 	title?: string | JSXChildren;
-	onTitleClick?: () => void;
+	onTitleClick?: QRL<() => void>;
 	body: JSXChildren;
 	opened: boolean;
 	disabled?: boolean;
@@ -42,7 +42,7 @@ const AccordionCard = ({
 				<h2>
 					<button
 						type='button'
-						class={`flex w-full items-center justify-between border border-gray-200 p-5 font-medium text-gray-500 rtl:text-right ${borderClass} gap-3 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-gray-800`}
+						class={`flex w-full items-center justify-between border border-gray-200 bg-surface-20 p-5 font-medium text-dark-grey rtl:text-right ${borderClass} gap-3 focus:ring-4 focus:ring-gray-200 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-gray-800`}
 						aria-expanded={card.opened}
 						onClick$={card.onTitleClick}
 						disabled={card.disabled ?? false}
@@ -67,7 +67,7 @@ const AccordionCard = ({
 					</button>
 				</h2>
 			)}
-			<div class={`${card.opened ? '' : 'hidden'}`}>
+			<div class={`${card.opened ? '' : 'hidden'} `}>
 				<div
 					class={`border p-5 ${isLast ? 'border-b-1' : 'border-b-0'} border-gray-200 dark:border-gray-700 dark:bg-gray-900`}
 				>

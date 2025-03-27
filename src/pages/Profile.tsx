@@ -1,6 +1,7 @@
 import { $, component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { UserMe } from '@models/user';
 import { BackgroundGenerator } from 'src/components/BackgroundGenerator';
+import { MyCurriculum } from 'src/components/curriculum/MyCurriculum';
 import { Tabs } from 'src/components/Tabs';
 import { usePermissionAccess } from 'src/hooks/usePermissionAccess';
 import { AUTH_USER_KEY, FRANCE_COMPANY_ID, ITALY_COMPANY_ID } from 'src/utils/constants';
@@ -28,6 +29,11 @@ export const Profile = component$(() => {
 		},
 		...(currentUser.value?.company?.toLowerCase() === ITALY_COMPANY_ID
 			? [
+					{
+						id: 'education',
+						label: t('CV'),
+						content: $(() => <MyCurriculum />),
+					},
 					{
 						id: 'business-card',
 						label: t('BUSINESS_CARD'),

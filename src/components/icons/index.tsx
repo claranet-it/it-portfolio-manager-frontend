@@ -16,6 +16,7 @@ import { Design } from './Design';
 import { DownArrow } from './DownArrow';
 import { Downalod } from './Download';
 import { Edit } from './Edit';
+import { EditRed } from './EditRed';
 import { EditWhite } from './EditWhite';
 import { Elixir } from './Elixir';
 import { Exit } from './Exit';
@@ -38,6 +39,7 @@ import { Send } from './Send';
 import { TypeScript } from './TypeScript';
 import { UserGroup } from './UserGroup';
 import { V3Dots } from './V3Dots';
+import { V3DotsBlack } from './V3DotsBlack';
 import { Add } from './add';
 import { IOS } from './iOS';
 
@@ -91,6 +93,8 @@ export const getIcon = (skill: string) => {
 			return <Edit />;
 		case 'EditWhite':
 			return <EditWhite />;
+		case 'EditRed':
+			return <EditRed />;
 		case 'Close':
 			return <Close />;
 		case 'Expand':
@@ -107,6 +111,8 @@ export const getIcon = (skill: string) => {
 			return <Bin />;
 		case 'V3Dots':
 			return <V3Dots />;
+		case 'V3DotsBlack':
+			return <V3DotsBlack />;
 		case 'Calendar':
 			return <Calendar />;
 		case 'ArrowLeft':

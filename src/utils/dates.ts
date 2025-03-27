@@ -27,6 +27,10 @@ export const formatDateStringMDY = (date: Date): string => {
 	return format(date, 'MM/dd/yyyy');
 };
 
+export const formatDateStringYear = (date: Date): string => {
+	return format(date, 'yyyy');
+};
+
 export const getDateFromHourString = (stringHours: string): Date => {
 	const [hours, minutes] = stringHours.split(':').map(Number);
 	const date = new Date();

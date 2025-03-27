@@ -5,6 +5,7 @@ export type ModalState = {
 	message?: string;
 	body?: JSXChildren;
 	isVisible?: boolean;
+	isConfirmDisabled?: boolean;
 	confirmLabel?: string;
 	cancelLabel?: string;
 	onConfirm$?: QRL;
