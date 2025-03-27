@@ -21,7 +21,7 @@ import {
 	updateEducation,
 	updateWork,
 } from 'src/services/curriculum';
-import { AUTH_USER_KEY, CURRICULUM_VITAE_ROUTE } from 'src/utils/constants';
+import { AUTH_USER_KEY } from 'src/utils/constants';
 import { get } from 'src/utils/localStorage/localStorage';
 import { useNotification } from '../useNotification';
 
@@ -43,12 +43,6 @@ export const useMyCurriculum = () => {
 	});
 
 	const curriculum = useSignal<CurriculumGetResponse>(INIT_CV_VALUE);
-
-	const goToCurriculum = $(async () => {
-		const user = JSON.parse((await get(AUTH_USER_KEY)) || '{}') as UserMe;
-		const url = `${window.location.origin}/${CURRICULUM_VITAE_ROUTE.replace(':email', user.email)}`;
-		window.open(url, '_blank');
-	});
 
 	const fetchMyCurriculum = $(async () => {
 		appStore.isLoading = true;
@@ -100,7 +94,7 @@ export const useMyCurriculum = () => {
 	const update = $(async (formGroup: CurriculumUpdateData) => {
 		appStore.isLoading = true;
 		try {
-			if (JSON.stringify(curriculum.value) === '{}') {
+			if (Object.keys(curriculum.value).length === 0) {
 				await createCurriculumVitae(formGroup);
 			} else {
 				await updateCurriculum(formGroup);
@@ -120,7 +114,7 @@ export const useMyCurriculum = () => {
 	const addNewEducation = $(async (formGroup: EducationSaveData) => {
 		appStore.isLoading = true;
 		try {
-			if (JSON.stringify(curriculum.value) === '{}') {
+			if (Object.keys(curriculum.value).length === 0) {
 				await createCurriculumVitae({ education: [formGroup] });
 			} else {
 				await addEducation(formGroup);
@@ -140,7 +134,7 @@ export const useMyCurriculum = () => {
 	const addNewWork = $(async (formGroup: WorkSaveData) => {
 		appStore.isLoading = true;
 		try {
-			if (JSON.stringify(curriculum.value) === '{}') {
+			if (Object.keys(curriculum.value).length === 0) {
 				await createCurriculumVitae({ work: [formGroup] });
 			} else {
 				await addWork(formGroup);
@@ -233,6 +227,5 @@ export const useMyCurriculum = () => {
 		updateWorkItem,
 		deleteWorkItem,
 		deleteEducationItem,
-		goToCurriculum,
 	};
 };
