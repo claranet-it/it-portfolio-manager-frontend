@@ -23,7 +23,7 @@ export const CurriculumVitae = component$(() => {
 			</header>
 
 			<div class='space-y-6 px-6 pb-16 pt-2.5'>
-				{JSON.stringify(curriculumVitae.value) === '{}' ? (
+				{Object.keys(curriculumVitae.value).length === 0 ? (
 					<div>{t('NO_DATA')}</div>
 				) : (
 					<>
