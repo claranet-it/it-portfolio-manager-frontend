@@ -36,7 +36,7 @@ export const AboutMe = component$<Props>(({ role, summary, onSave }) => {
 
 			<div class='m-0 mt-2 w-full'>
 				<div>{role}</div>
-				<div class='text-sm'>{summary}</div>
+				<div class='whitespace-pre-line text-sm'>{summary}</div>
 			</div>
 
 			<Modal state={formModalState}>

@@ -33,7 +33,7 @@ export const Skills = component$<Props>(({ skills, onSave }) => {
 				</div>
 			</div>
 
-			<div class='m-0 mt-2 w-full'>{skills}</div>
+			<div class='m-0 mt-2 w-full whitespace-pre-line'>{skills}</div>
 
 			<Modal state={formModalState}>
 				<SkillsForm formGroup={formGroup} />
