@@ -51,7 +51,9 @@ export const Education = component$<Props>(({ education, onUpdate, onSave, onDel
 									{year_start} - {current ? t('PRESENT') : year_end}
 								</h2>
 								<h1 class='text-xl font-bold text-darkgray-900'>{institution}</h1>
-								<h3 class='text-base font-normal text-darkgray-900'>{note}</h3>
+								<h3 class='whitespace-pre-line text-base font-normal text-darkgray-900'>
+									{note}
+								</h3>
 							</div>
 							<div>
 								<OptionDropdown

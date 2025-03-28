@@ -22,10 +22,10 @@ export const Skills = component$<Props>(({ skills, onSave }) => {
 						<button id='open-new-education-bt' onClick$={openDialog} type='button'>
 							<div class='content flex flex-row space-x-1 text-clara-red'>
 								<span class='content-center text-xl'>
-									{mode.value === 'edit' ? getIcon('EditRed') : getIcon('Add')}
+									{mode === 'edit' ? getIcon('EditRed') : getIcon('Add')}
 								</span>
 								<span class='content-center text-base font-bold'>
-									{mode.value === 'edit' ? t('SKILLS_EDIT') : t('SKILLS_ADD')}
+									{mode === 'edit' ? t('SKILLS_EDIT') : t('SKILLS_ADD')}
 								</span>
 							</div>
 						</button>
@@ -33,7 +33,7 @@ export const Skills = component$<Props>(({ skills, onSave }) => {
 				</div>
 			</div>
 
-			<div class='m-0 mt-2 w-full'>{skills}</div>
+			<div class='m-0 mt-2 w-full whitespace-pre-line'>{skills}</div>
 
 			<Modal state={formModalState}>
 				<SkillsForm formGroup={formGroup} />

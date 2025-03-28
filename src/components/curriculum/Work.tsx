@@ -56,7 +56,9 @@ export const Work = component$<Props>(({ work, onUpdate, onSave, onDelete }) => 
 									{role} &#64;{institution}
 								</h1>
 
-								<h3 class='text-base font-normal text-darkgray-900'>{note}</h3>
+								<h3 class='whitespace-pre-line text-base font-normal text-darkgray-900'>
+									{note}
+								</h3>
 							</div>
 							<div>
 								<OptionDropdown

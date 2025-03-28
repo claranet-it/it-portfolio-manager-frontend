@@ -1,4 +1,4 @@
-import { $, QRL, useComputed$, useContext, useStore, useTask$ } from '@builder.io/qwik';
+import { $, QRL, useContext, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
@@ -9,9 +9,7 @@ type FormAboutMeType = {
 export const useAboutMe = (role: string | undefined, summary: string | undefined, onSave: QRL) => {
 	const appStore = useContext(AppContext);
 
-	const mode = useComputed$(() => {
-		return role || summary ? 'edit' : 'new';
-	});
+	const mode = role || summary ? 'edit' : 'new';
 
 	const formGroup = useStore({} as FormAboutMeType);
 	const resetForm = $(() => {
@@ -20,7 +18,7 @@ export const useAboutMe = (role: string | undefined, summary: string | undefined
 	});
 
 	const formModalState = useStore<ModalState>({
-		title: mode.value === 'edit' ? t('ABOUT_ME_EDIT') : t('ABOUT_ME_ADD'),
+		title: mode === 'edit' ? t('ABOUT_ME_EDIT') : t('ABOUT_ME_ADD'),
 		onCancel$: $(() => {}),
 		onConfirm$: $(async () => {
 			appStore.isLoading = true;
@@ -35,7 +33,6 @@ export const useAboutMe = (role: string | undefined, summary: string | undefined
 
 	const openDialog = $(() => {
 		formModalState.isVisible = true;
-
 		formGroup.role = role;
 		formGroup.summary = summary;
 	});
