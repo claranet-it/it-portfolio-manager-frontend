@@ -23,10 +23,10 @@ export const AboutMe = component$<Props>(({ role, summary, onSave }) => {
 						<button id='open-new-education-bt' onClick$={openDialog} type='button'>
 							<div class='content flex flex-row space-x-1 text-clara-red'>
 								<span class='content-center text-xl'>
-									{mode.value === 'edit' ? getIcon('EditRed') : getIcon('Add')}
+									{mode === 'edit' ? getIcon('EditRed') : getIcon('Add')}
 								</span>
 								<span class='content-center text-base font-bold'>
-									{mode.value === 'edit' ? t('ABOUT_ME_EDIT') : t('ABOUT_ME_ADD')}
+									{mode === 'edit' ? t('ABOUT_ME_EDIT') : t('ABOUT_ME_ADD')}
 								</span>
 							</div>
 						</button>

@@ -1,4 +1,4 @@
-import { $, QRL, useComputed$, useContext, useStore, useTask$ } from '@builder.io/qwik';
+import { $, QRL, useContext, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
@@ -10,9 +10,7 @@ type FormSkillsType = {
 export const useSkills = (skills: string | undefined, onSave: QRL) => {
 	const appStore = useContext(AppContext);
 
-	const mode = useComputed$(() => {
-		return skills ? 'edit' : 'new';
-	});
+	const mode = skills ? 'edit' : 'new';
 
 	const formGroup = useStore({} as FormSkillsType);
 	const resetForm = $(() => {
@@ -20,7 +18,7 @@ export const useSkills = (skills: string | undefined, onSave: QRL) => {
 	});
 
 	const formModalState = useStore<ModalState>({
-		title: mode.value === 'edit' ? t('SKILLS_EDIT') : t('SKILLS_ADD'),
+		title: mode === 'edit' ? t('SKILLS_EDIT') : t('SKILLS_ADD'),
 		onCancel$: $(() => {
 			resetForm();
 		}),
