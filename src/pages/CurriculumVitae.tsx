@@ -36,12 +36,15 @@ export const CurriculumVitae = component$(() => {
 							</p>
 						</div>
 						<div class='space-y-4 text-gray-600'>
-							<p class='text-justify'>{curriculumVitae.value.summary}</p>
+							<p class='whitespace-pre-line text-justify'>
+								{curriculumVitae.value.summary}
+							</p>
 						</div>
 						<div class='space-y-4 text-gray-600'>
 							<h2 class='me-4 text-2xl font-bold text-darkgray-900'>Main skills</h2>
-
-							{curriculumVitae.value.main_skills}
+							<p class='whitespace-pre-line text-justify'>
+								{curriculumVitae.value.main_skills}
+							</p>
 						</div>
 
 						<div class='space-y-4 text-gray-600'>
@@ -55,7 +58,7 @@ export const CurriculumVitae = component$(() => {
 											</div>
 
 											<strong>{institution}</strong>
-											<div>{note}</div>
+											<div class='whitespace-pre-line'>{note}</div>
 										</div>
 									);
 								}
@@ -77,7 +80,7 @@ export const CurriculumVitae = component$(() => {
 											<strong>
 												{role} &#64;{institution}
 											</strong>
-											<div>{note}</div>
+											<div class='whitespace-pre-line'>{note}</div>
 										</div>
 									);
 								}
