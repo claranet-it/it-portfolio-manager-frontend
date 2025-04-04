@@ -1,6 +1,6 @@
 import { Customer } from '@models/customer';
 import { ProjectType } from '@models/project';
-import { ReportProductivityItem, ReportTimeEntry } from '@models/report';
+import { ReportParamsFilters, ReportProductivityItem, ReportTimeEntry } from '@models/report';
 import { TimeEntry } from '@models/timeEntry';
 import { getHttpResponse } from 'src/network/httpRequest';
 import { UUID } from 'src/utils/uuid';
@@ -45,6 +45,34 @@ export const getReportTimeEntry = async (from: string, to: string): Promise<Repo
 			format: 'json',
 		},
 	});
+
+	return response.map((entry) => {
+		return {
+			...entry,
+			project: {
+				name: entry.project,
+				plannedHours: entry.plannedHours,
+				type: entry.projectType,
+				completed: false,
+			},
+			task: {
+				name: entry.task,
+				plannedHours: 0,
+				completed: false,
+			},
+			email: entry.email === '' ? UUID() : entry.email,
+		};
+	});
+};
+
+export const getReportProjectsFilterBy = async (
+	params: ReportParamsFilters
+): Promise<ReportTimeEntry[]> => {
+	const response = await getHttpResponse<getTimeEntryResponse[]>(
+		'report/projects',
+		'POST',
+		params
+	);
 
 	return response.map((entry) => {
 		return {

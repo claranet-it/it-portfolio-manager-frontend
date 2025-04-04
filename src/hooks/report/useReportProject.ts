@@ -1,14 +1,14 @@
 import { $, Signal, useComputed$, useContext, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
-import { ReportTab, ReportTimeEntry } from '@models/report';
+import { ReportParamsFilters, ReportTab, ReportTimeEntry } from '@models/report';
 import { AppContext } from 'src/app';
 import { formatDateString } from 'src/utils/dates';
 
 import { Task } from '@models/task';
 import { UserProfile } from '@models/user';
 import { ToggleState } from 'src/components/form/RadioDropdown';
-import { getReportTimeEntry } from 'src/services/report';
+import { getReportProjectsFilterBy } from 'src/services/report';
 import { WORK_END_HOUR, WORK_START_HOUR } from 'src/utils/constants';
 
 export const useReportProject = (
@@ -32,28 +32,6 @@ export const useReportProject = (
 			const [hours, minutes] = time.split(':').map(Number);
 			return hours * 60 + minutes;
 		};
-
-		if (customer.value.length !== 0) {
-			results = results.filter((entry) => customer.value.includes(entry.customer));
-		}
-
-		if (project.value.length !== 0) {
-			results = results.filter((entry) =>
-				project.value.map((proj) => proj.name).includes(entry.project.name)
-			);
-		}
-
-		if (task.value.length !== 0) {
-			results = results.filter((entry) =>
-				task.value.map((task) => task.name).includes(entry.task.name)
-			);
-		}
-
-		if (users.value.length !== 0) {
-			results = results.filter((entry) =>
-				users.value.map((user) => user.email).includes(entry.email)
-			);
-		}
 
 		if (afterHours.value === ToggleState.On) {
 			results = results.filter((entry) => {
@@ -122,8 +100,18 @@ export const useReportProject = (
 
 				const rangeStart = formatDateString(current);
 				const rangeEnd = formatDateString(endOfMonth < endDate ? endOfMonth : endDate);
-
-				calls.push(getReportTimeEntry(rangeStart, rangeEnd));
+				const params: ReportParamsFilters = {
+					from: rangeStart,
+					to: rangeEnd,
+					format: 'json',
+					...(customer.value.length && { customer: customer.value }),
+					...(project.value.length && {
+						project: project.value.map((proj) => proj.name),
+					}),
+					...(task.value.length && { task: task.value.map((tsk) => tsk.name) }),
+					...(users.value.length && { user: users.value.map((user) => user.email) }),
+				};
+				calls.push(getReportProjectsFilterBy(params));
 
 				current = new Date(current.getFullYear(), current.getMonth() + 1, 1);
 			}
@@ -149,16 +137,7 @@ export const useReportProject = (
 	});
 
 	useVisibleTask$(async ({ track }) => {
-		track(() =>
-			JSON.stringify([
-				/* Not using date filters to filter locally */
-				customer.value,
-				project.value,
-				task.value,
-				users.value,
-				afterHours.value,
-			])
-		);
+		track(() => JSON.stringify([afterHours.value]));
 
 		if (isRightTab.value) {
 			results.value = await setFilters(response.value);
@@ -171,12 +150,11 @@ export const useReportProject = (
 
 		track(() =>
 			JSON.stringify([
-				/* Not using this to fetch data but only filter */
-				// customer.value,
-				// project.value,
-				// task.value,
-				// users.value,
 				// afterHours.value,
+				customer.value,
+				project.value,
+				task.value,
+				users.value,
 				from.value,
 				to.value,
 				tab.value,
