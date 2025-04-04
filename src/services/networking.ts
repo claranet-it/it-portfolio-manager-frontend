@@ -1,11 +1,13 @@
-import { NetworkCompany } from '@models/networking';
+import { NetworkCompany, NetworkingCompanies } from '@models/networking';
 import { checkHttpResponseStatus, getHttpResponse } from 'src/network/httpRequest';
 
 export const getExistingConnections = async () =>
-	getHttpResponse<NetworkCompany[]>('companyConnections/mine');
+	getHttpResponse<NetworkingCompanies[]>('companyConnections/mine');
 
 export const getAvailableConnections = async () =>
 	getHttpResponse<NetworkCompany[]>('company/networking/available');
+
+export const getAllCompanies = async () => getHttpResponse<NetworkCompany[]>('company');
 
 export const setCompaniesConnection = async (requesterId: string, correspondentId: string) =>
 	checkHttpResponseStatus('companyConnections', 204, 'POST', {

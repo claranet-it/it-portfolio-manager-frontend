@@ -2,6 +2,7 @@ import { $, useContext, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { NetworkCompany } from '@models/networking';
 import { AppContext } from 'src/app';
 import {
+	getAllCompanies,
 	getAvailableConnections,
 	getExistingConnections,
 	removeCompaniesConnection,
@@ -25,13 +26,23 @@ export const useNetworking = () => {
 	const fetchConnections = $(async () => {
 		appStore.isLoading = true;
 		try {
-			const existing = (await getExistingConnections()).map((company) => ({
-				...company,
-				image_url:
-					company.image_url && company.image_url !== ''
-						? company.image_url
-						: generateIcon(company.domain),
-			}));
+			const existingNetwork = await getExistingConnections();
+
+			const existing: NetworkCompany[] = existingNetwork.map(
+				({ requester, correspondent }) => {
+					const company =
+						requester.name === appStore.configuration.company
+							? correspondent
+							: requester;
+
+					return {
+						...company,
+						image_url: company.image_url?.trim()
+							? company.image_url
+							: generateIcon(company.domain),
+					};
+				}
+			);
 			const available = (await getAvailableConnections()).map((company) => ({
 				...company,
 				image_url:
@@ -55,7 +66,7 @@ export const useNetworking = () => {
 	const fetchAllCompanies = $(async () => {
 		appStore.isLoading = true;
 		try {
-			companies.value = await getExistingConnections();
+			companies.value = await getAllCompanies();
 		} catch (error) {
 			const { message } = error as Error;
 			addEvent({

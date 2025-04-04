@@ -4,3 +4,8 @@ export type NetworkCompany = {
 	name: string;
 	image_url: string;
 };
+
+export type NetworkingCompanies = {
+	requester: NetworkCompany;
+	correspondent: NetworkCompany;
+};
