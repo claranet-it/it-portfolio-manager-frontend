@@ -9,7 +9,7 @@ import {
 } from '@builder.io/qwik';
 import { AppStore } from '@models/configurations';
 import { initFlowbite } from 'flowbite';
-import { CipherContext, CipherStore } from './cipher';
+import { CipherContext, CipherStore } from './cipherContext';
 import { getRoleBasedMenu } from './components/Header';
 import { Layout } from './components/Layout';
 import { useCipher } from './hooks/useCipher';
