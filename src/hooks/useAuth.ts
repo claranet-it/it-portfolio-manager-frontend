@@ -21,8 +21,8 @@ export const useAuth = () => {
 	const isLoading = useSignal<boolean>(false);
 	const issueMessage = useSignal<string | undefined>(undefined);
 
-	const goToTimesheet = $(() => navigateTo('timesheet'));
 	const refreshPage = $(() => navigateTo('auth'));
+	const goToCipher = $(() => navigateTo('cipher'));
 
 	const authProviders: AuthProviderButton[] = [
 		{
@@ -56,7 +56,8 @@ export const useAuth = () => {
 			await setAuthToken(response.token);
 			setCookie(CHATBOT_COOKIE_KEY, response.token);
 			isLoading.value = false;
-			goToTimesheet();
+
+			goToCipher();
 		} else {
 			refreshPage();
 		}
@@ -180,7 +181,7 @@ export const useAuth = () => {
 			} else {
 				await removeProvider();
 				isLoading.value = false;
-				goToTimesheet();
+				goToCipher();
 			}
 		}
 	});

@@ -1,6 +1,7 @@
 import { Signal, useSignal, useTask$ } from '@builder.io/qwik';
 import { AuthManager } from './pages/AuthManager';
 import { ChartPreview } from './pages/ChartPreview';
+import { CipherManager } from './pages/CipherManager';
 import { Company } from './pages/Company';
 import { CurriculumVitae } from './pages/CurriculumVitae';
 import { Effort } from './pages/Effort';
@@ -24,6 +25,7 @@ export type PrivateRoutes = Exclude<Route, PublicRoutes>;
 
 export const routes = {
 	auth: <AuthManager />,
+	cipher: <CipherManager />,
 	effort: <Effort />,
 	timesheet: <Timesheet />,
 	networking: <Networking />,

@@ -8,6 +8,7 @@ export const AUTH_TOKEN_KEY = 'auth_token';
 export const AUTH_ROLE_KEY = 'auth_role';
 export const AUTH_CREW_KEY = 'auth_crew';
 export const AUTH_USER_KEY = 'auth_user';
+export const COMPANY_PASSWORD_KEY = 'company_password';
 
 export const CHATBOT_COOKIE_KEY = 'token';
 

@@ -9,8 +9,10 @@ import {
 } from '@builder.io/qwik';
 import { AppStore } from '@models/configurations';
 import { initFlowbite } from 'flowbite';
+import { CipherContext, CipherStore } from './cipher';
 import { getRoleBasedMenu } from './components/Header';
 import { Layout } from './components/Layout';
+import { useCipher } from './hooks/useCipher';
 import { addHttpErrorListener } from './network/httpResponseHandler';
 import { isPublicRoute, routes, useRouter } from './router';
 import { getConfiguration } from './services/configuration';
@@ -54,16 +56,23 @@ const initialState: AppStore = {
 };
 
 export const App = component$(() => {
-	const appStore = useStore<AppStore>(initialState);
 	const currentRouteSignal = useRouter();
 
+	const appStore = useStore<AppStore>(initialState);
 	useContextProvider(AppContext, appStore);
+
+	const cipherStore = useStore<CipherStore>({ cipher: { status: 'uninitialized' } });
+	useContextProvider(CipherContext, cipherStore);
+
+	const { initCipher } = useCipher();
 
 	useVisibleTask$(({ track }) => {
 		// on change route
 		track(currentRouteSignal);
 		// run this
 		initFlowbite();
+
+		console.log('Cipher Status', cipherStore.cipher.status);
 	});
 
 	useTask$(async () => {
@@ -78,6 +87,13 @@ export const App = component$(() => {
 				roleHierarchy[requiredRole] <= roleHierarchy[user.role]
 			);
 		};
+
+		const status = await initCipher();
+		if (status !== 'initialized') {
+			currentRouteSignal.value = 'cipher';
+			window.history.pushState({}, '', '/cipher');
+			return;
+		}
 
 		const res = getRoleBasedMenu().find(hasAccess);
 

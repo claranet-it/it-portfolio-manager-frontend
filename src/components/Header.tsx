@@ -68,6 +68,10 @@ export const getRoleBasedMenu = () => {
 	});
 };
 
+const showMenu = (currentRoute: MenuRoutes) => {
+	return currentRoute !== 'cipher';
+};
+
 export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }) => {
 	const startTime: number = Number(import.meta.env.VITE_MAINTENANCE_START);
 	const endTime: number = Number(import.meta.env.VITE_MAINTENANCE_END);
@@ -96,41 +100,45 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 					{getIcon('BricklyRedLogo')}
 				</div>
 
-				<div class='justify-end pr-6 sm:w-[100%] sm:text-center md:flex lg:flex'>
-					{menu.value
-						.filter((item) => item !== '')
-						.map((section, key) => {
-							const textColor =
-								section === currentRoute ? 'text-darkgray-500' : 'text-clara-red';
+				{showMenu(currentRoute) && (
+					<div class='justify-end pr-6 sm:w-[100%] sm:text-center md:flex lg:flex'>
+						{menu.value
+							.filter((item) => item !== '')
+							.map((section, key) => {
+								const textColor =
+									section === currentRoute
+										? 'text-darkgray-500'
+										: 'text-clara-red';
 
-							return (
-								<button
-									key={key}
-									class={`bg-transparent ${textColor} m-2 rounded border-0 p-2 font-semibold hover:text-red-500`}
-									onClick$={() => {
-										navigateTo(section as Route);
-									}}
-								>
-									{t(section as Labels)}
-								</button>
-							);
-						})}
+								return (
+									<button
+										key={key}
+										class={`bg-transparent ${textColor} m-2 rounded border-0 p-2 font-semibold hover:text-red-500`}
+										onClick$={() => {
+											navigateTo(section as Route);
+										}}
+									>
+										{t(section as Labels)}
+									</button>
+								);
+							})}
 
-					<button
-						class='m-2 inline-flex items-center gap-2 rounded border-0 bg-transparent p-2 font-semibold text-dark-grey'
-						onClick$={() => {
-							auth0.logout({
-								openUrl: async () => {
-									removeCookie(CHATBOT_COOKIE_KEY);
-									await removeAuthToken();
-									window.location.replace(redirect_uri);
-								},
-							});
-						}}
-					>
-						{getIcon('Exit')} {t('logout')}
-					</button>
-				</div>
+						<button
+							class='m-2 inline-flex items-center gap-2 rounded border-0 bg-transparent p-2 font-semibold text-dark-grey'
+							onClick$={() => {
+								auth0.logout({
+									openUrl: async () => {
+										removeCookie(CHATBOT_COOKIE_KEY);
+										await removeAuthToken();
+										window.location.replace(redirect_uri);
+									},
+								});
+							}}
+						>
+							{getIcon('Exit')} {t('logout')}
+						</button>
+					</div>
+				)}
 			</div>
 		</header>
 	);
