@@ -1,5 +1,5 @@
-import { $, noSerialize, useComputed$, useContext } from '@builder.io/qwik';
-import { CipherContext } from 'src/cipherContext';
+import { $, noSerialize, useContext } from '@builder.io/qwik';
+import { CipherContext } from 'src/context/cipherContext';
 import { getCipherKeys } from 'src/services/cipherKeys';
 import { COMPANY_PASSWORD_KEY } from 'src/utils/constants';
 import HybridCipher from 'src/utils/hybridCipher';
@@ -7,10 +7,6 @@ import { get, set } from 'src/utils/localStorage/localStorage';
 
 export const useCipher = () => {
 	const cipherStore = useContext(CipherContext);
-
-	const firstLogin = useComputed$(() => {
-		return cipherStore.cipher.status === 'firstLogin';
-	});
 
 	const setCipherFns = $(
 		async ({
@@ -32,24 +28,15 @@ export const useCipher = () => {
 				const encrypt = HybridCipher.encrypt(AESKey);
 				const decrypt = HybridCipher.decrypt(AESKey);
 
-				const cipherFns = {
-					encrypt: async (text: string) => {
-						const encrypted = await encrypt(text);
-						return HybridCipher.serialize(encrypted);
-					},
-					decrypt: async (text: string) => {
-						const decrypted = await decrypt(HybridCipher.deserialize(text));
-						return decrypted;
-					},
-				};
+				const cipherFns = { encrypt, decrypt };
 
 				await set(COMPANY_PASSWORD_KEY, password);
+
 				cipherStore.cipher = {
 					status: 'initialized',
 					cipherFns: noSerialize(cipherFns),
 				};
 			} catch (e) {
-				console.error('setCipherFns', e);
 				throw e;
 			}
 		}
@@ -63,7 +50,7 @@ export const useCipher = () => {
 		const keys = await getCipherKeys();
 		if (!keys) {
 			cipherStore.cipher = {
-				status: 'firstLogin',
+				status: 'companyCodeNotCreated',
 			};
 
 			return cipherStore.cipher.status;
@@ -72,7 +59,7 @@ export const useCipher = () => {
 		const password = await get(COMPANY_PASSWORD_KEY);
 		if (!password) {
 			cipherStore.cipher = {
-				status: 'passwordRequired',
+				status: 'companyCodeRequired',
 			};
 
 			return cipherStore.cipher.status;
@@ -89,16 +76,52 @@ export const useCipher = () => {
 				return cipherStore.cipher.status;
 			} catch (e) {
 				cipherStore.cipher = {
-					status: 'passwordRequired',
+					status: 'companyCodeRequired',
 				};
 				return cipherStore.cipher.status;
 			}
 		}
 	});
 
+	const encrypt = $(async (text: string) => {
+		if (cipherStore.cipher.status !== 'initialized' || !cipherStore.cipher.cipherFns) {
+			throw new Error('Cipher is not initialized');
+		}
+
+		const { cipherFns } = cipherStore.cipher;
+		const encryptedText = await cipherFns.encrypt(text);
+
+		if (!encryptedText) {
+			throw new Error('Encryption failed');
+		}
+
+		return HybridCipher.serialize(encryptedText);
+	});
+
+	const decrypt = $(async (text: string | undefined) => {
+		if (cipherStore.cipher.status !== 'initialized' || !cipherStore.cipher.cipherFns) {
+			throw new Error('Cipher is not initialized');
+		}
+
+		if (!text) {
+			return '';
+		}
+
+		const { cipherFns } = cipherStore.cipher;
+		const deserializedText = HybridCipher.deserialize(text);
+		const decryptedText = await cipherFns.decrypt(deserializedText);
+
+		if (!decryptedText) {
+			throw new Error('Decryption failed');
+		}
+
+		return decryptedText;
+	});
+
 	return {
 		initCipher,
-		firstLogin,
 		setCipherFns,
+		encrypt,
+		decrypt,
 	};
 };

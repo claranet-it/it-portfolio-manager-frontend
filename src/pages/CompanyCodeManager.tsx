@@ -1,33 +1,56 @@
-import { $, component$, sync$, useSignal, useTask$ } from '@builder.io/qwik';
+import {
+	$,
+	component$,
+	sync$,
+	useComputed$,
+	useContext,
+	useSignal,
+	useTask$,
+} from '@builder.io/qwik';
 import { Button } from 'src/components/Button';
 import { Input } from 'src/components/form/Input';
 import { LoadingSpinner } from 'src/components/LoadingSpinner';
+import { CipherContext } from 'src/context/cipherContext';
 import { useCipher } from 'src/hooks/useCipher';
 import { navigateTo } from 'src/router';
 import { getCipherKeys, saveCipherKeys } from 'src/services/cipherKeys';
+import { limitRoleAccess } from 'src/utils/acl';
+import { Roles } from 'src/utils/constants';
 import HybridCipher from 'src/utils/hybridCipher';
 
-// TODO: Remove console logs
-export const CipherManager = component$(() => {
-	const goToTimesheet = $(() => navigateTo('timesheet'));
+export const CompanyCodeManager = component$(() => {
+	const cipherStore = useContext(CipherContext);
 
-	const isLoading = useSignal(true);
+	const createCompanyCodeLoading = useSignal(false);
 	const password = useSignal('');
 	const password2 = useSignal('');
 	const error = useSignal<string | null>(null);
-
 	const confirmDisabled = useSignal(false);
 
-	const { initCipher, firstLogin, setCipherFns } = useCipher();
+	const { initCipher, setCipherFns } = useCipher();
+
+	const goToTimesheet = $(() => navigateTo('timesheet'));
 
 	useTask$(async () => {
 		const status = await initCipher();
 
 		if (status === 'initialized') {
 			goToTimesheet();
-		} else {
-			isLoading.value = false;
 		}
+	});
+
+	const createCompanyCode = useComputed$(async () => {
+		return (
+			cipherStore.cipher.status === 'companyCodeNotCreated' &&
+			(await limitRoleAccess(Roles.ADMIN))
+		);
+	});
+
+	const createCompanyCodeDisabled = useComputed$(async () => {
+		return (
+			cipherStore.cipher.status === 'companyCodeNotCreated' &&
+			!(await limitRoleAccess(Roles.ADMIN))
+		);
 	});
 
 	const onConfirm = sync$(async (event: SubmitEvent) => {
@@ -37,18 +60,19 @@ export const CipherManager = component$(() => {
 			return;
 		}
 
-		if (firstLogin.value && password.value !== password2.value) {
+		if (createCompanyCode.value && password.value !== password2.value) {
 			error.value = 'The two passwords do not match.';
 			return;
 		}
 
 		error.value = null;
-		isLoading.value = true;
 		confirmDisabled.value = true;
 
 		let encryptedAESKey, encryptedPrivateKey;
 
-		if (firstLogin.value) {
+		if (createCompanyCode.value) {
+			createCompanyCodeLoading.value = true;
+
 			try {
 				const generateResponse = await HybridCipher.generate(password.value);
 				await saveCipherKeys(generateResponse);
@@ -61,7 +85,7 @@ export const CipherManager = component$(() => {
 			} catch (e) {
 				error.value =
 					'The system was unable to generate the keys, contact support or try again later.';
-				isLoading.value = false;
+				createCompanyCodeLoading.value = false;
 			}
 		} else {
 			const keysResponse = await getCipherKeys();
@@ -86,43 +110,48 @@ export const CipherManager = component$(() => {
 		} catch (e) {
 			error.value = 'The password is not valid.';
 			confirmDisabled.value = false;
-			isLoading.value = false;
+			createCompanyCodeLoading.value = false;
 		}
 	});
 
 	return (
 		<>
-			{isLoading.value && (
+			{createCompanyCodeLoading.value && (
 				<div class='t-0 l-0 fixed z-50 flex h-full w-full items-center justify-center bg-darkgray-900/30'>
 					{<LoadingSpinner />}
 				</div>
 			)}
-			{!isLoading.value && (
+			{!createCompanyCodeLoading.value && (
 				<div class='w-full space-y-6 px-64 pb-10 pt-2.5'>
 					<form onSubmit$={onConfirm}>
 						<h1 class='mb-3 text-2xl font-bold text-darkgray-900'>
-							{firstLogin.value
-								? 'Create your Company Password'
-								: 'Insert your Company Password'}
+							{createCompanyCode.value
+								? 'Create your Company Code'
+								: 'Insert your Company Code'}
 						</h1>
 
 						<div class='space-y-3'>
 							<Input
 								type='password'
-								label='Company Password'
-								placeholder='Insert your Company Password'
+								label='Company Code'
+								placeholder='Insert your Company Code'
 								value={password.value}
 								onInput$={(_, el) => {
 									password.value = el.value;
 								}}
 								styleClass='w-full'
+								disabled={createCompanyCodeDisabled.value}
 							/>
 
-							{firstLogin.value && (
+							{createCompanyCodeDisabled.value && (
+								<p class='text-danger-dark'>The company code is not set yet.</p>
+							)}
+
+							{createCompanyCode.value && (
 								<Input
 									type='password'
-									label='Confirm Company Password'
-									placeholder='Insert the Company Password again'
+									label='Confirm Company Code'
+									placeholder='Insert the Company Code again'
 									value={password2.value}
 									onInput$={(_, el) => {
 										password2.value = el.value;
@@ -134,7 +163,11 @@ export const CipherManager = component$(() => {
 
 						{error.value && <p class='text-red-500'>{error.value}</p>}
 
-						<Button type='submit' class='mt-3 w-32' disabled={confirmDisabled.value}>
+						<Button
+							type='submit'
+							class='mt-3 w-32'
+							disabled={createCompanyCodeDisabled.value || confirmDisabled.value}
+						>
 							Avanti
 						</Button>
 					</form>

@@ -1,4 +1,5 @@
 import { createContextId, NoSerialize } from '@builder.io/qwik';
+import { EncryptedData } from 'src/utils/hybridCipher';
 
 export type CipherStore = {
 	cipher:
@@ -6,16 +7,16 @@ export type CipherStore = {
 				status: 'uninitialized';
 		  }
 		| {
-				status: 'firstLogin';
+				status: 'companyCodeNotCreated';
 		  }
 		| {
-				status: 'passwordRequired';
+				status: 'companyCodeRequired';
 		  }
 		| {
 				status: 'initialized';
 				cipherFns: NoSerialize<{
-					encrypt: (text: string) => Promise<string>;
-					decrypt: (text: string) => Promise<string>;
+					encrypt: (text: string) => Promise<EncryptedData>;
+					decrypt: (encryptedData: EncryptedData) => Promise<string>;
 				}>;
 		  };
 };

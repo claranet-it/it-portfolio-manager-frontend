@@ -13,7 +13,7 @@ const HASH_FUNCTION = 'SHA-256';
 
 export type EncryptedData = {
 	iv: Uint8Array;
-	data: ArrayBuffer;
+	ct: ArrayBuffer;
 };
 
 const uint8ArrayToBase64 = (uint8Array: Uint8Array) => {
@@ -27,15 +27,15 @@ const base64ToUint8Array = (base64: string) => {
 export const serialize = (encryptedData: EncryptedData) =>
 	JSON.stringify({
 		iv: uint8ArrayToBase64(encryptedData.iv),
-		data: uint8ArrayToBase64(new Uint8Array(encryptedData.data)),
+		ct: uint8ArrayToBase64(new Uint8Array(encryptedData.ct)),
 	});
 
 export const deserialize = (serializedData: string): EncryptedData => {
 	try {
-		const { iv, data } = JSON.parse(serializedData);
+		const { iv, ct } = JSON.parse(serializedData);
 		return {
 			iv: base64ToUint8Array(iv),
-			data: base64ToUint8Array(data).buffer,
+			ct: base64ToUint8Array(ct).buffer,
 		};
 	} catch (e) {
 		console.error('deserialize', e);
@@ -246,7 +246,7 @@ const encryptData = (AESKey: ArrayBuffer) => async (text: string) => {
 
 		return {
 			iv: iv,
-			data: encryptedData,
+			ct: encryptedData,
 		};
 	} catch (e) {
 		console.error('encryptData', e);
@@ -264,12 +264,12 @@ const decryptData = (AESKey: ArrayBuffer) => async (encryptedData: EncryptedData
 			['decrypt']
 		);
 
-		const { iv, data } = encryptedData;
+		const { iv, ct } = encryptedData;
 
 		const decryptedBuffer = await crypto.subtle.decrypt(
 			{ name: AES_ALGORITHM_NAME, iv },
 			binaryAESKey,
-			data
+			ct
 		);
 
 		const decoder = new TextDecoder();

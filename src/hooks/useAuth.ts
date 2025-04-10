@@ -24,7 +24,7 @@ export const useAuth = () => {
 	const { initCipher } = useCipher();
 
 	const refreshPage = $(() => navigateTo('auth'));
-	const goToCipher = $(() => navigateTo('cipher'));
+	const goToCompanyCodeManager = $(() => navigateTo('company-code'));
 	const goToTimesheet = $(() => navigateTo('timesheet'));
 
 	const authProviders: AuthProviderButton[] = [
@@ -64,7 +64,7 @@ export const useAuth = () => {
 			if (status === 'initialized') {
 				goToTimesheet();
 			} else {
-				goToCipher();
+				goToCompanyCodeManager();
 			}
 		} else {
 			refreshPage();
@@ -194,7 +194,7 @@ export const useAuth = () => {
 				if (status === 'initialized') {
 					goToTimesheet();
 				} else {
-					goToCipher();
+					goToCompanyCodeManager();
 				}
 			}
 		}

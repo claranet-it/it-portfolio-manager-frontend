@@ -9,9 +9,9 @@ import {
 } from '@builder.io/qwik';
 import { AppStore } from '@models/configurations';
 import { initFlowbite } from 'flowbite';
-import { CipherContext, CipherStore } from './cipherContext';
 import { getRoleBasedMenu } from './components/Header';
 import { Layout } from './components/Layout';
+import { CipherContext, CipherStore } from './context/cipherContext';
 import { useCipher } from './hooks/useCipher';
 import { addHttpErrorListener } from './network/httpResponseHandler';
 import { isPublicRoute, routes, useRouter } from './router';
@@ -88,8 +88,8 @@ export const App = component$(() => {
 
 		const status = await initCipher();
 		if (status !== 'initialized') {
-			currentRouteSignal.value = 'cipher';
-			window.history.pushState({}, '', '/cipher');
+			currentRouteSignal.value = 'company-code';
+			window.history.pushState({}, '', '/company-code');
 			return;
 		}
 
