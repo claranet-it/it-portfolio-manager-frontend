@@ -4,12 +4,12 @@ import { CipherKeys } from '@models/cipherKeys';
 //     getHttpResponse<CipherKeys>('company/{companyId}/keys');
 
 // TODO: Provide companyId: string
-export const getKeys = async (): Promise<CipherKeys> => {
+export const getCipherKeys = async (): Promise<CipherKeys> => {
 	console.log('API CALL');
 	return new Promise((resolve) => setTimeout(resolve, 100));
 };
 
-export const saveKeys = async ({
+export const saveCipherKeys = async ({
 	encryptedAESKey,
 	encryptedPrivateKey,
 	publicKey,

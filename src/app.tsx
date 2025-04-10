@@ -71,8 +71,6 @@ export const App = component$(() => {
 		track(currentRouteSignal);
 		// run this
 		initFlowbite();
-
-		console.log('Cipher Status', cipherStore.cipher.status);
 	});
 
 	useTask$(async () => {

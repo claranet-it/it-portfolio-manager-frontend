@@ -15,14 +15,17 @@ import { getAuthValidation } from '../services/auth';
 import { getUserMe } from '../services/user';
 import { getProvider, removeProvider, setProvider } from '../utils/provider';
 import { getAuthToken, setAuthToken } from '../utils/token';
+import { useCipher } from './useCipher';
 
 export const useAuth = () => {
 	const selectedProvider = useSignal<Provider | undefined>(undefined);
 	const isLoading = useSignal<boolean>(false);
 	const issueMessage = useSignal<string | undefined>(undefined);
+	const { initCipher } = useCipher();
 
 	const refreshPage = $(() => navigateTo('auth'));
 	const goToCipher = $(() => navigateTo('cipher'));
+	const goToTimesheet = $(() => navigateTo('timesheet'));
 
 	const authProviders: AuthProviderButton[] = [
 		{
@@ -57,7 +60,12 @@ export const useAuth = () => {
 			setCookie(CHATBOT_COOKIE_KEY, response.token);
 			isLoading.value = false;
 
-			goToCipher();
+			const status = await initCipher();
+			if (status === 'initialized') {
+				goToTimesheet();
+			} else {
+				goToCipher();
+			}
 		} else {
 			refreshPage();
 		}
@@ -181,7 +189,13 @@ export const useAuth = () => {
 			} else {
 				await removeProvider();
 				isLoading.value = false;
-				goToCipher();
+
+				const status = await initCipher();
+				if (status === 'initialized') {
+					goToTimesheet();
+				} else {
+					goToCipher();
+				}
 			}
 		}
 	});
