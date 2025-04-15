@@ -257,5 +257,8 @@
 	"NOTES_LABEL": "Notes",
 	"NOTES_INSERT_LABEL": "Insert notes...",
 	"PRESENT": "Present",
-	"NO_DATA": "No data inserted"
+	"NO_DATA": "No data inserted",
+	"TIME_LABEL": "Time",
+	"TIME_PERIOD_LABEL": "Time period",
+	"DAYTIME_LABEL": "Daytime"
 }

@@ -11,6 +11,7 @@ import {
 import { ModalState } from '@models/modalState';
 import { getCurrentRoute, navigateTo } from 'src/router';
 import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
+import { convertTimeToDecimal } from 'src/utils/timesheet';
 import { t, tt } from '../../locale/labels';
 import { Customer } from '../../models/customer';
 import { Project } from '../../models/project';
@@ -20,6 +21,7 @@ import { getCustomers } from '../../services/customer';
 import { getProjects } from '../../services/projects';
 import { getTasks, saveTask } from '../../services/tasks';
 import { useNotification } from '../useNotification';
+import { useGetTimeSheetDays } from './useGetTimeSheetDays';
 
 export const useNewTimeEntry = (
 	newTimeEntry: Signal<TimeEntry | undefined>,
@@ -49,6 +51,22 @@ export const useNewTimeEntry = (
 
 	const projectEnableSig = useSignal(false);
 	const taskEnableSig = useSignal(false);
+
+	const { from, to, currentWeek } = useGetTimeSheetDays();
+	const isTemplating = useSignal(false);
+	const daytimeOptions = useSignal([
+		'Monday',
+		'Tuesday',
+		'Wednesday',
+		'Thursday',
+		'Friday',
+		'Saturday',
+		'Sunday',
+	]);
+
+	const daysSelected = useSignal<string[]>([]);
+	const description = useSignal<string>('');
+	const timeHours = useSignal<number>(0);
 
 	const handleProjectTypeEnabled = $((customer?: Customer, project?: Project) => {
 		if (customer !== undefined) {
@@ -108,6 +126,7 @@ export const useNewTimeEntry = (
 		taskSelected.value = INIT_TASK_VALUE;
 		projectTypeEnabled.newCustomer = false;
 		projectTypeEnabled.newProject = false;
+		isTemplating.value = false;
 	});
 
 	const insertNewTimeEntry = $(async () => {
@@ -239,6 +258,23 @@ export const useNewTimeEntry = (
 		}
 	});
 
+	const resetTemplating = $(() => {
+		daysSelected.value = [];
+		description.value = '';
+		timeHours.value = 0;
+		currentWeek();
+	});
+
+	const handleTime = $((el: FocusEvent) => {
+		const value = (el.target as HTMLInputElement).value;
+		timeHours.value = convertTimeToDecimal(value);
+	});
+
+	const handleTemplating = $(() => {
+		isTemplating.value = !isTemplating.value;
+		resetTemplating();
+	});
+
 	return {
 		dataCustomersSig,
 		dataProjectsSig,
@@ -254,5 +290,15 @@ export const useNewTimeEntry = (
 		onChangeProject,
 		clearForm,
 		handleSubmit,
+		from,
+		to,
+		isTemplating,
+		daytimeOptions,
+		daysSelected,
+		description,
+		timeHours,
+		handleTime,
+		handleTemplating,
+		resetTemplating,
 	};
 };

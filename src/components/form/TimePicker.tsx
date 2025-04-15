@@ -9,10 +9,11 @@ interface TimePickerProps {
 	onBlur$?: QRL;
 	required?: boolean;
 	disabled?: boolean;
+	hideOptions?: boolean;
 }
 
 export const TimePicker = component$<TimePickerProps>(
-	({ bindValue = undefined, onClick$, onChange$, onBlur$, required, disabled }) => {
+	({ bindValue = undefined, onClick$, onChange$, onBlur$, required, disabled, hideOptions }) => {
 		const signalValue = useSignal(
 			bindValue !== undefined && bindValue !== 0 ? getFormattedHours(bindValue) : ''
 		);
@@ -32,7 +33,7 @@ export const TimePicker = component$<TimePickerProps>(
 
 		return (
 			<div class='relative m-auto max-w-20 text-center'>
-				{!disabled && (
+				{!hideOptions && !disabled && (
 					<div
 						onClick$={onClick$ && onClick$}
 						class='bg-items-center absolute end-1 top-2.5 ml-1 flex cursor-pointer'

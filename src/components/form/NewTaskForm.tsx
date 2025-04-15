@@ -16,7 +16,10 @@ import { TimeEntry } from '../../models/timeEntry';
 import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
 import { Autocomplete } from './Autocomplete';
+import { DataRange } from './DataRange';
+import { Multiselect } from './Multiselect';
 import { Select } from './Select';
+import { TimePicker } from './TimePicker';
 
 interface NewTaskForm {
 	timeEntry: Signal<TimeEntry | undefined>;
@@ -39,6 +42,16 @@ export const NewTaskForm = component$<NewTaskForm>(
 			onChangeProject,
 			clearForm,
 			handleSubmit,
+			from,
+			to,
+			isTemplating,
+			daytimeOptions,
+			daysSelected,
+			description,
+			timeHours,
+			handleTime,
+			handleTemplating,
+			resetTemplating,
 		} = useNewTimeEntry(timeEntry, alertMessageState, onCancel$, false);
 
 		useVisibleTask$(() => {
@@ -64,6 +77,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 		const _onCancel = $(() => {
 			_projectSelected.value = '';
 			clearForm();
+			resetTemplating();
 			onCancel$ && onCancel$();
 		});
 
@@ -149,6 +163,74 @@ export const NewTaskForm = component$<NewTaskForm>(
 							onChange$={_onChangeTask}
 							size='auto'
 						/>
+
+						<div class='mt-1 block'>
+							<input
+								checked={isTemplating.value}
+								id={`templating-checkbox`}
+								type='checkbox'
+								value=''
+								onChange$={handleTemplating}
+								class='h-4 w-4 rounded border-2 border-clara-red bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
+							/>
+							<label
+								for={`templating-checkbox`}
+								class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
+							>
+								Repeat time entry
+								<div class='text-xs text-darkgray-500'>
+									This action will generate a template.
+								</div>
+							</label>
+						</div>
+
+						{isTemplating.value && (
+							<>
+								<div class='flex justify-between'>
+									<div>
+										<label class='block text-sm font-normal text-dark-grey'>
+											{t('TIME_LABEL')}
+										</label>
+										<TimePicker
+											hideOptions={true}
+											bindValue={timeHours.value}
+											onChange$={handleTime}
+										/>
+									</div>
+									<DataRange
+										title={t('TIME_PERIOD_LABEL')}
+										from={from}
+										to={to}
+										modalId={UUID()}
+									/>
+								</div>
+								<Multiselect
+									id={UUID() + '-daytime'}
+									label={t('DAYTIME_LABEL')}
+									placeholder={t('select_empty_label')}
+									value={daysSelected}
+									options={daytimeOptions}
+									allowSelectAll
+									size='auto'
+								/>
+
+								<div>
+									<label
+										for='templating-description'
+										class='block text-sm font-normal text-dark-grey'
+									>
+										{t('DESCRIPTION_LABEL')}
+									</label>
+									<textarea
+										id='templating-description'
+										rows={4}
+										class='mt-0 block w-full rounded-md border border-gray-500 bg-white-100 p-2.5 text-sm text-gray-900'
+										placeholder={t('DESCRIPTION_INSER_LABEL')}
+										bind:value={description}
+									></textarea>
+								</div>
+							</>
+						)}
 
 						<div class='flex flex-row justify-end space-x-1'>
 							{onCancel$ && (
