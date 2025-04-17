@@ -52,6 +52,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 			handleTime,
 			handleTemplating,
 			resetTemplating,
+			handleSubmitTemplating,
 		} = useNewTimeEntry(timeEntry, alertMessageState, onCancel$, false);
 
 		useVisibleTask$(() => {
@@ -92,7 +93,12 @@ export const NewTaskForm = component$<NewTaskForm>(
 		const _handleSubmit = $((event: SubmitEvent, _: HTMLFormElement) => {
 			event.preventDefault();
 			_projectSelected.value = '';
-			handleSubmit(event, _);
+			console.log('#### isTemplating', isTemplating.value);
+			if (isTemplating.value) {
+				handleSubmitTemplating(event, _);
+			} else {
+				handleSubmit(event, _);
+			}
 		});
 
 		const _onChangeTask = $(async (value: string) => {
@@ -195,6 +201,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 											hideOptions={true}
 											bindValue={timeHours.value}
 											onChange$={handleTime}
+											required
 										/>
 									</div>
 									<DataRange

@@ -1,6 +1,7 @@
 import { AWS } from './AWS';
 import { Android } from './Android';
 import { Ansible } from './Ansible';
+import { ArrowBack } from './ArrowBack';
 import { ArrowLeft } from './ArrowLeft';
 import { ArrowRight } from './ArrowRight';
 import { Bin } from './Bin';
@@ -9,6 +10,7 @@ import { BricklyNaming } from './BricklyNaming';
 import { BricklyRedLogo } from './BricklyRedLogo';
 import { CSharp } from './CSharp';
 import { Calendar } from './Calendar';
+import { Check } from './Check';
 import { Claranet } from './Claranet';
 import { Clear } from './Clear';
 import { Close } from './Close';
@@ -139,6 +141,10 @@ export const getIcon = (skill: string) => {
 			return <Downalod />;
 		case 'Downarrow':
 			return <DownArrow />;
+		case 'Check':
+			return <Check />;
+		case 'ArrowBack':
+			return <ArrowBack />;
 		default:
 			return <AWS />;
 	}

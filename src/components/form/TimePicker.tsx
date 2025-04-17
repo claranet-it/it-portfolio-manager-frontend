@@ -10,17 +10,32 @@ interface TimePickerProps {
 	required?: boolean;
 	disabled?: boolean;
 	hideOptions?: boolean;
+	isTemplate?: boolean;
 }
 
 export const TimePicker = component$<TimePickerProps>(
-	({ bindValue = undefined, onClick$, onChange$, onBlur$, required, disabled, hideOptions }) => {
+	({
+		bindValue = undefined,
+		onClick$,
+		onChange$,
+		onBlur$,
+		required,
+		disabled,
+		hideOptions,
+		isTemplate,
+	}) => {
 		const signalValue = useSignal(
 			bindValue !== undefined && bindValue !== 0 ? getFormattedHours(bindValue) : ''
 		);
 		const style = useComputed$(() => {
-			return disabled
-				? 'bg-darkgray-50 text-darkgray-300 border-darkgray-100'
-				: 'bg-white-100 text-dark-grey border-darkgray-500';
+			if (disabled) {
+				return 'bg-darkgray-50 text-darkgray-300 border-darkgray-100';
+			}
+			if (isTemplate) {
+				return 'bg-surface-20 text-dark-grey border-darkgray-500';
+			}
+
+			return 'bg-white-100 text-dark-grey border-darkgray-500';
 		});
 
 		const onFocusIn = $(() =>

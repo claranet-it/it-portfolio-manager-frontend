@@ -35,6 +35,29 @@ export const useNewTimeEntry = (
 		return await getCustomers();
 	});
 
+	const arrayTemplating = useSignal([
+		{
+			start_date: '2025-04-14',
+			end_date: '2025-04-30',
+			repeat: ['Monday'],
+			hours: 8,
+			description: 'Prova',
+			customer: 'Claranet',
+			project: { completed: false, name: 'Assenze', plannedHours: 100, type: 'absence' },
+			task: { completed: false, name: 'ALLATTAMENTO', plannedHours: 0 },
+		},
+		{
+			start_date: '2025-04-14',
+			end_date: '2025-05-30',
+			repeat: ['Monday', 'Sunday'],
+			hours: 8,
+			description: 'Prova',
+			customer: 'Claranet',
+			project: { completed: false, name: 'Assenze', plannedHours: 100, type: 'absence' },
+			task: { completed: false, name: 'ALLATTAMENTO', plannedHours: 0 },
+		},
+	]);
+
 	const dataProjectsSig = useSignal<Project[]>([]);
 	const dataTasksSign = useSignal<Task[]>([]);
 
@@ -258,6 +281,73 @@ export const useNewTimeEntry = (
 		}
 	});
 
+	const handleSubmitTemplating = sync$((event: SubmitEvent, _: HTMLFormElement) => {
+		event.preventDefault();
+		const isProjectTypeEnabled =
+			projectTypeEnabled.newCustomer || projectTypeEnabled.newProject;
+		if (projectSelected.value.type === '' && isProjectTypeEnabled) {
+			showAlert({
+				title: t('INSERT_NEW_PROJECT_TITLE_MODAL'),
+				message: t('EMPTY_PROJECT_TYPE_MESSAGE'),
+				cancelLabel: t('ACTION_CANCEL'),
+			});
+			return;
+		}
+
+		if (taskSelected.value.name === '') {
+			showAlert({
+				title: t('ADD_NEW_TIME_ENTRY'),
+				message: t('EMPTY_TASK_TYPE_MESSAGE'),
+				cancelLabel: t('ACTION_CANCEL'),
+			});
+			return;
+		}
+
+		if (timeHours.value === 0) {
+			showAlert({
+				title: t('ADD_NEW_TIME_ENTRY'),
+				message: t('EMPTY_PROJECT_TYPE_MESSAGE'),
+				cancelLabel: t('ACTION_CANCEL'),
+			});
+			return;
+		}
+
+		if (!daysSelected.value.length) {
+			showAlert({
+				title: t('INSERT_NEW_PROJECT_TITLE_MODAL'),
+				message: t('EMPTY_DAYTIME_TYPE_MESSAGE'),
+				cancelLabel: t('ACTION_CANCEL'),
+			});
+			return;
+		}
+
+		/* TODO: SAlVATAGGIO TEMPLATING */
+		console.log('###', {
+			start_date: from.value,
+			end_date: to.value,
+			repeat: daysSelected.value,
+			hours: timeHours.value,
+			description: description.value,
+			customer: customerSelected.value,
+			project: projectSelected.value,
+			task: taskSelected.value,
+		});
+		/* arrayTemplating.value = [{
+			start_date: from.value,
+			end_date: to.value,
+			repeat: daysSelected.value,
+			hours: timeHours.value,
+			description: description.value,
+			customer: customerSelected.value,
+			project: projectSelected.value,
+			task: taskSelected.value,
+		}] */
+
+		clearForm();
+		resetTemplating();
+		closeForm && closeForm();
+	});
+
 	const resetTemplating = $(() => {
 		daysSelected.value = [];
 		description.value = '';
@@ -300,5 +390,7 @@ export const useNewTimeEntry = (
 		handleTime,
 		handleTemplating,
 		resetTemplating,
+		handleSubmitTemplating,
+		arrayTemplating,
 	};
 };

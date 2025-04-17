@@ -39,6 +39,66 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			newTimeEntry,
 			userImpersonationId
 		);
+		/* Chiamata al BE per il templating attivo in questa settimana che mi crea questo tipo di entries */
+		const templatingEntries: TimeEntry[] = [
+			{
+				isTemplating: true,
+				user: 'maria.teresa.graziano@claranet.com',
+				date: '2025-04-17',
+				company: 'it',
+				customer: 'Claranet',
+				project: {
+					name: 'Assenze',
+					type: 'absence' as ProjectType,
+					plannedHours: 100,
+					completed: false,
+				},
+				task: 'FESTIVITA',
+				hours: 8,
+				description: '',
+				startHour: '00:00',
+				endHour: '00:00',
+				index: 'd481526f-91b6-4865-afa6-667e939d4290',
+			},
+			{
+				isTemplating: true,
+				user: 'maria.teresa.graziano@claranet.com',
+				date: '2025-04-15',
+				company: 'it',
+				customer: 'Claranet',
+				project: {
+					name: 'Assenze',
+					type: 'absence' as ProjectType,
+					plannedHours: 100,
+					completed: false,
+				},
+				task: 'FERIE',
+				hours: 8,
+				description: '',
+				startHour: '00:00',
+				endHour: '00:00',
+				index: 'd481526f-91b6-4865-afa6-667e939d4290',
+			},
+			{
+				isTemplating: true,
+				user: 'maria.teresa.graziano@claranet.com',
+				date: '2025-04-18',
+				company: 'it',
+				customer: 'Claranet',
+				project: {
+					name: 'Assenze',
+					type: 'absence' as ProjectType,
+					plannedHours: 100,
+					completed: false,
+				},
+				task: 'FERIE',
+				hours: 8,
+				description: '',
+				startHour: '00:00',
+				endHour: '00:00',
+				index: 'd481526f-91b6-4865-afa6-667e939d4290',
+			},
+		];
 
 		const timeEntriesState = useStore<Record<string, Record<string, number>>>({});
 
@@ -136,7 +196,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		};
 
 		const groupedByProject = useComputed$(() => {
-			return state.dataTimeEntries.reduce<TimeEntryRow>((acc, entry) => {
+			const entriesConfirmed = state.dataTimeEntries.reduce<TimeEntryRow>((acc, entry) => {
 				const key = `${entry.customer}-${entry.project.name}-${entry.task}`;
 
 				if (!acc[key]) {
@@ -146,6 +206,22 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 				acc[key].push(entry);
 				return acc;
 			}, {});
+
+			const entriesTemplating = templatingEntries.reduce<TimeEntryRow>((acc, entry) => {
+				const key = `${entry.customer}-${entry.project.name}-${entry.task}`;
+
+				if (!acc[key]) {
+					acc[key] = [];
+				}
+
+				acc[key].push(entry);
+				return acc;
+			}, {});
+			/* TODO aggiungerli qui? insieme? */
+			console.log('#### entriesConfirmed', entriesConfirmed);
+			console.log('#### entriesTemplating', entriesTemplating);
+
+			return { ...entriesConfirmed, ...entriesTemplating };
 		});
 
 		const extractFirstEntryDetails = (entries: TimeEntry[]) => {
@@ -280,7 +356,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																	isLastEntry
 																		? 'mb-6'
 																		: 'mb-2'
-																}`}
+																} `}
 															>
 																<TimeEntryElement
 																	key={key}
@@ -355,8 +431,11 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 					</tbody>
 					<tfoot>
 						<tr class='bg-surface-5'>
-							<td colSpan={10} class='border border-surface-50 px-6 py-4'>
+							<td colSpan={8} class='border border-surface-50 px-6 py-4'>
 								<Slot name='newProject' />
+							</td>
+							<td colSpan={2} class='border border-surface-50 px-6 py-4'>
+								<Slot name='confirmTimes' />
 							</td>
 						</tr>
 						<tr class='bg-surface-20'>

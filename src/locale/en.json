@@ -260,5 +260,17 @@
 	"NO_DATA": "No data inserted",
 	"TIME_LABEL": "Time",
 	"TIME_PERIOD_LABEL": "Time period",
-	"DAYTIME_LABEL": "Daytime"
+	"DAYTIME_LABEL": "Daytime",
+	"EMPTY_DAYTIME_TYPE_MESSAGE": "Please, select a daytime option",
+	"EMPTY_TASK_TYPE_MESSAGE": "Please, select a task option",
+	"CONFIRM_TIMES": "Confirm times",
+	"CONFIRM_TIMES_MESSAGE": "Are you sure you want to confirm all recorded times until today {day}?",
+	"VIEW_TEMPLATE_LIST": "View template list",
+	"TEMPLATE_PAGE_TITLE": "Template list",
+	"TEMPLATE_TABLE_MY_TEMPLATES_COL_LABEL": "My templates",
+	"TEMPLATE_TABLE_FROM_COL_LABEL": "From",
+	"TEMPLATE_TABLE_TO_COL_LABEL": "To",
+	"TEMPLATE_TABLE_DAYS_COL_LABEL": "Days",
+	"TEMPLATE_TABLE_TOTAL_PLANNED_HOURS_COL_LABEL": "Total planned hours",
+	"TEMPLATE_TABLE_ACTIONS_COL_LABEL": "Actions"
 }

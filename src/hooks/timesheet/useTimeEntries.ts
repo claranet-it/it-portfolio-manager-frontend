@@ -39,6 +39,7 @@ export const useTimeEntries = (
 				);
 
 				state.dataTimeEntries = timeEntries;
+				console.log('#### time', timeEntries);
 
 				appStore.isLoading = false;
 			} catch (err) {
