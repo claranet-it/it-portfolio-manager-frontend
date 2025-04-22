@@ -77,15 +77,6 @@ export const useNewTimeEntry = (
 
 	const { from, to, currentWeek } = useGetTimeSheetDays();
 	const isTemplating = useSignal(false);
-	const daytimeOptions = useSignal([
-		'Monday',
-		'Tuesday',
-		'Wednesday',
-		'Thursday',
-		'Friday',
-		'Saturday',
-		'Sunday',
-	]);
 
 	const daysSelected = useSignal<string[]>([]);
 	const description = useSignal<string>('');
@@ -383,7 +374,6 @@ export const useNewTimeEntry = (
 		from,
 		to,
 		isTemplating,
-		daytimeOptions,
 		daysSelected,
 		description,
 		timeHours,

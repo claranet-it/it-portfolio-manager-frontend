@@ -249,6 +249,21 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			return `px-6 py-4 font-medium text-left border border-surface-50 whitespace-wrap shadow-inset-leftBorder ${color}`;
 		};
 
+		const todayStyle = (day: Day) => {
+			const currentDate = new Date();
+
+			const isToday =
+				day.date.getDate() === currentDate.getDate() &&
+				day.date.getMonth() === currentDate.getMonth() &&
+				day.date.getFullYear() === currentDate.getFullYear();
+
+			const tdClass = isToday
+				? 'bg-surface-50 border border-2 border-darkgray-500 px-4 py-3'
+				: 'border border-surface-70 px-4 py-3';
+
+			return tdClass;
+		};
+
 		const weekHours = state.dataTimeEntries.map((item) => item.hours);
 
 		return (
@@ -262,11 +277,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								</h3>
 							</th>
 							{days.value.map((day, key) => (
-								<th
-									key={key}
-									scope='col'
-									class='border border-surface-70 px-4 py-3'
-								>
+								<th key={key} scope='col' class={todayStyle(day)}>
 									<div class='flex flex-col text-dark-grey'>
 										<h3 class='text-base font-bold'>{day.name}</h3>
 										<span class='text-xs font-normal uppercase'>

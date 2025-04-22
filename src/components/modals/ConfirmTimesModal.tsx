@@ -1,6 +1,6 @@
 import { $, component$, useStore } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
-import { t } from 'src/locale/labels';
+import { t, tt } from 'src/locale/labels';
 import { getIcon } from '../icons';
 import { Modal } from './Modal';
 
@@ -9,7 +9,7 @@ interface ConfirmTimesModalProp {}
 export const ConfirmTimesModal = component$<ConfirmTimesModalProp>(() => {
 	const deleteModalState = useStore<ModalState>({
 		title: t('CONFIRM_TIMES'),
-		message: t('CONFIRM_TIMES_MESSAGE').replace('{day}', 'OGGi'),
+		message: tt('CONFIRM_TIMES_MESSAGE', { today: 'Data da inviare' }),
 		cancelLabel: t('ACTION_CANCEL'),
 		confirmLabel: t('ACTION_CONFIRM'),
 	});

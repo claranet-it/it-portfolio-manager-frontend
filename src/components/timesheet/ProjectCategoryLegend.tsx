@@ -34,6 +34,11 @@ export const ProjectCategoryLegend = component$(() => {
 				))}
 
 				<span class='me-3 flex items-center text-xs font-normal text-dark-grey'>
+					<span class='mr-2 h-4 w-4 border-2 border-darkgray-500 bg-surface-50'></span>
+					{t('TODAY_LABEL')}
+				</span>
+
+				<span class='me-3 flex items-center text-xs font-normal text-dark-grey'>
 					{getIcon('V3Dots')}
 					{t('NOTE_LABEL')}
 				</span>
