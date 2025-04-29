@@ -12,10 +12,19 @@ interface EditTaskFormProps {
 export const EditTaskForm = component$<EditTaskFormProps>(({ name, completed, plannedHours }) => {
 	return (
 		<form class='space-y-3'>
-			<Input label={t('NAME_LABEL')} bindValue={name} />
+			<Input
+				label={t('NAME_LABEL')}
+				value={name.value}
+				onInput$={(_, el) => {
+					name.value = el.value;
+				}}
+			/>
 			<Input
 				label={t('PLANNED_HOURS_TITLE')}
-				bindValue={plannedHours as unknown as Signal<string>}
+				value={plannedHours.value}
+				onInput$={(_, el) => {
+					plannedHours.value = Number(el.value);
+				}}
 			/>
 			<ToggleSwitch label={t('COMPLETED_LABEL')} isChecked={completed} />
 		</form>
