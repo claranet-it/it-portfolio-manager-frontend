@@ -12,18 +12,16 @@ import { CompanySkill } from '@models/company';
 import { ModalState } from '@models/modalState';
 import { UserProfile } from '@models/user';
 import { AppContext } from 'src/app';
-import { Button } from 'src/components/Button';
-import { Input } from 'src/components/form/Input';
-import { OptionDropdown } from 'src/components/form/OptionDropdown';
-import { ToggleSwitch } from 'src/components/form/ToggleSwitch';
+import { CompanySettings } from 'src/components/company/CompanySettings';
+import { CompanySkills } from 'src/components/company/CompanySkills';
+import { CompanyUsers } from 'src/components/company/CompanyUsers';
 import { getIcon } from 'src/components/icons';
-import { DownArrow } from 'src/components/icons/DownArrow';
-import { Modal } from 'src/components/modals/Modal';
+import { Tabs } from 'src/components/Tabs';
 import { useCompany } from 'src/hooks/useCompany';
 import { useNotification } from 'src/hooks/useNotification';
 import { t } from 'src/locale/labels';
 import { getUserMe, getUserProfiles } from 'src/services/user';
-import { getACLValues, roleHierarchy } from 'src/utils/acl';
+import { getACLValues } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
 import { generateIcon } from 'src/utils/image';
 
@@ -144,229 +142,27 @@ export const Company = component$(() => {
 		userSig.value = (await getUserProfiles()).sort((a, b) => a.name.localeCompare(b.name));
 	});
 
+	const tabs = [
+		{
+			id: 'skills',
+			label: 'Company skills',
+			content: $(() => <CompanySkills />),
+		},
+		{
+			id: 'users',
+			label: 'Users',
+			content: $(() => <CompanyUsers />),
+		},
+		{
+			id: 'settings',
+			label: 'Settings',
+			content: $(() => <CompanySettings />),
+		},
+	];
+
 	return (
-		<>
-			<div class='w-full space-y-3 px-6 pb-10 pt-2.5'>
-				<div class='flex sm:flex-col sm:space-y-3 md:flex-row md:justify-between lg:flex-row lg:justify-between'>
-					<div class='gap-3 p-0 md:inline-flex lg:inline-flex'>
-						<div class='grid content-center text-center md:flex-none lg:flex-none'>
-							<img
-								src={
-									company.value.image_url !== '' && company.value.image_url
-										? company.value.image_url
-										: generateIcon(company.value.domain)
-								}
-								alt={t('profile_picture')}
-								class='aspect-square h-auto w-20 rounded-full object-cover sm:m-auto'
-							/>
-						</div>
-						<div class='pt-0 md:px-4 lg:px-4'>
-							<h2 class={`text-4xl font-semibold text-dark-grey`}>
-								{company.value.domain}
-							</h2>
-							<Button
-								variant={'link'}
-								size={'xsmall'}
-								onClick$={() => (companyLogoModalState.isVisible = true)}
-							>
-								{t('LOGO_EDIT_LABEL')}
-							</Button>
-						</div>
-					</div>
-				</div>
-
-				<div class='flex flex-col sm:space-y-4 md:flex-row md:space-x-5 lg:flex-row lg:space-x-5'>
-					{/* SKILLS */}
-					<div class='flex-1'>
-						<div class='mb-2 flex w-full flex-row items-center justify-between'>
-							<span class='text-2xl font-bold text-dark-grey sm:mt-2'>
-								{t('COMPANY_SKILL_LABEL')}
-							</span>
-						</div>
-						<div class='justify-content ml-2 flex flex-col place-content-evenly space-y-1'>
-							{Object.entries(skillSig.value).map(([serviceLine, skills]) => {
-								const serviceCheck = skills.some((skill) => skill.visible);
-
-								return (
-									<div key={`company-skill-${serviceLine}`} class='mb-4'>
-										<div class='flex flex-row justify-between'>
-											<h2 class='mb-2 text-xl font-bold text-darkgray-900'>
-												{serviceLine}
-											</h2>
-											<div class='mr-3'>
-												<ToggleSwitch
-													key={`company-skill-toggle-${serviceLine}`}
-													isChecked={serviceCheck}
-													onChange$={(e: boolean) => {
-														skills.forEach((skill) => {
-															skill.visible = e;
-														});
-													}}
-												/>
-											</div>
-										</div>
-										{skills
-											.sort((a, b) => a.name.localeCompare(b.name))
-											.map((skill) => {
-												return (
-													<div
-														key={`company-skill-${skill.id}`}
-														class='mb-1 flex items-start justify-between rounded-lg border border-darkgray-200 px-3 py-3'
-													>
-														<div class='flex items-center justify-center space-x-2'>
-															<span class='skill-icon text-2xl text-darkgray-900'>
-																{getSkillIcon(
-																	serviceLine,
-																	skill.name
-																)}
-															</span>
-
-															<div class='flex flex-col'>
-																<h2 class='text-xl font-bold text-darkgray-900'>
-																	{skill.name}
-																</h2>
-																<h3 class='text-sm font-normal text-darkgray-900'>
-																	{skill.description}
-																</h3>
-															</div>
-														</div>
-														<div class='ml-4 text-center'>
-															<ToggleSwitch
-																isChecked={skill.visible}
-																onChange$={(e: boolean) =>
-																	updateSkillVisibility(
-																		skill.id,
-																		e
-																	)
-																}
-															/>
-														</div>
-													</div>
-												);
-											})}
-									</div>
-								);
-							})}
-						</div>
-					</div>
-
-					{/* USERS */}
-					<div class='flex-1'>
-						<div class='mb-2 flex w-full flex-row items-center justify-between'>
-							<span class='text-2xl font-bold text-dark-grey sm:mt-2'>
-								{t('USERS_LABEL')}
-							</span>
-						</div>
-						<div class='justify-content flex flex-col place-content-evenly space-y-1'>
-							{userSig.value
-								.filter((user) => user.name !== '')
-								.map((user) => {
-									return {
-										...user,
-										role:
-											user.role !== '' && user.role !== undefined
-												? (user.role as Roles)
-												: Roles.USER,
-									};
-								})
-								.map((user, index) => {
-									const userActive = !user.disabled;
-
-									return (
-										<div
-											key={`company-user-${index}`}
-											class={`flex items-start justify-between rounded-lg border border-darkgray-200 px-3 py-3 ${userActive ? '' : 'bg-dark-gray-50'}`}
-										>
-											<div class='flex items-center justify-center space-x-2'>
-												<div class='flex flex-col'>
-													<h2
-														class={`text-xl font-bold ${userActive ? 'text-darkgray-900' : 'text-darkgray-400'}`}
-													>
-														{user.name}
-													</h2>
-													<h3
-														class={`text-sm font-normal ${userActive ? 'text-darkgray-900' : 'text-darkgray-400'}`}
-													>
-														{user.email}
-													</h3>
-												</div>
-											</div>
-											<div class='ml-4 flex flex-row items-center gap-2 text-center'>
-												<OptionDropdown
-													id={`user-dropdown-${index}-crew`}
-													icon={<DownArrow />}
-													label={user.crew ?? t('USER_CREW_LABEL')}
-													disabled={
-														!userActive ||
-														user.email === loggedUserEmail.value
-													}
-													options={crewOptionsSig.value.map((crew) => ({
-														value: crew,
-														onChange: $(
-															async () =>
-																await updateUserValues(
-																	user,
-																	user.role!,
-																	crew
-																)
-														),
-													}))}
-												/>
-												<OptionDropdown
-													id={`user-dropdown-${index}-role`}
-													icon={<DownArrow />}
-													label={roles[user.role] ?? t('USER_ROLE_LABEL')}
-													disabled={
-														!userActive ||
-														user.email === loggedUserEmail.value
-													}
-													options={Object.entries(roles)
-														.filter(
-															([role, _]) =>
-																roleHierarchy[userAcl.value.role] >=
-																roleHierarchy[role as Roles]
-														)
-														.map(([role, name]) => ({
-															value: name,
-															onChange: $(
-																async () =>
-																	await updateUserValues(
-																		user,
-																		role,
-																		user.crew
-																	)
-															),
-														}))}
-												/>
-												{user.email !== loggedUserEmail.value && (
-													<ToggleSwitch
-														key={`company-user-toggle-${user.id}`}
-														isChecked={userActive}
-														onChange$={async (active: boolean) =>
-															await updateUserVisibility(user, active)
-														}
-													/>
-												)}
-											</div>
-										</div>
-									);
-								})}
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<Modal state={companyLogoModalState}>
-				<form class='space-y-3'>
-					<Input
-						label={t('LOGO_URL_LABEL')}
-						bindValue={logoUrl}
-						onChange$={(event) =>
-							(logoUrl.value = (event.target as HTMLInputElement).value)
-						}
-					/>
-				</form>
-			</Modal>
-		</>
+		<div class='w-full space-y-3 px-6 pb-10 pt-2.5'>
+			<Tabs tabs={tabs} defaultActiveTabId='skills' />
+		</div>
 	);
 });
