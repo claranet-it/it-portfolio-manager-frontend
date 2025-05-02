@@ -257,5 +257,13 @@
 	"NOTES_LABEL": "Notes",
 	"NOTES_INSERT_LABEL": "Insert notes...",
 	"PRESENT": "Present",
-	"NO_DATA": "No data inserted"
+	"NO_DATA": "No data inserted",
+	"UNSUBSCRIBE_TITLE": "Unsubscribe from Brickly",
+	"UNSUBSCRIBE_MESSAGE": "Unsubscribing from the account is an irreversible choice and results in the loss of all data uploaded by the user, which will be deleted, except for any applicable exceptions for data that must be retained to comply with legal obligations.",
+	"QUESTION_PROCEED": "Do you want to proceed?",
+	"UNSUBSCRIBE_ACTION": "Unsubscribe",
+	"UNSUBSCRIBE_SUBTITLE": "Do you want to unsubscribe from Brickly?",
+	"NO_CANCEL": "No, cancel",
+	"PROCEED": "Yes, proceed",
+	"CONTINUE": "Continue"
 }

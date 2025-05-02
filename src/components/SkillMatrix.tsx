@@ -17,7 +17,7 @@ import {
 	pathSkillMatrixMine,
 	pathSkillMatrixUser,
 } from '../services/skillMatrix';
-import { SfRating } from './SfRating';
+import { SkillLegend } from './SkillLegend';
 import { SkillRow } from './SkillRow';
 
 interface SkillMatrixProps {
@@ -85,23 +85,7 @@ export const SkillMatrix = component$<SkillMatrixProps>(({ userIdSelected, userS
 	return (
 		<>
 			<div class='mb-8 mt-2 flex items-center gap-8 text-xs'>
-				<div>LEGEND</div>
-				<div>
-					<SfRating max={appStore.configuration.scoreRange.max} value={0} />
-					<span class='ml-2'>none</span>
-				</div>
-				<div>
-					<SfRating max={appStore.configuration.scoreRange.max} value={1} />
-					<span class='ml-2'>with pairing</span>
-				</div>
-				<div>
-					<SfRating max={appStore.configuration.scoreRange.max} value={2} />
-					<span class='ml-2'>autonomous</span>
-				</div>
-				<div>
-					<SfRating max={appStore.configuration.scoreRange.max} value={3} />
-					<span class='ml-2'>expert</span>
-				</div>
+				<SkillLegend />
 			</div>
 			<div
 				key={`skillmatrix-${userIdSelected.value ?? 'mine'}`}

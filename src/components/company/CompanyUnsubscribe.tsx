@@ -1,5 +1,6 @@
 import { $, component$, useContext, useSignal } from '@builder.io/qwik';
 import { AppContext } from 'src/app';
+import { t } from 'src/locale/labels';
 import { unsubscribeCompany } from 'src/services/company';
 import { Button } from '../Button';
 
@@ -21,15 +22,11 @@ export const CompanyUnsubscribe = component$<Props>(({ id }) => {
 	});
 
 	return (
-		<>
+		<div class='w-[600px]'>
+			<h2 class='mb-2 text-xl font-bold text-darkgray-900'>{t('UNSUBSCRIBE_TITLE')}</h2>
 			{!step2.value && !step3.value && (
-				<div class='w-[600px]'>
-					<h2 class='mb-2 text-xl font-bold text-darkgray-900'>
-						Unsubscribe from Brickly
-					</h2>
-					<h3 class='text-l mb-2 text-darkgray-900'>
-						Do you want to unsubscribe from Brickly?
-					</h3>
+				<>
+					<h3 class='text-l mb-2 text-darkgray-900'>{t('UNSUBSCRIBE_SUBTITLE')}</h3>
 
 					<Button
 						onClick$={() => {
@@ -37,22 +34,16 @@ export const CompanyUnsubscribe = component$<Props>(({ id }) => {
 							step3.value = false;
 						}}
 					>
-						Unsubscribe
+						{t('UNSUBSCRIBE_ACTION')}
 					</Button>
-				</div>
+				</>
 			)}
 			{step2.value && !step3.value && (
-				<div class='w-[600px]'>
-					<h2 class='mb-2 text-xl font-bold text-darkgray-900'>
-						Unsubscribe from Brickly
-					</h2>
+				<>
 					<h3 class='text-l mb-2 text-justify text-darkgray-900'>
-						Unsubscribing from the account is an irreversible choice and results in the
-						loss of all data uploaded by the user, which will be deleted, except for any
-						applicable exceptions for data that must be retained to comply with legal
-						obligations.
+						{t('UNSUBSCRIBE_MESSAGE')}
 						<br />
-						Do you want to proceed?
+						{t('QUESTION_PROCEED')}
 					</h3>
 
 					<div class='flex gap-2'>
@@ -63,7 +54,7 @@ export const CompanyUnsubscribe = component$<Props>(({ id }) => {
 								step3.value = false;
 							}}
 						>
-							No, cancel
+							{t('NO_CANCEL')}
 						</Button>
 						<Button
 							onClick$={() => {
@@ -71,16 +62,13 @@ export const CompanyUnsubscribe = component$<Props>(({ id }) => {
 								step3.value = true;
 							}}
 						>
-							Yes, proceed
+							{t('PROCEED')}
 						</Button>
 					</div>
-				</div>
+				</>
 			)}
 			{!step2.value && step3.value && (
-				<div class='w-[600px]'>
-					<h2 class='mb-2 text-xl font-bold text-darkgray-900'>
-						Unsubscribe from Brickly
-					</h2>
+				<>
 					<h3 class='text-l mb-2 text-darkgray-900'>recaptcha</h3>
 					<div
 						class='g-recaptcha'
@@ -88,10 +76,10 @@ export const CompanyUnsubscribe = component$<Props>(({ id }) => {
 						data-callback={onRecaptchaVerified}
 					></div>
 					<div>
-						<Button onClick$={onRecaptchaVerified}>Continue</Button>
+						<Button onClick$={onRecaptchaVerified}>{t('CONTINUE')}</Button>
 					</div>
-				</div>
+				</>
 			)}
-		</>
+		</div>
 	);
 });
