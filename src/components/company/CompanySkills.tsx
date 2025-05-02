@@ -1,15 +1,16 @@
-import { component$, sync$, useComputed$, useContext, useTask$ } from '@builder.io/qwik';
-import { CompanySkill } from '@models/company';
+import { component$, QRL, Signal, sync$, useComputed$, useContext } from '@builder.io/qwik';
+import { Company, CompanySkill } from '@models/company';
 import { AppContext } from 'src/app';
 import { ToggleSwitch } from 'src/components/form/ToggleSwitch';
-import { getIcon } from 'src/components/icons';
-import { useCompany } from 'src/hooks/useCompany';
 import { t } from 'src/locale/labels';
+import { getIcon } from '../icons';
 
-export const CompanySkills = component$(() => {
+type Props = {
+	company: Signal<Company>;
+	updateSkillVisibility: QRL;
+};
+export const CompanySkills = component$<Props>(({ company, updateSkillVisibility }) => {
 	const appStore = useContext(AppContext);
-
-	const { company, fetchCompany, updateSkillVisibility } = useCompany();
 
 	const skillSig = useComputed$(() => {
 		const skillList = appStore.configuration.skills;
@@ -43,10 +44,6 @@ export const CompanySkills = component$(() => {
 		return getIcon(skill);
 	});
 
-	useTask$(async () => {
-		await fetchCompany();
-	});
-
 	return (
 		<>
 			<div class='mb-2 flex w-full flex-row items-center justify-between'>
@@ -54,14 +51,14 @@ export const CompanySkills = component$(() => {
 					{t('COMPANY_SKILL_LABEL')}
 				</span>
 			</div>
-			<div class='justify-content ml-2 flex flex-col place-content-evenly space-y-1'>
+			<div class='flex flex-col sm:space-y-4 md:gap-5 lg:grid lg:grid-cols-2 lg:gap-5'>
 				{Object.entries(skillSig.value).map(([serviceLine, skills]) => {
 					const serviceCheck = skills.some((skill) => skill.visible);
 
 					return (
 						<div key={`company-skill-${serviceLine}`} class='mb-4'>
-							<div class='flex flex-row justify-between'>
-								<h2 class='mb-2 text-xl font-bold text-darkgray-900'>
+							<div class='mb-1 flex w-full flex-row items-center justify-between'>
+								<h2 class='text-2xl font-bold text-dark-grey sm:mt-2'>
 									{serviceLine}
 								</h2>
 								<div class='mr-3'>

@@ -1,47 +1,19 @@
-import { $, component$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
+import { component$, Signal } from '@builder.io/qwik';
+import { Company } from '@models/company';
 import { ModalState } from '@models/modalState';
-import { UserProfile } from '@models/user';
 import { Button } from 'src/components/Button';
 import { Input } from 'src/components/form/Input';
 import { Modal } from 'src/components/modals/Modal';
-import { useCompany } from 'src/hooks/useCompany';
-import { useNotification } from 'src/hooks/useNotification';
 import { t } from 'src/locale/labels';
-import { getUserProfiles } from 'src/services/user';
 import { generateIcon } from 'src/utils/image';
+import { CompanyUnsubscribe } from './CompanyUnsubscribe';
 
-export const CompanySettings = component$(() => {
-	const { addEvent } = useNotification();
-
-	const { company, fetchCompany, updateCompanyLogo } = useCompany();
-
-	const logoUrl = useSignal(company.value.image_url ?? generateIcon(company.value.id));
-
-	const userSig = useSignal<UserProfile[]>([]);
-
-	const companyLogoModalState = useStore<ModalState>({
-		title: t('LOGO_LABEL'),
-		onCancel$: $(() => {
-			logoUrl.value = company.value.image_url;
-		}),
-		onConfirm$: $(async () => {
-			if (await updateCompanyLogo(logoUrl.value)) {
-				addEvent({
-					type: 'success',
-					message: t('COMPANY_LOGO_SUCCESSFULLY_UPDATED'),
-					autoclose: true,
-				});
-			}
-		}),
-		cancelLabel: t('ACTION_CANCEL'),
-		confirmLabel: t('ACTION_CONFIRM'),
-	});
-
-	useTask$(async () => {
-		await fetchCompany();
-		userSig.value = (await getUserProfiles()).sort((a, b) => a.name.localeCompare(b.name));
-	});
-
+type Props = {
+	company: Signal<Company>;
+	companyLogoModalState: ModalState;
+	logoUrl: Signal<string>;
+};
+export const CompanySettings = component$<Props>(({ company, companyLogoModalState, logoUrl }) => {
 	return (
 		<>
 			<div class='mb-2 flex w-full flex-row items-center justify-between'>
@@ -72,16 +44,7 @@ export const CompanySettings = component$(() => {
 			</div>
 			<hr class='my-8 h-px border-0 bg-gray-200 dark:bg-gray-700' />
 
-			<div>
-				<h2 class='mb-2 text-xl font-bold text-darkgray-900'>Unsubscribe from Brickly</h2>
-				<h3 class='text-l mb-2 text-darkgray-900'>
-					Do you want to unsubscribe from Brickly?
-				</h3>
-
-				<Button onClick$={() => (companyLogoModalState.isVisible = true)}>
-					Unsubscribe
-				</Button>
-			</div>
+			<CompanyUnsubscribe />
 
 			<Modal state={companyLogoModalState}>
 				<form class='space-y-3'>

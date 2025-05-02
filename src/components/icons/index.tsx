@@ -34,6 +34,7 @@ import { Python } from './Python';
 import { QuickSight } from './QuickSight';
 import { Ruby } from './Ruby';
 import { Rust } from './Rust';
+import { Sad } from './Sad';
 import { Search } from './Search';
 import { Send } from './Send';
 import { TypeScript } from './TypeScript';
@@ -139,6 +140,8 @@ export const getIcon = (skill: string) => {
 			return <Downalod />;
 		case 'Downarrow':
 			return <DownArrow />;
+		case 'Sad':
+			return <Sad />;
 		default:
 			return <AWS />;
 	}

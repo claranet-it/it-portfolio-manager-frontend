@@ -1,40 +1,19 @@
-import {
-	$,
-	component$,
-	sync$,
-	useComputed$,
-	useContext,
-	useSignal,
-	useStore,
-	useTask$,
-} from '@builder.io/qwik';
-import { CompanySkill } from '@models/company';
+import { $, component$, useComputed$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { UserProfile } from '@models/user';
-import { AppContext } from 'src/app';
 import { CompanySettings } from 'src/components/company/CompanySettings';
 import { CompanySkills } from 'src/components/company/CompanySkills';
 import { CompanyUsers } from 'src/components/company/CompanyUsers';
-import { getIcon } from 'src/components/icons';
 import { Tabs } from 'src/components/Tabs';
 import { useCompany } from 'src/hooks/useCompany';
 import { useNotification } from 'src/hooks/useNotification';
 import { t } from 'src/locale/labels';
 import { getUserMe, getUserProfiles } from 'src/services/user';
-import { getACLValues } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
 import { generateIcon } from 'src/utils/image';
 
-const roles: Record<Roles, string> = {
-	USER: t('ROLE_USER'),
-	TEAM_LEADER: t('ROLE_TEAM_LEADER'),
-	ADMIN: t('ROLE_ADMIN'),
-	SUPERADMIN: t('ROLE_SUPERADMIN'),
-};
-
 export const Company = component$(() => {
 	const { addEvent } = useNotification();
-	const appStore = useContext(AppContext);
 
 	const {
 		company,
@@ -53,13 +32,6 @@ export const Company = component$(() => {
 		return user.email;
 	});
 
-	const userAcl = useComputed$(async () => getACLValues());
-
-	const crewOptionsSig = useComputed$(async () => {
-		const uniqueCrews = appStore.configuration.crews.map((crew) => crew.name);
-		return uniqueCrews.sort((a, b) => a.localeCompare(b));
-	});
-
 	const companyLogoModalState = useStore<ModalState>({
 		title: t('LOGO_LABEL'),
 		onCancel$: $(() => {
@@ -76,26 +48,6 @@ export const Company = component$(() => {
 		}),
 		cancelLabel: t('ACTION_CANCEL'),
 		confirmLabel: t('ACTION_CONFIRM'),
-	});
-
-	const skillSig = useComputed$(() => {
-		const skillList = appStore.configuration.skills;
-
-		return company.value.skills.reduce(
-			(acc, obj) => {
-				if (!acc[obj.serviceLine]) {
-					acc[obj.serviceLine] = [];
-				}
-				acc[obj.serviceLine].push({
-					...obj,
-					description:
-						skillList[obj.serviceLine].find((skill) => skill.name === obj.name)
-							?.description ?? '',
-				});
-				return acc;
-			},
-			{} as Record<string, CompanySkill[]>
-		);
 	});
 
 	const handleTeamLeader = $(async (user: UserProfile, crew: string) => {
@@ -125,18 +77,6 @@ export const Company = component$(() => {
 		userSig.value = (await getUserProfiles()).sort((a, b) => a.name.localeCompare(b.name));
 	});
 
-	const getSkillIcon = sync$((serviceLine: string, skill: string) => {
-		if (serviceLine.toLowerCase() === 'design') {
-			return getIcon('Design');
-		}
-
-		if (serviceLine.toLowerCase() === 'softskill') {
-			return getIcon('UserGroup');
-		}
-
-		return getIcon(skill);
-	});
-
 	useTask$(async () => {
 		await fetchCompany();
 		userSig.value = (await getUserProfiles()).sort((a, b) => a.name.localeCompare(b.name));
@@ -146,17 +86,32 @@ export const Company = component$(() => {
 		{
 			id: 'skills',
 			label: 'Company skills',
-			content: $(() => <CompanySkills />),
+			content: $(() => (
+				<CompanySkills company={company} updateSkillVisibility={updateSkillVisibility} />
+			)),
 		},
 		{
 			id: 'users',
 			label: 'Users',
-			content: $(() => <CompanyUsers />),
+			content: $(() => (
+				<CompanyUsers
+					userSig={userSig}
+					loggedUserEmail={loggedUserEmail}
+					updateUserValues={updateUserValues}
+					updateUserVisibility={updateUserVisibility}
+				/>
+			)),
 		},
 		{
 			id: 'settings',
 			label: 'Settings',
-			content: $(() => <CompanySettings />),
+			content: $(() => (
+				<CompanySettings
+					company={company}
+					companyLogoModalState={companyLogoModalState}
+					logoUrl={logoUrl}
+				/>
+			)),
 		},
 	];
 
