@@ -1,9 +1,9 @@
-import { component$, QRL, Signal, sync$, useComputed$, useContext } from '@builder.io/qwik';
+import { component$, QRL, Signal, useComputed$, useContext } from '@builder.io/qwik';
 import { Company, CompanySkill } from '@models/company';
 import { AppContext } from 'src/app';
 import { ToggleSwitch } from 'src/components/form/ToggleSwitch';
 import { t } from 'src/locale/labels';
-import { getIcon } from '../icons';
+import { getSkillIcon } from 'src/utils/skill';
 
 type Props = {
 	company: Signal<Company>;
@@ -30,18 +30,6 @@ export const CompanySkills = component$<Props>(({ company, updateSkillVisibility
 			},
 			{} as Record<string, CompanySkill[]>
 		);
-	});
-
-	const getSkillIcon = sync$((serviceLine: string, skill: string) => {
-		if (serviceLine.toLowerCase() === 'design') {
-			return getIcon('Design');
-		}
-
-		if (serviceLine.toLowerCase() === 'softskill') {
-			return getIcon('UserGroup');
-		}
-
-		return getIcon(skill);
 	});
 
 	return (
