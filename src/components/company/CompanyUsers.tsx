@@ -5,6 +5,7 @@ import { OptionDropdown } from 'src/components/form/OptionDropdown';
 import { ToggleSwitch } from 'src/components/form/ToggleSwitch';
 import { DownArrow } from 'src/components/icons/DownArrow';
 import { t } from 'src/locale/labels';
+import { getUserMe } from 'src/services/user';
 import { getACLValues, roleHierarchy } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
 
@@ -17,18 +18,22 @@ const roles: Record<Roles, string> = {
 
 type Props = {
 	userSig: Signal<UserProfile[]>;
-	loggedUserEmail: Readonly<Signal<string>>;
 	updateUserValues: QRL;
 	updateUserVisibility: QRL;
 };
 export const CompanyUsers = component$<Props>(
-	({ userSig, loggedUserEmail, updateUserValues, updateUserVisibility }) => {
+	({ userSig, updateUserValues, updateUserVisibility }) => {
 		const appStore = useContext(AppContext);
 		const userAcl = useComputed$(async () => getACLValues());
 
 		const crewOptionsSig = useComputed$(async () => {
 			const uniqueCrews = appStore.configuration.crews.map((crew) => crew.name);
 			return uniqueCrews.sort((a, b) => a.localeCompare(b));
+		});
+
+		const loggedUserEmail = useComputed$(async () => {
+			const user = await getUserMe();
+			return user.email;
 		});
 
 		return (

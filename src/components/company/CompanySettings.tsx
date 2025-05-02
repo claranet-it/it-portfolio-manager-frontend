@@ -1,19 +1,43 @@
-import { component$, Signal } from '@builder.io/qwik';
+import { $, component$, QRL, Signal, useSignal, useStore } from '@builder.io/qwik';
 import { Company } from '@models/company';
 import { ModalState } from '@models/modalState';
 import { Button } from 'src/components/Button';
 import { Input } from 'src/components/form/Input';
 import { Modal } from 'src/components/modals/Modal';
+import { useNotification } from 'src/hooks/useNotification';
 import { t } from 'src/locale/labels';
 import { generateIcon } from 'src/utils/image';
 import { CompanyUnsubscribe } from './CompanyUnsubscribe';
 
 type Props = {
 	company: Signal<Company>;
-	companyLogoModalState: ModalState;
-	logoUrl: Signal<string>;
+	updateCompanyLogo: QRL;
 };
-export const CompanySettings = component$<Props>(({ company, companyLogoModalState, logoUrl }) => {
+export const CompanySettings = component$<Props>(({ company, updateCompanyLogo }) => {
+	const { addEvent } = useNotification();
+
+	const logoUrl = useSignal(company.value.image_url ?? generateIcon(company.value.id));
+
+	const companyLogoModalState = useStore<ModalState>({
+		title: t('LOGO_LABEL'),
+		onCancel$: $(() => {
+			logoUrl.value = company.value.image_url;
+		}),
+		onConfirm$: $(async () => {
+			if (await updateCompanyLogo(logoUrl.value)) {
+				addEvent({
+					type: 'success',
+					message: t('COMPANY_LOGO_SUCCESSFULLY_UPDATED'),
+					autoclose: true,
+				});
+			} else {
+				logoUrl.value = company.value.image_url;
+			}
+		}),
+		cancelLabel: t('ACTION_CANCEL'),
+		confirmLabel: t('ACTION_CONFIRM'),
+	});
+
 	return (
 		<>
 			<div class='mb-2 flex w-full flex-row items-center justify-between'>
@@ -50,10 +74,8 @@ export const CompanySettings = component$<Props>(({ company, companyLogoModalSta
 				<form class='space-y-3'>
 					<Input
 						label={t('LOGO_URL_LABEL')}
-						bindValue={logoUrl}
-						onChange$={(event) =>
-							(logoUrl.value = (event.target as HTMLInputElement).value)
-						}
+						value={logoUrl.value}
+						onInput$={(_, event) => (logoUrl.value = event.value)}
 					/>
 				</form>
 			</Modal>
