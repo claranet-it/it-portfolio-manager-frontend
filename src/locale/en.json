@@ -263,6 +263,8 @@
 	"QUESTION_PROCEED": "Do you want to proceed?",
 	"UNSUBSCRIBE_ACTION": "Unsubscribe",
 	"UNSUBSCRIBE_SUBTITLE": "Do you want to unsubscribe from Brickly?",
+	"UNSUBSCRIBE_ACTION_MESSAGE": "Please enter the name of the company exactly as it is listed below in order to proceed with the unsubscription process.",
+	"UNSUBSCRIBE_ACTION_ERROR": "The company name entered does not match. Please make sure to enter the company name exactly as it is listed.",
 	"NO_CANCEL": "No, cancel",
 	"PROCEED": "Yes, proceed",
 	"CONTINUE": "Continue"

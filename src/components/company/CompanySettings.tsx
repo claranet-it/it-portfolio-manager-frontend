@@ -68,7 +68,7 @@ export const CompanySettings = component$<Props>(({ company, updateCompanyLogo }
 			</div>
 			<hr class='my-8 h-px border-0 bg-gray-200 dark:bg-gray-700' />
 
-			<CompanyUnsubscribe id={company.value.id} />
+			<CompanyUnsubscribe company={company.value} />
 
 			<Modal state={companyLogoModalState}>
 				<form class='space-y-3'>

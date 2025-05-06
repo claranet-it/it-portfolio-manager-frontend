@@ -1,20 +1,29 @@
 import { $, component$, useContext, useSignal } from '@builder.io/qwik';
+import { Company } from '@models/company';
 import { AppContext } from 'src/app';
+import { useNotification } from 'src/hooks/useNotification';
 import { t } from 'src/locale/labels';
-import { unsubscribeCompany } from 'src/services/company';
 import { Button } from '../Button';
+import { Input } from '../form/Input';
 
 type Props = {
-	id: string;
+	company: Company;
 };
-export const CompanyUnsubscribe = component$<Props>(({ id }) => {
+export const CompanyUnsubscribe = component$<Props>(({ company }) => {
+	const { addEvent } = useNotification();
 	const appStore = useContext(AppContext);
 	const step2 = useSignal<boolean>(false);
 	const step3 = useSignal<boolean>(false);
+	const companyInput = useSignal<string>();
 
-	const onRecaptchaVerified = $(async () => {
+	const onCaptchaVerified = $(async () => {
+		if (companyInput.value !== company.domain) {
+			addEvent({ type: 'danger', message: t('UNSUBSCRIBE_ACTION_ERROR'), autoclose: true });
+			return;
+		}
 		appStore.isLoading = true;
-		const success = await unsubscribeCompany(id);
+		const success = true; /* await unsubscribeCompany(company.id); */
+
 		appStore.isLoading = false;
 		if (success) {
 			window.location.href = `${window.location.origin}/unsubscribed`;
@@ -69,14 +78,16 @@ export const CompanyUnsubscribe = component$<Props>(({ id }) => {
 			)}
 			{!step2.value && step3.value && (
 				<>
-					<h3 class='text-l mb-2 text-darkgray-900'>recaptcha</h3>
-					<div
-						class='g-recaptcha'
-						data-sitekey='TUO_SITE_KEY'
-						data-callback={onRecaptchaVerified}
-					></div>
-					<div>
-						<Button onClick$={onRecaptchaVerified}>{t('CONTINUE')}</Button>
+					<h3 class='text-l mb-2 text-darkgray-900'>{t('UNSUBSCRIBE_ACTION_MESSAGE')}</h3>
+					<div class='my-4 rounded-md border border-gray-100 bg-gray-50 p-4 text-2xl font-bold shadow-sm'>
+						{company.domain}
+					</div>
+					<div class='flex justify-start gap-2'>
+						<Input
+							value={companyInput.value}
+							onInput$={(_, el) => (companyInput.value = el.value)}
+						></Input>
+						<Button onClick$={onCaptchaVerified}>{t('CONTINUE')}</Button>
 					</div>
 				</>
 			)}
