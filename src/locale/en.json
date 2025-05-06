@@ -267,5 +267,10 @@
 	"UNSUBSCRIBE_ACTION_ERROR": "The company name entered does not match. Please make sure to enter the company name exactly as it is listed.",
 	"NO_CANCEL": "No, cancel",
 	"PROCEED": "Yes, proceed",
-	"CONTINUE": "Continue"
+	"CONTINUE": "Continue",
+	"CANCEL_PROCESS_MESSAGE": "Do you want to cancel the withdrawal process? Your services will stay active.",
+	"CANCEL_PROCESS_ACTION": "Cancel process",
+	"UNSUBSCRIBED_TITLE": "You're unsubscribed",
+	"UNSUBSCRIBED_MESSAGE": "We're so sorry to lose you",
+	"BACK_TO_HOMEPAGE": "Back to Brickly Homepage!"
 }

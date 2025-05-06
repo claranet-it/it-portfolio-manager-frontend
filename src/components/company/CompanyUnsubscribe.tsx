@@ -87,7 +87,21 @@ export const CompanyUnsubscribe = component$<Props>(({ company }) => {
 							value={companyInput.value}
 							onInput$={(_, el) => (companyInput.value = el.value)}
 						></Input>
+
 						<Button onClick$={onCaptchaVerified}>{t('CONTINUE')}</Button>
+					</div>
+					<div class='mt-8'>
+						<h3 class='text-l mb-2 text-darkgray-900'>{t('CANCEL_PROCESS_MESSAGE')}</h3>
+
+						<Button
+							variant={'outline'}
+							onClick$={() => {
+								step2.value = false;
+								step3.value = false;
+							}}
+						>
+							{t('CANCEL_PROCESS_ACTION')}
+						</Button>
 					</div>
 				</>
 			)}
