@@ -22,8 +22,8 @@ export const CompanyCodeManager = component$(() => {
 	const cipherStore = useContext(CipherContext);
 
 	const createCompanyCodeLoading = useSignal(false);
-	const password = useSignal('');
-	const password2 = useSignal('');
+	const companyCode = useSignal('');
+	const companyCode2 = useSignal('');
 	const error = useSignal<string | null>(null);
 	const confirmDisabled = useSignal(false);
 
@@ -56,12 +56,12 @@ export const CompanyCodeManager = component$(() => {
 	const onConfirm = sync$(async (event: SubmitEvent) => {
 		event.preventDefault();
 
-		if (password.value.trim() === '' || confirmDisabled.value) {
+		if (companyCode.value.trim() === '' || confirmDisabled.value) {
 			return;
 		}
 
-		if (createCompanyCode.value && password.value !== password2.value) {
-			error.value = 'The two passwords do not match.';
+		if (createCompanyCode.value && companyCode.value !== companyCode2.value) {
+			error.value = "Company codes don't match.";
 			return;
 		}
 
@@ -74,7 +74,7 @@ export const CompanyCodeManager = component$(() => {
 			createCompanyCodeLoading.value = true;
 
 			try {
-				const generateResponse = await HybridCipher.generate(password.value);
+				const generateResponse = await HybridCipher.generate(companyCode.value);
 				await saveCipherKeys(generateResponse);
 
 				encryptedAESKey = generateResponse.encryptedAESKey;
@@ -102,13 +102,13 @@ export const CompanyCodeManager = component$(() => {
 				await setCipherFns({
 					encryptedAESKey,
 					encryptedPrivateKey,
-					password: password.value,
+					password: companyCode.value,
 				});
 
 				goToTimesheet();
 			}
 		} catch (e) {
-			error.value = 'The password is not valid.';
+			error.value = 'The Company code is not valid.';
 			confirmDisabled.value = false;
 			createCompanyCodeLoading.value = false;
 		}
@@ -122,54 +122,80 @@ export const CompanyCodeManager = component$(() => {
 				</div>
 			)}
 			{!createCompanyCodeLoading.value && (
-				<div class='w-full space-y-6 px-64 pb-10 pt-2.5'>
-					<form onSubmit$={onConfirm}>
+				<div class='mt-14 w-full'>
+					<form class='mx-auto w-[350px] bg-gray-50 px-4 py-4' onSubmit$={onConfirm}>
 						<h1 class='mb-3 text-2xl font-bold text-darkgray-900'>
 							{createCompanyCode.value
-								? 'Create your Company Code'
-								: 'Insert your Company Code'}
+								? 'Your Company Code'
+								: 'Enter your Company Code'}
 						</h1>
+
+						{createCompanyCode.value && (
+							<p class='mb-3 text-xs text-darkgray-900'>
+								Create a Company Code for the encryption of sensitive company data.
+								Once the Company Code is created, it cannot be changed.
+								<br />
+								<br />
+								The Company Code must be shared with other members of the company
+								and, if lost, it cannot be recovered.
+							</p>
+						)}
+
+						{createCompanyCodeDisabled.value && (
+							<p class='mb-3 text-xs text-darkgray-900'>
+								The Company code has not been created yet. <br />
+								Please <strong>contact your administrator</strong> to request the
+								creation of the Company code needed for encrypting sensitive company
+								data.
+							</p>
+						)}
 
 						<div class='space-y-3'>
 							<Input
 								type='password'
-								label='Company Code'
-								placeholder='Insert your Company Code'
-								value={password.value}
+								label='Company code*'
+								placeholder='Insert Company code'
+								value={companyCode.value}
 								onInput$={(_, el) => {
-									password.value = el.value;
+									companyCode.value = el.value;
 								}}
 								styleClass='w-full'
 								disabled={createCompanyCodeDisabled.value}
 							/>
 
-							{createCompanyCodeDisabled.value && (
-								<p class='text-danger-dark'>The company code is not set yet.</p>
-							)}
-
 							{createCompanyCode.value && (
 								<Input
 									type='password'
-									label='Confirm Company Code'
-									placeholder='Insert the Company Code again'
-									value={password2.value}
+									label='Repeat Company code*'
+									placeholder='Repeat Company code'
+									value={companyCode2.value}
 									onInput$={(_, el) => {
-										password2.value = el.value;
+										companyCode2.value = el.value;
 									}}
 									styleClass='w-full'
 								/>
 							)}
 						</div>
 
-						{error.value && <p class='text-red-500'>{error.value}</p>}
+						{error.value && <p class='mt-2 text-sm text-red-500'>{error.value}</p>}
 
-						<Button
-							type='submit'
-							class='mt-3 w-32'
-							disabled={createCompanyCodeDisabled.value || confirmDisabled.value}
-						>
-							Avanti
-						</Button>
+						<div class='mt-5 text-right'>
+							<Button
+								type='submit'
+								class='w-24 disabled:bg-gray-100 disabled:text-gray-500'
+								size={'small'}
+								disabled={createCompanyCodeDisabled.value || confirmDisabled.value}
+							>
+								{createCompanyCode.value ? 'Create' : 'Next'}
+							</Button>
+						</div>
+
+						{!createCompanyCode.value && !createCompanyCodeDisabled.value && (
+							<div class='my-5 text-xs text-darkgray-900'>
+								<p class='font-bold'>Don't you have a Company code?</p>
+								<p>Ask your administrator for assistance.</p>
+							</div>
+						)}
 					</form>
 				</div>
 			)}
