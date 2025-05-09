@@ -7,11 +7,13 @@ import {
 	useSignal,
 	useTask$,
 } from '@builder.io/qwik';
+import DOMPurify from 'dompurify';
 import { Button } from 'src/components/Button';
 import { Input } from 'src/components/form/Input';
 import { LoadingSpinner } from 'src/components/LoadingSpinner';
 import { CipherContext } from 'src/context/cipherContext';
 import { useCipher } from 'src/hooks/useCipher';
+import { t } from 'src/locale/labels';
 import { navigateTo } from 'src/router';
 import { getCipherKeys, saveCipherKeys } from 'src/services/cipherKeys';
 import { limitRoleAccess } from 'src/utils/acl';
@@ -61,7 +63,7 @@ export const CompanyCodeManager = component$(() => {
 		}
 
 		if (createCompanyCode.value && companyCode.value !== companyCode2.value) {
-			error.value = "Company codes don't match.";
+			error.value = t('COMPANY_CODES_DOES_NOT_MATCH');
 			return;
 		}
 
@@ -83,8 +85,7 @@ export const CompanyCodeManager = component$(() => {
 				console.log('Generated encryptedPrivateKey', encryptedPrivateKey);
 				console.log('Generated encryptedAESKey', encryptedAESKey);
 			} catch (e) {
-				error.value =
-					'The system was unable to generate the keys, contact support or try again later.';
+				error.value = t('UNABLE_TO_CREATE_COMPANY_CODE');
 				createCompanyCodeLoading.value = false;
 			}
 		} else {
@@ -108,7 +109,7 @@ export const CompanyCodeManager = component$(() => {
 				goToTimesheet();
 			}
 		} catch (e) {
-			error.value = 'The Company code is not valid.';
+			error.value = t('COMPANY_CODE_IS_NOT_VALID');
 			confirmDisabled.value = false;
 			createCompanyCodeLoading.value = false;
 		}
@@ -126,35 +127,33 @@ export const CompanyCodeManager = component$(() => {
 					<form class='mx-auto w-[350px] bg-gray-50 px-4 py-4' onSubmit$={onConfirm}>
 						<h1 class='mb-3 text-2xl font-bold text-darkgray-900'>
 							{createCompanyCode.value
-								? 'Your Company Code'
-								: 'Enter your Company Code'}
+								? t('YOUR_COMPANY_CODE')
+								: t('ENTER_COMPANY_CODE')}
 						</h1>
 
 						{createCompanyCode.value && (
-							<p class='mb-3 text-xs text-darkgray-900'>
-								Create a Company Code for the encryption of sensitive company data.
-								Once the Company Code is created, it cannot be changed.
-								<br />
-								<br />
-								The Company Code must be shared with other members of the company
-								and, if lost, it cannot be recovered.
-							</p>
+							<p
+								class='mb-3 text-xs text-darkgray-900'
+								dangerouslySetInnerHTML={DOMPurify.sanitize(
+									t('CREATE_COMPANY_CODE_DESCRIPTION')
+								)}
+							/>
 						)}
 
 						{createCompanyCodeDisabled.value && (
-							<p class='mb-3 text-xs text-darkgray-900'>
-								The Company code has not been created yet. <br />
-								Please <strong>contact your administrator</strong> to request the
-								creation of the Company code needed for encrypting sensitive company
-								data.
-							</p>
+							<p
+								class='mb-3 text-xs text-darkgray-900'
+								dangerouslySetInnerHTML={DOMPurify.sanitize(
+									t('COMPANY_CODE_NOT_CREATED_YET_DESCRIPTION')
+								)}
+							/>
 						)}
 
 						<div class='space-y-3'>
 							<Input
 								type='password'
-								label='Company code*'
-								placeholder='Insert Company code'
+								label={`${t('COMPANY_CODE_LABEL')}*`}
+								placeholder={t('COMPANY_CODE_INSERT_LABEL')}
 								value={companyCode.value}
 								onInput$={(_, el) => {
 									companyCode.value = el.value;
@@ -166,8 +165,8 @@ export const CompanyCodeManager = component$(() => {
 							{createCompanyCode.value && (
 								<Input
 									type='password'
-									label='Repeat Company code*'
-									placeholder='Repeat Company code'
+									label={`${t('COMPANY_CODE_REPEAT_LABEL')}*`}
+									placeholder={t('COMPANY_CODE_REPEAT_LABEL')}
 									value={companyCode2.value}
 									onInput$={(_, el) => {
 										companyCode2.value = el.value;
@@ -186,14 +185,14 @@ export const CompanyCodeManager = component$(() => {
 								size={'small'}
 								disabled={createCompanyCodeDisabled.value || confirmDisabled.value}
 							>
-								{createCompanyCode.value ? 'Create' : 'Next'}
+								{createCompanyCode.value ? t('CREATE') : t('NEXT')}
 							</Button>
 						</div>
 
 						{!createCompanyCode.value && !createCompanyCodeDisabled.value && (
 							<div class='my-5 text-xs text-darkgray-900'>
-								<p class='font-bold'>Don't you have a Company code?</p>
-								<p>Ask your administrator for assistance.</p>
+								<p class='font-bold'>{t('DONT_HAVE_COMPANY_CODE')}</p>
+								<p>{t('ASK_ADMINISTRATOR_FOR_ASSISTANCE')}</p>
 							</div>
 						)}
 					</form>

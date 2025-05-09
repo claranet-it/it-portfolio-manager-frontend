@@ -257,5 +257,19 @@
 	"NOTES_LABEL": "Notes",
 	"NOTES_INSERT_LABEL": "Insert notes...",
 	"PRESENT": "Present",
-	"NO_DATA": "No data inserted"
+	"NO_DATA": "No data inserted",
+	"YOUR_COMPANY_CODE": "Your company code",
+	"CREATE_COMPANY_CODE_DESCRIPTION": "Create a Company Code for the encryption of sensitive company data. Once the Company Code is created, it cannot be changed.<br /><br /> The Company Code must be shared with other members of the company and, if lost, it cannot be recovered.",
+	"COMPANY_CODE_LABEL": "Company code",
+	"COMPANY_CODE_INSERT_LABEL": "Insert Company code",
+	"COMPANY_CODE_REPEAT_LABEL": "Repeat Company code",
+	"COMPANY_CODES_DOES_NOT_MATCH": "Company codes do not match",
+	"COMPANY_CODE_IS_NOT_VALID": "Company code is not valid",
+	"ENTER_COMPANY_CODE": "Enter your company code",
+	"COMPANY_CODE_NOT_CREATED_YET_DESCRIPTION": "The Company code has not been created yet. <br /> Please <strong>contact your administrator</strong> to request the creation of the Company code needed for encrypting sensitive company data.",
+	"CREATE": "Create",
+	"NEXT": "Next",
+	"DONT_HAVE_COMPANY_CODE": "Don't you have a Company code?",
+	"ASK_ADMINISTRATOR_FOR_ASSISTANCE": "Ask your administrator for assistance.",
+	"UNABLE_TO_CREATE_COMPANY_CODE": "Unable to create Company code"
 }
