@@ -1,4 +1,7 @@
 import { component$, QRL, Signal, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { Customer } from '@models/customer';
+import { Project } from '@models/project';
+import { Task } from '@models/task';
 import { initFlowbite } from 'flowbite';
 import { t } from '../../locale/labels';
 import { UUID } from '../../utils/uuid';
@@ -7,16 +10,18 @@ import { Multiselect } from './Multiselect';
 import { TimePicker } from './TimePicker';
 
 interface Props {
+	customer?: Customer;
+	project?: Project;
+	task?: Task;
 	from: Signal<Date>;
 	to: Signal<Date>;
 	daysSelected: Signal<string[]>;
-	description: Signal<string>;
 	timeHours: Signal<number>;
 	handleTime: QRL;
 }
 
 export const TemplateForm = component$<Props>(
-	({ from, to, daysSelected, description, timeHours, handleTime }) => {
+	({ customer, project, task, from, to, daysSelected, timeHours, handleTime }) => {
 		const daytimeOptions = useSignal([
 			'Monday',
 			'Tuesday',
@@ -33,10 +38,21 @@ export const TemplateForm = component$<Props>(
 
 		return (
 			<>
+				<div class='flex flex-col border-b pb-3'>
+					<h4 class='text-sm font-normal text-darkgray-500'>
+						{`${t('CLIENT')}: ${customer}`}
+					</h4>
+					<h4 class='text-base font-bold text-dark-grey'>{project?.name}</h4>
+					{task && (
+						<h4 class='text-dark-gray-900 text-sm font-normal'>
+							{`${t('TASK')}: ${task.name}`}
+						</h4>
+					)}
+				</div>
 				<div class='flex justify-between'>
 					<div>
 						<label class='block text-sm font-normal text-dark-grey'>
-							{t('TIME_LABEL')}
+							{t('TIME_LABEL') + '*'}
 						</label>
 						<TimePicker
 							hideOptions={true}
@@ -46,7 +62,7 @@ export const TemplateForm = component$<Props>(
 						/>
 					</div>
 					<DataRange
-						title={t('TIME_PERIOD_LABEL')}
+						title={t('TIME_PERIOD_LABEL') + '*'}
 						from={from}
 						to={to}
 						modalId={UUID()}
@@ -54,29 +70,13 @@ export const TemplateForm = component$<Props>(
 				</div>
 				<Multiselect
 					id={UUID() + '-daytime'}
-					label={t('DAYTIME_LABEL')}
+					label={t('DAYTIME_LABEL') + '*'}
 					placeholder={t('select_empty_label')}
 					value={daysSelected}
 					options={daytimeOptions}
 					allowSelectAll
 					size='auto'
 				/>
-
-				<div>
-					<label
-						for='templating-description'
-						class='block text-sm font-normal text-dark-grey'
-					>
-						{t('DESCRIPTION_LABEL')}
-					</label>
-					<textarea
-						id='templating-description'
-						rows={4}
-						class='mt-0 block w-full rounded-md border border-gray-500 bg-white-100 p-2.5 text-sm text-gray-900'
-						placeholder={t('DESCRIPTION_INSER_LABEL')}
-						bind:value={description}
-					></textarea>
-				</div>
 			</>
 		);
 	}

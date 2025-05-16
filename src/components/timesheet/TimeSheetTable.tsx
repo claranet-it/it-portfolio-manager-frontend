@@ -1,4 +1,13 @@
-import { $, Signal, Slot, component$, useComputed$, useStore, useTask$ } from '@builder.io/qwik';
+import {
+	$,
+	Signal,
+	Slot,
+	component$,
+	useComputed$,
+	useContext,
+	useStore,
+	useTask$,
+} from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { Project, ProjectType } from '@models/project';
 import { format } from 'date-fns';
@@ -15,14 +24,20 @@ import {
 	getlHoursPerProject,
 } from '../../utils/timesheet';
 
+import { Customer } from '@models/customer';
 import { Task } from '@models/task';
+import { Template } from '@models/template';
+import { AppContext } from 'src/app';
 import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
 import { Button } from '../Button';
+import { ApprovalTemplateForm } from '../form/approvalTemplateForm';
 import { getIcon } from '../icons';
 import { Modal } from '../modals/Modal';
+import { TemplateRow } from './TemplateRow';
 import { TimeEntryElement } from './TimeEntryElement';
 
 interface TimeSheetTableProps {
+	templates: Signal<Template[] | undefined>;
 	newTimeEntry: Signal<TimeEntry | undefined>;
 	days: Signal<Day[]>;
 	from: Signal<Date>;
@@ -34,77 +49,56 @@ const HOURS_PER_DAY = 8;
 const HOURS_PER_WEEK = 8 * 5;
 
 export const TimeSheetTable = component$<TimeSheetTableProps>(
-	({ newTimeEntry, days, from, to, userImpersonationId }) => {
+	({ templates, newTimeEntry, days, from, to, userImpersonationId }) => {
 		const { loadTimeEntries, state, updateTimeEntries, deleteProjectEntries } = useTimeEntries(
 			newTimeEntry,
 			userImpersonationId
 		);
-		/* Chiamata al BE per il templating attivo in questa settimana che mi crea questo tipo di entries */
-		const templatingEntries: TimeEntry[] = [
-			{
-				isTemplating: true,
-				user: 'maria.teresa.graziano@claranet.com',
-				date: '2025-04-17',
-				company: 'it',
-				customer: 'Claranet',
-				project: {
-					name: 'Assenze',
-					type: 'absence' as ProjectType,
-					plannedHours: 100,
-					completed: false,
-				},
-				task: 'FESTIVITA',
-				hours: 8,
-				description: '',
-				startHour: '00:00',
-				endHour: '00:00',
-				index: 'd481526f-91b6-4865-afa6-667e939d4290',
-			},
-			{
-				isTemplating: true,
-				user: 'maria.teresa.graziano@claranet.com',
-				date: '2025-04-15',
-				company: 'it',
-				customer: 'Claranet',
-				project: {
-					name: 'Assenze',
-					type: 'absence' as ProjectType,
-					plannedHours: 100,
-					completed: false,
-				},
-				task: 'FERIE',
-				hours: 8,
-				description: '',
-				startHour: '00:00',
-				endHour: '00:00',
-				index: 'd481526f-91b6-4865-afa6-667e939d4290',
-			},
-			{
-				isTemplating: true,
-				user: 'maria.teresa.graziano@claranet.com',
-				date: '2025-04-18',
-				company: 'it',
-				customer: 'Claranet',
-				project: {
-					name: 'Assenze',
-					type: 'absence' as ProjectType,
-					plannedHours: 100,
-					completed: false,
-				},
-				task: 'FERIE',
-				hours: 8,
-				description: '',
-				startHour: '00:00',
-				endHour: '00:00',
-				index: 'd481526f-91b6-4865-afa6-667e939d4290',
-			},
-		];
+		const appStore = useContext(AppContext);
 
 		const timeEntriesState = useStore<Record<string, Record<string, number>>>({});
 
 		const deleteTimeEntriesRowModalState = useStore<ModalState>({
 			title: t('TIMESHEET_DELETE_ALERT_TITLE'),
 			message: t('TIMESHEET_DELETE_ALERT_MESSAGE'),
+		});
+
+		const formGroup = useStore(
+			{} as { customer: Customer; project: Project; task?: Task; id: string }
+		);
+
+		const approvalModalState = useStore<ModalState & { id?: string }>({
+			title: 'Template approval',
+			confirmLabel: t('ACTION_APPROVE'),
+			cancelLabel: t('ACTION_CANCEL'),
+			onCancel$: $(() => {
+				formGroup.task = undefined;
+			}),
+			onConfirm$: $(async () => {
+				appStore.isLoading = true;
+				console.log('#### salvataggio ore, dati progetto', JSON.stringify(formGroup));
+				console.log('#### salvataggio ore dati delle settimana');
+				appStore.isLoading = false;
+				formGroup.task = undefined;
+			}),
+		});
+
+		useTask$(({ track }) => {
+			track(() => formGroup.task);
+			approvalModalState.isConfirmDisabled = !formGroup.task;
+		});
+
+		const openApprovalTemplateDialog = $((id: string) => {
+			approvalModalState.id = id;
+			approvalModalState.isVisible = true;
+
+			const element = templates.value?.find((item) => item.id === id);
+			if (element) {
+				formGroup.customer = element.customer;
+				formGroup.project = element.project;
+				formGroup.task = element.task;
+				formGroup.id = id;
+			}
 		});
 
 		const handleTimeChange = $(async (timeEntryObject: TimeEntryObject) => {
@@ -207,21 +201,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 				return acc;
 			}, {});
 
-			const entriesTemplating = templatingEntries.reduce<TimeEntryRow>((acc, entry) => {
-				const key = `${entry.customer}-${entry.project.name}-${entry.task}`;
-
-				if (!acc[key]) {
-					acc[key] = [];
-				}
-
-				acc[key].push(entry);
-				return acc;
-			}, {});
-			/* TODO aggiungerli qui? insieme? */
-			console.log('#### entriesConfirmed', entriesConfirmed);
-			console.log('#### entriesTemplating', entriesTemplating);
-
-			return { ...entriesConfirmed, ...entriesTemplating };
+			return entriesConfirmed;
 		});
 
 		const extractFirstEntryDetails = (entries: TimeEntry[]) => {
@@ -439,14 +419,19 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								</tr>
 							);
 						})}
+
+						<TemplateRow
+							from={from.value}
+							to={to.value}
+							days={days.value}
+							templates={templates.value}
+							onOpen={openApprovalTemplateDialog}
+						/>
 					</tbody>
 					<tfoot>
 						<tr class='bg-surface-5'>
-							<td colSpan={8} class='border border-surface-50 px-6 py-4'>
+							<td colSpan={10} class='border border-surface-50 px-6 py-4'>
 								<Slot name='newProject' />
-							</td>
-							<td colSpan={2} class='border border-surface-50 px-6 py-4'>
-								<Slot name='confirmTimes' />
 							</td>
 						</tr>
 						<tr class='bg-surface-20'>
@@ -497,6 +482,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 					</tfoot>
 				</table>
 				<Modal state={deleteTimeEntriesRowModalState} />
+				<Modal state={approvalModalState}>
+					<ApprovalTemplateForm formGroup={formGroup} />
+				</Modal>
 			</div>
 		);
 	}

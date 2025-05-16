@@ -1,11 +1,12 @@
 import { $, component$, useComputed$, useSignal, useStore } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { ProjectType } from '@models/project';
+import { Template } from '@models/template';
 import { TimeEntry } from '@models/timeEntry';
 import { Button } from 'src/components/Button';
 import { NewTaskForm } from 'src/components/form/NewTaskForm';
 import { Select } from 'src/components/form/Select';
 import { WeekSelector } from 'src/components/form/WeekSelector';
-import { ConfirmTimesModal } from 'src/components/modals/ConfirmTimesModal';
 import { NewTimeEntryModal } from 'src/components/modals/NewTimeEntryModal';
 import { ProjectCategoryLegend } from 'src/components/timesheet/ProjectCategoryLegend';
 import { TemplateList } from 'src/components/timesheet/TemplateList';
@@ -41,11 +42,45 @@ export const Timesheet = component$(() => {
 		showTemplateList.value = false;
 	});
 
+	const templates = useSignal<Template[]>([
+		{
+			id: '1',
+			user: 'maria.teresa.graziano@claranet.com',
+			date_start: '2025-05-1',
+			date_end: '2025-05-15',
+			customer: 'Claranet',
+			project: {
+				name: 'Funzionale',
+				type: 'billable' as ProjectType,
+				plannedHours: 100,
+				completed: false,
+			},
+			timehours: 8,
+			daytime: [0, 6],
+		},
+		{
+			id: '2',
+			user: 'maria.teresa.graziano@claranet.com',
+			date_start: '2025-05-01',
+			date_end: '2025-05-25',
+			customer: 'Claranet',
+			project: {
+				name: 'Assenze',
+				type: 'absence' as ProjectType,
+				plannedHours: 100,
+				completed: false,
+			},
+			task: { name: 'FERIE', completed: false, plannedHours: 50 },
+			timehours: 8,
+			daytime: [1, 3],
+		},
+	]);
+
 	return (
 		<>
 			<div class='w-full space-y-6 px-6 pb-10 pt-2.5'>
 				{showTemplateList.value ? (
-					<TemplateList onBack={handleGoBack} />
+					<TemplateList templates={templates} onBack={handleGoBack} />
 				) : (
 					<>
 						<div class='flex flex-col gap-2'>
@@ -84,6 +119,7 @@ export const Timesheet = component$(() => {
 						</div>
 
 						<TimeSheetTable
+							templates={templates}
 							newTimeEntry={newTimeEntry}
 							days={days}
 							from={from}
@@ -97,8 +133,6 @@ export const Timesheet = component$(() => {
 									onCancel$={newProjectCancelAction}
 								/>
 							</NewTimeEntryModal>
-
-							<ConfirmTimesModal q:slot='confirmTimes' />
 						</TimeSheetTable>
 
 						<Button variant={'outline'} onClick$={handleViewTemplateList}>

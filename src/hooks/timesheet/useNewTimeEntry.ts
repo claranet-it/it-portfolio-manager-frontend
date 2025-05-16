@@ -41,7 +41,6 @@ export const useNewTimeEntry = (
 			end_date: '2025-04-30',
 			repeat: ['Monday'],
 			hours: 8,
-			description: 'Prova',
 			customer: 'Claranet',
 			project: { completed: false, name: 'Assenze', plannedHours: 100, type: 'absence' },
 			task: { completed: false, name: 'ALLATTAMENTO', plannedHours: 0 },
@@ -51,7 +50,6 @@ export const useNewTimeEntry = (
 			end_date: '2025-05-30',
 			repeat: ['Monday', 'Sunday'],
 			hours: 8,
-			description: 'Prova',
 			customer: 'Claranet',
 			project: { completed: false, name: 'Assenze', plannedHours: 100, type: 'absence' },
 			task: { completed: false, name: 'ALLATTAMENTO', plannedHours: 0 },
@@ -79,7 +77,6 @@ export const useNewTimeEntry = (
 	const isTemplating = useSignal(false);
 
 	const daysSelected = useSignal<string[]>([]);
-	const description = useSignal<string>('');
 	const timeHours = useSignal<number>(0);
 
 	const handleProjectTypeEnabled = $((customer?: Customer, project?: Project) => {
@@ -285,15 +282,6 @@ export const useNewTimeEntry = (
 			return;
 		}
 
-		if (taskSelected.value.name === '') {
-			showAlert({
-				title: t('ADD_NEW_TIME_ENTRY'),
-				message: t('EMPTY_TASK_TYPE_MESSAGE'),
-				cancelLabel: t('ACTION_CANCEL'),
-			});
-			return;
-		}
-
 		if (timeHours.value === 0) {
 			showAlert({
 				title: t('ADD_NEW_TIME_ENTRY'),
@@ -312,27 +300,15 @@ export const useNewTimeEntry = (
 			return;
 		}
 
-		/* TODO: SAlVATAGGIO TEMPLATING */
-		console.log('###', {
+		console.log('### data template to save', {
 			start_date: from.value,
 			end_date: to.value,
 			repeat: daysSelected.value,
 			hours: timeHours.value,
-			description: description.value,
 			customer: customerSelected.value,
 			project: projectSelected.value,
-			task: taskSelected.value,
+			...(taskSelected.value.name && { task: taskSelected.value }),
 		});
-		/* arrayTemplating.value = [{
-			start_date: from.value,
-			end_date: to.value,
-			repeat: daysSelected.value,
-			hours: timeHours.value,
-			description: description.value,
-			customer: customerSelected.value,
-			project: projectSelected.value,
-			task: taskSelected.value,
-		}] */
 
 		clearForm();
 		resetTemplating();
@@ -341,7 +317,6 @@ export const useNewTimeEntry = (
 
 	const resetTemplating = $(() => {
 		daysSelected.value = [];
-		description.value = '';
 		timeHours.value = 0;
 		currentWeek();
 	});
@@ -375,7 +350,6 @@ export const useNewTimeEntry = (
 		to,
 		isTemplating,
 		daysSelected,
-		description,
 		timeHours,
 		handleTime,
 		handleTemplating,

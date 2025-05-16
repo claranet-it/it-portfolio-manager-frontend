@@ -1,4 +1,5 @@
-import { $, component$, QRL } from '@builder.io/qwik';
+import { $, component$, QRL, Signal } from '@builder.io/qwik';
+import { Template } from '@models/template';
 import { getIcon } from 'src/components/icons';
 import { useTemplateList } from 'src/hooks/timesheet/useTemplateList';
 import { t } from 'src/locale/labels';
@@ -7,23 +8,25 @@ import { Modal } from '../modals/Modal';
 
 type Props = {
 	onBack: QRL;
+	templates: Signal<Template[]>;
 };
-export const TemplateList = component$(({ onBack }: Props) => {
+export const TemplateList = component$(({ onBack, templates }: Props) => {
 	const {
-		templateList,
 		daysOfWeek,
 		deleteModalState,
 		editModalState,
 		openDeleteDialog,
 		openEditDialog,
+		customer,
+		project,
+		task,
 		totalPlannedHours,
 		from,
 		to,
 		daysSelected,
-		description,
 		timeHours,
 		handleTime,
-	} = useTemplateList();
+	} = useTemplateList(templates);
 
 	return (
 		<>
@@ -72,7 +75,7 @@ export const TemplateList = component$(({ onBack }: Props) => {
 						</tr>
 					</thead>
 					<tbody>
-						{templateList.value.map((template) => {
+						{templates.value.map((template: Template) => {
 							return (
 								<tr key={template.id} class='border-b bg-white'>
 									<td
@@ -86,28 +89,30 @@ export const TemplateList = component$(({ onBack }: Props) => {
 											<h4 class='text-base font-bold text-dark-grey'>
 												{`${template.project.name}`}
 											</h4>
-											<h4 class='text-dark-gray-900 text-sm font-normal'>
-												{`${t('TASK')}: ${template.task.name}`}
-											</h4>
+											{template.task && (
+												<h4 class='text-dark-gray-900 text-sm font-normal'>
+													{`${t('TASK')}: ${template.task.name}`}
+												</h4>
+											)}
 										</div>
 									</td>
 									<td
 										scope='row'
 										class='border border-surface-50 px-6 py-4 text-left'
 									>
-										{template.start_date}
+										{template.date_start}
 									</td>
 									<td
 										scope='row'
 										class='border border-surface-50 px-6 py-4 text-left'
 									>
-										{template.end_date}
+										{template.date_end}
 									</td>
 									<td
 										scope='row'
 										class='border border-surface-50 px-6 py-4 text-left'
 									>
-										{template.repeat.map((day) => daysOfWeek[day]).join(', ')}
+										{template.daytime.map((day) => daysOfWeek[day]).join(', ')}
 									</td>
 									<td
 										scope='row'
@@ -139,9 +144,11 @@ export const TemplateList = component$(({ onBack }: Props) => {
 					from={from}
 					to={to}
 					daysSelected={daysSelected}
-					description={description}
 					timeHours={timeHours}
 					handleTime={handleTime}
+					customer={customer.value}
+					project={project.value}
+					task={task.value}
 				/>
 			</Modal>
 		</>

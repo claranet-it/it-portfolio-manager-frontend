@@ -44,7 +44,6 @@ export const NewTaskForm = component$<NewTaskForm>(
 			to,
 			isTemplating,
 			daysSelected,
-			description,
 			timeHours,
 			handleTime,
 			handleTemplating,
@@ -127,9 +126,29 @@ export const NewTaskForm = component$<NewTaskForm>(
 					</div>
 
 					<form class='space-y-3' onSubmit$={_handleSubmit}>
+						<div class='mt-1 block'>
+							<input
+								checked={isTemplating.value}
+								id={`templating-checkbox`}
+								type='checkbox'
+								value=''
+								onChange$={handleTemplating}
+								class='h-4 w-4 rounded border-2 border-clara-red bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
+							/>
+							<label
+								for={`templating-checkbox`}
+								class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
+							>
+								{t('CREATE_TEMPLATE')}
+								<div class='text-xs text-darkgray-500'>
+									{t('CREATE_TEMPLATE_MESSAGE')}
+								</div>
+							</label>
+						</div>
+
 						<Autocomplete
 							id={UUID()}
-							label={t('CUSTOMER_LABEL')}
+							label={t('CUSTOMER_LABEL') + '*'}
 							selected={customerSelected}
 							data={dataCustomersSig}
 							placeholder={t('SEARCH')}
@@ -139,7 +158,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 
 						<Select
 							id={UUID()}
-							label={t('PROJECT_LABEL')}
+							label={t('PROJECT_LABEL') + '*'}
 							placeholder={
 								projectEnableSig.value && _projectOptions.value.length === 0
 									? t('NO_ACTIVE_PROJECT_PLACEHOLDER')
@@ -155,7 +174,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 						<Select
 							id={UUID()}
 							disabled={!taskEnableSig.value}
-							label={t('TASK_LABEL')}
+							label={t('TASK_LABEL') + (isTemplating.value ? '' : '*')}
 							placeholder={
 								taskEnableSig.value && _dataTasksSign.value.length === 0
 									? t('NO_ACTIVE_TASK_PLACEHOLDER')
@@ -167,32 +186,11 @@ export const NewTaskForm = component$<NewTaskForm>(
 							size='auto'
 						/>
 
-						<div class='mt-1 block'>
-							<input
-								checked={isTemplating.value}
-								id={`templating-checkbox`}
-								type='checkbox'
-								value=''
-								onChange$={handleTemplating}
-								class='h-4 w-4 rounded border-2 border-clara-red bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
-							/>
-							<label
-								for={`templating-checkbox`}
-								class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
-							>
-								Repeat time entry
-								<div class='text-xs text-darkgray-500'>
-									This action will generate a template.
-								</div>
-							</label>
-						</div>
-
 						{isTemplating.value && (
 							<TemplateForm
 								from={from}
 								to={to}
 								daysSelected={daysSelected}
-								description={description}
 								timeHours={timeHours}
 								handleTime={handleTime}
 							/>
@@ -207,6 +205,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 
 							<Button type='submit'>{t('ACTION_INSERT')}</Button>
 						</div>
+						<div class='text-xs text-darkgray-500'>{t('LEGEND_REQUIRED')}</div>
 					</form>
 				</div>
 			</>

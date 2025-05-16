@@ -1,6 +1,7 @@
 import { AWS } from './AWS';
 import { Android } from './Android';
 import { Ansible } from './Ansible';
+import { Approve } from './Approve';
 import { ArrowBack } from './ArrowBack';
 import { ArrowLeft } from './ArrowLeft';
 import { ArrowRight } from './ArrowRight';
@@ -145,6 +146,8 @@ export const getIcon = (skill: string) => {
 			return <Check />;
 		case 'ArrowBack':
 			return <ArrowBack />;
+		case 'Approve':
+			return <Approve />;
 		default:
 			return <AWS />;
 	}
