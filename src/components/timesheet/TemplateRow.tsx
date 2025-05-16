@@ -81,10 +81,10 @@ export const TemplateRow = component$<Props>(({ days, from, to, templates, onOpe
 				const id = template.id;
 				if (isTemplateAvailable(template, from, to)) {
 					return (
-						<tr key={id} class='border-b bg-orange-100'>
+						<tr key={id} class='border-b bg-orange-50'>
 							<th
 								scope='row'
-								class='whitespace-wrap border border-surface-50 px-6 py-4 text-left font-medium shadow-inset-leftBorder shadow-orange-300'
+								class='whitespace-wrap border border-surface-50 px-6 py-4 text-left font-medium shadow-inset-leftBorder shadow-warning-dark'
 							>
 								<div class='flex flex-col'>
 									<h4 class='text-sm font-normal text-darkgray-500'>
