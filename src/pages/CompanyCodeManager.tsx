@@ -173,7 +173,11 @@ export const CompanyCodeManager = component$(() => {
 		<>
 			{companyCodeLoading.value && (
 				<div class='t-0 l-0 fixed z-50 flex h-full w-full items-center justify-center bg-darkgray-900/30'>
-					{<LoadingSpinner customLabel={companyCodeLoadingCustomLabel.value} />}
+					{
+						<LoadingSpinner
+							customLabel={companyCodeLoadingCustomLabel.value ?? undefined}
+						/>
+					}
 				</div>
 			)}
 			{!companyCodeLoading.value && (
