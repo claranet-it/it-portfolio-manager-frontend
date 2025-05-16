@@ -1,13 +1,4 @@
-import {
-	$,
-	Signal,
-	Slot,
-	component$,
-	useComputed$,
-	useContext,
-	useStore,
-	useTask$,
-} from '@builder.io/qwik';
+import { $, Signal, Slot, component$, useComputed$, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { Project, ProjectType } from '@models/project';
 import { format } from 'date-fns';
@@ -17,17 +8,17 @@ import { Day, TimeEntry, TimeEntryObject, TimeEntryRow } from '../../models/time
 import { formatDateString } from '../../utils/dates';
 import {
 	convertTimeToDecimal,
-	getFormattedHours,
+	dayHasTooManyHours,
 	getProjectCateogriesProp,
-	getTotalHours,
-	getTotalHoursPerRows,
-	getlHoursPerProject,
+	getTotal,
+	getTotalPerDay,
+	getTotalPerProject,
+	weekHasTooManyHours,
 } from '../../utils/timesheet';
 
-import { Customer } from '@models/customer';
 import { Task } from '@models/task';
 import { Template } from '@models/template';
-import { AppContext } from 'src/app';
+import { useTemplate } from 'src/hooks/useTemplate';
 import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
 import { Button } from '../Button';
 import { ApprovalTemplateForm } from '../form/approvalTemplateForm';
@@ -45,60 +36,21 @@ interface TimeSheetTableProps {
 	userImpersonationId?: Signal<string | undefined>;
 }
 
-const HOURS_PER_DAY = 8;
-const HOURS_PER_WEEK = 8 * 5;
-
 export const TimeSheetTable = component$<TimeSheetTableProps>(
 	({ templates, newTimeEntry, days, from, to, userImpersonationId }) => {
 		const { loadTimeEntries, state, updateTimeEntries, deleteProjectEntries } = useTimeEntries(
 			newTimeEntry,
 			userImpersonationId
 		);
-		const appStore = useContext(AppContext);
+
+		const { formGroup, approvalModalState, openApprovalTemplateDialog } =
+			useTemplate(templates);
 
 		const timeEntriesState = useStore<Record<string, Record<string, number>>>({});
 
 		const deleteTimeEntriesRowModalState = useStore<ModalState>({
 			title: t('TIMESHEET_DELETE_ALERT_TITLE'),
 			message: t('TIMESHEET_DELETE_ALERT_MESSAGE'),
-		});
-
-		const formGroup = useStore(
-			{} as { customer: Customer; project: Project; task?: Task; id: string }
-		);
-
-		const approvalModalState = useStore<ModalState & { id?: string }>({
-			title: 'Template approval',
-			confirmLabel: t('ACTION_APPROVE'),
-			cancelLabel: t('ACTION_CANCEL'),
-			onCancel$: $(() => {
-				formGroup.task = undefined;
-			}),
-			onConfirm$: $(async () => {
-				appStore.isLoading = true;
-				console.log('#### salvataggio ore, dati progetto', JSON.stringify(formGroup));
-				console.log('#### salvataggio ore dati delle settimana');
-				appStore.isLoading = false;
-				formGroup.task = undefined;
-			}),
-		});
-
-		useTask$(({ track }) => {
-			track(() => formGroup.task);
-			approvalModalState.isConfirmDisabled = !formGroup.task;
-		});
-
-		const openApprovalTemplateDialog = $((id: string) => {
-			approvalModalState.id = id;
-			approvalModalState.isVisible = true;
-
-			const element = templates.value?.find((item) => item.id === id);
-			if (element) {
-				formGroup.customer = element.customer;
-				formGroup.project = element.project;
-				formGroup.task = element.task;
-				formGroup.id = id;
-			}
 		});
 
 		const handleTimeChange = $(async (timeEntryObject: TimeEntryObject) => {
@@ -168,26 +120,6 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			track(() => userImpersonationId?.value);
 			await loadTimeEntries(from, to, userImpersonationId);
 		});
-
-		const getTotalPerDay = (timeEntries: TimeEntry[]) => {
-			return getFormattedHours(getTotalHours(getlHoursPerProject(timeEntries)));
-		};
-
-		const dayHasTooManyHours = (timeEntries: TimeEntry[]) => {
-			return getTotalHours(getlHoursPerProject(timeEntries)) > HOURS_PER_DAY;
-		};
-
-		const getTotal = (hours: number[]) => {
-			return getFormattedHours(getTotalHoursPerRows(hours));
-		};
-
-		const weekHasTooManyHours = (hours: number[]) => {
-			return getTotalHoursPerRows(hours) > HOURS_PER_WEEK;
-		};
-
-		const getTotalPerProject = (hours: number[]) => {
-			return getFormattedHours(getTotalHoursPerRows(hours));
-		};
 
 		const groupedByProject = useComputed$(() => {
 			const entriesConfirmed = state.dataTimeEntries.reduce<TimeEntryRow>((acc, entry) => {

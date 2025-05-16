@@ -1,9 +1,10 @@
 import { component$, QRL } from '@builder.io/qwik';
 import { Template } from '@models/template';
+import { intervalIntersect, isInInterval } from 'src/utils/dateIntervals';
 import { formatDateString } from 'src/utils/dates';
 import { t } from '../../locale/labels';
 import { Day } from '../../models/timeEntry';
-import { getFormattedHours } from '../../utils/timesheet';
+import { getFormattedHours, getTotalPerWeek } from '../../utils/timesheet';
 import { getIcon } from '../icons';
 
 interface Props {
@@ -15,22 +16,13 @@ interface Props {
 }
 
 export const TemplateRow = component$<Props>(({ days, from, to, templates, onOpen }) => {
-	const intervalIntersect = (startTemplate: Date, endTemplate: Date, from: Date, to: Date) => {
-		return (
-			isInInterval(from, startTemplate, endTemplate) ||
-			isInInterval(to, startTemplate, endTemplate) ||
-			isInInterval(startTemplate, from, to) ||
-			isInInterval(endTemplate, from, to)
-		);
-	};
-
 	const isTemplateAvailable = (template: any, from: Date, to: Date) => {
 		const dayStart = new Date(template.date_start);
 		const dayEnd = new Date(template.date_end);
 		/* CONDIZIONI DI BORDO DA DEFINIRE MEGLIO */
 		/* const startDayOfWeek = dayStart.getDay();
 		const endDayOfWeek = dayEnd.getDay();
-
+	
 		if (
 			isInInterval(dayStart, from, to) &&
 			startDayOfWeek >
@@ -54,25 +46,6 @@ export const TemplateRow = component$<Props>(({ days, from, to, templates, onOpe
 			return false;
 		} */
 		return intervalIntersect(dayStart, dayEnd, from, to);
-	};
-
-	const isInInterval = (day: Date, from: Date, to: Date) => {
-		return day >= from && day <= to;
-	};
-
-	const getTotalPerWeek = (template: any) => {
-		let tot = 0;
-		days.forEach((day) => {
-			const dayOfWeek = day.date.getDay();
-
-			if (
-				template.daytime.includes(dayOfWeek) &&
-				isInInterval(day.date, new Date(template.date_start), new Date(template.date_end))
-			) {
-				tot += template.timehours;
-			}
-		});
-		return getFormattedHours(tot);
 	};
 
 	return (
@@ -121,7 +94,7 @@ export const TemplateRow = component$<Props>(({ days, from, to, templates, onOpe
 							})}
 							<td class='border border-surface-50 px-4 py-3 text-center'>
 								<span class='text-base font-normal'>
-									{getTotalPerWeek(template)}
+									{getTotalPerWeek(template, days)}
 								</span>
 							</td>
 							<td class='border border-surface-50 px-4 py-3 text-center'>
