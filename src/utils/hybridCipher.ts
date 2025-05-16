@@ -225,6 +225,10 @@ const decryptAESKey = async ({
 };
 
 const encryptData = (AESKey: ArrayBuffer) => async (text: string) => {
+	if (isEncryptedData(text)) {
+		throw new Error('Data is already encrypted');
+	}
+
 	try {
 		const binaryAESKey = await crypto.subtle.importKey(
 			'raw',
@@ -280,6 +284,22 @@ const decryptData = (AESKey: ArrayBuffer) => async (encryptedData: EncryptedData
 	}
 };
 
+const isEncryptedData = (data: string) => {
+	try {
+		const parsed = JSON.parse(data);
+		return (
+			parsed &&
+			typeof parsed === 'object' &&
+			'iv' in parsed &&
+			'ct' in parsed &&
+			typeof parsed.iv === 'string' &&
+			typeof parsed.ct === 'string'
+		);
+	} catch (e) {
+		return false;
+	}
+};
+
 export const HybridCipher = {
 	generate: async (password: string) => {
 		const { privateKey, publicKey } = await generateRSAKeyPair();
@@ -310,6 +330,7 @@ export const HybridCipher = {
 	},
 	encrypt: (AESKey: ArrayBuffer) => encryptData(AESKey),
 	decrypt: (AESKey: ArrayBuffer) => decryptData(AESKey),
+	isEncryptedData,
 	serialize,
 	deserialize,
 };

@@ -1,6 +1,6 @@
 import { $, noSerialize, useContext } from '@builder.io/qwik';
 import { CipherContext } from 'src/context/cipherContext';
-import { getCipherKeys } from 'src/services/cipherKeys';
+import { getCipherKeys } from 'src/services/cipher';
 import { COMPANY_PASSWORD_KEY } from 'src/utils/constants';
 import HybridCipher from 'src/utils/hybridCipher';
 import { get, set } from 'src/utils/localStorage/localStorage';
@@ -56,30 +56,39 @@ export const useCipher = () => {
 			return cipherStore.cipher.status;
 		}
 
+		if (!keys.cipherCompleted) {
+			cipherStore.cipher = {
+				status: 'dataEncryptionRequired',
+				...keys,
+			};
+			return cipherStore.cipher.status;
+		}
+
 		const password = await get(COMPANY_PASSWORD_KEY);
+
 		if (!password) {
 			cipherStore.cipher = {
 				status: 'companyCodeRequired',
+				...keys,
 			};
 
 			return cipherStore.cipher.status;
 		}
 
-		if (keys && password) {
-			try {
-				await setCipherFns({
-					encryptedPrivateKey: keys.encryptedPrivateKey,
-					encryptedAESKey: keys.encryptedAESKey,
-					password,
-				});
+		try {
+			await setCipherFns({
+				encryptedPrivateKey: keys.encryptedPrivateKey,
+				encryptedAESKey: keys.encryptedAESKey,
+				password,
+			});
 
-				return cipherStore.cipher.status;
-			} catch (e) {
-				cipherStore.cipher = {
-					status: 'companyCodeRequired',
-				};
-				return cipherStore.cipher.status;
-			}
+			return cipherStore.cipher.status;
+		} catch (e) {
+			cipherStore.cipher = {
+				status: 'companyCodeRequired',
+				...keys,
+			};
+			return cipherStore.cipher.status;
 		}
 	});
 

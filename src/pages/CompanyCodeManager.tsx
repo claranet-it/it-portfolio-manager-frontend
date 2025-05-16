@@ -7,6 +7,7 @@ import {
 	useSignal,
 	useTask$,
 } from '@builder.io/qwik';
+import { DataToEncrypt } from '@models/cipher';
 import DOMPurify from 'dompurify';
 import { Button } from 'src/components/Button';
 import { Input } from 'src/components/form/Input';
@@ -15,7 +16,7 @@ import { CipherContext } from 'src/context/cipherContext';
 import { useCipher } from 'src/hooks/useCipher';
 import { t } from 'src/locale/labels';
 import { navigateTo } from 'src/router';
-import { getCipherKeys, saveCipherKeys } from 'src/services/cipherKeys';
+import { getDataToEncrypt, saveCipherKeys, saveDataToEncrypt } from 'src/services/cipher';
 import { limitRoleAccess } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
 import HybridCipher from 'src/utils/hybridCipher';
@@ -23,13 +24,15 @@ import HybridCipher from 'src/utils/hybridCipher';
 export const CompanyCodeManager = component$(() => {
 	const cipherStore = useContext(CipherContext);
 
-	const createCompanyCodeLoading = useSignal(false);
+	const companyCodeLoading = useSignal(false);
+	const companyCodeLoadingCustomLabel = useSignal<string | null>(null);
+
 	const companyCode = useSignal('');
 	const companyCode2 = useSignal('');
 	const error = useSignal<string | null>(null);
 	const confirmDisabled = useSignal(false);
 
-	const { initCipher, setCipherFns } = useCipher();
+	const { initCipher, setCipherFns, encrypt, decrypt } = useCipher();
 
 	const goToTimesheet = $(() => navigateTo('timesheet'));
 
@@ -55,6 +58,52 @@ export const CompanyCodeManager = component$(() => {
 		);
 	});
 
+	const encryptDbFields = $(async () => {
+		const encryptNameField = async (items: any) =>
+			await Promise.all(
+				items.map(async (item: DataToEncrypt[keyof DataToEncrypt][number]) => ({
+					...item,
+					name: await encrypt(item.name),
+				}))
+			);
+
+		const dataToEncrypt = await getDataToEncrypt();
+		const encryptedData = {
+			customers: await encryptNameField(dataToEncrypt.customers),
+			projects: await encryptNameField(dataToEncrypt.projects),
+			tasks: await encryptNameField(dataToEncrypt.tasks),
+			timeEntryDescriptions: await encryptNameField(dataToEncrypt.timeEntryDescriptions),
+			effortNotes: await encryptNameField(dataToEncrypt.effortNotes),
+		};
+
+		console.log('Encrypted data to encrypt:', encryptedData);
+
+		// TODO: Remove this function, only for testing purposes
+		const _decryptDbFields = async (data: any) => {
+			const decrpytNameField = async (items: any) =>
+				await Promise.all(
+					items.map(async (item: DataToEncrypt[keyof DataToEncrypt][number]) => ({
+						...item,
+						name: await decrypt(item.name),
+					}))
+				);
+
+			const decryped = {
+				customers: await decrpytNameField(data.customers),
+				projects: await decrpytNameField(data.projects),
+				tasks: await decrpytNameField(data.tasks),
+				timeEntryDescriptions: await decrpytNameField(data.timeEntryDescriptions),
+				effortNotes: await decrpytNameField(data.effortNotes),
+			};
+
+			console.log('Decrypted data to encrypt:', decryped);
+		};
+		await _decryptDbFields(encryptedData);
+		// TODO: Remove this function, only for testing purposes
+
+		await saveDataToEncrypt(encryptedData);
+	});
+
 	const onConfirm = sync$(async (event: SubmitEvent) => {
 		event.preventDefault();
 
@@ -69,33 +118,29 @@ export const CompanyCodeManager = component$(() => {
 
 		error.value = null;
 		confirmDisabled.value = true;
+		companyCodeLoading.value = true;
 
-		let encryptedAESKey, encryptedPrivateKey;
+		let encryptedAESKey, encryptedPrivateKey, cipherCompleted;
 
 		if (createCompanyCode.value) {
-			createCompanyCodeLoading.value = true;
-
 			try {
 				const generateResponse = await HybridCipher.generate(companyCode.value);
 				await saveCipherKeys(generateResponse);
 
 				encryptedAESKey = generateResponse.encryptedAESKey;
 				encryptedPrivateKey = generateResponse.encryptedPrivateKey;
-
-				console.log('Generated encryptedPrivateKey', encryptedPrivateKey);
-				console.log('Generated encryptedAESKey', encryptedAESKey);
+				cipherCompleted = false;
 			} catch (e) {
 				error.value = t('UNABLE_TO_CREATE_COMPANY_CODE');
-				createCompanyCodeLoading.value = false;
+				companyCodeLoading.value = false;
 			}
-		} else {
-			const keysResponse = await getCipherKeys();
-
-			encryptedAESKey = keysResponse.encryptedAESKey;
-			encryptedPrivateKey = keysResponse.encryptedPrivateKey;
-
-			console.log('Retrived encryptedPrivateKey', encryptedPrivateKey);
-			console.log('Retrived encryptedAESKey', encryptedAESKey);
+		} else if (
+			cipherStore.cipher.status === 'companyCodeRequired' ||
+			cipherStore.cipher.status === 'dataEncryptionRequired'
+		) {
+			encryptedAESKey = cipherStore.cipher.encryptedAESKey;
+			encryptedPrivateKey = cipherStore.cipher.encryptedPrivateKey;
+			cipherCompleted = cipherStore.cipher.cipherCompleted;
 		}
 
 		try {
@@ -106,23 +151,32 @@ export const CompanyCodeManager = component$(() => {
 					password: companyCode.value,
 				});
 
+				if (!cipherCompleted) {
+					companyCodeLoadingCustomLabel.value = t('ENCRYPTING_DATA_LOADING_LABEL');
+					await encryptDbFields();
+				}
+
 				goToTimesheet();
 			}
 		} catch (e) {
+			console.error('Error during cipher inizialization:', e);
+
 			error.value = t('COMPANY_CODE_IS_NOT_VALID');
 			confirmDisabled.value = false;
-			createCompanyCodeLoading.value = false;
+			companyCodeLoadingCustomLabel.value = null;
+		} finally {
+			companyCodeLoading.value = false;
 		}
 	});
 
 	return (
 		<>
-			{createCompanyCodeLoading.value && (
+			{companyCodeLoading.value && (
 				<div class='t-0 l-0 fixed z-50 flex h-full w-full items-center justify-center bg-darkgray-900/30'>
-					{<LoadingSpinner />}
+					{<LoadingSpinner customLabel={companyCodeLoadingCustomLabel.value} />}
 				</div>
 			)}
-			{!createCompanyCodeLoading.value && (
+			{!companyCodeLoading.value && (
 				<div class='mt-14 w-full'>
 					<form class='mx-auto w-[350px] bg-gray-50 px-4 py-4' onSubmit$={onConfirm}>
 						<h1 class='mb-3 text-2xl font-bold text-darkgray-900'>
@@ -190,7 +244,7 @@ export const CompanyCodeManager = component$(() => {
 						</div>
 
 						{!createCompanyCode.value && !createCompanyCodeDisabled.value && (
-							<div class='my-5 text-xs text-darkgray-900'>
+							<div class='mt-5 text-xs text-darkgray-900'>
 								<p class='font-bold'>{t('DONT_HAVE_COMPANY_CODE')}</p>
 								<p>{t('ASK_ADMINISTRATOR_FOR_ASSISTANCE')}</p>
 							</div>

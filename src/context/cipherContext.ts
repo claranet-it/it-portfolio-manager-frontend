@@ -1,5 +1,9 @@
 import { createContextId, NoSerialize } from '@builder.io/qwik';
+import { CipherKeys } from '@models/cipher';
 import { EncryptedData } from 'src/utils/hybridCipher';
+
+export type EncryptFn = (text: string) => Promise<EncryptedData>;
+export type DecryptFn = (encryptedData: EncryptedData) => Promise<string>;
 
 export type CipherStore = {
 	cipher:
@@ -9,14 +13,17 @@ export type CipherStore = {
 		| {
 				status: 'companyCodeNotCreated';
 		  }
-		| {
+		| ({
+				status: 'dataEncryptionRequired';
+		  } & CipherKeys)
+		| ({
 				status: 'companyCodeRequired';
-		  }
+		  } & CipherKeys)
 		| {
 				status: 'initialized';
 				cipherFns: NoSerialize<{
-					encrypt: (text: string) => Promise<EncryptedData>;
-					decrypt: (encryptedData: EncryptedData) => Promise<string>;
+					encrypt: EncryptFn;
+					decrypt: DecryptFn;
 				}>;
 		  };
 };
