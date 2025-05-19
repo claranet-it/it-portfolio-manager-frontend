@@ -11,4 +11,4 @@ export const editSkillVisibility = async (id: number, visible: boolean) =>
 	checkHttpResponseStatus(`skill/${id}`, 200, 'PATCH', { visible });
 
 export const unsubscribeCompany = async (id: string) =>
-	checkHttpResponseStatus(`PATHDADEFINIRE/${id}`, 200, 'DELETE');
+	checkHttpResponseStatus(`unsubscribe/${id}`, 200, 'DELETE');

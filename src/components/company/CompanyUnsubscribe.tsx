@@ -3,6 +3,7 @@ import { Company } from '@models/company';
 import { AppContext } from 'src/app';
 import { useNotification } from 'src/hooks/useNotification';
 import { t } from 'src/locale/labels';
+import { unsubscribeCompany } from 'src/services/company';
 import { Button } from '../Button';
 import { Input } from '../form/Input';
 
@@ -22,7 +23,7 @@ export const CompanyUnsubscribe = component$<Props>(({ company }) => {
 			return;
 		}
 		appStore.isLoading = true;
-		const success = true; /* await unsubscribeCompany(company.id); */
+		const success = await unsubscribeCompany(company.id);
 
 		appStore.isLoading = false;
 		if (success) {
