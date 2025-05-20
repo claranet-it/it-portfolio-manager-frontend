@@ -91,7 +91,6 @@ export const TimeEntryElement = component$<TimeEntryElementProps>(
 					}}
 					onBlur$={handleBlur}
 					bindValue={entry ? entry.hours : hours}
-					isTemplate={entry ? entry.isTemplating : false}
 				/>
 
 				{startSig.value !== 0 && endSig.value !== 0 && (
