@@ -1,14 +1,14 @@
 import { $, noSerialize, useContext } from '@builder.io/qwik';
 import { CipherContext } from 'src/context/cipherContext';
 import { getCipherKeys } from 'src/services/cipher';
+import { initializeCipher } from 'src/utils/cipher';
 import { COMPANY_PASSWORD_KEY } from 'src/utils/constants';
-import HybridCipher from 'src/utils/hybridCipher';
 import { get, set } from 'src/utils/localStorage/localStorage';
 
 export const useCipher = () => {
 	const cipherStore = useContext(CipherContext);
 
-	const setCipherFns = $(
+	const setCipher = $(
 		async ({
 			encryptedAESKey,
 			encryptedPrivateKey,
@@ -19,22 +19,17 @@ export const useCipher = () => {
 			password: string;
 		}) => {
 			try {
-				const AESKey = await HybridCipher.getAESKey({
+				const cipher = await initializeCipher({
 					encryptedPrivateKey,
 					encryptedAESKey,
 					password,
 				});
 
-				const encrypt = HybridCipher.encrypt(AESKey);
-				const decrypt = HybridCipher.decrypt(AESKey);
-
-				const cipherFns = { encrypt, decrypt };
-
 				await set(COMPANY_PASSWORD_KEY, password);
 
 				cipherStore.cipher = {
 					status: 'initialized',
-					cipherFns: noSerialize(cipherFns),
+					cipherFns: noSerialize(cipher),
 				};
 			} catch (e) {
 				throw e;
@@ -76,7 +71,7 @@ export const useCipher = () => {
 		}
 
 		try {
-			await setCipherFns({
+			await setCipher({
 				encryptedPrivateKey: keys.encryptedPrivateKey,
 				encryptedAESKey: keys.encryptedAESKey,
 				password,
@@ -92,45 +87,8 @@ export const useCipher = () => {
 		}
 	});
 
-	const encrypt = $(async (text: string) => {
-		if (cipherStore.cipher.status !== 'initialized' || !cipherStore.cipher.cipherFns) {
-			throw new Error('Cipher is not initialized');
-		}
-
-		const { cipherFns } = cipherStore.cipher;
-		const encryptedText = await cipherFns.encrypt(text);
-
-		if (!encryptedText) {
-			throw new Error('Encryption failed');
-		}
-
-		return HybridCipher.serialize(encryptedText);
-	});
-
-	const decrypt = $(async (text: string | undefined) => {
-		if (cipherStore.cipher.status !== 'initialized' || !cipherStore.cipher.cipherFns) {
-			throw new Error('Cipher is not initialized');
-		}
-
-		if (!text) {
-			return '';
-		}
-
-		const { cipherFns } = cipherStore.cipher;
-		const deserializedText = HybridCipher.deserialize(text);
-		const decryptedText = await cipherFns.decrypt(deserializedText);
-
-		if (!decryptedText) {
-			throw new Error('Decryption failed');
-		}
-
-		return decryptedText;
-	});
-
 	return {
 		initCipher,
-		setCipherFns,
-		encrypt,
-		decrypt,
+		setCipher,
 	};
 };

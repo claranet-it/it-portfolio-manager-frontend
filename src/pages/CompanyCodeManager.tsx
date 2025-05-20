@@ -18,6 +18,7 @@ import { t } from 'src/locale/labels';
 import { navigateTo } from 'src/router';
 import { getDataToEncrypt, saveCipherKeys, saveDataToEncrypt } from 'src/services/cipher';
 import { limitRoleAccess } from 'src/utils/acl';
+import { getCipher } from 'src/utils/cipher';
 import { Roles } from 'src/utils/constants';
 import HybridCipher from 'src/utils/hybridCipher';
 
@@ -32,7 +33,7 @@ export const CompanyCodeManager = component$(() => {
 	const error = useSignal<string | null>(null);
 	const confirmDisabled = useSignal(false);
 
-	const { initCipher, setCipherFns, encrypt, decrypt } = useCipher();
+	const { initCipher, setCipher } = useCipher();
 
 	const goToTimesheet = $(() => navigateTo('timesheet'));
 
@@ -63,10 +64,11 @@ export const CompanyCodeManager = component$(() => {
 			await Promise.all(
 				items.map(async (item: DataToEncrypt[keyof DataToEncrypt][number]) => ({
 					...item,
-					name: await encrypt(item.name),
+					name: await getCipher().encrypt(item.name),
 				}))
 			);
 
+		// TODO: Update with the right data structure
 		const dataToEncrypt = await getDataToEncrypt();
 		const encryptedData = {
 			customers: await encryptNameField(dataToEncrypt.customers),
@@ -84,7 +86,7 @@ export const CompanyCodeManager = component$(() => {
 				await Promise.all(
 					items.map(async (item: DataToEncrypt[keyof DataToEncrypt][number]) => ({
 						...item,
-						name: await decrypt(item.name),
+						name: await getCipher().decrypt(item.name),
 					}))
 				);
 
@@ -145,7 +147,7 @@ export const CompanyCodeManager = component$(() => {
 
 		try {
 			if (encryptedPrivateKey && encryptedAESKey) {
-				await setCipherFns({
+				await setCipher({
 					encryptedAESKey,
 					encryptedPrivateKey,
 					password: companyCode.value,

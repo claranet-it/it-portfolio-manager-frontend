@@ -1,3 +1,4 @@
+import { decryptTimeEntry, encryptTimeEntry } from 'src/utils/cipher-entities';
 import { TimeEntry, TimeEntryObject } from '../models/timeEntry';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
@@ -5,8 +6,8 @@ export const getTimeEntries = async (
 	from: string,
 	to: string,
 	impersonateId?: string
-): Promise<TimeEntry[]> =>
-	getHttpResponse<TimeEntry[]>({
+): Promise<TimeEntry[]> => {
+	const response = await getHttpResponse<TimeEntry[]>({
 		path: impersonateId ? `time-entry/${impersonateId}` : `time-entry/mine`,
 		params: {
 			from,
@@ -14,20 +15,33 @@ export const getTimeEntries = async (
 		},
 	});
 
-export const deleteTimeEntry = async (entry: TimeEntry): Promise<boolean> =>
-	checkHttpResponseStatus(`time-entry/mine`, 200, 'DELETE', {
-		...entry,
-		project: entry.project.name,
+	return Promise.all(response.map(decryptTimeEntry));
+};
+
+export const deleteTimeEntry = async (entry: TimeEntry): Promise<boolean> => {
+	const encryptedTimeEntry = await encryptTimeEntry(entry);
+
+	return checkHttpResponseStatus(`time-entry/mine`, 200, 'DELETE', {
+		...encryptedTimeEntry,
+		project: encryptedTimeEntry.project.name,
 	});
+};
 
 export const postTimeEntries = async (
 	timeEntry: TimeEntryObject,
 	impersonateId?: string
 ): Promise<boolean> => {
+	const encryptedTimeEntry = await encryptTimeEntry<TimeEntryObject>(timeEntry);
+
 	const _timeEntry = {
-		...timeEntry,
-		project: timeEntry.project.name,
-		task: typeof timeEntry.task === 'string' ? timeEntry.task : timeEntry.task.name,
+		...encryptedTimeEntry,
+		project: encryptedTimeEntry.project.name,
+
+		// TODO: CHECK THIS - Task could not be a string, if it is, its a problem
+		task:
+			typeof encryptedTimeEntry.task === 'string'
+				? encryptedTimeEntry.task
+				: encryptedTimeEntry.task.name,
 	};
 
 	return checkHttpResponseStatus(
