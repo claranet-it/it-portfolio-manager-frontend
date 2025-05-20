@@ -47,7 +47,7 @@ export const Timesheet = component$(() => {
 			id: '1',
 			user: 'maria.teresa.graziano@claranet.com',
 			date_start: '2025-05-1',
-			date_end: '2025-05-15',
+			date_end: '2025-05-30',
 			customer: 'Claranet',
 			project: {
 				name: 'Funzionale',
@@ -61,8 +61,8 @@ export const Timesheet = component$(() => {
 		{
 			id: '2',
 			user: 'maria.teresa.graziano@claranet.com',
-			date_start: '2025-05-01',
-			date_end: '2025-05-25',
+			date_start: '2025-05-22',
+			date_end: '2025-06-25',
 			customer: 'Claranet',
 			project: {
 				name: 'Assenze',
@@ -135,9 +135,11 @@ export const Timesheet = component$(() => {
 							</NewTimeEntryModal>
 						</TimeSheetTable>
 
-						<Button variant={'outline'} onClick$={handleViewTemplateList}>
-							{t('VIEW_TEMPLATE_LIST')}
-						</Button>
+						{templates.value.length && (
+							<Button variant={'outline'} onClick$={handleViewTemplateList}>
+								{t('VIEW_TEMPLATE_LIST')}
+							</Button>
+						)}
 					</>
 				)}
 			</div>

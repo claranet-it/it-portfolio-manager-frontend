@@ -43,8 +43,11 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			userImpersonationId
 		);
 
-		const { formGroup, approvalModalState, openApprovalTemplateDialog } =
-			useTemplate(templates);
+		const { formGroup, approvalModalState, openApprovalTemplateDialog } = useTemplate(
+			templates,
+			updateTimeEntries,
+			days
+		);
 
 		const timeEntriesState = useStore<Record<string, Record<string, number>>>({});
 
@@ -358,6 +361,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 							days={days.value}
 							templates={templates.value}
 							onOpen={openApprovalTemplateDialog}
+							timeEntries={groupedByProject.value}
 						/>
 					</tbody>
 					<tfoot>

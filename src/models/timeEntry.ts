@@ -4,7 +4,6 @@ import { Task } from './task';
 
 export type TimeEntry = {
 	user?: string;
-	isTemplating?: boolean;
 	date: string;
 	company: string;
 	customer: Customer;
