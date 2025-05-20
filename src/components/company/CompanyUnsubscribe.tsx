@@ -23,12 +23,21 @@ export const CompanyUnsubscribe = component$<Props>(({ company }) => {
 			return;
 		}
 		appStore.isLoading = true;
-		const success = await unsubscribeCompany(company.id);
+		try {
+			const success = await unsubscribeCompany(company.id);
+
+			if (success) {
+				window.location.href = `${window.location.origin}/unsubscribed`;
+			}
+		} catch {
+			addEvent({
+				type: 'danger',
+				message: 'Data deletion failed. Contact support for assistance.',
+				autoclose: true,
+			});
+		}
 
 		appStore.isLoading = false;
-		if (success) {
-			window.location.href = `${window.location.origin}/unsubscribed`;
-		}
 	});
 
 	return (
