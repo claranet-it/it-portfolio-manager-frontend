@@ -42,7 +42,18 @@ export const useCipher = () => {
 			return cipherStore.cipher.status;
 		}
 
-		const keys = await getCipherKeys();
+		let keys = undefined;
+
+		try {
+			keys = await getCipherKeys();
+		} catch (e) {
+			cipherStore.cipher = {
+				status: 'companyCodeCipherError',
+			};
+
+			return cipherStore.cipher.status;
+		}
+
 		if (!keys) {
 			cipherStore.cipher = {
 				status: 'companyCodeNotCreated',

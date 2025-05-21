@@ -7,7 +7,6 @@ import {
 	useSignal,
 	useTask$,
 } from '@builder.io/qwik';
-import { DataToEncrypt } from '@models/cipher';
 import DOMPurify from 'dompurify';
 import { Button } from 'src/components/Button';
 import { Input } from 'src/components/form/Input';
@@ -45,6 +44,10 @@ export const CompanyCodeManager = component$(() => {
 		}
 	});
 
+	const companyCodeCipherError = useComputed$(() => {
+		return cipherStore.cipher.status === 'companyCodeCipherError';
+	});
+
 	const createCompanyCode = useComputed$(async () => {
 		return (
 			cipherStore.cipher.status === 'companyCodeNotCreated' &&
@@ -54,54 +57,48 @@ export const CompanyCodeManager = component$(() => {
 
 	const createCompanyCodeDisabled = useComputed$(async () => {
 		return (
-			cipherStore.cipher.status === 'companyCodeNotCreated' &&
-			!(await limitRoleAccess(Roles.ADMIN))
+			(cipherStore.cipher.status === 'companyCodeNotCreated' &&
+				!(await limitRoleAccess(Roles.ADMIN))) ||
+			companyCodeCipherError.value
 		);
 	});
 
 	const encryptDbFields = $(async () => {
-		const encryptNameField = async (items: any) =>
-			await Promise.all(
-				items.map(async (item: DataToEncrypt[keyof DataToEncrypt][number]) => ({
-					...item,
-					name: await getCipher().encrypt(item.name),
-				}))
-			);
-
-		// TODO: Update with the right data structure
 		const dataToEncrypt = await getDataToEncrypt();
+		const cipher = getCipher();
+
 		const encryptedData = {
-			customers: await encryptNameField(dataToEncrypt.customers),
-			projects: await encryptNameField(dataToEncrypt.projects),
-			tasks: await encryptNameField(dataToEncrypt.tasks),
-			timeEntryDescriptions: await encryptNameField(dataToEncrypt.timeEntryDescriptions),
-			effortNotes: await encryptNameField(dataToEncrypt.effortNotes),
+			customers: await Promise.all(
+				dataToEncrypt.customers.map(async (item) => ({
+					...item,
+					name: await cipher.encrypt(item.name),
+				}))
+			),
+			projects: await Promise.all(
+				dataToEncrypt.projects.map(async (item) => ({
+					...item,
+					name: await cipher.encrypt(item.name),
+				}))
+			),
+			tasks: await Promise.all(
+				dataToEncrypt.tasks.map(async (item) => ({
+					...item,
+					name: await cipher.encrypt(item.name),
+				}))
+			),
+			timeEntries: await Promise.all(
+				dataToEncrypt.timeEntries.map(async (item) => ({
+					...item,
+					description: await cipher.encrypt(item.description),
+				}))
+			),
+			efforts: await Promise.all(
+				dataToEncrypt.efforts.map(async (item) => ({
+					...item,
+					notes: await cipher.encrypt(item.notes),
+				}))
+			),
 		};
-
-		console.log('Encrypted data to encrypt:', encryptedData);
-
-		// TODO: Remove this function, only for testing purposes
-		const _decryptDbFields = async (data: any) => {
-			const decrpytNameField = async (items: any) =>
-				await Promise.all(
-					items.map(async (item: DataToEncrypt[keyof DataToEncrypt][number]) => ({
-						...item,
-						name: await getCipher().decrypt(item.name),
-					}))
-				);
-
-			const decryped = {
-				customers: await decrpytNameField(data.customers),
-				projects: await decrpytNameField(data.projects),
-				tasks: await decrpytNameField(data.tasks),
-				timeEntryDescriptions: await decrpytNameField(data.timeEntryDescriptions),
-				effortNotes: await decrpytNameField(data.effortNotes),
-			};
-
-			console.log('Decrypted data to encrypt:', decryped);
-		};
-		await _decryptDbFields(encryptedData);
-		// TODO: Remove this function, only for testing purposes
 
 		await saveDataToEncrypt(encryptedData);
 	});
@@ -142,7 +139,7 @@ export const CompanyCodeManager = component$(() => {
 		) {
 			encryptedAESKey = cipherStore.cipher.encryptedAESKey;
 			encryptedPrivateKey = cipherStore.cipher.encryptedPrivateKey;
-			cipherCompleted = cipherStore.cipher.cipherCompleted;
+			cipherCompleted = !!cipherStore.cipher.cipherCompleted;
 		}
 
 		try {
@@ -161,8 +158,6 @@ export const CompanyCodeManager = component$(() => {
 				goToTimesheet();
 			}
 		} catch (e) {
-			console.error('Error during cipher inizialization:', e);
-
 			error.value = t('COMPANY_CODE_IS_NOT_VALID');
 			confirmDisabled.value = false;
 			companyCodeLoadingCustomLabel.value = null;
@@ -200,13 +195,19 @@ export const CompanyCodeManager = component$(() => {
 							/>
 						)}
 
-						{createCompanyCodeDisabled.value && (
-							<p
-								class='mb-3 text-xs text-darkgray-900'
-								dangerouslySetInnerHTML={DOMPurify.sanitize(
-									t('COMPANY_CODE_NOT_CREATED_YET_DESCRIPTION')
-								)}
-							/>
+						{companyCodeCipherError.value ? (
+							<p class='mb-3 text-xs text-darkgray-900'>
+								{t('COMPANY_CODE_CIPHER_ERROR')}
+							</p>
+						) : (
+							createCompanyCodeDisabled.value && (
+								<p
+									class='mb-3 text-xs text-darkgray-900'
+									dangerouslySetInnerHTML={DOMPurify.sanitize(
+										t('COMPANY_CODE_NOT_CREATED_YET_DESCRIPTION')
+									)}
+								/>
+							)
 						)}
 
 						<div class='space-y-3'>

@@ -23,6 +23,9 @@ export type CipherStore = {
 		| {
 				status: 'initialized';
 				cipherFns: NoSerialize<Cipher>;
+		  }
+		| {
+				status: 'companyCodeCipherError';
 		  };
 };
 

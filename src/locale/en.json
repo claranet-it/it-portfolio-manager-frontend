@@ -263,14 +263,15 @@
 	"COMPANY_CODE_LABEL": "Company code",
 	"COMPANY_CODE_INSERT_LABEL": "Insert Company code",
 	"COMPANY_CODE_REPEAT_LABEL": "Repeat Company code",
-	"COMPANY_CODES_DOES_NOT_MATCH": "Company codes do not match",
-	"COMPANY_CODE_IS_NOT_VALID": "Company code is not valid",
+	"COMPANY_CODES_DOES_NOT_MATCH": "Company codes do not match.",
+	"COMPANY_CODE_IS_NOT_VALID": "Company code is not valid.",
 	"ENTER_COMPANY_CODE": "Enter your company code",
 	"COMPANY_CODE_NOT_CREATED_YET_DESCRIPTION": "The Company code has not been created yet. <br /> Please <strong>contact your administrator</strong> to request the creation of the Company code needed for encrypting sensitive company data.",
+	"COMPANY_CODE_CIPHER_ERROR": "There was an error while getting your encryption key. Please contact your administrator or try again later.",
 	"CREATE": "Create",
 	"NEXT": "Next",
 	"DONT_HAVE_COMPANY_CODE": "Don't you have a Company code?",
 	"ASK_ADMINISTRATOR_FOR_ASSISTANCE": "Ask your administrator for assistance.",
-	"UNABLE_TO_CREATE_COMPANY_CODE": "Unable to create Company code",
+	"UNABLE_TO_CREATE_COMPANY_CODE": "Unable to create Company code.",
 	"ENCRYPTING_DATA_LOADING_LABEL": "Encrypting data, please wait..."
 }

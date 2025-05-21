@@ -5,14 +5,21 @@ export type CipherKeys = {
 	cipherCompleted: boolean;
 };
 
-export type ItemToEncrypt = {
+type ItemToEncrypt = {
 	id: number;
 	name: string;
 };
+
 export type DataToEncrypt = {
 	customers: ItemToEncrypt[];
 	projects: ItemToEncrypt[];
 	tasks: ItemToEncrypt[];
-	timeEntryDescriptions: ItemToEncrypt[];
-	effortNotes: ItemToEncrypt[];
+	timeEntries: {
+		id: number;
+		description: string;
+	}[];
+	efforts: {
+		id: number;
+		notes: string;
+	}[];
 };
