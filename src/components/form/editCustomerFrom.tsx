@@ -9,7 +9,13 @@ interface EditCustomerFormProps {
 export const EditCustomerForm = component$<EditCustomerFormProps>(({ name }) => {
 	return (
 		<form class='space-y-3'>
-			<Input label={t('NAME_LABEL')} bindValue={name} />
+			<Input
+				label={t('NAME_LABEL')}
+				value={name.value}
+				onInput$={(_, el) => {
+					name.value = el.value;
+				}}
+			/>
 		</form>
 	);
 });

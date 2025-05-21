@@ -35,7 +35,13 @@ export const EditProjectForm = component$<EditProjectFormProps>(
 
 		return (
 			<form class='space-y-3'>
-				<Input label={t('NAME_LABEL')} bindValue={name} />
+				<Input
+					label={t('NAME_LABEL')}
+					value={name.value}
+					onInput$={(_, el) => {
+						name.value = el.value;
+					}}
+				/>
 
 				<Select
 					id={UUID()}
@@ -51,7 +57,10 @@ export const EditProjectForm = component$<EditProjectFormProps>(
 
 				<Input
 					label='Planned hours'
-					bindValue={plannedHours as unknown as Signal<string>}
+					value={plannedHours.value}
+					onInput$={(_, el) => {
+						plannedHours.value = Number(el.value);
+					}}
 				/>
 			</form>
 		);

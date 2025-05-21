@@ -62,3 +62,13 @@ export type ReportGroupedData = {
 	plannedHours: number;
 	subGroups?: ReportGroupedData[];
 };
+
+export type ReportParamsFilters = {
+	from: string;
+	to: string;
+	format: 'json' | 'csv';
+	customer?: string[];
+	project?: string[];
+	task?: string[];
+	user?: string[];
+};
