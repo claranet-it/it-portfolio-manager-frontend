@@ -149,20 +149,28 @@ export const CompanyCodeManager = component$(() => {
 					encryptedPrivateKey,
 					password: companyCode.value,
 				});
-
-				if (!cipherCompleted) {
-					companyCodeLoadingCustomLabel.value = t('ENCRYPTING_DATA_LOADING_LABEL');
-					await encryptDbFields();
-				}
-
-				goToTimesheet();
 			}
 		} catch (e) {
 			error.value = t('COMPANY_CODE_IS_NOT_VALID');
 			confirmDisabled.value = false;
-			companyCodeLoadingCustomLabel.value = null;
-		} finally {
 			companyCodeLoading.value = false;
+			companyCodeLoadingCustomLabel.value = null;
+			return;
+		}
+
+		try {
+			if (!cipherCompleted) {
+				companyCodeLoadingCustomLabel.value = t('ENCRYPTING_DATA_LOADING_LABEL');
+				await encryptDbFields();
+			}
+
+			goToTimesheet();
+		} catch (e) {
+			error.value = t('UNABLE_TO_ENCRYPT_DATA');
+			confirmDisabled.value = false;
+			companyCodeLoading.value = false;
+			companyCodeLoadingCustomLabel.value = null;
+			return;
 		}
 	});
 

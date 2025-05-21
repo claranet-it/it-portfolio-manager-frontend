@@ -273,5 +273,6 @@
 	"DONT_HAVE_COMPANY_CODE": "Don't you have a Company code?",
 	"ASK_ADMINISTRATOR_FOR_ASSISTANCE": "Ask your administrator for assistance.",
 	"UNABLE_TO_CREATE_COMPANY_CODE": "Unable to create Company code.",
-	"ENCRYPTING_DATA_LOADING_LABEL": "Encrypting data, please wait..."
+	"ENCRYPTING_DATA_LOADING_LABEL": "Encrypting data, please wait...",
+	"UNABLE_TO_ENCRYPT_DATA": "Unable to encrypt data."
 }
