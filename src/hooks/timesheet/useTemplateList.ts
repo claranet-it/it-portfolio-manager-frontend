@@ -1,14 +1,17 @@
-import { $, Signal, useSignal, useStore, useTask$ } from '@builder.io/qwik';
+import { $, QRL, Signal, useContext, useSignal, useStore, useTask$ } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
 import { Template } from '@models/template';
+import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
+import { deleteTemplate, updateTemplate } from 'src/services/template';
+import { dayOfWeekToNumber, formatDateString, NumberTodayOfWeek } from 'src/utils/dates';
 import { convertTimeToDecimal } from 'src/utils/timesheet';
 
-export const useTemplateList = (templates: Signal<Template[]>) => {
-	var daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+export const useTemplateList = (templates: Signal<Template[]>, fetchTemplates: QRL) => {
+	const appStore = useContext(AppContext);
 	const daysSelected = useSignal<string[]>([]);
 	const timeHours = useSignal<number>(0);
 	const from = useSignal<Date>(new Date());
@@ -60,7 +63,7 @@ export const useTemplateList = (templates: Signal<Template[]>) => {
 			from.value = new Date(template.date_start);
 			to.value = new Date(template.date_end);
 			timeHours.value = template.timehours;
-			daysSelected.value = template.daytime.map((id) => daysOfWeek[id]);
+			daysSelected.value = template.daytime.map(NumberTodayOfWeek);
 			customer.value = template.customer;
 			task.value = template.task;
 			project.value = template.project;
@@ -75,9 +78,12 @@ export const useTemplateList = (templates: Signal<Template[]>) => {
 
 		deleteModalState.onConfirm$ = $(async () => {
 			if (deleteModalState.idToDelete) {
-				/*         appStore.isLoading = true;
-						await onDelete(deleteModalState.workIdToDelete);
-						appStore.isLoading = false; */
+				appStore.isLoading = true;
+				try {
+					await deleteTemplate(deleteModalState.idToDelete);
+					await fetchTemplates();
+				} catch (error) {}
+				appStore.isLoading = false;
 				deleteModalState.idToDelete = undefined;
 			}
 		});
@@ -88,9 +94,19 @@ export const useTemplateList = (templates: Signal<Template[]>) => {
 
 		editModalState.onConfirm$ = $(async () => {
 			if (editModalState.idToEdit) {
-				/*         appStore.isLoading = true;
-						await onEdit(deleteModalState.workIdToDelete);
-						appStore.isLoading = false; */
+				appStore.isLoading = true;
+				try {
+					const payload = {
+						date_start: formatDateString(from.value),
+						date_end: formatDateString(to.value),
+						timeHours: timeHours.value,
+						daytime: daysSelected.value.map(dayOfWeekToNumber),
+					};
+					await updateTemplate(editModalState.idToEdit, payload);
+					await fetchTemplates();
+				} catch (error) {}
+
+				appStore.isLoading = false;
 				editModalState.idToEdit = undefined;
 			}
 		});
@@ -102,7 +118,6 @@ export const useTemplateList = (templates: Signal<Template[]>) => {
 	});
 
 	return {
-		daysOfWeek,
 		deleteModalState,
 		editModalState,
 		openDeleteDialog,
@@ -116,5 +131,6 @@ export const useTemplateList = (templates: Signal<Template[]>) => {
 		daysSelected,
 		timeHours,
 		handleTime,
+		templates,
 	};
 };

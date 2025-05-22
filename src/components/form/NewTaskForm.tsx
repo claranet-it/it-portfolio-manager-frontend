@@ -193,6 +193,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 								daysSelected={daysSelected}
 								timeHours={timeHours}
 								handleTime={handleTime}
+								editMode={false}
 							/>
 						)}
 

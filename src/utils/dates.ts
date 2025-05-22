@@ -8,6 +8,8 @@ export type Range = {
 
 const DAYS_IN_WEEK = 7;
 
+const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 const getDateFromMonthYear = (monthYear: string): Date => {
 	const [month, year] = monthYear.split('_');
 	return new Date(`20${year}-${month}`);
@@ -81,4 +83,12 @@ export const prevWeek = (from: Date): Range => {
 	const prevWeek = new Date(from);
 	prevWeek.setDate(prevWeek.getDate() - DAYS_IN_WEEK);
 	return dateToWeekRange(prevWeek);
+};
+
+export const dayOfWeekToNumber = (day: string): number => {
+	return DAYS_OF_WEEK.findIndex((item) => item === day);
+};
+
+export const NumberTodayOfWeek = (day: number): string => {
+	return DAYS_OF_WEEK[day];
 };

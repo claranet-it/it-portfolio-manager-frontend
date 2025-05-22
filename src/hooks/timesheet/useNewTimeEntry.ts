@@ -4,13 +4,17 @@ import {
 	Signal,
 	sync$,
 	useComputed$,
+	useContext,
 	useSignal,
 	useStore,
 	useTask$,
 } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { AppContext } from 'src/app';
 import { getCurrentRoute, navigateTo } from 'src/router';
+import { saveTemplate } from 'src/services/template';
 import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
+import { dayOfWeekToNumber, formatDateString } from 'src/utils/dates';
 import { convertTimeToDecimal } from 'src/utils/timesheet';
 import { t, tt } from '../../locale/labels';
 import { Customer } from '../../models/customer';
@@ -30,31 +34,11 @@ export const useNewTimeEntry = (
 	allowNewEntry?: boolean
 ) => {
 	const { addEvent } = useNotification();
+	const appStore = useContext(AppContext);
 
 	const dataCustomersSig = useComputed$(async () => {
 		return await getCustomers();
 	});
-
-	const arrayTemplating = useSignal([
-		{
-			start_date: '2025-04-14',
-			end_date: '2025-04-30',
-			repeat: ['Monday'],
-			hours: 8,
-			customer: 'Claranet',
-			project: { completed: false, name: 'Assenze', plannedHours: 100, type: 'absence' },
-			task: { completed: false, name: 'ALLATTAMENTO', plannedHours: 0 },
-		},
-		{
-			start_date: '2025-04-14',
-			end_date: '2025-05-30',
-			repeat: ['Monday', 'Sunday'],
-			hours: 8,
-			customer: 'Claranet',
-			project: { completed: false, name: 'Assenze', plannedHours: 100, type: 'absence' },
-			task: { completed: false, name: 'ALLATTAMENTO', plannedHours: 0 },
-		},
-	]);
 
 	const dataProjectsSig = useSignal<Project[]>([]);
 	const dataTasksSign = useSignal<Task[]>([]);
@@ -269,7 +253,7 @@ export const useNewTimeEntry = (
 		}
 	});
 
-	const handleSubmitTemplating = sync$((event: SubmitEvent, _: HTMLFormElement) => {
+	const handleSubmitTemplating = sync$(async (event: SubmitEvent, _: HTMLFormElement) => {
 		event.preventDefault();
 		const isProjectTypeEnabled =
 			projectTypeEnabled.newCustomer || projectTypeEnabled.newProject;
@@ -299,16 +283,28 @@ export const useNewTimeEntry = (
 			});
 			return;
 		}
-
-		console.log('### data template to save', {
-			start_date: from.value,
-			end_date: to.value,
-			repeat: daysSelected.value,
-			hours: timeHours.value,
-			customer: customerSelected.value,
-			project: projectSelected.value,
-			...(taskSelected.value.name && { task: taskSelected.value }),
-		});
+		appStore.isLoading = true;
+		try {
+			const payload = {
+				date_start: formatDateString(from.value),
+				date_end: formatDateString(to.value),
+				daytime: daysSelected.value.map(dayOfWeekToNumber),
+				timehours: timeHours.value,
+				customer: customerSelected.value,
+				project: projectSelected.value.name,
+				task: taskSelected.value.name,
+			};
+			await saveTemplate(payload);
+			console.log('### data template to save', payload);
+		} catch (error) {
+			const { message } = error as Error;
+			addEvent({
+				message,
+				type: 'danger',
+				autoclose: true,
+			});
+		}
+		appStore.isLoading = false;
 
 		clearForm();
 		resetTemplating();
@@ -355,6 +351,5 @@ export const useNewTimeEntry = (
 		handleTemplating,
 		resetTemplating,
 		handleSubmitTemplating,
-		arrayTemplating,
 	};
 };
