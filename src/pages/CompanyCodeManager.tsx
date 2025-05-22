@@ -119,7 +119,7 @@ export const CompanyCodeManager = component$(() => {
 		confirmDisabled.value = true;
 		companyCodeLoading.value = true;
 
-		let encryptedAESKey, encryptedPrivateKey, cipherCompleted;
+		let encryptedAESKey, encryptedPrivateKey, encryptionCompleted;
 
 		if (createCompanyCode.value) {
 			try {
@@ -128,7 +128,7 @@ export const CompanyCodeManager = component$(() => {
 
 				encryptedAESKey = generateResponse.encryptedAESKey;
 				encryptedPrivateKey = generateResponse.encryptedPrivateKey;
-				cipherCompleted = false;
+				encryptionCompleted = false;
 			} catch (e) {
 				error.value = t('UNABLE_TO_CREATE_COMPANY_CODE');
 				companyCodeLoading.value = false;
@@ -139,7 +139,7 @@ export const CompanyCodeManager = component$(() => {
 		) {
 			encryptedAESKey = cipherStore.cipher.encryptedAESKey;
 			encryptedPrivateKey = cipherStore.cipher.encryptedPrivateKey;
-			cipherCompleted = !!cipherStore.cipher.cipherCompleted;
+			encryptionCompleted = !!cipherStore.cipher.encryptionCompleted;
 		}
 
 		try {
@@ -159,7 +159,7 @@ export const CompanyCodeManager = component$(() => {
 		}
 
 		try {
-			if (!cipherCompleted) {
+			if (!encryptionCompleted) {
 				companyCodeLoadingCustomLabel.value = t('ENCRYPTING_DATA_LOADING_LABEL');
 				await encryptDbFields();
 			}

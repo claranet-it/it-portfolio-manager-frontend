@@ -1,8 +1,7 @@
-// TODO: Better type name
 export type CipherKeys = {
 	encryptedPrivateKey: string;
 	encryptedAESKey: string;
-	cipherCompleted: boolean;
+	encryptionCompleted: boolean;
 };
 
 type ItemToEncrypt = {

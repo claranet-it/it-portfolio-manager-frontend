@@ -39,4 +39,4 @@ export const getDataToEncrypt = async () =>
 	getHttpResponse<DataToEncrypt>('encryption/to-be-encrypted');
 
 export const saveDataToEncrypt = async (encryptedData: DataToEncrypt) =>
-	getHttpResponse('encryption/to-be-encrypted', 'PATCH', encryptedData);
+	getHttpResponse('encryption/to-be-encrypted', 'PATCH', encryptedData, true);

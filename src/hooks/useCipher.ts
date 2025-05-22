@@ -62,7 +62,7 @@ export const useCipher = () => {
 			return cipherStore.cipher.status;
 		}
 
-		if (!keys.cipherCompleted) {
+		if (!keys.encryptionCompleted) {
 			cipherStore.cipher = {
 				status: 'dataEncryptionRequired',
 				...keys,
