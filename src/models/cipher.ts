@@ -5,7 +5,7 @@ export type CipherKeys = {
 };
 
 type ItemToEncrypt = {
-	id: number;
+	id: string;
 	name: string;
 };
 
@@ -20,5 +20,8 @@ export type DataToEncrypt = {
 	efforts: {
 		id: number;
 		notes: string;
+		confirmedEffort: number;
+		month_year: string;
+		tentativeEffort: number;
 	}[];
 };

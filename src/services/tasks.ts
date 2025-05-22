@@ -2,10 +2,11 @@ import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { Task, TaskProjectCustomer } from '@models/task';
 import {
+	decryptString,
+	decryptTask,
 	encryptCustomer,
 	encryptProject,
 	encryptString,
-	encryptTask,
 } from 'src/utils/cipher-entities';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
@@ -29,7 +30,7 @@ export const getTasks = async (
 		},
 	});
 
-	return Promise.all(response.map(encryptTask));
+	return Promise.all(response.map(decryptTask));
 };
 
 export const saveTask = async (
@@ -80,9 +81,9 @@ export const getAllTasks = async (): Promise<TaskProjectCustomer[]> => {
 
 	return Promise.all(
 		response.map(async (data) => ({
-			customer: await encryptString(data.customer),
-			project: await encryptString(data.project),
-			task: await encryptString(data.task),
+			customer: await decryptString(data.customer),
+			project: await decryptString(data.project),
+			task: await decryptString(data.task),
 		}))
 	);
 };

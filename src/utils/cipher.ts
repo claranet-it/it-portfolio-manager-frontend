@@ -43,10 +43,6 @@ export const initializeCipher = async ({
 		const deserializedText = HybridCipher.deserialize(text);
 		const decryptedText = await decryptFn(deserializedText);
 
-		if (!decryptedText) {
-			throw new Error('Decryption failed');
-		}
-
 		return decryptedText;
 	};
 

@@ -81,21 +81,25 @@ export const getReportProjectsFilterBy = async (
 		params
 	);
 
-	return response.map((entry) => {
-		return {
+	return Promise.all(
+		response.map(async (entry) => ({
 			...entry,
+			customer: await decryptString(entry.customer),
+			description: entry.description
+				? await decryptString(entry.description)
+				: entry.description,
 			project: {
-				name: entry.project,
+				name: await decryptString(entry.project),
 				plannedHours: entry.plannedHours,
 				type: entry.projectType,
 				completed: false,
 			},
 			task: {
-				name: entry.task,
+				name: await decryptString(entry.task),
 				plannedHours: 0,
 				completed: false,
 			},
 			email: entry.email === '' ? UUID() : entry.email,
-		};
-	});
+		}))
+	);
 };
