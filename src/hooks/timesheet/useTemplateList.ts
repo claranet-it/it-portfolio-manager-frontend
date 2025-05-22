@@ -9,9 +9,12 @@ import { t } from 'src/locale/labels';
 import { deleteTemplate, updateTemplate } from 'src/services/template';
 import { dayOfWeekToNumber, formatDateString, NumberTodayOfWeek } from 'src/utils/dates';
 import { convertTimeToDecimal } from 'src/utils/timesheet';
+import { useNotification } from '../useNotification';
 
 export const useTemplateList = (templates: Signal<Template[]>, fetchTemplates: QRL) => {
 	const appStore = useContext(AppContext);
+	const { addEvent } = useNotification();
+
 	const daysSelected = useSignal<string[]>([]);
 	const timeHours = useSignal<number>(0);
 	const from = useSignal<Date>(new Date());
@@ -82,7 +85,14 @@ export const useTemplateList = (templates: Signal<Template[]>, fetchTemplates: Q
 				try {
 					await deleteTemplate(deleteModalState.idToDelete);
 					await fetchTemplates();
-				} catch (error) {}
+				} catch (error) {
+					const { message } = error as Error;
+					addEvent({
+						message,
+						type: 'danger',
+						autoclose: true,
+					});
+				}
 				appStore.isLoading = false;
 				deleteModalState.idToDelete = undefined;
 			}
@@ -104,7 +114,14 @@ export const useTemplateList = (templates: Signal<Template[]>, fetchTemplates: Q
 					};
 					await updateTemplate(editModalState.idToEdit, payload);
 					await fetchTemplates();
-				} catch (error) {}
+				} catch (error) {
+					const { message } = error as Error;
+					addEvent({
+						message,
+						type: 'danger',
+						autoclose: true,
+					});
+				}
 
 				appStore.isLoading = false;
 				editModalState.idToEdit = undefined;

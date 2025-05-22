@@ -23,7 +23,6 @@ interface Props {
 
 export const TemplateForm = component$<Props>(
 	({ customer, project, task, from, to, daysSelected, timeHours, handleTime, editMode }) => {
-		console.log('#### timeHours', timeHours);
 		const daytimeOptions = useSignal([
 			'Monday',
 			'Tuesday',
@@ -41,7 +40,7 @@ export const TemplateForm = component$<Props>(
 		const ID = UUID();
 
 		return (
-			<div id={`template-form-${ID}`}>
+			<div id={`template-form-${ID}`} class='w-[350px] space-y-3'>
 				{editMode && (
 					<div class='flex flex-col border-b pb-3'>
 						<h4 class='text-sm font-normal text-darkgray-500'>

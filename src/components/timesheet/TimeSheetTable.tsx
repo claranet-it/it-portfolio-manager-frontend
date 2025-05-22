@@ -21,7 +21,7 @@ import { Template } from '@models/template';
 import { useTemplate } from 'src/hooks/useTemplate';
 import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
 import { Button } from '../Button';
-import { ApprovalTemplateForm } from '../form/approvalTemplateForm';
+import { ApplyingTemplateForm } from '../form/applyingTemplateForm';
 import { getIcon } from '../icons';
 import { Modal } from '../modals/Modal';
 import { TemplateRow } from './TemplateRow';
@@ -419,7 +419,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 				</table>
 				<Modal state={deleteTimeEntriesRowModalState} />
 				<Modal state={approvalModalState}>
-					<ApprovalTemplateForm formGroup={formGroup} />
+					<ApplyingTemplateForm formGroup={formGroup} />
 				</Modal>
 			</div>
 		);

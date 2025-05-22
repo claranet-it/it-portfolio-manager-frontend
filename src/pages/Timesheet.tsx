@@ -59,7 +59,7 @@ export const Timesheet = component$(() => {
 
 	const fetchTemplates = $(async () => {
 		appStore.isLoading = true;
-		console.log('### chiamata refresh');
+
 		try {
 			templates.value =
 				/* await getTemplates(); */

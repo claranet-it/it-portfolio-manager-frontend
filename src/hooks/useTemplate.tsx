@@ -21,8 +21,8 @@ export const useTemplate = (
 	);
 
 	const approvalModalState = useStore<ModalState & { id?: string }>({
-		title: 'Template approval',
-		confirmLabel: t('ACTION_APPROVE'),
+		title: t('TEMPLATE_APPLYING'),
+		confirmLabel: t('ACTION_APPLY'),
 		cancelLabel: t('ACTION_CANCEL'),
 		onCancel$: $(() => {
 			formGroup.task = undefined;

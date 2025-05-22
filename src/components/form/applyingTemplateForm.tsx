@@ -11,7 +11,7 @@ interface Props {
 	formGroup: { customer: Customer; project: Project; task?: Task; id: string };
 }
 
-export const ApprovalTemplateForm = component$<Props>(({ formGroup }) => {
+export const ApplyingTemplateForm = component$<Props>(({ formGroup }) => {
 	const { customer, project, task, id } = formGroup;
 	const key = `${task}-${customer}-${id}`;
 	const taskSelectedString = useSignal<string>(task?.name || '');
@@ -32,20 +32,18 @@ export const ApprovalTemplateForm = component$<Props>(({ formGroup }) => {
 
 	const _onChangeTask = $(async (value: string) => {
 		const taskSelected = tasks.value.find((task) => task.name === value);
-		if (taskSelected) {
-			formGroup.task = taskSelected;
-			taskSelectedString.value = taskSelected.name;
-		}
+		taskSelectedString.value = taskSelected?.name || '';
+		formGroup.task = taskSelected;
 	});
 
 	return (
-		<div key={key} class='flex flex-col gap-2 text-left'>
+		<div key={key} class='flex w-[350px] flex-col gap-2 text-left'>
 			<div class='flex flex-col pb-3'>
 				<h4 class='text-sm font-normal text-darkgray-500'>
-					Approve to add the template to your timesheet.
+					{t('TEMPLATE_APPLYING_MESSAGE')}
 				</h4>
 				<h4 class='text-sm font-normal text-darkgray-500'>
-					Edit the project task if needed.
+					{t('TEMPLATE_APPLYING_SUBMESSAGE')}
 				</h4>
 			</div>
 			<div class='flex flex-col border-b border-gray-200 pb-3'>

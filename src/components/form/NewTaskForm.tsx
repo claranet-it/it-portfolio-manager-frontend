@@ -89,7 +89,6 @@ export const NewTaskForm = component$<NewTaskForm>(
 		const _handleSubmit = $((event: SubmitEvent, _: HTMLFormElement) => {
 			event.preventDefault();
 			_projectSelected.value = '';
-			console.log('#### isTemplating', isTemplating.value);
 			if (isTemplating.value) {
 				handleSubmitTemplating(event, _);
 			} else {

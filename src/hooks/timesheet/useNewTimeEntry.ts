@@ -295,7 +295,6 @@ export const useNewTimeEntry = (
 				task: taskSelected.value.name,
 			};
 			await saveTemplate(payload);
-			console.log('### data template to save', payload);
 		} catch (error) {
 			const { message } = error as Error;
 			addEvent({
