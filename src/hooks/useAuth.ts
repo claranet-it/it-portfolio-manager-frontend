@@ -15,14 +15,17 @@ import { getAuthValidation } from '../services/auth';
 import { getUserMe } from '../services/user';
 import { getProvider, removeProvider, setProvider } from '../utils/provider';
 import { getAuthToken, setAuthToken } from '../utils/token';
+import { useCipher } from './useCipher';
 
 export const useAuth = () => {
 	const selectedProvider = useSignal<Provider | undefined>(undefined);
 	const isLoading = useSignal<boolean>(false);
 	const issueMessage = useSignal<string | undefined>(undefined);
+	const { initCipher } = useCipher();
 
-	const goToTimesheet = $(() => navigateTo('timesheet'));
 	const refreshPage = $(() => navigateTo('auth'));
+	const goToCompanyCodeManager = $(() => navigateTo('company-code'));
+	const goToTimesheet = $(() => navigateTo('timesheet'));
 
 	const authProviders: AuthProviderButton[] = [
 		{
@@ -56,7 +59,13 @@ export const useAuth = () => {
 			await setAuthToken(response.token);
 			setCookie(CHATBOT_COOKIE_KEY, response.token);
 			isLoading.value = false;
-			goToTimesheet();
+
+			const status = await initCipher();
+			if (status === 'initialized') {
+				goToTimesheet();
+			} else {
+				goToCompanyCodeManager();
+			}
 		} else {
 			refreshPage();
 		}
@@ -180,7 +189,13 @@ export const useAuth = () => {
 			} else {
 				await removeProvider();
 				isLoading.value = false;
-				goToTimesheet();
+
+				const status = await initCipher();
+				if (status === 'initialized') {
+					goToTimesheet();
+				} else {
+					goToCompanyCodeManager();
+				}
 			}
 		}
 	});
