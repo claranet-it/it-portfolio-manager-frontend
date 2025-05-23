@@ -69,6 +69,10 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 
 		const _projectTypeSelected = useSignal(projectSelected.value.type);
 
+		const _customerOptions = useComputed$(() => {
+			return dataCustomersSig.value.map((customer) => customer.name);
+		});
+
 		const _projectOptions = useComputed$(() => {
 			return dataProjectsSig.value.map((project) => project.name);
 		});
@@ -170,12 +174,14 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								id={UUID()}
 								label={t('CUSTOMER_LABEL')}
 								selected={customerSelected}
-								data={dataCustomersSig}
+								data={_customerOptions}
 								placeholder='Search...'
 								required
 								onChange$={onChangeCustomer}
 							/>
-							{!dataCustomersSig.value.includes(customerSelected.value) &&
+							{!dataCustomersSig.value
+								.map((customer) => customer.name)
+								.includes(customerSelected.value) &&
 								customerSelected.value !== '' &&
 								allowNewEntry && (
 									<p class='mt-1 text-xs text-gray-500 dark:text-gray-400'>
@@ -196,9 +202,10 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								disabled={!projectEnableSig.value}
 								onChange$={_onChangeProject}
 							/>
-
-							{!dataProjectsSig.value.includes(projectSelected.value) &&
-								projectSelected.value.name !== '' &&
+							{!dataProjectsSig.value
+								.map((project) => project.name)
+								.includes(_projectSelected.value) &&
+								_projectSelected.value !== '' &&
 								allowNewEntry && (
 									<p class='mt-1 text-xs text-gray-500 dark:text-gray-400'>
 										{tt('REGISTRY_CREATE_MESSAGE', {

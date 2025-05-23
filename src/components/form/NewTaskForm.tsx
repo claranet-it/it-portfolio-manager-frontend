@@ -55,6 +55,10 @@ export const NewTaskForm = component$<NewTaskForm>(
 				.map((dataTasks) => dataTasks.name);
 		});
 
+		const _customerOptions = useComputed$(() => {
+			return dataCustomersSig.value.map((customer) => customer.name);
+		});
+
 		const _projectOptions = useComputed$(() => {
 			return dataProjectsSig.value
 				.filter((dataProject) => dataProject.completed === false)
@@ -114,7 +118,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 							id={UUID()}
 							label={t('CUSTOMER_LABEL')}
 							selected={customerSelected}
-							data={dataCustomersSig}
+							data={_customerOptions}
 							placeholder={t('SEARCH')}
 							required
 							onChange$={onChangeCustomer}
