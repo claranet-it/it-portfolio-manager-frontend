@@ -6,7 +6,7 @@ import { getHttpResponse } from 'src/network/httpRequest';
 import { UUID } from 'src/utils/uuid';
 
 export const getProductivity = async (
-	customer: Customer,
+	customer: Customer | null,
 	project: string,
 	task: string,
 	name: string,
@@ -18,7 +18,7 @@ export const getProductivity = async (
 		params: {
 			from,
 			to,
-			...(customer !== '' && { customer: customer }),
+			...(customer !== null && { customer: customer.id }),
 			...(project !== '' && { project: project }),
 			...(task !== '' && { task: task }),
 			...(name !== '' && { name: name }),

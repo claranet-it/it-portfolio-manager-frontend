@@ -1,6 +1,5 @@
-import { Customer } from '@models/customer';
 import { Project } from '@models/project';
-import { INIT_TASK_VALUE } from 'src/utils/constants';
+import { INIT_CUSTOMER_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
 import { describe, expect, it } from 'vitest';
 import {
 	convertTimeToDecimal,
@@ -16,7 +15,7 @@ describe('Hours Timesheet', () => {
 			{
 				date: '',
 				company: '',
-				customer: '' as Customer,
+				customer: INIT_CUSTOMER_VALUE,
 				project: { name: '', type: 'billable' } as Project,
 				task: INIT_TASK_VALUE,
 				hours: 0,
@@ -24,7 +23,7 @@ describe('Hours Timesheet', () => {
 			{
 				date: '',
 				company: '',
-				customer: '' as Customer,
+				customer: INIT_CUSTOMER_VALUE,
 				project: { name: '', type: 'billable' } as Project,
 				task: INIT_TASK_VALUE,
 				hours: 6,

@@ -1,4 +1,5 @@
 import { component$, Signal, useComputed$, useSignal } from '@builder.io/qwik';
+import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { ReportTab } from '@models/report';
 import { Task } from '@models/task';
@@ -12,7 +13,7 @@ import { ProjectReportPreview } from './ProjectReportPreview';
 import { ReportHeader } from './ReportHeader';
 
 interface ReportProps {
-	selectedCustomersSig: Signal<string[]>;
+	selectedCustomersSig: Signal<Customer[]>;
 	selectedProjectsSig: Signal<Project[]>;
 	selectedTasksSig: Signal<Task[]>;
 	selectedUsersSig: Signal<UserProfile[]>;

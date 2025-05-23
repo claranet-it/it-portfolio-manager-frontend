@@ -47,12 +47,12 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 		const { projects, fetchProjects, isLoading } = useProjects(hideCompleted);
 		const visibleBody = useSignal(false);
 
-		const name = useSignal(customer);
+		const name = useSignal(customer.name);
 
 		const canAccess = useComputed$(async () => limitRoleAccess(Roles.ADMIN));
 
 		const initFormSignals = $(() => {
-			name.value = customer;
+			name.value = customer.name;
 		});
 
 		const customerModalState = useStore<ModalState>({
@@ -77,7 +77,7 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 		const customerDeleteModalState = useStore<ModalState>({
 			title: t('CUSTOMER_DELETE_TITLE'),
 			message: tt('CUSTOMER_DELETE_MESSAGE', {
-				name: customer,
+				name: customer.name,
 			}),
 			onConfirm$: $(async () => {
 				if (await removeCustomer(customer)) {
@@ -100,13 +100,13 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 
 		const selectPreselected = $(() => {
 			preSelectedData.value = {
-				customer: customer,
+				customer: customer.name,
 				project: undefined,
 			};
 		});
 
 		useVisibleTask$(async () => {
-			if (preOpenData.value.customer === customer && !preOpenData.value.beenOpened) {
+			if (preOpenData.value.customer === customer.name && !preOpenData.value.beenOpened) {
 				await openBody().then(() =>
 					preOpenData.value.project === undefined
 						? (preOpenData.value.beenOpened = true)
@@ -127,7 +127,8 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 						}
 					>
 						<div class='flex flex-row gap-3'>
-							<span>{customer}</span> {isLoading.value && <LoadingSpinnerInline />}
+							<span>{customer.name}</span>{' '}
+							{isLoading.value && <LoadingSpinnerInline />}
 						</div>
 						<div class='flex flex-row gap-3'>
 							{canAccess.value && (
@@ -168,7 +169,7 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 								.map((project) => {
 									return (
 										<ProjectAccordion
-											key={`project-${customer}-${project.name}`}
+											key={`project-${customer.id}-${project.name}`}
 											customer={customer}
 											project={project}
 											refresh={refresh}

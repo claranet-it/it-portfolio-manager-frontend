@@ -104,7 +104,9 @@ export const useReportProject = (
 					from: rangeStart,
 					to: rangeEnd,
 					format: 'json',
-					...(customer.value.length && { customer: customer.value }),
+					...(customer.value.length && {
+						customer: customer.value.map((cust) => cust.id),
+					}),
 					...(project.value.length && {
 						project: project.value.map((proj) => proj.name),
 					}),
