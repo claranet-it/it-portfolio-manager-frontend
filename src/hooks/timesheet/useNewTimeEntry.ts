@@ -80,8 +80,8 @@ export const useNewTimeEntry = (
 			);
 			if (customer) {
 				dataProjectsSig.value = await getProjects(customer);
-				projectEnableSig.value = true;
 			}
+			projectEnableSig.value = true;
 		} else {
 			projectTypeEnabled.newProject = false;
 			projectTypeEnabled.newCustomer = false;
@@ -101,8 +101,8 @@ export const useNewTimeEntry = (
 				);
 				if (customer) {
 					dataTasksSign.value = await getTasks(customer!, value);
-					taskEnableSig.value = true;
 				}
+				taskEnableSig.value = true;
 			} else {
 				taskEnableSig.value = false;
 			}

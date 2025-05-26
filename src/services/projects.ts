@@ -9,7 +9,7 @@ export const getProjects = async (
 	getHttpResponse<Project[]>({
 		path: `task/project`,
 		params: {
-			customer: customer.name,
+			customer: customer.id,
 			...(hideCompleted !== undefined &&
 				hideCompleted !== false && {
 					completed: 'false',
