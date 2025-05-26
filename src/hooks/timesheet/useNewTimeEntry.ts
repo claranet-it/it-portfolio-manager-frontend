@@ -12,6 +12,7 @@ import { ModalState } from '@models/modalState';
 import { getCurrentRoute, navigateTo } from 'src/router';
 import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
 import { t, tt } from '../../locale/labels';
+import { Customer } from '../../models/customer';
 import { Project } from '../../models/project';
 import { Task } from '../../models/task';
 import { TimeEntry } from '../../models/timeEntry';
@@ -35,7 +36,7 @@ export const useNewTimeEntry = (
 	const dataProjectsSig = useSignal<Project[]>([]);
 	const dataTasksSign = useSignal<Task[]>([]);
 
-	const customerSelected = useSignal<string>('');
+	const customerSelected = useSignal<Customer>({ id: '', name: '' });
 	const projectSelected = useSignal<Project>({ name: '', type: '', plannedHours: 0 } as Project);
 	const taskSelected = useSignal<Task>(INIT_TASK_VALUE);
 	const projectTypeInvalid = useSignal<boolean>(false);
@@ -47,9 +48,12 @@ export const useNewTimeEntry = (
 	const projectEnableSig = useSignal(false);
 	const taskEnableSig = useSignal(false);
 
-	const handleProjectTypeEnabled = $((customer?: string, project?: Project) => {
+	const handleProjectTypeEnabled = $((customer?: Customer, project?: Project) => {
 		if (customer !== undefined) {
-			if (customer === '' || dataCustomersSig.value.map((c) => c.name).includes(customer)) {
+			if (
+				customer.name === '' ||
+				dataCustomersSig.value.some((c) => c.name === customer.name)
+			) {
 				projectTypeEnabled.newCustomer = false;
 				if (project === undefined || project.type === '') {
 					projectSelected.value = INIT_PROJECT_VALUE;
@@ -67,20 +71,21 @@ export const useNewTimeEntry = (
 		}
 	});
 
-	const onChangeCustomer = $(async (value: string) => {
-		if (value !== '' && value === customerSelected.value && projectSelected.value.name !== '') {
+	const onChangeCustomer = $(async (customer: Customer) => {
+		if (
+			customer.name !== '' &&
+			customer.name === customerSelected.value.name &&
+			projectSelected.value.name !== ''
+		) {
 			return;
 		}
-
 		projectSelected.value = INIT_PROJECT_VALUE;
 		taskSelected.value = INIT_TASK_VALUE;
-		if (value != '') {
-			const customer = dataCustomersSig.value.find(
-				(customer) => customer.name === customerSelected.value
-			);
-			if (customer) {
-				dataProjectsSig.value = await getProjects(customer);
-			}
+
+		customerSelected.value = customer;
+
+		if (customer.name !== '') {
+			dataProjectsSig.value = await getProjects(customer);
 			projectEnableSig.value = true;
 		} else {
 			projectTypeEnabled.newProject = false;
@@ -89,19 +94,14 @@ export const useNewTimeEntry = (
 			taskEnableSig.value = false;
 		}
 
-		handleProjectTypeEnabled(value);
+		handleProjectTypeEnabled(customer);
 	});
 
 	const onChangeProject = $(async (value: Project) => {
-		if (customerSelected.value !== '') {
+		if (customerSelected.value.name !== '') {
 			taskSelected.value = INIT_TASK_VALUE;
 			if (value.name !== '') {
-				const customer = dataCustomersSig.value.find(
-					(customer) => customer.name === customerSelected.value
-				);
-				if (customer) {
-					dataTasksSign.value = await getTasks(customer!, value);
-				}
+				dataTasksSign.value = await getTasks(customerSelected.value, value);
 				taskEnableSig.value = true;
 			} else {
 				taskEnableSig.value = false;
@@ -111,24 +111,17 @@ export const useNewTimeEntry = (
 	});
 
 	const clearForm = sync$(() => {
-		customerSelected.value = '';
-		projectSelected.value = INIT_PROJECT_VALUE;
+		customerSelected.value = { id: '', name: '' };
+		projectSelected.value = { name: '', type: '', plannedHours: 0 } as Project;
 		taskSelected.value = INIT_TASK_VALUE;
 		projectTypeEnabled.newCustomer = false;
 		projectTypeEnabled.newProject = false;
 	});
 
 	const insertNewTimeEntry = $(async () => {
-		const customer = dataCustomersSig.value.find(
-			(customer) => customer.name === customerSelected.value
-		);
-		if (!customer) {
-			return;
-		}
-
 		if (allowNewEntry) {
 			const savingResult = await saveTask(
-				customer,
+				customerSelected.value,
 				projectSelected.value,
 				taskSelected.value.name
 			);
@@ -143,7 +136,7 @@ export const useNewTimeEntry = (
 				addEvent({
 					type: 'success',
 					message: tt('INSERT_NEW_PROJECT_SUCCESS_MESSAGE', {
-						customer: customerSelected.value,
+						customer: customerSelected.value.name,
 						project: projectSelected.value.name ?? '',
 						task: taskSelected.value.name,
 					}),
@@ -152,7 +145,7 @@ export const useNewTimeEntry = (
 
 				if (getCurrentRoute() === 'registry') {
 					navigateTo('registry', {
-						customer: customerSelected.value,
+						customer: customerSelected.value.name,
 						project: projectSelected.value.name,
 					});
 				}
@@ -162,7 +155,7 @@ export const useNewTimeEntry = (
 			newTimeEntry.value = {
 				date: '',
 				company: 'it', //TODO: Replace with the company value
-				customer,
+				customer: customerSelected.value,
 				project: projectSelected.value,
 				task: taskSelected.value,
 				hours: 0,
@@ -176,7 +169,7 @@ export const useNewTimeEntry = (
 
 	const newEntityExist = (): boolean => {
 		const dataCustomerExist = dataCustomersSig.value.find(
-			(customer) => customer.name === customerSelected.value
+			(customer) => customer.name === customerSelected.value.name
 		);
 		const dataProjectExist = dataProjectsSig.value.find(
 			(project) => project.name === projectSelected.value.name

@@ -214,8 +214,6 @@ export const ReportFilters = component$<{
 				_selectedCustomers.value
 			);
 
-			console.log(selectedCustomers.value.map((cust) => cust.name));
-
 			parametersHandler(
 				'customer',
 				isAllSelected ? ['all'] : selectedCustomers.value.map((cust) => cust.name)

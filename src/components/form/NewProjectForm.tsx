@@ -14,6 +14,7 @@ import { initFlowbite } from 'flowbite';
 import { INIT_TASK_VALUE } from 'src/utils/constants';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
 import { t, tt } from '../../locale/labels';
+import { Customer } from '../../models/customer';
 import { TimeEntry } from '../../models/timeEntry';
 import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
@@ -69,9 +70,11 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 
 		const _projectTypeSelected = useSignal(projectSelected.value.type);
 
-		const _customerOptions = useComputed$(() => {
+		const _customerNames = useComputed$(() => {
 			return dataCustomersSig.value.map((customer) => customer.name);
 		});
+
+		const _customerSelected = useSignal(customerSelected.value.name);
 
 		const _projectOptions = useComputed$(() => {
 			return dataProjectsSig.value.map((project) => project.name);
@@ -86,8 +89,16 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			_projectSelected.value = '';
 			_projectTypeSelected.value = '';
 			_taskSelected.value = '';
+			_customerSelected.value = '';
 
 			onCancel$ && onCancel$();
+		});
+
+		const _onChangeCustomer = $(async (customerName: string) => {
+			const foundCustomer = dataCustomersSig.value.find((c) => c.name === customerName);
+			const customer: Customer = foundCustomer || { id: '', name: customerName };
+
+			await onChangeCustomer(customer);
 		});
 
 		const _onChangeProject = $(async (value: string) => {
@@ -135,6 +146,11 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 		});
 
 		useTask$(({ track }) => {
+			track(() => customerSelected.value.name);
+			_customerSelected.value = customerSelected.value.name;
+		});
+
+		useTask$(({ track }) => {
 			track(() => projectSelected.value.name);
 			_projectSelected.value = projectSelected.value.name;
 			_projectTypeSelected.value = projectSelected.value.type;
@@ -156,8 +172,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 			}
 
 			if (preSelectedData.value.customer) {
-				customerSelected.value = preSelectedData.value.customer;
-				await onChangeCustomer(preSelectedData.value.customer);
+				await _onChangeCustomer(preSelectedData.value.customer);
 			}
 
 			if (preSelectedData.value.project) {
@@ -173,16 +188,16 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 							<Autocomplete
 								id={UUID()}
 								label={t('CUSTOMER_LABEL')}
-								selected={customerSelected}
-								data={_customerOptions}
+								selected={_customerSelected}
+								data={_customerNames}
 								placeholder='Search...'
 								required
-								onChange$={onChangeCustomer}
+								onChange$={_onChangeCustomer}
 							/>
-							{!dataCustomersSig.value
-								.map((customer) => customer.name)
-								.includes(customerSelected.value) &&
-								customerSelected.value !== '' &&
+							{!dataCustomersSig.value.some(
+								(c) => c.name === customerSelected.value.name
+							) &&
+								customerSelected.value.name !== '' &&
 								allowNewEntry && (
 									<p class='mt-1 text-xs text-gray-500 dark:text-gray-400'>
 										{tt('REGISTRY_CREATE_MESSAGE', {
@@ -202,10 +217,11 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								disabled={!projectEnableSig.value}
 								onChange$={_onChangeProject}
 							/>
-							{!dataProjectsSig.value
-								.map((project) => project.name)
-								.includes(_projectSelected.value) &&
-								_projectSelected.value !== '' &&
+
+							{!dataProjectsSig.value.some(
+								(p) => p.name === projectSelected.value.name
+							) &&
+								projectSelected.value.name !== '' &&
 								allowNewEntry && (
 									<p class='mt-1 text-xs text-gray-500 dark:text-gray-400'>
 										{tt('REGISTRY_CREATE_MESSAGE', {

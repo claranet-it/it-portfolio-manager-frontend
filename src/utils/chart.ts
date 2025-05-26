@@ -276,10 +276,10 @@ export const getTopProject = (data: ReportTimeEntry[]): string => {
 
 export const getTopCustomer = (data: ReportTimeEntry[]): string => {
 	const projectList = data.reduce((prev: Record<string, number>, time: ReportTimeEntry) => {
-		if (prev[time.customer.id]) {
-			prev[time.customer.id] = prev[time.customer.id] + time.hours;
+		if (prev[time.customer.name]) {
+			prev[time.customer.name] = prev[time.customer.name] + time.hours;
 		} else {
-			prev[time.customer.id] = time.hours;
+			prev[time.customer.name] = time.hours;
 		}
 		return prev;
 	}, {});

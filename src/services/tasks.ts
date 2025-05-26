@@ -11,7 +11,7 @@ export const getTasks = async (
 	getHttpResponse<Task[]>({
 		path: `task/task`,
 		params: {
-			customer: customer.name,
+			customer: customer.id,
 			project: typeof project === 'string' ? project : project.name,
 			...(hideCompleted !== undefined &&
 				hideCompleted !== false && {
@@ -27,7 +27,7 @@ export const saveTask = async (
 	index?: number
 ): Promise<boolean> =>
 	checkHttpResponseStatus(`task/task`, 200, 'POST', {
-		customer: customer.id,
+		customer,
 		project: project,
 		task: task,
 		index: index,
