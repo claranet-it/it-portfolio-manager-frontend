@@ -24,6 +24,7 @@ export const useTemplate = (
 		title: t('TEMPLATE_APPLYING'),
 		confirmLabel: t('ACTION_APPLY'),
 		cancelLabel: t('ACTION_CANCEL'),
+		requiredLabel: true,
 		onCancel$: $(() => {
 			formGroup.task = undefined;
 		}),

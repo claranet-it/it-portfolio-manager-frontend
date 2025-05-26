@@ -52,6 +52,7 @@ export const useTemplateList = (templates: Signal<Template[]>, fetchTemplates: Q
 		cancelLabel: t('ACTION_CANCEL'),
 		confirmLabel: t('ACTION_SAVE'),
 		idToEdit: undefined,
+		requiredLabel: true,
 	});
 
 	const openDeleteDialog = $((id: string) => {

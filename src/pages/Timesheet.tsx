@@ -62,7 +62,7 @@ export const Timesheet = component$(() => {
 
 		try {
 			templates.value =
-				/* await getTemplates(); */
+				/* []; */ /* await getTemplates(); */
 				[
 					{
 						id: '1',
@@ -175,7 +175,7 @@ export const Timesheet = component$(() => {
 							</NewTimeEntryModal>
 						</TimeSheetTable>
 
-						{templates.value.length && (
+						{templates.value.length > 0 && (
 							<Button variant={'outline'} onClick$={handleViewTemplateList}>
 								{t('VIEW_TEMPLATE_LIST')}
 							</Button>
