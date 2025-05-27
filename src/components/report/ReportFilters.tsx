@@ -86,7 +86,7 @@ export const ReportFilters = component$<{
 
 			return getUniqueValues(
 				customerProjects
-					.map((taskProjectCustomer) => taskProjectCustomer.project)
+					.map((taskProjectCustomer) => taskProjectCustomer.project.name)
 					.sort((a, b) => a.localeCompare(b))
 			);
 		});
@@ -98,8 +98,8 @@ export const ReportFilters = component$<{
 				const projectNames = selectedProjects.value.map((project) => project.name);
 				taskProjects = taskProjectCustomerSig.value.filter(
 					(element) =>
-						projectNames.includes(element.project) &&
-						_projectOptionsSig.value.includes(element.project)
+						projectNames.includes(element.project.name) &&
+						_projectOptionsSig.value.includes(element.project.name)
 				);
 			} else if (selectedCustomers.value.length !== 0) {
 				taskProjects = taskProjectCustomerSig.value.filter((element) =>
@@ -128,10 +128,9 @@ export const ReportFilters = component$<{
 			)?.customer;
 		});
 
-		// TODO: Projects
 		const getProjectSig = $(async (project: string) => {
 			const customer = taskProjectCustomerSig.value.find(
-				(value) => value.project === project
+				(value) => value.project.name === project
 			)?.customer;
 			if (customer) {
 				const customerProjectList = await getProjects(customer);
@@ -231,7 +230,13 @@ export const ReportFilters = component$<{
 					const project = await getProjectSig(projName);
 					selectedProjects.value = [
 						...selectedProjects.value,
-						project ?? { name: projName, type: '', plannedHours: 0, completed: false },
+						project ?? {
+							id: '',
+							name: projName,
+							type: '',
+							plannedHours: 0,
+							completed: false,
+						},
 					];
 				}
 			} else {

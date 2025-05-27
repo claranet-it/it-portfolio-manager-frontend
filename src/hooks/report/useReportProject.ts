@@ -108,7 +108,7 @@ export const useReportProject = (
 						customer: customer.value.map((cust) => cust.id),
 					}),
 					...(project.value.length && {
-						project: project.value.map((proj) => proj.name),
+						project: project.value.map((proj) => proj.id),
 					}),
 					...(task.value.length && { task: task.value.map((tsk) => tsk.name) }),
 					...(users.value.length && { user: users.value.map((user) => user.email) }),
