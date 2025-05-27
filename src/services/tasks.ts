@@ -36,27 +36,27 @@ export const saveTask = async (
 export const editTaskName = async (
 	customer: Customer,
 	project: Project,
-	task: string,
+	task: Task,
 	newTaskName: string
 ) =>
 	checkHttpResponseStatus('task/task', 200, 'PUT', {
 		customer: customer.id,
 		project: project.id,
-		task: task,
+		task: task.id,
 		newTask: newTaskName,
 	});
 
 export const editTask = async (
 	customer: Customer,
 	project: Project,
-	task: string,
+	task: Task,
 	completed: boolean,
 	plannedHours: number
 ) =>
 	checkHttpResponseStatus('task/task-properties', 200, 'POST', {
 		customer: customer.id,
 		project: project.id,
-		task: task,
+		task: task.id,
 		completed: completed,
 		plannedHours: plannedHours,
 	});

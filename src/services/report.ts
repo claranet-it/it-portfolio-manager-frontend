@@ -1,6 +1,7 @@
 import { Customer } from '@models/customer';
 import { Project, ProjectType } from '@models/project';
 import { ReportParamsFilters, ReportProductivityItem, ReportTimeEntry } from '@models/report';
+import { Task } from '@models/task';
 import { TimeEntry } from '@models/timeEntry';
 import { getHttpResponse } from 'src/network/httpRequest';
 import { UUID } from 'src/utils/uuid';
@@ -8,7 +9,7 @@ import { UUID } from 'src/utils/uuid';
 export const getProductivity = async (
 	customer: Customer | null,
 	project: Project | null,
-	task: string,
+	task: Task | null,
 	name: string,
 	from: string,
 	to: string
@@ -20,7 +21,7 @@ export const getProductivity = async (
 			to,
 			...(customer !== null && { customer: customer.id }),
 			...(project !== null && { project: project.id }),
-			...(task !== '' && { task: task }),
+			...(task !== null && { task: task.id }),
 			...(name !== '' && { name: name }),
 		},
 	});
@@ -36,7 +37,10 @@ type getTimeEntryResponse = Omit<TimeEntry, 'task' | 'isUnsaved' | 'index' | 'pr
 	projectType: ProjectType;
 	plannedHours: number;
 	crew: string;
-	task: string;
+	task: {
+		id: string;
+		name: string;
+	};
 };
 
 export const getReportTimeEntry = async (from: string, to: string): Promise<ReportTimeEntry[]> => {
@@ -60,7 +64,8 @@ export const getReportTimeEntry = async (from: string, to: string): Promise<Repo
 				completed: false,
 			},
 			task: {
-				name: entry.task,
+				id: entry.task.id,
+				name: entry.task.name,
 				plannedHours: 0,
 				completed: false,
 			},
@@ -89,7 +94,8 @@ export const getReportProjectsFilterBy = async (
 				completed: false,
 			},
 			task: {
-				name: entry.task,
+				id: entry.task.id,
+				name: entry.task.name,
 				plannedHours: 0,
 				completed: false,
 			},

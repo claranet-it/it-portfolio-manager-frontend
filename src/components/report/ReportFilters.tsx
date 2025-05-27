@@ -110,7 +110,7 @@ export const ReportFilters = component$<{
 			}
 
 			return taskProjects
-				.map((taskProjectCustomer) => taskProjectCustomer.task)
+				.map((taskProjectCustomer) => taskProjectCustomer.task.name)
 				.sort((a, b) => a.localeCompare(b));
 		});
 
@@ -138,10 +138,9 @@ export const ReportFilters = component$<{
 			}
 		});
 
-		// TODO: Tasks
 		const getTaskSig = $(async (task: string) => {
 			const project = taskProjectCustomerSig.value.find(
-				(value) => value.task === task
+				(value) => value.task.name === task
 			)?.project;
 			const customer = taskProjectCustomerSig.value.find(
 				(value) => value.project === project
@@ -163,7 +162,7 @@ export const ReportFilters = component$<{
 					const task = await getTaskSig(taskName);
 					selectedTasks.value = [
 						...selectedTasks.value,
-						task ?? { name: taskName, completed: false, plannedHours: 0 },
+						task ?? { id: '', name: taskName, completed: false, plannedHours: 0 },
 					];
 				}
 			} else {
