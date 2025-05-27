@@ -74,7 +74,7 @@ export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project
 
 			if (getCurrentRoute() === 'registry') {
 				navigateTo('registry', {
-					customer: customer,
+					customer: customer.name,
 					project: project.name,
 				});
 			}

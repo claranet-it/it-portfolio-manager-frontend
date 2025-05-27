@@ -19,17 +19,24 @@ export const useCustomers = (hideCompleted?: Signal<boolean>) => {
 	});
 
 	const updateProjectCustomer = $(
-		async (customer: Customer, editedCusteomr: Customer, project: Project) => {
-			const response = await editCustomer(customer, editedCusteomr, project);
+		async (customer: Customer, editedCustomerName: string, project: Project) => {
+			const response = await editCustomer(
+				customer,
+				{
+					id: customer.id,
+					name: editedCustomerName,
+				},
+				project
+			);
 			return response;
 		}
 	);
 
-	const updateCustomer = $(async (customer: Customer, editedCusteomr: Customer) => {
+	const updateCustomer = $(async (customer: Customer, editedCustomerName: string) => {
 		appStore.isLoading = true;
 		const projectList = await getProjects(customer);
 		const results = projectList.map(async (project) => {
-			return await updateProjectCustomer(customer, editedCusteomr, project);
+			return await updateProjectCustomer(customer, editedCustomerName, project);
 		});
 		appStore.isLoading = false;
 		return results.includes(Promise.resolve(false));

@@ -36,10 +36,8 @@ export const useNewTimeEntry = (
 	const dataProjectsSig = useSignal<Project[]>([]);
 	const dataTasksSign = useSignal<Task[]>([]);
 
-	const initCustomer: Customer = '';
-
-	const customerSelected = useSignal<Customer>('');
-	const projectSelected = useSignal<Project>(INIT_PROJECT_VALUE);
+	const customerSelected = useSignal<Customer>({ id: '', name: '' });
+	const projectSelected = useSignal<Project>({ name: '', type: '', plannedHours: 0 } as Project);
 	const taskSelected = useSignal<Task>(INIT_TASK_VALUE);
 	const projectTypeInvalid = useSignal<boolean>(false);
 	const projectTypeEnabled = useStore<{
@@ -52,7 +50,10 @@ export const useNewTimeEntry = (
 
 	const handleProjectTypeEnabled = $((customer?: Customer, project?: Project) => {
 		if (customer !== undefined) {
-			if (customer === '' || dataCustomersSig.value.includes(customer)) {
+			if (
+				customer.name === '' ||
+				dataCustomersSig.value.some((c) => c.name === customer.name)
+			) {
 				projectTypeEnabled.newCustomer = false;
 				if (project === undefined || project.type === '') {
 					projectSelected.value = INIT_PROJECT_VALUE;
@@ -70,14 +71,21 @@ export const useNewTimeEntry = (
 		}
 	});
 
-	const onChangeCustomer = $(async (value: string) => {
-		if (value !== '' && value === customerSelected.value && projectSelected.value.name !== '') {
+	const onChangeCustomer = $(async (customer: Customer) => {
+		if (
+			customer.name !== '' &&
+			customer.name === customerSelected.value.name &&
+			projectSelected.value.name !== ''
+		) {
 			return;
 		}
 		projectSelected.value = INIT_PROJECT_VALUE;
 		taskSelected.value = INIT_TASK_VALUE;
-		if (value != '') {
-			dataProjectsSig.value = await getProjects(value);
+
+		customerSelected.value = customer;
+
+		if (customer.name !== '') {
+			dataProjectsSig.value = await getProjects(customer);
 			projectEnableSig.value = true;
 		} else {
 			projectTypeEnabled.newProject = false;
@@ -86,11 +94,11 @@ export const useNewTimeEntry = (
 			taskEnableSig.value = false;
 		}
 
-		handleProjectTypeEnabled(value);
+		handleProjectTypeEnabled(customer);
 	});
 
 	const onChangeProject = $(async (value: Project) => {
-		if (customerSelected.value !== '') {
+		if (customerSelected.value.name !== '') {
 			taskSelected.value = INIT_TASK_VALUE;
 			if (value.name !== '') {
 				dataTasksSign.value = await getTasks(customerSelected.value, value);
@@ -103,8 +111,8 @@ export const useNewTimeEntry = (
 	});
 
 	const clearForm = sync$(() => {
-		customerSelected.value = initCustomer;
-		projectSelected.value = INIT_PROJECT_VALUE;
+		customerSelected.value = { id: '', name: '' };
+		projectSelected.value = { name: '', type: '', plannedHours: 0 } as Project;
 		taskSelected.value = INIT_TASK_VALUE;
 		projectTypeEnabled.newCustomer = false;
 		projectTypeEnabled.newProject = false;
@@ -128,7 +136,7 @@ export const useNewTimeEntry = (
 				addEvent({
 					type: 'success',
 					message: tt('INSERT_NEW_PROJECT_SUCCESS_MESSAGE', {
-						customer: customerSelected.value,
+						customer: customerSelected.value.name,
 						project: projectSelected.value.name ?? '',
 						task: taskSelected.value.name,
 					}),
@@ -137,7 +145,7 @@ export const useNewTimeEntry = (
 
 				if (getCurrentRoute() === 'registry') {
 					navigateTo('registry', {
-						customer: customerSelected.value,
+						customer: customerSelected.value.name,
 						project: projectSelected.value.name,
 					});
 				}
@@ -161,7 +169,7 @@ export const useNewTimeEntry = (
 
 	const newEntityExist = (): boolean => {
 		const dataCustomerExist = dataCustomersSig.value.find(
-			(customer) => customer === customerSelected.value
+			(customer) => customer.name === customerSelected.value.name
 		);
 		const dataProjectExist = dataProjectsSig.value.find(
 			(project) => project.name === projectSelected.value.name
