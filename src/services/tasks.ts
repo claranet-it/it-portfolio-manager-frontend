@@ -5,14 +5,14 @@ import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest
 
 export const getTasks = async (
 	customer: Customer,
-	project: Project | string,
+	project: Project,
 	hideCompleted?: boolean
 ): Promise<Task[]> =>
 	getHttpResponse<Task[]>({
 		path: `task/task`,
 		params: {
 			customer: customer.id,
-			project: typeof project === 'string' ? project : project.name,
+			project: project.id,
 			...(hideCompleted !== undefined &&
 				hideCompleted !== false && {
 					completed: 'false',
@@ -28,9 +28,9 @@ export const saveTask = async (
 ): Promise<boolean> =>
 	checkHttpResponseStatus(`task/task`, 200, 'POST', {
 		customer,
-		project: project,
-		task: task,
-		index: index,
+		project,
+		task,
+		index,
 	});
 
 export const editTaskName = async (
@@ -41,7 +41,7 @@ export const editTaskName = async (
 ) =>
 	checkHttpResponseStatus('task/task', 200, 'PUT', {
 		customer: customer.id,
-		project: project.name,
+		project: project.id,
 		task: task,
 		newTask: newTaskName,
 	});
@@ -55,7 +55,7 @@ export const editTask = async (
 ) =>
 	checkHttpResponseStatus('task/task-properties', 200, 'POST', {
 		customer: customer.id,
-		project: project.name,
+		project: project.id,
 		task: task,
 		completed: completed,
 		plannedHours: plannedHours,

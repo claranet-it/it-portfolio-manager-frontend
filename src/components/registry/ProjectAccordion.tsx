@@ -70,6 +70,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 			}),
 			onConfirm$: $(async () => {
 				const editedProject = {
+					id: project.id,
 					name: name.value,
 					type: type.value,
 					plannedHours: Number(plannedHours.value),

@@ -37,7 +37,12 @@ export const useNewTimeEntry = (
 	const dataTasksSign = useSignal<Task[]>([]);
 
 	const customerSelected = useSignal<Customer>({ id: '', name: '' });
-	const projectSelected = useSignal<Project>({ name: '', type: '', plannedHours: 0 } as Project);
+	const projectSelected = useSignal<Project>({
+		id: '',
+		name: '',
+		type: '',
+		plannedHours: 0,
+	} as Project);
 	const taskSelected = useSignal<Task>(INIT_TASK_VALUE);
 	const projectTypeInvalid = useSignal<boolean>(false);
 	const projectTypeEnabled = useStore<{
@@ -112,7 +117,7 @@ export const useNewTimeEntry = (
 
 	const clearForm = sync$(() => {
 		customerSelected.value = { id: '', name: '' };
-		projectSelected.value = { name: '', type: '', plannedHours: 0 } as Project;
+		projectSelected.value = { id: '', name: '', type: '', plannedHours: 0 } as Project;
 		taskSelected.value = INIT_TASK_VALUE;
 		projectTypeEnabled.newCustomer = false;
 		projectTypeEnabled.newProject = false;
