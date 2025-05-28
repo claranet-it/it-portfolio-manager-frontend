@@ -8,7 +8,6 @@ import {
 	useTask$,
 } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
-import { ProjectType } from '@models/project';
 import { Template } from '@models/template';
 import { TimeEntry } from '@models/timeEntry';
 import { AppContext } from 'src/app';
@@ -23,6 +22,7 @@ import { TimeSheetTable } from 'src/components/timesheet/TimeSheetTable';
 import { useGetTimeSheetDays } from 'src/hooks/timesheet/useGetTimeSheetDays';
 import { useNotification } from 'src/hooks/useNotification';
 import { usePermissionAccess } from 'src/hooks/usePermissionAccess';
+import { getTemplates } from 'src/services/template';
 import { limitRoleAccess } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
 import { Modal } from '../components/modals/Modal';
@@ -61,41 +61,7 @@ export const Timesheet = component$(() => {
 		appStore.isLoading = true;
 
 		try {
-			templates.value =
-				/* []; */ /* await getTemplates(); */
-				[
-					{
-						id: '1',
-						user: 'maria.teresa.graziano@claranet.com',
-						date_start: '2025-05-1',
-						date_end: '2025-05-30',
-						customer: 'Claranet',
-						project: {
-							name: 'Funzionale',
-							type: 'billable' as ProjectType,
-							plannedHours: 100,
-							completed: false,
-						},
-						timehours: 8,
-						daytime: [0, 6],
-					},
-					{
-						id: '2',
-						user: 'maria.teresa.graziano@claranet.com',
-						date_start: '2025-05-22',
-						date_end: '2025-06-25',
-						customer: 'Claranet',
-						project: {
-							name: 'Assenze',
-							type: 'absence' as ProjectType,
-							plannedHours: 100,
-							completed: false,
-						},
-						task: { name: 'FERIE', completed: false, plannedHours: 50 },
-						timehours: 8,
-						daytime: [1, 3],
-					},
-				];
+			templates.value = await getTemplates();
 		} catch (error) {
 			const { message } = error as Error;
 			addEvent({
