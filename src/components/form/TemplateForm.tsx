@@ -44,7 +44,7 @@ export const TemplateForm = component$<Props>(
 				{editMode && (
 					<div class='flex flex-col border-b pb-3'>
 						<h4 class='text-sm font-normal text-darkgray-500'>
-							{`${t('CLIENT')}: ${customer}`}
+							{`${t('CLIENT')}: ${customer?.name}`}
 						</h4>
 						<h4 class='text-base font-bold text-dark-grey'>{project?.name}</h4>
 						{task && (

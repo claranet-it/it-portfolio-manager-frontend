@@ -47,7 +47,7 @@ export const ApplyingTemplateForm = component$<Props>(({ formGroup }) => {
 				</h4>
 			</div>
 			<div class='flex flex-col border-b border-gray-200 pb-3'>
-				<h4 class='text-sm font-normal text-darkgray-500'>{`${t('CLIENT')}: ${customer}`}</h4>
+				<h4 class='text-sm font-normal text-darkgray-500'>{`${t('CLIENT')}: ${customer?.name}`}</h4>
 				<h4 class='text-base font-bold text-dark-grey'>{project?.name}</h4>
 			</div>
 			<Select

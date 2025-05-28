@@ -25,7 +25,7 @@ export const TemplateRow = component$<Props>(
 
 			for (const key of Object.keys(timeEntries)) {
 				const [customer, project] = key.split('-');
-				if (project === template.project.name && customer === template.customer) {
+				if (project === template.project.name && customer === template.customer.name) {
 					return false;
 				}
 			}
@@ -65,7 +65,7 @@ export const TemplateRow = component$<Props>(
 								>
 									<div class='flex flex-col'>
 										<h4 class='text-sm font-normal text-darkgray-500'>
-											{`${t('CLIENT')}: ${template.customer}`}
+											{`${t('CLIENT')}: ${template.customer.name}`}
 										</h4>
 										<h4 class='text-base font-bold text-dark-grey'>
 											{template.project?.name}

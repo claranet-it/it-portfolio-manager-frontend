@@ -298,7 +298,7 @@ export const useNewTimeEntry = (
 				date_end: formatDateString(to.value),
 				daytime: daysSelected.value.map(dayOfWeekToNumber),
 				timehours: timeHours.value,
-				customer: customerSelected.value,
+				customer: customerSelected.value.id,
 				project: projectSelected.value.name,
 				task: taskSelected.value.name,
 			};

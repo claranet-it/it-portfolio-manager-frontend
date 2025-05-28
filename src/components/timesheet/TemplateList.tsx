@@ -86,7 +86,7 @@ export const TemplateList = component$(({ onBack, templates, fetchTemplates }: P
 										>
 											<div class='flex flex-col'>
 												<h4 class='text-sm font-normal text-darkgray-500'>
-													{`${t('CLIENT')}: ${template.customer}`}
+													{`${t('CLIENT')}: ${template.customer.name}`}
 												</h4>
 												<h4 class='text-base font-bold text-dark-grey'>
 													{`${template.project.name}`}
