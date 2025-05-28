@@ -1,4 +1,5 @@
 import { component$, Signal, useSignal } from '@builder.io/qwik';
+import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { ReportTab } from '@models/report';
 import { Task } from '@models/task';
@@ -11,7 +12,7 @@ import { ProductivityLegend } from './ProductivityLegend';
 import { ProductivityTable } from './ProductivityTable';
 
 interface ReportProps {
-	selectedCustomersSig: Signal<string[]>;
+	selectedCustomersSig: Signal<Customer[]>;
 	selectedProjectsSig: Signal<Project[]>;
 	selectedTasksSig: Signal<Task[]>;
 	selectedUsersSig: Signal<UserProfile[]>;

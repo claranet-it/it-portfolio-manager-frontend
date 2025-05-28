@@ -1,5 +1,6 @@
 import { $, Slot, component$, useComputed$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { t } from 'src/locale/labels';
 import { Button } from '../Button';
 import { getIcon } from '../icons';
 
@@ -68,6 +69,9 @@ export const Modal = component$<ModalProps>(({ state }) => {
 						</Button>
 					)}
 				</div>
+				{state.requiredLabel && (
+					<div class='text-xs text-darkgray-500'>{t('LEGEND_REQUIRED')}</div>
+				)}
 			</div>
 		</div>
 	);

@@ -21,14 +21,15 @@ interface DataRangeProps {
 	title?: string;
 	from: Signal<Date>;
 	to: Signal<Date>;
-	nextAction: QRL;
-	prevAction: QRL;
+	nextAction?: QRL;
+	prevAction?: QRL;
 	limitDays?: number;
 	confirmChangeRange?: QRL;
+	modalId?: string;
 }
 
 export const DataRange = component$<DataRangeProps>(
-	({ title, from, to, nextAction, prevAction, limitDays, confirmChangeRange }) => {
+	({ title, from, to, nextAction, prevAction, limitDays, confirmChangeRange, modalId }) => {
 		const { addEvent } = useNotification();
 		const startDataPicker = useSignal<Datepicker>();
 		const endDataPicker = useSignal<Datepicker>();
@@ -76,9 +77,11 @@ export const DataRange = component$<DataRangeProps>(
 			track(() => to.value);
 
 			const $startDataPickerEl = document.getElementById(
-				'startDataPicker'
+				`startDataPicker_${modalId}`
 			) as HTMLInputElement;
-			const $endDataPickerEl = document.getElementById('endDataPicker') as HTMLInputElement;
+			const $endDataPickerEl = document.getElementById(
+				`endDataPicker_${modalId}`
+			) as HTMLInputElement;
 
 			startDataPicker.value = noSerialize(
 				new Datepicker($startDataPickerEl, {
@@ -119,18 +122,22 @@ export const DataRange = component$<DataRangeProps>(
 							</div>
 						</div>
 
-						<button
-							onClick$={prevAction}
-							class='rounded-md border border-darkgray-500 px-3 py-2 text-dark-grey'
-						>
-							{getIcon('ArrowLeft')}
-						</button>
-						<button
-							onClick$={nextAction}
-							class='rounded-md border border-darkgray-500 px-3 py-2 text-dark-grey'
-						>
-							{getIcon('ArrowRight')}
-						</button>
+						{prevAction && (
+							<button
+								onClick$={prevAction}
+								class='rounded-md border border-darkgray-500 px-3 py-2 text-dark-grey'
+							>
+								{getIcon('ArrowLeft')}
+							</button>
+						)}
+						{nextAction && (
+							<button
+								onClick$={nextAction}
+								class='rounded-md border border-darkgray-500 px-3 py-2 text-dark-grey'
+							>
+								{getIcon('ArrowRight')}
+							</button>
+						)}
 					</div>
 				</div>
 
@@ -140,13 +147,13 @@ export const DataRange = component$<DataRangeProps>(
 							<h3 class='text-dark-gray-900 border-syrface-70 mb-1 border-b-2 text-sm'>
 								{t('DATARANGE_START_LABEL')}
 							</h3>
-							<div id='startDataPicker'></div>
+							<div id={`startDataPicker_${modalId}`}></div>
 						</div>
 						<div class='flex flex-col text-center'>
 							<h3 class='text-dark-gray-900 border-syrface-70 mb-1 border-b-2 text-sm'>
 								{t('DATARANGE_END_LABEL')}
 							</h3>
-							<div id='endDataPicker'></div>
+							<div id={`endDataPicker_${modalId}`}></div>
 						</div>
 					</div>
 				</Modal>

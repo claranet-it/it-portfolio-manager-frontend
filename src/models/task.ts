@@ -1,3 +1,5 @@
+import { Customer } from './customer';
+
 export type Task = {
 	name: string;
 	completed: boolean;
@@ -5,7 +7,7 @@ export type Task = {
 };
 
 export type TaskProjectCustomer = {
-	customer: string;
+	customer: Customer;
 	project: string;
 	task: string;
 };
