@@ -8,6 +8,7 @@ import {
 	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
+import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { initFlowbite } from 'flowbite';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
@@ -55,6 +56,8 @@ export const NewTaskForm = component$<NewTaskForm>(
 			initFlowbite();
 		});
 
+		const _customerSelected = useSignal(customerSelected.value.name);
+
 		const _taskSelected = useSignal(taskSelected.value.name);
 
 		const _projectSelected = useSignal(projectSelected.value.name);
@@ -65,6 +68,10 @@ export const NewTaskForm = component$<NewTaskForm>(
 				.map((dataTasks) => dataTasks.name);
 		});
 
+		const _customerOptions = useComputed$(() => {
+			return dataCustomersSig.value.map((customer) => customer.name);
+		});
+
 		const _projectOptions = useComputed$(() => {
 			return dataProjectsSig.value
 				.filter((dataProject) => dataProject.completed === false)
@@ -73,9 +80,17 @@ export const NewTaskForm = component$<NewTaskForm>(
 
 		const _onCancel = $(() => {
 			_projectSelected.value = '';
+			_customerSelected.value = '';
 			clearForm();
 			resetTemplating();
 			onCancel$ && onCancel$();
+		});
+
+		const _onChangeCustomer = $(async (customerName: string) => {
+			const foundCustomer = dataCustomersSig.value.find((c) => c.name === customerName);
+			const customer: Customer = foundCustomer || { id: '', name: customerName };
+
+			await onChangeCustomer(customer);
 		});
 
 		const _onChangeProject = $(async (value: string) => {
@@ -89,6 +104,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 		const _handleSubmit = $((event: SubmitEvent, _: HTMLFormElement) => {
 			event.preventDefault();
 			_projectSelected.value = '';
+			_customerSelected.value = '';
 			if (isTemplating.value) {
 				handleSubmitTemplating(event, _);
 			} else {
@@ -103,6 +119,11 @@ export const NewTaskForm = component$<NewTaskForm>(
 			} else {
 				taskSelected.value.name = value;
 			}
+		});
+
+		useTask$(({ track }) => {
+			track(() => customerSelected.value);
+			_customerSelected.value = customerSelected.value.name;
 		});
 
 		useTask$(({ track }) => {
@@ -148,11 +169,11 @@ export const NewTaskForm = component$<NewTaskForm>(
 						<Autocomplete
 							id={UUID()}
 							label={t('CUSTOMER_LABEL') + '*'}
-							selected={customerSelected}
-							data={dataCustomersSig}
+							selected={_customerSelected}
+							data={_customerOptions}
 							placeholder={t('SEARCH')}
 							required
-							onChange$={onChangeCustomer}
+							onChange$={_onChangeCustomer}
 						/>
 
 						<Select

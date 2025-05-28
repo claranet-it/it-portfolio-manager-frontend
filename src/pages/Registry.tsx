@@ -97,12 +97,12 @@ export const Registry = component$(() => {
 				<div id='accordion-nested-parent' data-accordion='collapse'>
 					{(customers.value
 						? customers.value.sort((customerA, customerB) =>
-								customerA.localeCompare(customerB)
+								customerA.name.localeCompare(customerB.name)
 							)
 						: []
 					).map((customer) => (
 						<CustomerAccordion
-							key={`customer-${customer}-${hideCompleted.value ? 'only-not-completed' : 'all'}`}
+							key={`customer-${customer.id}-${hideCompleted.value ? 'only-not-completed' : 'all'}`}
 							preOpenData={preOpenDataRegistry}
 							preSelectedData={preselectedDataRegistry}
 							customer={customer}
