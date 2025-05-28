@@ -3,6 +3,7 @@ import { ProjectType } from '@models/project';
 import { ReportParamsFilters, ReportProductivityItem, ReportTimeEntry } from '@models/report';
 import { TimeEntry } from '@models/timeEntry';
 import { getHttpResponse } from 'src/network/httpRequest';
+import { decryptString, encryptCustomer, encryptString } from 'src/utils/cipher-entities';
 import { UUID } from 'src/utils/uuid';
 
 export const getProductivity = async (
@@ -18,9 +19,9 @@ export const getProductivity = async (
 		params: {
 			from,
 			to,
-			...(customer !== '' && { customer: customer }),
-			...(project !== '' && { project: project }),
-			...(task !== '' && { task: task }),
+			...(customer !== '' && { customer: await encryptCustomer(customer) }),
+			...(project !== '' && { project: await encryptString(project) }),
+			...(task !== '' && { task: await encryptString(task) }),
 			...(name !== '' && { name: name }),
 		},
 	});
@@ -46,23 +47,29 @@ export const getReportTimeEntry = async (from: string, to: string): Promise<Repo
 		},
 	});
 
-	return response.map((entry) => {
-		return {
-			...entry,
-			project: {
-				name: entry.project,
-				plannedHours: entry.plannedHours,
-				type: entry.projectType,
-				completed: false,
-			},
-			task: {
-				name: entry.task,
-				plannedHours: 0,
-				completed: false,
-			},
-			email: entry.email === '' ? UUID() : entry.email,
-		};
-	});
+	return Promise.all(
+		response.map(async (entry) => {
+			return {
+				...entry,
+				customer: await decryptString(entry.customer),
+				description: entry.description
+					? await decryptString(entry.description)
+					: entry.description,
+				project: {
+					name: await decryptString(entry.project),
+					plannedHours: entry.plannedHours,
+					type: entry.projectType,
+					completed: false,
+				},
+				task: {
+					name: await decryptString(entry.task),
+					plannedHours: 0,
+					completed: false,
+				},
+				email: entry.email === '' ? UUID() : entry.email,
+			};
+		})
+	);
 };
 
 export const getReportProjectsFilterBy = async (
@@ -74,21 +81,25 @@ export const getReportProjectsFilterBy = async (
 		params
 	);
 
-	return response.map((entry) => {
-		return {
+	return Promise.all(
+		response.map(async (entry) => ({
 			...entry,
+			customer: await decryptString(entry.customer),
+			description: entry.description
+				? await decryptString(entry.description)
+				: entry.description,
 			project: {
-				name: entry.project,
+				name: await decryptString(entry.project),
 				plannedHours: entry.plannedHours,
 				type: entry.projectType,
 				completed: false,
 			},
 			task: {
-				name: entry.task,
+				name: await decryptString(entry.task),
 				plannedHours: 0,
 				completed: false,
 			},
 			email: entry.email === '' ? UUID() : entry.email,
-		};
-	});
+		}))
+	);
 };

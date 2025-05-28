@@ -21,8 +21,7 @@ const executeRequest = async (path: string, method: HttpMethods = 'GET', body?: 
 		headers,
 		body: JSON.stringify(body),
 	};
-	const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${path}`, options);
-	return await httpResponseHandler(response);
+	return await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${path}`, options);
 };
 
 const requestPath = (path: { path: string; params?: Record<string, string> } | string) => {
@@ -36,13 +35,33 @@ const requestPath = (path: { path: string; params?: Record<string, string> } | s
 	return `${basePath}${queryString}`;
 };
 
+export const getHttpResponseWithStatus = async <T>(
+	path: { path: string; params?: Record<string, string> } | string,
+	method?: HttpMethods,
+	body?: Object,
+	plain?: boolean
+): Promise<{
+	response: T;
+	status: number;
+}> => {
+	const response = await executeRequest(requestPath(path), method, body);
+	const handledResponse = await httpResponseHandler(response);
+
+	return {
+		response: plain ? await handledResponse?.text() : await handledResponse?.json(),
+		status: response.status,
+	};
+};
+
 export const getHttpResponse = async <Response>(
 	path: { path: string; params?: Record<string, string> } | string,
 	method?: HttpMethods,
 	body?: Object,
 	plain?: boolean
 ): Promise<Response> => {
-	const response = await executeRequest(requestPath(path), method, body);
+	const response = await httpResponseHandler(
+		await executeRequest(requestPath(path), method, body)
+	);
 	return plain ? await response?.text() : await response?.json();
 };
 
@@ -52,7 +71,7 @@ export const checkHttpResponseStatus = async (
 	method?: HttpMethods,
 	body?: Object
 ): Promise<boolean> => {
-	const response = await executeRequest(path, method, body);
+	const response = await httpResponseHandler(await executeRequest(path, method, body));
 
 	if (response?.status === 400 && expectedStatus !== 400) {
 		const { message } = await response.json();

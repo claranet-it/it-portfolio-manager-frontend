@@ -1,5 +1,6 @@
 import { Effort, EffortMatrix } from '@models/effort';
 import { Month } from '@models/month';
+import { decryptEffortNotes, encryptMonthNote } from 'src/utils/cipher-entities';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
 export const getEffort = async (months: number = 3): Promise<EffortMatrix> => [
@@ -7,13 +8,23 @@ export const getEffort = async (months: number = 3): Promise<EffortMatrix> => [
 	...(await getNetowrkingEffort(months)),
 ];
 
-const getMyCompanyEffort = async (months: number = 3): Promise<EffortMatrix> =>
-	getHttpResponse<EffortMatrix>({
+const getMyCompanyEffort = async (months: number = 3): Promise<EffortMatrix> => {
+	const response = await getHttpResponse<EffortMatrix>({
 		path: `effort/next`,
 		params: {
 			months: months.toString(),
 		},
 	});
+
+	return Promise.all(
+		response.map(async (effortMatrixItem) => {
+			const [[username, effort]] = Object.entries(effortMatrixItem);
+			return {
+				[username]: await decryptEffortNotes(effort),
+			};
+		})
+	);
+};
 
 const getNetowrkingEffort = async (months: number = 3): Promise<EffortMatrix> => {
 	try {
@@ -48,4 +59,9 @@ export const putEffort = async (
 	uid: string,
 	effort: Omit<Effort, 'effort'>,
 	month: Month
-): Promise<boolean> => checkHttpResponseStatus('effort', 204, 'PUT', { uid, ...effort, ...month });
+): Promise<boolean> =>
+	checkHttpResponseStatus('effort', 204, 'PUT', {
+		uid,
+		...effort,
+		...(await encryptMonthNote(month)),
+	});
