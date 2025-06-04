@@ -17,6 +17,7 @@ export const getTimeEntries = async (
 export const deleteTimeEntry = async (entry: TimeEntry): Promise<boolean> =>
 	checkHttpResponseStatus(`time-entry/mine`, 200, 'DELETE', {
 		...entry,
+		customer: entry.customer.id,
 		project: entry.project.name,
 	});
 
@@ -26,6 +27,7 @@ export const postTimeEntries = async (
 ): Promise<boolean> => {
 	const _timeEntry = {
 		...timeEntry,
+		customer: timeEntry.customer.id,
 		project: timeEntry.project.name,
 		task: typeof timeEntry.task === 'string' ? timeEntry.task : timeEntry.task.name,
 	};

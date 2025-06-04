@@ -11,4 +11,5 @@ export type ModalState = {
 	onConfirm$?: QRL;
 	onCancel$?: QRL;
 	onClose$?: QRL;
+	requiredLabel?: boolean;
 };

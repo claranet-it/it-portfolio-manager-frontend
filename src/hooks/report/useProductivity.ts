@@ -36,7 +36,7 @@ export const useProductivity = (
 		) => {
 			try {
 				const result = await getProductivity(
-					el.customer ?? '',
+					el.customer ?? null,
 					el.project ?? '',
 					el.task ?? '',
 					user?.name ?? '',
@@ -90,7 +90,7 @@ export const useProductivity = (
 				});
 			} catch (error) {
 				console.error(
-					`Failed to get productivity for customer: ${el.customer}, project: ${el.project}, task: ${el.task}`,
+					`Failed to get productivity for customer: ${el.customer?.name}, project: ${el.project}, task: ${el.task}`,
 					error
 				);
 			}
@@ -109,7 +109,7 @@ export const useProductivity = (
 		) {
 			tempResults = await getProductivityResults(
 				{
-					customer: '',
+					customer: undefined,
 					project: '',
 					task: '',
 				},
@@ -117,14 +117,18 @@ export const useProductivity = (
 				tempResults
 			);
 		} else {
+			// TODO: Customer (check this when APIs are ready)
+
 			// Extract project and task names as strings
+			const stringCustomers = customers.value.map((cust) => cust.name);
 			const stringProjects = projects.value.map((proj) => proj.name);
 			const stringTasks = tasks.value.map((task) => task.name);
 
 			const arrayToCheck: Partial<TaskProjectCustomer>[] = taskProjectCustomerSig.value
 				.filter((entry) => {
 					const isCustomerIncluded =
-						customers.value.length === 0 || customers.value.includes(entry.customer);
+						stringCustomers.length === 0 ||
+						stringCustomers.includes(entry.customer.name);
 					const isProjectIncluded =
 						stringProjects.length === 0 || stringProjects.includes(entry.project);
 					const isTaskIncluded =
