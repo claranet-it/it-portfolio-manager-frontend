@@ -127,7 +127,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 
 		const groupedByProject = useComputed$(() => {
 			return state.dataTimeEntries.reduce<TimeEntryRow>((acc, entry) => {
-				const key = `${entry.customer.id}-${entry.project.name}-${entry.task}`;
+				const key = `${entry.customer.id}/${entry.project.name}/${entry.task}`;
 
 				if (!acc[key]) {
 					acc[key] = [];

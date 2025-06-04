@@ -89,6 +89,6 @@ export const dayOfWeekToNumber = (day: string): number => {
 	return DAYS_OF_WEEK.findIndex((item) => item === day);
 };
 
-export const NumberTodayOfWeek = (day: number): string => {
+export const NumberToDayOfWeek = (day: number): string => {
 	return DAYS_OF_WEEK[day];
 };

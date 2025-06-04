@@ -24,8 +24,8 @@ export const TemplateRow = component$<Props>(
 			}
 
 			for (const key of Object.keys(timeEntries)) {
-				const [customer, project] = key.split('-');
-				if (project === template.project.name && customer === template.customer.name) {
+				const [customer, project] = key.split('/');
+				if (project === template.project.name && customer === template.customer.id) {
 					return false;
 				}
 			}

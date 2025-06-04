@@ -3,7 +3,7 @@ import { Template } from '@models/template';
 import { getIcon } from 'src/components/icons';
 import { useTemplateList } from 'src/hooks/timesheet/useTemplateList';
 import { t } from 'src/locale/labels';
-import { NumberTodayOfWeek } from 'src/utils/dates';
+import { NumberToDayOfWeek } from 'src/utils/dates';
 import { TemplateForm } from '../form/TemplateForm';
 import { Modal } from '../modals/Modal';
 
@@ -114,7 +114,7 @@ export const TemplateList = component$(({ onBack, templates, fetchTemplates }: P
 											scope='row'
 											class='border border-surface-50 px-6 py-4 text-left'
 										>
-											{template.daytime.map(NumberTodayOfWeek).join(', ')}
+											{template.daytime.map(NumberToDayOfWeek).join(', ')}
 										</td>
 										<td
 											scope='row'

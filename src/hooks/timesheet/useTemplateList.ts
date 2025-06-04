@@ -7,7 +7,7 @@ import { Template } from '@models/template';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 import { deleteTemplate, updateTemplate } from 'src/services/template';
-import { dayOfWeekToNumber, formatDateString, NumberTodayOfWeek } from 'src/utils/dates';
+import { dayOfWeekToNumber, formatDateString, NumberToDayOfWeek } from 'src/utils/dates';
 import { convertTimeToDecimal } from 'src/utils/timesheet';
 import { useNotification } from '../useNotification';
 
@@ -67,7 +67,7 @@ export const useTemplateList = (templates: Signal<Template[]>, fetchTemplates: Q
 			from.value = new Date(template.date_start);
 			to.value = new Date(template.date_end);
 			timeHours.value = template.timehours;
-			daysSelected.value = template.daytime.map(NumberTodayOfWeek);
+			daysSelected.value = template.daytime.map(NumberToDayOfWeek);
 			customer.value = template.customer;
 			task.value = template.task;
 			project.value = template.project;
@@ -110,7 +110,7 @@ export const useTemplateList = (templates: Signal<Template[]>, fetchTemplates: Q
 					const payload = {
 						date_start: formatDateString(from.value),
 						date_end: formatDateString(to.value),
-						timeHours: timeHours.value,
+						timehours: timeHours.value,
 						daytime: daysSelected.value.map(dayOfWeekToNumber),
 					};
 					await updateTemplate(editModalState.idToEdit, payload);
