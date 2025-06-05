@@ -103,7 +103,9 @@ export const ReportFilters = component$<{
 				);
 			} else if (selectedCustomers.value.length !== 0) {
 				taskProjects = taskProjectCustomerSig.value.filter((element) =>
-					selectedCustomers.value.includes(element.customer)
+					selectedCustomers.value
+						.map((customer) => customer.name)
+						.includes(element.customer.name)
 				);
 			} else {
 				taskProjects = taskProjectCustomerSig.value;
