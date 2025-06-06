@@ -18,14 +18,13 @@ export const getTimeEntries = async (
 	return Promise.all(response.map(decryptTimeEntry));
 };
 
-export const deleteTimeEntry = async (entry: TimeEntry): Promise<boolean> => {
-	const encryptedTimeEntry = await encryptTimeEntry(entry);
-
-	return checkHttpResponseStatus(`time-entry/mine`, 200, 'DELETE', {
-		...encryptedTimeEntry,
-		project: encryptedTimeEntry.project.name,
+export const deleteTimeEntry = async (entry: TimeEntry): Promise<boolean> =>
+	checkHttpResponseStatus(`time-entry/mine`, 200, 'DELETE', {
+		...entry,
+		customer: entry.customer.id,
+		project: entry.project.id,
+		task: entry.task.id,
 	});
-};
 
 export const postTimeEntries = async (
 	timeEntry: TimeEntryObject,
@@ -35,13 +34,9 @@ export const postTimeEntries = async (
 
 	const _timeEntry = {
 		...encryptedTimeEntry,
-		project: encryptedTimeEntry.project.name,
-
-		// TODO: CHECK THIS - Task could not be a string, if it is, its a problem
-		task:
-			typeof encryptedTimeEntry.task === 'string'
-				? encryptedTimeEntry.task
-				: encryptedTimeEntry.task.name,
+		customer: timeEntry.customer.id,
+		project: timeEntry.project.id,
+		task: timeEntry.task.id,
 	};
 
 	return checkHttpResponseStatus(

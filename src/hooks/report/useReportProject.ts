@@ -104,11 +104,13 @@ export const useReportProject = (
 					from: rangeStart,
 					to: rangeEnd,
 					format: 'json',
-					...(customer.value.length && { customer: customer.value }),
-					...(project.value.length && {
-						project: project.value.map((proj) => proj.name),
+					...(customer.value.length && {
+						customer: customer.value.map((cust) => cust.id),
 					}),
-					...(task.value.length && { task: task.value.map((tsk) => tsk.name) }),
+					...(project.value.length && {
+						project: project.value.map((proj) => proj.id),
+					}),
+					...(task.value.length && { task: task.value.map((tsk) => tsk.id) }),
 					...(users.value.length && { user: users.value.map((user) => user.email) }),
 				};
 				calls.push(getReportProjectsFilterBy(params));

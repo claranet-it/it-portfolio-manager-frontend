@@ -15,8 +15,9 @@ import {
 	getlHoursPerProject,
 } from '../../utils/timesheet';
 
+import { Customer } from '@models/customer';
 import { Task } from '@models/task';
-import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
+import { INIT_CUSTOMER_VALUE, INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
 import { Button } from '../Button';
 import { getIcon } from '../icons';
 import { Modal } from '../modals/Modal';
@@ -137,7 +138,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 
 		const groupedByProject = useComputed$(() => {
 			return state.dataTimeEntries.reduce<TimeEntryRow>((acc, entry) => {
-				const key = `${entry.customer}-${entry.project.name}-${entry.task}`;
+				const key = `${entry.customer.id}-${entry.project.id}-${entry.task.id}`;
 
 				if (!acc[key]) {
 					acc[key] = [];
@@ -155,11 +156,11 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 		};
 
 		const setNewTimeEntry = $(
-			(date: string, customer?: string, project?: Project, task?: Task) => {
+			(date: string, customer?: Customer, project?: Project, task?: Task) => {
 				newTimeEntry.value = {
 					date: date,
 					company: 'it',
-					customer: customer || '',
+					customer: customer || INIT_CUSTOMER_VALUE,
 					project: project || INIT_PROJECT_VALUE,
 					task: task || INIT_TASK_VALUE,
 					hours: 0,
@@ -224,7 +225,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 									>
 										<div class='flex flex-col'>
 											<h4 class='text-sm font-normal text-darkgray-500'>
-												{`${t('CLIENT')}: ${customer}`}
+												{`${t('CLIENT')}: ${customer?.name}`}
 											</h4>
 											<h4 class='text-base font-bold text-dark-grey'>
 												{project?.name}

@@ -20,14 +20,20 @@ export const decryptString = async (str: string): Promise<string> => {
 
 export const encryptCustomer = async (customer: Customer): Promise<Customer> => {
 	const cipher = getCipher();
-	const customerEncrypted = await cipher.encrypt(customer);
-	return customerEncrypted;
+	const customerNameEncrypted = await cipher.encrypt(customer.name);
+	return {
+		...customer,
+		name: customerNameEncrypted,
+	};
 };
 
 export const decryptCustomer = async (customer: Customer): Promise<Customer> => {
 	const cipher = getCipher();
-	const customerDecrypted = await cipher.decrypt(customer);
-	return customerDecrypted;
+	const customerNameDecrypted = await cipher.decrypt(customer.name);
+	return {
+		...customer,
+		name: customerNameDecrypted,
+	};
 };
 
 export const encryptProject = async (project: Project): Promise<Project> => {
@@ -71,9 +77,6 @@ export const encryptTimeEntry = async <T extends TimeEntry | TimeEntryObject>(
 ): Promise<T> => {
 	return {
 		...timeEntry,
-		customer: await encryptCustomer(timeEntry.customer),
-		project: await encryptProject(timeEntry.project),
-		task: await encryptTask(timeEntry.task),
 		description: timeEntry.description
 			? await encryptString(timeEntry.description)
 			: timeEntry.description,

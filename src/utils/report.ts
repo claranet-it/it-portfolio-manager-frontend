@@ -93,7 +93,7 @@ export const getReportCSV = async (data: ReportTimeEntry[]): Promise<string> => 
 				'"' + entry.name?.replaceAll('"', '""') + '"',
 				entry.company,
 				entry.crew,
-				'"' + entry.customer.replaceAll('"', '""') + '"',
+				'"' + entry.customer.name.replaceAll('"', '""') + '"',
 				'"' + entry.project.name.replaceAll('"', '""') + '"',
 				'"' + entry.task.name.replaceAll('"', '""') + '"',
 				entry.project.type,

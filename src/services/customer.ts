@@ -1,6 +1,6 @@
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
-import { decryptCustomer, encryptCustomer, encryptProject } from 'src/utils/cipher-entities';
+import { decryptCustomer, encryptCustomer } from 'src/utils/cipher-entities';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
 export const getCustomers = async (hideCompleted?: boolean): Promise<Customer[]> => {
@@ -23,14 +23,14 @@ export const editCustomer = async (
 	project: Project
 ) =>
 	checkHttpResponseStatus('task/customer-project', 200, 'PUT', {
-		customer: await encryptCustomer(customer),
+		customer: customer.id,
+		project: project.id,
 		newCustomer: await encryptCustomer(editedCustomer),
-		project: await encryptProject(project),
 	});
 
 export const deleteCustomer = async (customer: Customer, project: Project) =>
 	checkHttpResponseStatus('task/customer-project', 200, 'DELETE', {
-		customer: await encryptCustomer(customer),
-		project: (await encryptProject(project)).name,
+		customer: customer.id,
+		project: project.id,
 		inactive: true,
 	});

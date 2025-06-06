@@ -1,15 +1,16 @@
 import { Customer } from '@models/customer';
-import { ProjectType } from '@models/project';
+import { Project, ProjectType } from '@models/project';
 import { ReportParamsFilters, ReportProductivityItem, ReportTimeEntry } from '@models/report';
+import { Task } from '@models/task';
 import { TimeEntry } from '@models/timeEntry';
 import { getHttpResponse } from 'src/network/httpRequest';
-import { decryptString, encryptCustomer, encryptString } from 'src/utils/cipher-entities';
+import { decryptCustomer, decryptString } from 'src/utils/cipher-entities';
 import { UUID } from 'src/utils/uuid';
 
 export const getProductivity = async (
-	customer: Customer,
-	project: string,
-	task: string,
+	customer: Customer | null,
+	project: Project | null,
+	task: Task | null,
 	name: string,
 	from: string,
 	to: string
@@ -19,9 +20,9 @@ export const getProductivity = async (
 		params: {
 			from,
 			to,
-			...(customer !== '' && { customer: await encryptCustomer(customer) }),
-			...(project !== '' && { project: await encryptString(project) }),
-			...(task !== '' && { task: await encryptString(task) }),
+			...(customer !== null && { customer: customer.id }),
+			...(project !== null && { project: project.id }),
+			...(task !== null && { task: task.id }),
 			...(name !== '' && { name: name }),
 		},
 	});
@@ -29,12 +30,18 @@ export const getProductivity = async (
 
 // TODO: Remove after BE has been updated with correct project type
 type getTimeEntryResponse = Omit<TimeEntry, 'task' | 'isUnsaved' | 'index' | 'project'> & {
+	project: {
+		id: string;
+		name: string;
+	};
+	task: {
+		id: string;
+		name: string;
+	};
 	email: string;
-	project: string;
 	projectType: ProjectType;
 	plannedHours: number;
 	crew: string;
-	task: string;
 };
 
 export const getReportTimeEntry = async (from: string, to: string): Promise<ReportTimeEntry[]> => {
@@ -48,27 +55,27 @@ export const getReportTimeEntry = async (from: string, to: string): Promise<Repo
 	});
 
 	return Promise.all(
-		response.map(async (entry) => {
-			return {
-				...entry,
-				customer: await decryptString(entry.customer),
-				description: entry.description
-					? await decryptString(entry.description)
-					: entry.description,
-				project: {
-					name: await decryptString(entry.project),
-					plannedHours: entry.plannedHours,
-					type: entry.projectType,
-					completed: false,
-				},
-				task: {
-					name: await decryptString(entry.task),
-					plannedHours: 0,
-					completed: false,
-				},
-				email: entry.email === '' ? UUID() : entry.email,
-			};
-		})
+		response.map(async (entry) => ({
+			...entry,
+			customer: await decryptCustomer(entry.customer),
+			description: entry.description
+				? await decryptString(entry.description)
+				: entry.description,
+			project: {
+				id: entry.project.id,
+				name: await decryptString(entry.project.name),
+				plannedHours: entry.plannedHours,
+				type: entry.projectType,
+				completed: false,
+			},
+			task: {
+				id: entry.task.id,
+				name: await decryptString(entry.task.name),
+				plannedHours: 0,
+				completed: false,
+			},
+			email: entry.email === '' ? UUID() : entry.email,
+		}))
 	);
 };
 
@@ -84,18 +91,20 @@ export const getReportProjectsFilterBy = async (
 	return Promise.all(
 		response.map(async (entry) => ({
 			...entry,
-			customer: await decryptString(entry.customer),
+			customer: await decryptCustomer(entry.customer),
 			description: entry.description
 				? await decryptString(entry.description)
 				: entry.description,
 			project: {
-				name: await decryptString(entry.project),
+				id: entry.project.id,
+				name: await decryptString(entry.project.name),
 				plannedHours: entry.plannedHours,
 				type: entry.projectType,
 				completed: false,
 			},
 			task: {
-				name: await decryptString(entry.task),
+				id: entry.task.id,
+				name: await decryptString(entry.task.name),
 				plannedHours: 0,
 				completed: false,
 			},
