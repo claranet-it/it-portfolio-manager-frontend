@@ -37,8 +37,8 @@ export const useProductivity = (
 			try {
 				const result = await getProductivity(
 					el.customer ?? null,
-					el.project ?? '',
-					el.task ?? '',
+					el.project ?? null,
+					el.task ?? null,
 					user?.name ?? '',
 					formatDateString(from.value),
 					formatDateString(to.value)
@@ -90,7 +90,7 @@ export const useProductivity = (
 				});
 			} catch (error) {
 				console.error(
-					`Failed to get productivity for customer: ${el.customer?.name}, project: ${el.project}, task: ${el.task}`,
+					`Failed to get productivity for customer: ${el.customer?.name}, project: ${el.project?.name}, task: ${el.task?.name}`,
 					error
 				);
 			}
@@ -110,8 +110,8 @@ export const useProductivity = (
 			tempResults = await getProductivityResults(
 				{
 					customer: undefined,
-					project: '',
-					task: '',
+					project: undefined,
+					task: undefined,
 				},
 				undefined,
 				tempResults
@@ -130,9 +130,9 @@ export const useProductivity = (
 						stringCustomers.length === 0 ||
 						stringCustomers.includes(entry.customer.name);
 					const isProjectIncluded =
-						stringProjects.length === 0 || stringProjects.includes(entry.project);
+						stringProjects.length === 0 || stringProjects.includes(entry.project.name);
 					const isTaskIncluded =
-						stringTasks.length === 0 || stringTasks.includes(entry.task);
+						stringTasks.length === 0 || stringTasks.includes(entry.task.name);
 
 					return isCustomerIncluded && isProjectIncluded && isTaskIncluded;
 				})

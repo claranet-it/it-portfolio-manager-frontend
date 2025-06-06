@@ -20,13 +20,13 @@ export const getProjects = async (
 export const deleteProject = async (customer: Customer, project: Project) =>
 	checkHttpResponseStatus('task/customer-project', 200, 'DELETE', {
 		customer: customer.id,
-		project: project.name,
+		project: project.id,
 		inactive: true,
 	});
 
 export const editProject = async (customer: Customer, oldProject: Project, newProject: Project) =>
 	checkHttpResponseStatus('task/customer-project', 200, 'PUT', {
 		customer: customer.id,
-		project: oldProject,
+		project: oldProject.id,
 		newProject: newProject,
 	});
