@@ -11,6 +11,8 @@ import { AppStore } from '@models/configurations';
 import { initFlowbite } from 'flowbite';
 import { getRoleBasedMenu } from './components/Header';
 import { Layout } from './components/Layout';
+import { CipherContext, CipherStore } from './context/cipherContext';
+import { useCipher } from './hooks/useCipher';
 import { addHttpErrorListener } from './network/httpResponseHandler';
 import { isPublicRoute, routes, useRouter } from './router';
 import { getConfiguration } from './services/configuration';
@@ -54,10 +56,15 @@ const initialState: AppStore = {
 };
 
 export const App = component$(() => {
-	const appStore = useStore<AppStore>(initialState);
 	const currentRouteSignal = useRouter();
 
+	const appStore = useStore<AppStore>(initialState);
 	useContextProvider(AppContext, appStore);
+
+	const cipherStore = useStore<CipherStore>({ cipher: { status: 'uninitialized' } });
+	useContextProvider(CipherContext, cipherStore);
+
+	const { initCipher } = useCipher();
 
 	useVisibleTask$(({ track }) => {
 		// on change route
@@ -78,6 +85,13 @@ export const App = component$(() => {
 				roleHierarchy[requiredRole] <= roleHierarchy[user.role]
 			);
 		};
+
+		const status = await initCipher();
+		if (status !== 'initialized') {
+			currentRouteSignal.value = 'company-code';
+			window.history.pushState({}, '', '/company-code');
+			return;
+		}
 
 		const res = getRoleBasedMenu().find(hasAccess);
 

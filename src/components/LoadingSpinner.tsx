@@ -1,7 +1,7 @@
 import { component$ } from '@builder.io/qwik';
 import { t } from '../locale/labels';
 
-export const LoadingSpinner = component$(() => {
+export const LoadingSpinner = component$(({ customLabel }: { customLabel?: string }) => {
 	return (
 		<div class='flex flex-col items-center justify-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800'>
 			<svg
@@ -22,7 +22,7 @@ export const LoadingSpinner = component$(() => {
 			</svg>
 
 			<div class='animate-pulse rounded-md bg-clara-red px-3 py-1 text-center text-xs font-medium leading-none'>
-				<span class='text-xs text-white-100'>{t('LOADING_LABEL')}</span>
+				<span class='text-xs text-white-100'>{customLabel || t('LOADING_LABEL')}</span>
 			</div>
 		</div>
 	);
