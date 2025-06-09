@@ -58,9 +58,7 @@ export const getReportTimeEntry = async (from: string, to: string): Promise<Repo
 		response.map(async (entry) => ({
 			...entry,
 			customer: await decryptCustomer(entry.customer),
-			description: entry.description
-				? await decryptString(entry.description)
-				: entry.description,
+			description: await decryptString(entry.description),
 			project: {
 				id: entry.project.id,
 				name: await decryptString(entry.project.name),
@@ -92,9 +90,7 @@ export const getReportProjectsFilterBy = async (
 		response.map(async (entry) => ({
 			...entry,
 			customer: await decryptCustomer(entry.customer),
-			description: entry.description
-				? await decryptString(entry.description)
-				: entry.description,
+			description: await decryptString(entry.description),
 			project: {
 				id: entry.project.id,
 				name: await decryptString(entry.project.name),

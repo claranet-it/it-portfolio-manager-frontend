@@ -6,17 +6,26 @@ import { Task } from '@models/task';
 import { TimeEntry, TimeEntryObject } from '@models/timeEntry';
 import { getCipher } from './cipher';
 
-export const encryptString = async (str: string): Promise<string> => {
+export async function encryptString(str: string): Promise<string>;
+export async function encryptString(str: undefined): Promise<undefined>;
+export async function encryptString(str?: string): Promise<string | undefined>;
+export async function encryptString(str?: string): Promise<string | undefined> {
+	if (str === undefined) {
+		return undefined;
+	}
 	const cipher = getCipher();
 	const strEncrypted = await cipher.encrypt(str);
 	return strEncrypted;
-};
+}
 
-export const decryptString = async (str: string): Promise<string> => {
+export async function decryptString(str: string): Promise<string>;
+export async function decryptString(str: undefined): Promise<undefined>;
+export async function decryptString(str?: string): Promise<string | undefined>;
+export async function decryptString(str?: string): Promise<string | undefined> {
 	const cipher = getCipher();
 	const strDecrypted = await cipher.decrypt(str);
 	return strDecrypted;
-};
+}
 
 export const encryptCustomer = async (customer: Customer): Promise<Customer> => {
 	const cipher = getCipher();
@@ -77,9 +86,7 @@ export const encryptTimeEntry = async <T extends TimeEntry | TimeEntryObject>(
 ): Promise<T> => {
 	return {
 		...timeEntry,
-		description: timeEntry.description
-			? await encryptString(timeEntry.description)
-			: timeEntry.description,
+		description: await encryptString(timeEntry.description),
 	};
 };
 
@@ -91,9 +98,7 @@ export const decryptTimeEntry = async <T extends TimeEntry | TimeEntryObject>(
 		customer: await decryptCustomer(timeEntry.customer),
 		project: await decryptProject(timeEntry.project),
 		task: await decryptTask(timeEntry.task),
-		description: timeEntry.description
-			? await decryptString(timeEntry.description)
-			: timeEntry.description,
+		description: await decryptString(timeEntry.description),
 	};
 };
 
