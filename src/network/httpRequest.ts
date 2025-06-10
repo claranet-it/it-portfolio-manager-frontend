@@ -35,6 +35,23 @@ const requestPath = (path: { path: string; params?: Record<string, string> } | s
 	return `${basePath}${queryString}`;
 };
 
+export const multipartHttpRequest = async (
+	path: string,
+	method: HttpMethods = 'POST',
+	body: FormData
+) => {
+	const token = await getAuthToken();
+	const options: RequestInit = {
+		method,
+		headers: new Headers({
+			Authorization: `Bearer ${token}`,
+		}),
+		body,
+	};
+	const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${path}`, options);
+	return await httpResponseHandler(response);
+};
+
 export const getHttpResponseWithStatus = async <T>(
 	path: { path: string; params?: Record<string, string> } | string,
 	method?: HttpMethods,

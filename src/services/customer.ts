@@ -25,7 +25,7 @@ export const editCustomer = async (
 	checkHttpResponseStatus('task/customer-project', 200, 'PUT', {
 		customer: customer.id,
 		project: project.id,
-		newCustomer: await encryptCustomer(editedCustomer),
+		newCustomer: (await encryptCustomer(editedCustomer)).name,
 	});
 
 export const deleteCustomer = async (customer: Customer, project: Project) =>

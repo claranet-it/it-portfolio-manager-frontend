@@ -73,6 +73,15 @@ export const App = component$(() => {
 		initFlowbite();
 	});
 
+	useTask$(() => {
+		return addHttpErrorListener(async ({ status }) => {
+			if (status !== 401) return;
+
+			await removeAuthToken();
+			window.location.replace('auth?msg=401');
+		});
+	});
+
 	useTask$(async () => {
 		if (isPublicRoute(currentRouteSignal.value)) return;
 
@@ -106,15 +115,6 @@ export const App = component$(() => {
 			const configuration = await getConfiguration();
 			appStore.configuration = configuration;
 		}
-	});
-
-	useTask$(() => {
-		return addHttpErrorListener(async ({ status }) => {
-			if (status !== 401) return;
-
-			await removeAuthToken();
-			window.location.replace('auth?msg=401');
-		});
 	});
 
 	return isPublicRoute(currentRouteSignal.value) ? (

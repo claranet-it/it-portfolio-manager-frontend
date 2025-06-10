@@ -1,5 +1,9 @@
 import { CipherKeys, DataToEncrypt } from '@models/cipher';
-import { getHttpResponse, getHttpResponseWithStatus } from 'src/network/httpRequest';
+import {
+	getHttpResponse,
+	getHttpResponseWithStatus,
+	multipartHttpRequest,
+} from 'src/network/httpRequest';
 
 export const getCipherKeys = async (): Promise<CipherKeys | null> => {
 	const { response, status } = await getHttpResponseWithStatus<CipherKeys>('company/keys');
@@ -38,5 +42,16 @@ export const saveCipherKeys = async ({
 export const getDataToEncrypt = async () =>
 	getHttpResponse<DataToEncrypt>('encryption/to-be-encrypted');
 
-export const saveDataToEncrypt = async (encryptedData: DataToEncrypt) =>
-	getHttpResponse('encryption/to-be-encrypted', 'PATCH', encryptedData, true);
+export const saveDataToEncrypt = async (encryptedData: DataToEncrypt) => {
+	const blob = new Blob([JSON.stringify(encryptedData)], { type: 'application/json' });
+	const formData = new FormData();
+	formData.append('file', blob, 'data.json');
+
+	const response = await multipartHttpRequest('encryption/to-be-encrypted', 'PATCH', formData);
+
+	if (response?.status === 200) {
+		return true;
+	}
+
+	throw new Error('Failed to save encrypted data.');
+};
