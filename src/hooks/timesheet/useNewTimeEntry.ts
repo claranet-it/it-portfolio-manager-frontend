@@ -30,9 +30,9 @@ import { useGetTimeSheetDays } from './useGetTimeSheetDays';
 export const useNewTimeEntry = (
 	newTimeEntry: Signal<TimeEntry | undefined>,
 	alertMessageState: ModalState,
-	fetchTemplates: QRL,
 	closeForm?: QRL,
-	allowNewEntry?: boolean
+	allowNewEntry?: boolean,
+	fetchTemplates?: QRL
 ) => {
 	const { addEvent } = useNotification();
 	const appStore = useContext(AppContext);
@@ -309,7 +309,7 @@ export const useNewTimeEntry = (
 				task_id: taskSelected.value.id,
 			};
 			await saveTemplate(payload);
-			await fetchTemplates();
+			fetchTemplates && (await fetchTemplates());
 		} catch (error) {
 			const { message } = error as Error;
 			addEvent({

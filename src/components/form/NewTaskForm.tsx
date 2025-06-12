@@ -51,7 +51,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 			handleTemplating,
 			resetTemplating,
 			handleSubmitTemplating,
-		} = useNewTimeEntry(timeEntry, alertMessageState, fetchTemplate$, onCancel$, false);
+		} = useNewTimeEntry(timeEntry, alertMessageState, onCancel$, false, fetchTemplate$);
 
 		useVisibleTask$(() => {
 			initFlowbite();
