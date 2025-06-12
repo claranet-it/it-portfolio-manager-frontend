@@ -137,6 +137,7 @@ export const Timesheet = component$(() => {
 									timeEntry={newTimeEntry}
 									alertMessageState={alertMessageState}
 									onCancel$={newProjectCancelAction}
+									fetchTemplate$={fetchTemplates}
 								/>
 							</NewTimeEntryModal>
 						</TimeSheetTable>

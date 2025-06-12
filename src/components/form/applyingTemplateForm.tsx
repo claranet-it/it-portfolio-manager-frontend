@@ -13,7 +13,7 @@ interface Props {
 
 export const ApplyingTemplateForm = component$<Props>(({ formGroup }) => {
 	const { customer, project, task, id } = formGroup;
-	const key = `${task}-${customer}-${id}`;
+	const key = `${project?.name}-${customer?.name}-${id}`;
 	const taskSelectedString = useSignal<string>(task?.name || '');
 	const taskOptions = useSignal<string[]>([]);
 	const tasks = useSignal<Task[]>([]);

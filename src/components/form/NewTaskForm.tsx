@@ -23,11 +23,12 @@ import { TemplateForm } from './TemplateForm';
 interface NewTaskForm {
 	timeEntry: Signal<TimeEntry | undefined>;
 	alertMessageState: ModalState;
+	fetchTemplate$: QRL;
 	onCancel$?: QRL;
 }
 
 export const NewTaskForm = component$<NewTaskForm>(
-	({ timeEntry, alertMessageState, onCancel$ }) => {
+	({ timeEntry, alertMessageState, fetchTemplate$, onCancel$ }) => {
 		const {
 			dataCustomersSig,
 			dataProjectsSig,
@@ -50,7 +51,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 			handleTemplating,
 			resetTemplating,
 			handleSubmitTemplating,
-		} = useNewTimeEntry(timeEntry, alertMessageState, onCancel$, false);
+		} = useNewTimeEntry(timeEntry, alertMessageState, fetchTemplate$, onCancel$, false);
 
 		useVisibleTask$(() => {
 			initFlowbite();

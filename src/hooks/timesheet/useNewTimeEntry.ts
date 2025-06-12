@@ -30,6 +30,7 @@ import { useGetTimeSheetDays } from './useGetTimeSheetDays';
 export const useNewTimeEntry = (
 	newTimeEntry: Signal<TimeEntry | undefined>,
 	alertMessageState: ModalState,
+	fetchTemplates: QRL,
 	closeForm?: QRL,
 	allowNewEntry?: boolean
 ) => {
@@ -303,11 +304,12 @@ export const useNewTimeEntry = (
 				date_end: formatDateString(to.value),
 				daytime: daysSelected.value.map(dayOfWeekToNumber),
 				timehours: timeHours.value,
-				customer: customerSelected.value.id,
-				project: projectSelected.value.name,
-				task: taskSelected.value.name,
+				customer_id: customerSelected.value.id,
+				project_id: projectSelected.value.id,
+				task_id: taskSelected.value.id,
 			};
 			await saveTemplate(payload);
+			await fetchTemplates();
 		} catch (error) {
 			const { message } = error as Error;
 			addEvent({
