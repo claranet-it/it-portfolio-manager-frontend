@@ -139,7 +139,7 @@ export const CompanyCodeManager = component$(() => {
 		) {
 			encryptedAESKey = cipherStore.cipher.encryptedAESKey;
 			encryptedPrivateKey = cipherStore.cipher.encryptedPrivateKey;
-			encryptionCompleted = !!cipherStore.cipher.encryptionCompleted;
+			encryptionCompleted = cipherStore.cipher.encryptionCompleted;
 		}
 
 		try {
@@ -159,7 +159,7 @@ export const CompanyCodeManager = component$(() => {
 		}
 
 		try {
-			if (!encryptionCompleted) {
+			if (encryptionCompleted === false) {
 				companyCodeLoadingCustomLabel.value = t('ENCRYPTING_DATA_LOADING_LABEL');
 				await encryptDbFields();
 			}
