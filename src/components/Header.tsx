@@ -1,10 +1,11 @@
 import { component$, useComputed$ } from '@builder.io/qwik';
 import { limitRoleAccess } from 'src/utils/acl';
+import { clear } from 'src/utils/localStorage/localStorage';
 import { formatDateTime, isMaintenanceScheduled } from 'src/utils/maintenance';
 import { auth0 } from '../app';
 import { Labels, t } from '../locale/labels';
 import { navigateTo, Route } from '../router';
-import { CHATBOT_COOKIE_KEY, Roles } from '../utils/constants';
+import { CHATBOT_COOKIE_KEY, COMPANY_PASSWORD_KEY, Roles } from '../utils/constants';
 import { removeCookie } from '../utils/cookie';
 import { removeAuthToken } from '../utils/token';
 import { getIcon } from './icons';
@@ -130,6 +131,7 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 								openUrl: async () => {
 									removeCookie(CHATBOT_COOKIE_KEY);
 									await removeAuthToken();
+									await clear(COMPANY_PASSWORD_KEY);
 									window.location.replace(redirect_uri);
 								},
 							});
