@@ -15,6 +15,7 @@ import { Report } from './pages/Report';
 import { Search } from './pages/Search';
 import { Skills } from './pages/Skills';
 import { Timesheet } from './pages/Timesheet';
+import { Unsubscribed } from './pages/Unsubscribed';
 import { CURRICULUM_VITAE_ROUTE, PUBLIC_PROFILE_ROUTE, PUBLIC_ROUTES } from './utils/constants';
 import { isMaintenanceMode } from './utils/maintenance';
 
@@ -39,6 +40,7 @@ export const routes = {
 	privacy_policy: <PrivacyPolicy />,
 	maintenance: <Maintenance />,
 	[CURRICULUM_VITAE_ROUTE]: <CurriculumVitae />,
+	unsubscribed: <Unsubscribed />,
 };
 
 export const isPublicRoute = (route: string): route is Route => {
