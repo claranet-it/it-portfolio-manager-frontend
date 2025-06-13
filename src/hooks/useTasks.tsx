@@ -18,7 +18,7 @@ export const useTasks = (hideCompleted?: Signal<boolean>) => {
 	});
 
 	const renameTask = $(
-		async (customer: Customer, project: Project, task: string, editedTask: string) => {
+		async (customer: Customer, project: Project, task: Task, editedTask: string) => {
 			appStore.isLoading = true;
 			const response = await editTaskName(customer, project, task, editedTask);
 			appStore.isLoading = false;
@@ -30,7 +30,7 @@ export const useTasks = (hideCompleted?: Signal<boolean>) => {
 		async (
 			customer: Customer,
 			project: Project,
-			task: string,
+			task: Task,
 			completed: boolean,
 			plannedHours: number
 		) => {

@@ -18,18 +18,20 @@ export const deleteTimeEntry = async (entry: TimeEntry): Promise<boolean> =>
 	checkHttpResponseStatus(`time-entry/mine`, 200, 'DELETE', {
 		...entry,
 		customer: entry.customer.id,
-		project: entry.project.name,
+		project: entry.project.id,
+		task: entry.task.id,
 	});
 
 export const postTimeEntries = async (
 	timeEntry: TimeEntryObject,
 	impersonateId?: string
 ): Promise<boolean> => {
+	console.log('timeEntry', timeEntry);
 	const _timeEntry = {
 		...timeEntry,
 		customer: timeEntry.customer.id,
-		project: timeEntry.project.name,
-		task: typeof timeEntry.task === 'string' ? timeEntry.task : timeEntry.task.name,
+		project: timeEntry.project.id,
+		task: timeEntry.task.id,
 	};
 
 	return checkHttpResponseStatus(

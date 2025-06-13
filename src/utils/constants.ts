@@ -25,8 +25,9 @@ export const KEYBOARD_ENTER = 'Enter';
 export const SELF_TOAST_CLOSING_TIME = 5000; // 5sec
 
 export const INIT_CUSTOMER_VALUE = { id: '', name: '' } as Customer;
-export const INIT_PROJECT_VALUE = { name: '', type: '', plannedHours: 0 } as Project;
+export const INIT_PROJECT_VALUE = { id: '', name: '', type: '', plannedHours: 0 } as Project;
 export const INIT_TASK_VALUE = {
+	id: '',
 	name: '',
 	plannedHours: 0,
 	completed: false,
