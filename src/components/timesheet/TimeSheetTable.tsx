@@ -8,22 +8,28 @@ import { Day, TimeEntry, TimeEntryObject, TimeEntryRow } from '../../models/time
 import { formatDateString } from '../../utils/dates';
 import {
 	convertTimeToDecimal,
-	getFormattedHours,
+	dayHasTooManyHours,
 	getProjectCateogriesProp,
-	getTotalHours,
-	getTotalHoursPerRows,
-	getlHoursPerProject,
+	getTotal,
+	getTotalPerDay,
+	getTotalPerProject,
+	weekHasTooManyHours,
 } from '../../utils/timesheet';
 
 import { Customer } from '@models/customer';
 import { Task } from '@models/task';
+import { Template } from '@models/template';
+import { useTemplate } from 'src/hooks/useTemplate';
 import { INIT_CUSTOMER_VALUE, INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
 import { Button } from '../Button';
+import { ApplyingTemplateForm } from '../form/applyingTemplateForm';
 import { getIcon } from '../icons';
 import { Modal } from '../modals/Modal';
+import { TemplateRow } from './TemplateRow';
 import { TimeEntryElement } from './TimeEntryElement';
 
 interface TimeSheetTableProps {
+	templates: Signal<Template[] | undefined>;
 	newTimeEntry: Signal<TimeEntry | undefined>;
 	days: Signal<Day[]>;
 	from: Signal<Date>;
@@ -31,14 +37,17 @@ interface TimeSheetTableProps {
 	userImpersonationId?: Signal<string | undefined>;
 }
 
-const HOURS_PER_DAY = 8;
-const HOURS_PER_WEEK = 8 * 5;
-
 export const TimeSheetTable = component$<TimeSheetTableProps>(
-	({ newTimeEntry, days, from, to, userImpersonationId }) => {
+	({ templates, newTimeEntry, days, from, to, userImpersonationId }) => {
 		const { loadTimeEntries, state, updateTimeEntries, deleteProjectEntries } = useTimeEntries(
 			newTimeEntry,
 			userImpersonationId
+		);
+
+		const { formGroup, approvalModalState, openApprovalTemplateDialog } = useTemplate(
+			templates,
+			updateTimeEntries,
+			days
 		);
 
 		const timeEntriesState = useStore<Record<string, Record<string, number>>>({});
@@ -116,29 +125,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			await loadTimeEntries(from, to, userImpersonationId);
 		});
 
-		const getTotalPerDay = (timeEntries: TimeEntry[]) => {
-			return getFormattedHours(getTotalHours(getlHoursPerProject(timeEntries)));
-		};
-
-		const dayHasTooManyHours = (timeEntries: TimeEntry[]) => {
-			return getTotalHours(getlHoursPerProject(timeEntries)) > HOURS_PER_DAY;
-		};
-
-		const getTotal = (hours: number[]) => {
-			return getFormattedHours(getTotalHoursPerRows(hours));
-		};
-
-		const weekHasTooManyHours = (hours: number[]) => {
-			return getTotalHoursPerRows(hours) > HOURS_PER_WEEK;
-		};
-
-		const getTotalPerProject = (hours: number[]) => {
-			return getFormattedHours(getTotalHoursPerRows(hours));
-		};
-
 		const groupedByProject = useComputed$(() => {
 			return state.dataTimeEntries.reduce<TimeEntryRow>((acc, entry) => {
-				const key = `${entry.customer.id}-${entry.project.id}-${entry.task.id}`;
+				const key = `${entry.customer.id}/${entry.project.id}/${entry.task.id}`;
 
 				if (!acc[key]) {
 					acc[key] = [];
@@ -174,6 +163,21 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 			return `px-6 py-4 font-medium text-left border border-surface-50 whitespace-wrap shadow-inset-leftBorder ${color}`;
 		};
 
+		const todayStyle = (day: Day) => {
+			const currentDate = new Date();
+
+			const isToday =
+				day.date.getDate() === currentDate.getDate() &&
+				day.date.getMonth() === currentDate.getMonth() &&
+				day.date.getFullYear() === currentDate.getFullYear();
+
+			const tdClass = isToday
+				? 'bg-surface-50 border border-2 border-darkgray-500 px-4 py-3'
+				: 'border border-surface-70 px-4 py-3';
+
+			return tdClass;
+		};
+
 		const weekHours = state.dataTimeEntries.map((item) => item.hours);
 
 		return (
@@ -187,11 +191,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								</h3>
 							</th>
 							{days.value.map((day, key) => (
-								<th
-									key={key}
-									scope='col'
-									class='border border-surface-70 px-4 py-3'
-								>
+								<th key={key} scope='col' class={todayStyle(day)}>
 									<div class='flex flex-col text-dark-grey'>
 										<h3 class='text-base font-bold'>{day.name}</h3>
 										<span class='text-xs font-normal uppercase'>
@@ -281,7 +281,7 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 																	isLastEntry
 																		? 'mb-6'
 																		: 'mb-2'
-																}`}
+																} `}
 															>
 																<TimeEntryElement
 																	key={key}
@@ -353,6 +353,15 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 								</tr>
 							);
 						})}
+
+						<TemplateRow
+							from={from.value}
+							to={to.value}
+							days={days.value}
+							templates={templates.value}
+							onOpen={openApprovalTemplateDialog}
+							timeEntries={groupedByProject.value}
+						/>
 					</tbody>
 					<tfoot>
 						<tr class='bg-surface-5'>
@@ -408,6 +417,9 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 					</tfoot>
 				</table>
 				<Modal state={deleteTimeEntriesRowModalState} />
+				<Modal state={approvalModalState}>
+					<ApplyingTemplateForm formGroup={formGroup} />
+				</Modal>
 			</div>
 		);
 	}

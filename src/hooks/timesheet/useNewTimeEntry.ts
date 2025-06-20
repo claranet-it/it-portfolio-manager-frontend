@@ -4,13 +4,18 @@ import {
 	Signal,
 	sync$,
 	useComputed$,
+	useContext,
 	useSignal,
 	useStore,
 	useTask$,
 } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { AppContext } from 'src/app';
 import { getCurrentRoute, navigateTo } from 'src/router';
+import { saveTemplate } from 'src/services/template';
 import { INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/utils/constants';
+import { dayOfWeekToNumber, formatDateString } from 'src/utils/dates';
+import { convertTimeToDecimal } from 'src/utils/timesheet';
 import { t, tt } from '../../locale/labels';
 import { Customer } from '../../models/customer';
 import { Project } from '../../models/project';
@@ -20,14 +25,17 @@ import { getCustomers } from '../../services/customer';
 import { getProjects } from '../../services/projects';
 import { getTasks, saveTask } from '../../services/tasks';
 import { useNotification } from '../useNotification';
+import { useGetTimeSheetDays } from './useGetTimeSheetDays';
 
 export const useNewTimeEntry = (
 	newTimeEntry: Signal<TimeEntry | undefined>,
 	alertMessageState: ModalState,
 	closeForm?: QRL,
-	allowNewEntry?: boolean
+	allowNewEntry?: boolean,
+	fetchTemplates?: QRL
 ) => {
 	const { addEvent } = useNotification();
+	const appStore = useContext(AppContext);
 
 	const dataCustomersSig = useComputed$(async () => {
 		return await getCustomers();
@@ -52,6 +60,12 @@ export const useNewTimeEntry = (
 
 	const projectEnableSig = useSignal(false);
 	const taskEnableSig = useSignal(false);
+
+	const { from, to, currentWeek } = useGetTimeSheetDays();
+	const isTemplating = useSignal(false);
+
+	const daysSelected = useSignal<string[]>([]);
+	const timeHours = useSignal<number>(0);
 
 	const handleProjectTypeEnabled = $((customer?: Customer, project?: Project) => {
 		if (customer !== undefined) {
@@ -121,6 +135,7 @@ export const useNewTimeEntry = (
 		taskSelected.value = INIT_TASK_VALUE;
 		projectTypeEnabled.newCustomer = false;
 		projectTypeEnabled.newProject = false;
+		isTemplating.value = false;
 	});
 
 	const insertNewTimeEntry = $(async () => {
@@ -252,6 +267,80 @@ export const useNewTimeEntry = (
 		}
 	});
 
+	const handleSubmitTemplating = sync$(async (event: SubmitEvent, _: HTMLFormElement) => {
+		event.preventDefault();
+		const isProjectTypeEnabled =
+			projectTypeEnabled.newCustomer || projectTypeEnabled.newProject;
+		if (projectSelected.value.type === '' && isProjectTypeEnabled) {
+			showAlert({
+				title: t('INSERT_NEW_PROJECT_TITLE_MODAL'),
+				message: t('EMPTY_PROJECT_TYPE_MESSAGE'),
+				cancelLabel: t('ACTION_CANCEL'),
+			});
+			return;
+		}
+
+		if (timeHours.value === 0) {
+			showAlert({
+				title: t('ADD_NEW_TIME_ENTRY'),
+				message: t('EMPTY_PROJECT_TYPE_MESSAGE'),
+				cancelLabel: t('ACTION_CANCEL'),
+			});
+			return;
+		}
+
+		if (!daysSelected.value.length) {
+			showAlert({
+				title: t('INSERT_NEW_PROJECT_TITLE_MODAL'),
+				message: t('EMPTY_DAYTIME_TYPE_MESSAGE'),
+				cancelLabel: t('ACTION_CANCEL'),
+			});
+			return;
+		}
+		appStore.isLoading = true;
+		try {
+			const payload = {
+				date_start: formatDateString(from.value),
+				date_end: formatDateString(to.value),
+				daytime: daysSelected.value.map(dayOfWeekToNumber),
+				timehours: timeHours.value,
+				customer_id: customerSelected.value.id,
+				project_id: projectSelected.value.id,
+				task_id: taskSelected.value.id,
+			};
+			await saveTemplate(payload);
+			fetchTemplates && (await fetchTemplates());
+		} catch (error) {
+			const { message } = error as Error;
+			addEvent({
+				message,
+				type: 'danger',
+				autoclose: true,
+			});
+		}
+		appStore.isLoading = false;
+
+		clearForm();
+		resetTemplating();
+		closeForm && closeForm();
+	});
+
+	const resetTemplating = $(() => {
+		daysSelected.value = [];
+		timeHours.value = 0;
+		currentWeek();
+	});
+
+	const handleTime = $((el: FocusEvent) => {
+		const value = (el.target as HTMLInputElement).value;
+		timeHours.value = convertTimeToDecimal(value);
+	});
+
+	const handleTemplating = $(() => {
+		isTemplating.value = !isTemplating.value;
+		resetTemplating();
+	});
+
 	return {
 		dataCustomersSig,
 		dataProjectsSig,
@@ -267,5 +356,14 @@ export const useNewTimeEntry = (
 		onChangeProject,
 		clearForm,
 		handleSubmit,
+		from,
+		to,
+		isTemplating,
+		daysSelected,
+		timeHours,
+		handleTime,
+		handleTemplating,
+		resetTemplating,
+		handleSubmitTemplating,
 	};
 };
