@@ -4,6 +4,7 @@ import { ReportParamsFilters, ReportProductivityItem, ReportTimeEntry } from '@m
 import { Task } from '@models/task';
 import { TimeEntry } from '@models/timeEntry';
 import { getHttpResponse } from 'src/network/httpRequest';
+import { decryptCustomer, decryptString } from 'src/utils/cipher-entities';
 import { UUID } from 'src/utils/uuid';
 
 export const getProductivity = async (
@@ -33,14 +34,14 @@ type getTimeEntryResponse = Omit<TimeEntry, 'task' | 'isUnsaved' | 'index' | 'pr
 		id: string;
 		name: string;
 	};
-	email: string;
-	projectType: ProjectType;
-	plannedHours: number;
-	crew: string;
 	task: {
 		id: string;
 		name: string;
 	};
+	email: string;
+	projectType: ProjectType;
+	plannedHours: number;
+	crew: string;
 };
 
 export const getReportTimeEntry = async (from: string, to: string): Promise<ReportTimeEntry[]> => {
@@ -53,25 +54,27 @@ export const getReportTimeEntry = async (from: string, to: string): Promise<Repo
 		},
 	});
 
-	return response.map((entry) => {
-		return {
+	return Promise.all(
+		response.map(async (entry) => ({
 			...entry,
+			customer: await decryptCustomer(entry.customer),
+			description: await decryptString(entry.description),
 			project: {
 				id: entry.project.id,
-				name: entry.project.name,
+				name: await decryptString(entry.project.name),
 				plannedHours: entry.plannedHours,
 				type: entry.projectType,
 				completed: false,
 			},
 			task: {
 				id: entry.task.id,
-				name: entry.task.name,
+				name: await decryptString(entry.task.name),
 				plannedHours: 0,
 				completed: false,
 			},
 			email: entry.email === '' ? UUID() : entry.email,
-		};
-	});
+		}))
+	);
 };
 
 export const getReportProjectsFilterBy = async (
@@ -83,23 +86,25 @@ export const getReportProjectsFilterBy = async (
 		params
 	);
 
-	return response.map((entry) => {
-		return {
+	return Promise.all(
+		response.map(async (entry) => ({
 			...entry,
+			customer: await decryptCustomer(entry.customer),
+			description: await decryptString(entry.description),
 			project: {
 				id: entry.project.id,
-				name: entry.project.name,
+				name: await decryptString(entry.project.name),
 				plannedHours: entry.plannedHours,
 				type: entry.projectType,
 				completed: false,
 			},
 			task: {
 				id: entry.task.id,
-				name: entry.task.name,
+				name: await decryptString(entry.task.name),
 				plannedHours: 0,
 				completed: false,
 			},
 			email: entry.email === '' ? UUID() : entry.email,
-		};
-	});
+		}))
+	);
 };
