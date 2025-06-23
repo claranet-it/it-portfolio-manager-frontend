@@ -10,6 +10,7 @@ import {
 	useTask$,
 } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
+import { PayloadCreateTemplate } from '@models/template';
 import { AppContext } from 'src/app';
 import { getCurrentRoute, navigateTo } from 'src/router';
 import { saveTemplate } from 'src/services/template';
@@ -299,14 +300,14 @@ export const useNewTimeEntry = (
 		}
 		appStore.isLoading = true;
 		try {
-			const payload = {
+			const payload: PayloadCreateTemplate = {
 				date_start: formatDateString(from.value),
 				date_end: formatDateString(to.value),
 				daytime: daysSelected.value.map(dayOfWeekToNumber),
 				timehours: timeHours.value,
 				customer_id: customerSelected.value.id,
 				project_id: projectSelected.value.id,
-				task_id: taskSelected.value.id,
+				...(taskSelected.value.id && { task_id: taskSelected.value.id }),
 			};
 			await saveTemplate(payload);
 			fetchTemplates && (await fetchTemplates());

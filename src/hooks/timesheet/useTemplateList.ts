@@ -3,7 +3,7 @@ import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
-import { Template } from '@models/template';
+import { PayloadUpdateTemplate, Template } from '@models/template';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 import { deleteTemplate, updateTemplate } from 'src/services/template';
@@ -107,7 +107,7 @@ export const useTemplateList = (templates: Signal<Template[]>, fetchTemplates: Q
 			if (editModalState.idToEdit) {
 				appStore.isLoading = true;
 				try {
-					const payload = {
+					const payload: PayloadUpdateTemplate = {
 						date_start: formatDateString(from.value),
 						date_end: formatDateString(to.value),
 						timehours: timeHours.value,
