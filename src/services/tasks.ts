@@ -1,14 +1,22 @@
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { Task, TaskProjectCustomer } from '@models/task';
+import {
+	decryptCustomer,
+	decryptProject,
+	decryptTask,
+	encryptCustomer,
+	encryptProject,
+	encryptString,
+} from 'src/utils/cipher-entities';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
 export const getTasks = async (
 	customer: Customer,
 	project: Project,
 	hideCompleted?: boolean
-): Promise<Task[]> =>
-	getHttpResponse<Task[]>({
+): Promise<Task[]> => {
+	const response = await getHttpResponse<Task[]>({
 		path: `task/task`,
 		params: {
 			customer: customer.id,
@@ -20,6 +28,9 @@ export const getTasks = async (
 		},
 	});
 
+	return Promise.all(response.map(decryptTask));
+};
+
 export const saveTask = async (
 	customer: Customer,
 	project: Project,
@@ -27,9 +38,9 @@ export const saveTask = async (
 	index?: number
 ): Promise<boolean> =>
 	checkHttpResponseStatus(`task/task`, 200, 'POST', {
-		customer,
-		project,
-		task,
+		customer: await encryptCustomer(customer),
+		project: await encryptProject(project),
+		task: await encryptString(task),
 		index,
 	});
 
@@ -43,7 +54,7 @@ export const editTaskName = async (
 		customer: customer.id,
 		project: project.id,
 		task: task.id,
-		newTask: newTaskName,
+		newTask: await encryptString(newTaskName),
 	});
 
 export const editTask = async (
@@ -61,7 +72,16 @@ export const editTask = async (
 		plannedHours: plannedHours,
 	});
 
-export const getAllTasks = async (): Promise<TaskProjectCustomer[]> =>
-	getHttpResponse<TaskProjectCustomer[]>({
+export const getAllTasks = async (): Promise<TaskProjectCustomer[]> => {
+	const response = await getHttpResponse<TaskProjectCustomer[]>({
 		path: 'task/task-list',
 	});
+
+	return Promise.all(
+		response.map(async (data) => ({
+			customer: await decryptCustomer(data.customer),
+			project: await decryptProject(data.project),
+			task: await decryptTask(data.task),
+		}))
+	);
+};

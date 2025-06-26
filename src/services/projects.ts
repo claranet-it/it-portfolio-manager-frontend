@@ -1,12 +1,13 @@
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
+import { decryptProject, encryptProject } from 'src/utils/cipher-entities';
 import { checkHttpResponseStatus, getHttpResponse } from '../network/httpRequest';
 
 export const getProjects = async (
 	customer: Customer,
 	hideCompleted?: boolean
-): Promise<Project[]> =>
-	getHttpResponse<Project[]>({
+): Promise<Project[]> => {
+	const response = await getHttpResponse<Project[]>({
 		path: `task/project`,
 		params: {
 			customer: customer.id,
@@ -16,6 +17,9 @@ export const getProjects = async (
 				}),
 		},
 	});
+
+	return Promise.all(response.map(decryptProject));
+};
 
 export const deleteProject = async (customer: Customer, project: Project) =>
 	checkHttpResponseStatus('task/customer-project', 200, 'DELETE', {
@@ -28,5 +32,5 @@ export const editProject = async (customer: Customer, oldProject: Project, newPr
 	checkHttpResponseStatus('task/customer-project', 200, 'PUT', {
 		customer: customer.id,
 		project: oldProject.id,
-		newProject: newProject,
+		newProject: await encryptProject(newProject),
 	});
