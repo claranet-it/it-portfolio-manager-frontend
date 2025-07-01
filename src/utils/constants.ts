@@ -68,6 +68,7 @@ export const PUBLIC_ROUTES: Route[] = [
 	'privacy_policy',
 	'maintenance',
 	CURRICULUM_VITAE_ROUTE,
+	'unsubscribed',
 ] as const;
 
 export const INIT_NETWORK_COMPANY_VALUE: NetworkCompany = {

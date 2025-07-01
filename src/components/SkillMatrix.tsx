@@ -17,6 +17,7 @@ import {
 	pathSkillMatrixMine,
 	pathSkillMatrixUser,
 } from '../services/skillMatrix';
+import { SkillLegend } from './SkillLegend';
 import { SkillRow } from './SkillRow';
 
 interface SkillMatrixProps {
@@ -82,43 +83,49 @@ export const SkillMatrix = component$<SkillMatrixProps>(({ userIdSelected, userS
 	});
 
 	return (
-		<div
-			key={`skillmatrix-${userIdSelected.value ?? 'mine'}`}
-			class='flex flex-col sm:space-y-4 md:gap-5 lg:grid lg:grid-cols-2 lg:gap-5'
-		>
-			{Object.entries(skillMatrixSig.value).map(([category, skills], key) => (
-				<div
-					key={`skillmatrix-${userIdSelected.value ?? 'mine'}-${category}`}
-					class='flex-1'
-				>
-					{/* title label area  */}
-					<div key={key} class='mb-1 w-full items-center justify-center'>
-						<span class='text-2xl font-bold text-dark-grey sm:mt-2'>
-							{userIdSelected.value
-								? tt('user_type_skill', {
-										user: userSelected.value,
-										skillType: category,
-									})
-								: tt('my_type_skill', {
-										skillType: category,
-									})}
-						</span>
+		<>
+			<div class='mb-8 mt-2 flex items-center gap-8 text-xs'>
+				<SkillLegend />
+			</div>
+			<div
+				key={`skillmatrix-${userIdSelected.value ?? 'mine'}`}
+				class='flex flex-col sm:space-y-4 md:gap-5 lg:grid lg:grid-cols-2 lg:gap-5'
+			>
+				{Object.entries(skillMatrixSig.value).map(([category, skills], key) => (
+					<div
+						key={`skillmatrix-${userIdSelected.value ?? 'mine'}-${category}`}
+						class='flex-1'
+					>
+						{/* title label area  */}
+						<div key={key} class='mb-1 w-full items-center justify-center'>
+							<span class='text-2xl font-bold text-dark-grey sm:mt-2'>
+								{userIdSelected.value
+									? tt('user_type_skill', {
+											user: userSelected.value,
+											skillType: category,
+										})
+									: tt('my_type_skill', {
+											skillType: category,
+										})}
+							</span>
+						</div>
+						{/* Skill list area  */}
+						<div class='justify-content flex flex-col place-content-evenly space-y-1'>
+							{skills.map((skill, key) => (
+								<SkillRow
+									key={`${userIdSelected.value ?? 'mine'}-${category}-${key}`}
+									skill={skill}
+									serviceLine={category}
+									onClick$={async (newScore) => {
+										skill.score = newScore;
+										await updateSkill(skill);
+									}}
+								/>
+							))}
+						</div>
 					</div>
-					{/* Skill list area  */}
-					<div class='justify-content flex flex-col place-content-evenly space-y-1'>
-						{skills.map((skill, key) => (
-							<SkillRow
-								key={`${userIdSelected.value ?? 'mine'}-${category}-${key}`}
-								skill={skill}
-								onClick$={async (newScore) => {
-									skill.score = newScore;
-									await updateSkill(skill);
-								}}
-							/>
-						))}
-					</div>
-				</div>
-			))}
-		</div>
+				))}
+			</div>
+		</>
 	);
 });
