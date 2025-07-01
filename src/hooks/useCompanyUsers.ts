@@ -21,7 +21,8 @@ export const useCompanyUsers = () => {
 		appStore.isLoading = true;
 
 		try {
-			await editUserProfile(userId, crew, role);
+			const actualRole = role === Roles.USER ? '' : role;
+			await editUserProfile(userId, crew, actualRole);
 		} catch (error) {
 			const { message } = error as Error;
 			addEvent({
