@@ -87,7 +87,7 @@ export const MultiselectRefactor = component$<multiSelectInterface>(
 		});
 
 		return (
-			<form class={['relative w-full', sizeStyle.value, hidden ? 'hidden' : 'block']}>
+			<form id={id} class={['relative w-full', sizeStyle.value, hidden ? 'hidden' : 'block']}>
 				<label class={`block text-sm font-normal ${labelStyle.value}`}>{label}</label>
 
 				<button

@@ -414,6 +414,7 @@ export const ReportFilters = component$<{
 		return (
 			<div class='m-0 flex w-full grid-cols-6 flex-col gap-1 sm:space-y-2 md:space-y-2 lg:grid lg:items-end md:[&>form]:!mx-0'>
 				<MultiselectRefactor
+					key={_customerOptionsSig.value.length}
 					id={UUID() + '-filter-customer'}
 					label={t('CUSTOMER_LABEL')}
 					placeholder={t('select_empty_label')}
@@ -425,6 +426,7 @@ export const ReportFilters = component$<{
 				/>
 
 				<MultiselectRefactor
+					key={_projectOptionsSig.value.length}
 					id={UUID() + '-filter-project'}
 					label={t('PROJECT_LABEL')}
 					placeholder={t('select_empty_label')}
@@ -436,6 +438,7 @@ export const ReportFilters = component$<{
 				/>
 
 				<MultiselectRefactor
+					key={_taskOptionsSig.value.length}
 					id={UUID() + '-filter-task'}
 					label={t('TASK_LABEL')}
 					placeholder={t('select_empty_label')}
@@ -448,6 +451,7 @@ export const ReportFilters = component$<{
 				/>
 
 				<MultiselectRefactor
+					key={_usersOptionsSig.value.length}
 					id={UUID() + '-filter-user'}
 					label={t('USER_LABEL')}
 					placeholder={t('select_empty_label')}
