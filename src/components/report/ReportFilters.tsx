@@ -116,7 +116,13 @@ export const ReportFilters = component$<{
 							name: taskProjectCustomer.project.name,
 						};
 					})
-					.sort((a, b) => a.group.localeCompare(b.group))
+					.sort((a, b) => {
+						if (a.group === b.group) {
+							return a.name.localeCompare(b.name);
+						} else {
+							return a.group.localeCompare(b.group);
+						}
+					})
 			);
 		});
 
@@ -148,7 +154,13 @@ export const ReportFilters = component$<{
 						name: taskProjectCustomer.task.name,
 					};
 				})
-				.sort((a, b) => a.group.localeCompare(b.group));
+				.sort((a, b) => {
+					if (a.group === b.group) {
+						return a.name.localeCompare(b.name);
+					} else {
+						return a.group.localeCompare(b.group);
+					}
+				});
 		});
 
 		const isFullySelected = $(

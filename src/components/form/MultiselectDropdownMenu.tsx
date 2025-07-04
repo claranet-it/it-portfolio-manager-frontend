@@ -230,10 +230,9 @@ export const MultiselectDropdownMenu = component$<multiSelectInterface>(
 											'-group-' +
 											index
 										}
+										class='block border-b-2 border-gray-100 px-4 py-2 text-sm font-bold'
 									>
-										<div class='block px-4 py-2 hover:bg-gray-100'>
-											{group.groupKey}
-										</div>
+										{group.groupKey}
 									</li>
 								)}
 								{group.groupOptions.map((option, index) => {
