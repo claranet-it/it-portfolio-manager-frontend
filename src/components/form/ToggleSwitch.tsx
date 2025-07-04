@@ -4,19 +4,22 @@ interface ToogleSwitchProps {
 	isChecked: boolean | Signal<boolean>;
 	label?: string;
 	onChange$?: QRL;
+	id?: string;
 }
 
-export const ToggleSwitch = component$<ToogleSwitchProps>(({ isChecked, label, onChange$ }) => {
+export const ToggleSwitch = component$<ToogleSwitchProps>(({ isChecked, label, onChange$, id }) => {
 	const checked = typeof isChecked === 'boolean' ? useSignal(isChecked) : isChecked;
 
 	return (
 		<label class='items-left flex cursor-pointer'>
 			<input
+				data-id={id}
 				type='checkbox'
 				value=''
 				class='peer sr-only'
-				bind:checked={checked}
-				onChange$={() => {
+				checked={checked.value}
+				onChange$={(_, el) => {
+					checked.value = el.checked;
 					if (onChange$) {
 						onChange$(checked.value);
 					}
