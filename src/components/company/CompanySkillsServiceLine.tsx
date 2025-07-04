@@ -83,21 +83,13 @@ export const CompanySkillsServiceLine = component$<Props>(
 												</div>
 											</div>
 											<div class='ml-4 text-center'>
-												{skill.visible ? (
-													<ToggleSwitch
-														isChecked={true}
-														onChange$={(e: boolean) => {
-															updateSkillVisibility(skill.id, e);
-														}}
-													/>
-												) : (
-													<ToggleSwitch
-														isChecked={false}
-														onChange$={(e: boolean) => {
-															updateSkillVisibility(skill.id, e);
-														}}
-													/>
-												)}
+												<ToggleSwitch
+													key={'toogle-' + (skill.visible ? 'on' : 'off')}
+													isChecked={skill.visible}
+													onChange$={(e: boolean) => {
+														updateSkillVisibility(skill.id, e);
+													}}
+												/>
 											</div>
 										</div>
 									);
