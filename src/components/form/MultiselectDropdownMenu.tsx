@@ -87,7 +87,7 @@ export const MultiselectDropdownMenu = component$<multiSelectInterface>(
 
 		const filterSearch = $((searchString: string) => {
 			optionsFiltered.value = options.value.filter((element) =>
-				element.name.includes(searchString)
+				element.name.toLowerCase().includes(searchString.toLowerCase())
 			);
 		});
 
