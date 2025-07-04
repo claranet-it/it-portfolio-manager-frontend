@@ -159,12 +159,6 @@ export const ReportFilters = component$<{
 				original.every((element) => selected.includes(element))
 		);
 
-		const getCustomerSig = $(async (customerName: string) => {
-			return taskProjectCustomerSig.value.find(
-				(value) => value.customer.name === customerName
-			)?.customer;
-		});
-
 		const getProjectSig = $(async (project: string) => {
 			const customer = taskProjectCustomerSig.value.find(
 				(value) => value.project.name === project
