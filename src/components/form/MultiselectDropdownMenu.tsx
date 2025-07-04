@@ -175,10 +175,7 @@ export const MultiselectDropdownMenu = component$<multiSelectInterface>(
 									(dropdownShow[item.label] = !dropdownShow[item.label])
 								}
 							>
-								<label
-									for={'multiLevel-' + index}
-									class='ms-2 flex w-full flex-row justify-between text-sm font-medium text-gray-900 dark:text-gray-300'
-								>
+								<label class='ms-2 flex w-full flex-row justify-between text-sm font-medium text-gray-900 dark:text-gray-300'>
 									{item.label}
 									{getIcon('Downarrow')}
 								</label>

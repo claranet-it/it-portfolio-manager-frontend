@@ -102,6 +102,8 @@ export const MultiselectRefactor = component$<multiSelectInterface>(
 				>
 					<span
 						class={[
+							'w-[90%]',
+							'text-left',
 							'truncate',
 							selectedValues.value.length === 0 && 'text-darkgray-500',
 						]}
