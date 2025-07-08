@@ -1,4 +1,6 @@
+import { sync$ } from '@builder.io/qwik';
 import { ItemSkill, companySkill, personalSkill } from '@models/skill';
+import { getIcon } from 'src/components/icons';
 
 export const getSkillScore = (item: ItemSkill, skill: string) => {
 	return item.isCompany
@@ -16,3 +18,15 @@ export const skillComparator = (
 
 	return s1Score < s2Score ? 1 : -1;
 };
+
+export const getSkillIcon = sync$((serviceLine: string, skill: string) => {
+	if (serviceLine.toLowerCase() === 'design') {
+		return getIcon('Design');
+	}
+
+	if (serviceLine.toLowerCase() === 'softskill') {
+		return getIcon('UserGroup');
+	}
+
+	return getIcon(skill);
+});

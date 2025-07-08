@@ -1,5 +1,29 @@
 import { t } from 'src/locale/labels';
-import { ProjectCategoryProp, TimeEntry } from '../models/timeEntry';
+import { Day, ProjectCategoryProp, TimeEntry } from '../models/timeEntry';
+import { isInInterval } from './dateIntervals';
+
+const HOURS_PER_DAY = 8;
+const HOURS_PER_WEEK = 8 * 5;
+
+export const getTotalPerDay = (timeEntries: TimeEntry[]) => {
+	return getFormattedHours(getTotalHours(getlHoursPerProject(timeEntries)));
+};
+
+export const dayHasTooManyHours = (timeEntries: TimeEntry[]) => {
+	return getTotalHours(getlHoursPerProject(timeEntries)) > HOURS_PER_DAY;
+};
+
+export const getTotal = (hours: number[]) => {
+	return getFormattedHours(getTotalHoursPerRows(hours));
+};
+
+export const weekHasTooManyHours = (hours: number[]) => {
+	return getTotalHoursPerRows(hours) > HOURS_PER_WEEK;
+};
+
+export const getTotalPerProject = (hours: number[]) => {
+	return getFormattedHours(getTotalHoursPerRows(hours));
+};
 
 export const getTotalHours = (hours: number[]) => {
 	return hours.length > 0 ? hours.reduce((total, amount) => total + amount) : 0;
@@ -105,4 +129,19 @@ export const getProjectCateogriesProp = (type: string): ProjectCategoryProp => {
 			};
 		}
 	}
+};
+
+export const getTotalPerWeek = (template: any, days: Day[]) => {
+	let tot = 0;
+	days.forEach((day) => {
+		const dayOfWeek = day.date.getDay();
+
+		if (
+			template.daytime.includes(dayOfWeek) &&
+			isInInterval(day.date, new Date(template.date_start), new Date(template.date_end))
+		) {
+			tot += template.timehours;
+		}
+	});
+	return getFormattedHours(tot);
 };

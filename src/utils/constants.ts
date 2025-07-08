@@ -1,4 +1,5 @@
 import { Company } from '@models/company';
+import { Customer } from '@models/customer';
 import { NetworkCompany } from '@models/networking';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
@@ -8,6 +9,7 @@ export const AUTH_TOKEN_KEY = 'auth_token';
 export const AUTH_ROLE_KEY = 'auth_role';
 export const AUTH_CREW_KEY = 'auth_crew';
 export const AUTH_USER_KEY = 'auth_user';
+export const COMPANY_PASSWORD_KEY = 'company_code';
 
 export const CHATBOT_COOKIE_KEY = 'token';
 
@@ -23,8 +25,10 @@ export const KEYBOARD_ENTER = 'Enter';
 
 export const SELF_TOAST_CLOSING_TIME = 5000; // 5sec
 
-export const INIT_PROJECT_VALUE = { name: '', type: '', plannedHours: 0 } as Project;
+export const INIT_CUSTOMER_VALUE = { id: '', name: '' } as Customer;
+export const INIT_PROJECT_VALUE = { id: '', name: '', type: '', plannedHours: 0 } as Project;
 export const INIT_TASK_VALUE = {
+	id: '',
 	name: '',
 	plannedHours: 0,
 	completed: false,
@@ -64,6 +68,7 @@ export const PUBLIC_ROUTES: Route[] = [
 	'privacy_policy',
 	'maintenance',
 	CURRICULUM_VITAE_ROUTE,
+	'unsubscribed',
 ] as const;
 
 export const INIT_NETWORK_COMPANY_VALUE: NetworkCompany = {

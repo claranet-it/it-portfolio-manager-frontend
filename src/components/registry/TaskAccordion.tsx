@@ -42,7 +42,7 @@ export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project
 		}),
 		onConfirm$: $(async () => {
 			if (newTaskName.value !== task.name) {
-				if (await renameTask(customer, project, task.name, newTaskName.value)) {
+				if (await renameTask(customer, project, task, newTaskName.value)) {
 					addEvent({
 						type: 'success',
 						message: t('EDIT_TASK_SUCCESS_MESSAGE'),
@@ -59,7 +59,7 @@ export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project
 					await updateTask(
 						customer,
 						project,
-						task.name,
+						task,
 						newCompleted.value,
 						newPlannedHours.value
 					)
@@ -74,7 +74,7 @@ export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project
 
 			if (getCurrentRoute() === 'registry') {
 				navigateTo('registry', {
-					customer: customer,
+					customer: customer.name,
 					project: project.name,
 				});
 			}

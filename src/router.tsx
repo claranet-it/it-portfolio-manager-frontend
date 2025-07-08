@@ -2,6 +2,7 @@ import { Signal, useSignal, useTask$ } from '@builder.io/qwik';
 import { AuthManager } from './pages/AuthManager';
 import { ChartPreview } from './pages/ChartPreview';
 import { Company } from './pages/Company';
+import { CompanyCodeManager } from './pages/CompanyCodeManager';
 import { CurriculumVitae } from './pages/CurriculumVitae';
 import { Effort } from './pages/Effort';
 import { Maintenance } from './pages/Maintenance';
@@ -15,6 +16,7 @@ import { Report } from './pages/Report';
 import { Search } from './pages/Search';
 import { Skills } from './pages/Skills';
 import { Timesheet } from './pages/Timesheet';
+import { Unsubscribed } from './pages/Unsubscribed';
 import { CURRICULUM_VITAE_ROUTE, PUBLIC_PROFILE_ROUTE, PUBLIC_ROUTES } from './utils/constants';
 import { isMaintenanceMode } from './utils/maintenance';
 
@@ -24,6 +26,7 @@ export type PrivateRoutes = Exclude<Route, PublicRoutes>;
 
 export const routes = {
 	auth: <AuthManager />,
+	'company-code': <CompanyCodeManager />,
 	effort: <Effort />,
 	timesheet: <Timesheet />,
 	networking: <Networking />,
@@ -39,6 +42,7 @@ export const routes = {
 	privacy_policy: <PrivacyPolicy />,
 	maintenance: <Maintenance />,
 	[CURRICULUM_VITAE_ROUTE]: <CurriculumVitae />,
+	unsubscribed: <Unsubscribed />,
 };
 
 export const isPublicRoute = (route: string): route is Route => {

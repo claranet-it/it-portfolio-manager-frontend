@@ -70,6 +70,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 			}),
 			onConfirm$: $(async () => {
 				const editedProject = {
+					id: project.id,
 					name: name.value,
 					type: type.value,
 					plannedHours: Number(plannedHours.value),
@@ -83,7 +84,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 					});
 					if (getCurrentRoute() === 'registry') {
 						navigateTo('registry', {
-							customer: customer,
+							customer: customer.name,
 							project: project.name,
 						});
 					}
@@ -119,7 +120,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 
 		const selectPreselected = $(() => {
 			preSelectedData.value = {
-				customer: customer,
+				customer: customer.name,
 				project: project.name,
 			};
 		});
@@ -200,7 +201,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 							.map((task) => {
 								return (
 									<TaskAccordion
-										key={`task-${customer}-${project.name}-${task.name}`}
+										key={`task-${customer.id}-${project.name}-${task.name}`}
 										customer={customer}
 										project={project}
 										task={task}

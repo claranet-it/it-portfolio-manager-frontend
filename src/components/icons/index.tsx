@@ -1,6 +1,8 @@
 import { AWS } from './AWS';
 import { Android } from './Android';
 import { Ansible } from './Ansible';
+import { Approve } from './Approve';
+import { ArrowBack } from './ArrowBack';
 import { ArrowLeft } from './ArrowLeft';
 import { ArrowRight } from './ArrowRight';
 import { Bin } from './Bin';
@@ -9,6 +11,7 @@ import { BricklyNaming } from './BricklyNaming';
 import { BricklyRedLogo } from './BricklyRedLogo';
 import { CSharp } from './CSharp';
 import { Calendar } from './Calendar';
+import { Check } from './Check';
 import { Claranet } from './Claranet';
 import { Clear } from './Clear';
 import { Close } from './Close';
@@ -34,6 +37,7 @@ import { Python } from './Python';
 import { QuickSight } from './QuickSight';
 import { Ruby } from './Ruby';
 import { Rust } from './Rust';
+import { Sad } from './Sad';
 import { Search } from './Search';
 import { Send } from './Send';
 import { TypeScript } from './TypeScript';
@@ -139,6 +143,14 @@ export const getIcon = (skill: string) => {
 			return <Downalod />;
 		case 'Downarrow':
 			return <DownArrow />;
+		case 'Check':
+			return <Check />;
+		case 'ArrowBack':
+			return <ArrowBack />;
+		case 'Approve':
+			return <Approve />;
+		case 'Sad':
+			return <Sad />;
 		default:
 			return <AWS />;
 	}

@@ -8,6 +8,7 @@ import {
 	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
+import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { initFlowbite } from 'flowbite';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
@@ -17,15 +18,17 @@ import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
 import { Autocomplete } from './Autocomplete';
 import { Select } from './Select';
+import { TemplateForm } from './TemplateForm';
 
 interface NewTaskForm {
 	timeEntry: Signal<TimeEntry | undefined>;
 	alertMessageState: ModalState;
+	fetchTemplate$: QRL;
 	onCancel$?: QRL;
 }
 
 export const NewTaskForm = component$<NewTaskForm>(
-	({ timeEntry, alertMessageState, onCancel$ }) => {
+	({ timeEntry, alertMessageState, fetchTemplate$, onCancel$ }) => {
 		const {
 			dataCustomersSig,
 			dataProjectsSig,
@@ -39,11 +42,22 @@ export const NewTaskForm = component$<NewTaskForm>(
 			onChangeProject,
 			clearForm,
 			handleSubmit,
-		} = useNewTimeEntry(timeEntry, alertMessageState, onCancel$, false);
+			from,
+			to,
+			isTemplating,
+			daysSelected,
+			timeHours,
+			handleTime,
+			handleTemplating,
+			resetTemplating,
+			handleSubmitTemplating,
+		} = useNewTimeEntry(timeEntry, alertMessageState, onCancel$, false, fetchTemplate$);
 
 		useVisibleTask$(() => {
 			initFlowbite();
 		});
+
+		const _customerSelected = useSignal(customerSelected.value.name);
 
 		const _taskSelected = useSignal(taskSelected.value.name);
 
@@ -55,6 +69,10 @@ export const NewTaskForm = component$<NewTaskForm>(
 				.map((dataTasks) => dataTasks.name);
 		});
 
+		const _customerOptions = useComputed$(() => {
+			return dataCustomersSig.value.map((customer) => customer.name);
+		});
+
 		const _projectOptions = useComputed$(() => {
 			return dataProjectsSig.value
 				.filter((dataProject) => dataProject.completed === false)
@@ -63,8 +81,17 @@ export const NewTaskForm = component$<NewTaskForm>(
 
 		const _onCancel = $(() => {
 			_projectSelected.value = '';
+			_customerSelected.value = '';
 			clearForm();
+			resetTemplating();
 			onCancel$ && onCancel$();
+		});
+
+		const _onChangeCustomer = $(async (customerName: string) => {
+			const foundCustomer = dataCustomersSig.value.find((c) => c.name === customerName);
+			const customer: Customer = foundCustomer || { id: '', name: customerName };
+
+			await onChangeCustomer(customer);
 		});
 
 		const _onChangeProject = $(async (value: string) => {
@@ -78,7 +105,12 @@ export const NewTaskForm = component$<NewTaskForm>(
 		const _handleSubmit = $((event: SubmitEvent, _: HTMLFormElement) => {
 			event.preventDefault();
 			_projectSelected.value = '';
-			handleSubmit(event, _);
+			_customerSelected.value = '';
+			if (isTemplating.value) {
+				handleSubmitTemplating(event, _);
+			} else {
+				handleSubmit(event, _);
+			}
 		});
 
 		const _onChangeTask = $(async (value: string) => {
@@ -88,6 +120,11 @@ export const NewTaskForm = component$<NewTaskForm>(
 			} else {
 				taskSelected.value.name = value;
 			}
+		});
+
+		useTask$(({ track }) => {
+			track(() => customerSelected.value);
+			_customerSelected.value = customerSelected.value.name;
 		});
 
 		useTask$(({ track }) => {
@@ -110,19 +147,39 @@ export const NewTaskForm = component$<NewTaskForm>(
 					</div>
 
 					<form class='space-y-3' onSubmit$={_handleSubmit}>
+						<div class='mt-1 block'>
+							<input
+								checked={isTemplating.value}
+								id={`templating-checkbox`}
+								type='checkbox'
+								value=''
+								onChange$={handleTemplating}
+								class='h-4 w-4 rounded border-2 border-clara-red bg-gray-100 text-clara-red focus:ring-2 focus:ring-clara-red'
+							/>
+							<label
+								for={`templating-checkbox`}
+								class='ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
+							>
+								{t('CREATE_TEMPLATE')}
+								<div class='text-xs text-darkgray-500'>
+									{t('CREATE_TEMPLATE_MESSAGE')}
+								</div>
+							</label>
+						</div>
+
 						<Autocomplete
 							id={UUID()}
-							label={t('CUSTOMER_LABEL')}
-							selected={customerSelected}
-							data={dataCustomersSig}
+							label={t('CUSTOMER_LABEL') + '*'}
+							selected={_customerSelected}
+							data={_customerOptions}
 							placeholder={t('SEARCH')}
 							required
-							onChange$={onChangeCustomer}
+							onChange$={_onChangeCustomer}
 						/>
 
 						<Select
 							id={UUID()}
-							label={t('PROJECT_LABEL')}
+							label={t('PROJECT_LABEL') + '*'}
 							placeholder={
 								projectEnableSig.value && _projectOptions.value.length === 0
 									? t('NO_ACTIVE_PROJECT_PLACEHOLDER')
@@ -138,7 +195,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 						<Select
 							id={UUID()}
 							disabled={!taskEnableSig.value}
-							label={t('TASK_LABEL')}
+							label={t('TASK_LABEL') + (isTemplating.value ? '' : '*')}
 							placeholder={
 								taskEnableSig.value && _dataTasksSign.value.length === 0
 									? t('NO_ACTIVE_TASK_PLACEHOLDER')
@@ -150,6 +207,17 @@ export const NewTaskForm = component$<NewTaskForm>(
 							size='auto'
 						/>
 
+						{isTemplating.value && (
+							<TemplateForm
+								from={from}
+								to={to}
+								daysSelected={daysSelected}
+								timeHours={timeHours}
+								handleTime={handleTime}
+								editMode={false}
+							/>
+						)}
+
 						<div class='flex flex-row justify-end space-x-1'>
 							{onCancel$ && (
 								<Button variant={'link'} onClick$={_onCancel}>
@@ -159,6 +227,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 
 							<Button type='submit'>{t('ACTION_INSERT')}</Button>
 						</div>
+						<div class='text-xs text-darkgray-500'>{t('LEGEND_REQUIRED')}</div>
 					</form>
 				</div>
 			</>

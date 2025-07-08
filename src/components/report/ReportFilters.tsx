@@ -43,6 +43,9 @@ export const ReportFilters = component$<{
 			return [...new Set(arr)];
 		});
 
+		const _selectedCustomers = useSignal(
+			selectedCustomers.value.map((customer) => customer.name)
+		);
 		const _selectedProjects = useSignal(selectedProjects.value.map((project) => project.name));
 		const _selectedTasks = useSignal(selectedTasks.value.map((task) => task.name));
 		const _selectedUsers = useSignal(selectedUsers.value.map((user) => user.name));
@@ -59,10 +62,10 @@ export const ReportFilters = component$<{
 			return usersSig.value.map((user) => user.name);
 		});
 
-		const customerOptionsSig = useComputed$(async () => {
+		const _customerOptionsSig = useComputed$(async () => {
 			return getUniqueValues(
 				taskProjectCustomerSig.value
-					.map((taskProjectCustomer) => taskProjectCustomer.customer)
+					.map((taskProjectCustomer) => taskProjectCustomer.customer.name)
 					.sort((a, b) => a.localeCompare(b))
 			);
 		});
@@ -70,11 +73,12 @@ export const ReportFilters = component$<{
 		const _projectOptionsSig = useComputed$(async () => {
 			let customerProjects;
 
+			const customerNames = selectedCustomers.value.map((customer) => customer.name);
 			if (selectedCustomers.value.length !== 0) {
 				customerProjects = taskProjectCustomerSig.value.filter(
 					(element) =>
-						selectedCustomers.value.includes(element.customer) &&
-						customerOptionsSig.value.includes(element.customer)
+						customerNames.includes(element.customer.name) &&
+						_customerOptionsSig.value.includes(element.customer.name)
 				);
 			} else {
 				customerProjects = taskProjectCustomerSig.value;
@@ -82,7 +86,7 @@ export const ReportFilters = component$<{
 
 			return getUniqueValues(
 				customerProjects
-					.map((taskProjectCustomer) => taskProjectCustomer.project)
+					.map((taskProjectCustomer) => taskProjectCustomer.project.name)
 					.sort((a, b) => a.localeCompare(b))
 			);
 		});
@@ -94,19 +98,21 @@ export const ReportFilters = component$<{
 				const projectNames = selectedProjects.value.map((project) => project.name);
 				taskProjects = taskProjectCustomerSig.value.filter(
 					(element) =>
-						projectNames.includes(element.project) &&
-						_projectOptionsSig.value.includes(element.project)
+						projectNames.includes(element.project.name) &&
+						_projectOptionsSig.value.includes(element.project.name)
 				);
 			} else if (selectedCustomers.value.length !== 0) {
 				taskProjects = taskProjectCustomerSig.value.filter((element) =>
-					selectedCustomers.value.includes(element.customer)
+					selectedCustomers.value
+						.map((customer) => customer.name)
+						.includes(element.customer.name)
 				);
 			} else {
 				taskProjects = taskProjectCustomerSig.value;
 			}
 
 			return taskProjects
-				.map((taskProjectCustomer) => taskProjectCustomer.task)
+				.map((taskProjectCustomer) => taskProjectCustomer.task.name)
 				.sort((a, b) => a.localeCompare(b));
 		});
 
@@ -118,9 +124,15 @@ export const ReportFilters = component$<{
 				original.every((element) => selected.includes(element))
 		);
 
+		const getCustomerSig = $(async (customerName: string) => {
+			return taskProjectCustomerSig.value.find(
+				(value) => value.customer.name === customerName
+			)?.customer;
+		});
+
 		const getProjectSig = $(async (project: string) => {
 			const customer = taskProjectCustomerSig.value.find(
-				(value) => value.project === project
+				(value) => value.project.name === project
 			)?.customer;
 			if (customer) {
 				const customerProjectList = await getProjects(customer);
@@ -130,7 +142,7 @@ export const ReportFilters = component$<{
 
 		const getTaskSig = $(async (task: string) => {
 			const project = taskProjectCustomerSig.value.find(
-				(value) => value.task === task
+				(value) => value.task.name === task
 			)?.project;
 			const customer = taskProjectCustomerSig.value.find(
 				(value) => value.project === project
@@ -152,7 +164,7 @@ export const ReportFilters = component$<{
 					const task = await getTaskSig(taskName);
 					selectedTasks.value = [
 						...selectedTasks.value,
-						task ?? { name: taskName, completed: false, plannedHours: 0 },
+						task ?? { id: '', name: taskName, completed: false, plannedHours: 0 },
 					];
 				}
 			} else {
@@ -176,12 +188,36 @@ export const ReportFilters = component$<{
 		});
 
 		const onChangeCustomer = $(async () => {
+			const selectedCustomerNames = selectedCustomers.value.map((cust) => cust.name);
+			const customersToAdd = _selectedCustomers.value.filter(
+				(customerName) => !selectedCustomerNames.includes(customerName)
+			);
+			if (customersToAdd.length > 0) {
+				for (const customerName of customersToAdd) {
+					const customer = await getCustomerSig(customerName);
+					selectedCustomers.value = [
+						...selectedCustomers.value,
+						customer ?? { name: customerName, id: '' },
+					];
+				}
+			} else {
+				const customersToRemove = selectedCustomers.value
+					.filter((cust) => !_selectedCustomers.value.includes(cust.name))
+					.map((cust) => cust.name);
+				selectedCustomers.value = selectedCustomers.value.filter(
+					(cust) => !customersToRemove.includes(cust.name)
+				);
+			}
+
 			const isAllSelected = await isFullySelected(
-				customerOptionsSig.value,
-				selectedCustomers.value
+				_customerOptionsSig.value,
+				_selectedCustomers.value
 			);
 
-			parametersHandler('customer', isAllSelected ? ['all'] : selectedCustomers.value);
+			parametersHandler(
+				'customer',
+				isAllSelected ? ['all'] : selectedCustomers.value.map((cust) => cust.name)
+			);
 		});
 
 		const onChangeProject = $(async () => {
@@ -195,7 +231,13 @@ export const ReportFilters = component$<{
 					const project = await getProjectSig(projName);
 					selectedProjects.value = [
 						...selectedProjects.value,
-						project ?? { name: projName, type: '', plannedHours: 0, completed: false },
+						project ?? {
+							id: '',
+							name: projName,
+							type: '',
+							plannedHours: 0,
+							completed: false,
+						},
 					];
 				}
 			} else {
@@ -289,7 +331,7 @@ export const ReportFilters = component$<{
 		});
 
 		const clearFilters = $(() => {
-			selectedCustomers.value = [];
+			_selectedCustomers.value = [];
 			_selectedProjects.value = [];
 			_selectedTasks.value = [];
 			_selectedUsers.value = [];
@@ -316,7 +358,7 @@ export const ReportFilters = component$<{
 			};
 
 			// Apply filtering for each parameter
-			addMatchingItems('customer', customerOptionsSig, selectedCustomers);
+			addMatchingItems('customer', _customerOptionsSig, _selectedCustomers);
 			addMatchingItems('project', _projectOptionsSig, _selectedProjects);
 			addMatchingItems('task', _taskOptionsSig, _selectedTasks);
 			addMatchingItems('users', _usersOptionsSig, _selectedUsers);
@@ -342,8 +384,8 @@ export const ReportFilters = component$<{
 					id={UUID() + '-filter-customer'}
 					label={t('CUSTOMER_LABEL')}
 					placeholder={t('select_empty_label')}
-					value={selectedCustomers}
-					options={customerOptionsSig}
+					value={_selectedCustomers}
+					options={_customerOptionsSig}
 					onChange$={onChangeCustomer}
 					allowSelectAll
 					size='auto'

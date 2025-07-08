@@ -1,11 +1,15 @@
+import { Customer } from './customer';
+import { Project } from './project';
+
 export type Task = {
+	id: string;
 	name: string;
 	completed: boolean;
 	plannedHours: number;
 };
 
 export type TaskProjectCustomer = {
-	customer: string;
-	project: string;
-	task: string;
+	customer: Customer;
+	project: Project;
+	task: Task;
 };
