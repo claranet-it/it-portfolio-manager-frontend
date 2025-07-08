@@ -141,12 +141,28 @@ export const ReportFilters = component$<{
 		});
 
 		const getTaskSig = $(async (task: string) => {
-			const project = taskProjectCustomerSig.value.find(
-				(value) => value.task.name === task
-			)?.project;
-			const customer = taskProjectCustomerSig.value.find(
-				(value) => value.project === project
-			)?.customer;
+			let taskProjects;
+
+			if (selectedProjects.value.length !== 0) {
+				const projectNames = selectedProjects.value.map((project) => project.name);
+				taskProjects = taskProjectCustomerSig.value.filter(
+					(element) =>
+						projectNames.includes(element.project.name) &&
+						_projectOptionsSig.value.includes(element.project.name)
+				);
+			} else if (selectedCustomers.value.length !== 0) {
+				taskProjects = taskProjectCustomerSig.value.filter((element) =>
+					selectedCustomers.value
+						.map((customer) => customer.name)
+						.includes(element.customer.name)
+				);
+			} else {
+				taskProjects = taskProjectCustomerSig.value;
+			}
+
+			const project = taskProjects.find((value) => value.task.name === task)?.project;
+			const customer = taskProjects.find((value) => value.project === project)?.customer;
+
 			if (customer && project) {
 				const projectTaskList = await getTasks(customer, project);
 				return projectTaskList.find((element) => element.name === task);
