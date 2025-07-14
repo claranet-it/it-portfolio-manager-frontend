@@ -171,44 +171,54 @@ export const ReportFilters = component$<{
 				original.every((element) => selected.includes(element))
 		);
 
-		const getProjectSig = $(async (project: string) => {
+		const getProjectSig = $(async (projectID: string) => {
 			const customer = taskProjectCustomerSig.value.find(
-				(value) => value.project.name === project
+				(value) => value.project.id === projectID
 			)?.customer;
 			if (customer) {
 				const customerProjectList = await getProjects(customer);
-				return customerProjectList.find((element) => element.name === project);
+				console.log(
+					'#### customerProjectList',
+					customerProjectList.find((element) => element.id === projectID)
+				);
+				return customerProjectList.find((element) => element.id === projectID);
 			}
 		});
 
-		const getTaskSig = $(async (task: string) => {
+		const getTaskSig = $(async (taskID: string) => {
 			let taskProjects;
 
 			if (selectedProjects.value.length !== 0) {
-				const projectNames = selectedProjects.value.map((project) => project.name);
+				const projectIds = selectedProjects.value.map((project) => project.id);
 				taskProjects = taskProjectCustomerSig.value.filter(
 					(element) =>
-						projectNames.includes(element.project.name) &&
+						projectIds.includes(element.project.id) &&
 						_projectOptionsSig.value
-							.map((project) => project.name)
-							.includes(element.project.name)
+							.map((project) => project.id)
+							.includes(element.project.id)
 				);
 			} else if (selectedCustomers.value.length !== 0) {
 				taskProjects = taskProjectCustomerSig.value.filter((element) =>
 					selectedCustomers.value
-						.map((customer) => customer.name)
-						.includes(element.customer.name)
+						.map((customer) => customer.id)
+						.includes(element.customer.id)
 				);
 			} else {
 				taskProjects = taskProjectCustomerSig.value;
 			}
 
-			const project = taskProjects.find((value) => value.task.name === task)?.project;
-			const customer = taskProjects.find((value) => value.project === project)?.customer;
+			const project = taskProjects.find((value) => value.task.id === taskID)?.project;
+			const customer = taskProjects.find(
+				(value) => value.project.id === project?.id
+			)?.customer;
 
 			if (customer && project) {
 				const projectTaskList = await getTasks(customer, project);
-				return projectTaskList.find((element) => element.name === task);
+				console.log(
+					'#### projectTaskList.find((element) => element.id === taskID)',
+					projectTaskList.find((element) => element.id === taskID)
+				);
+				return projectTaskList.find((element) => element.id === taskID);
 			}
 		});
 
@@ -220,7 +230,7 @@ export const ReportFilters = component$<{
 
 			if (tasksToAdd.length > 0) {
 				for (const currentTask of tasksToAdd) {
-					const task = await getTaskSig(currentTask.name);
+					const task = await getTaskSig(currentTask.id);
 					selectedTasks.value = [
 						...selectedTasks.value,
 						task ?? {
@@ -289,7 +299,7 @@ export const ReportFilters = component$<{
 
 			if (projectsToAdd.length > 0) {
 				for (const proj of projectsToAdd) {
-					const project = await getProjectSig(proj.name);
+					const project = await getProjectSig(proj.id);
 					selectedProjects.value = [
 						...selectedProjects.value,
 						project ?? {
@@ -314,6 +324,10 @@ export const ReportFilters = component$<{
 				_projectOptionsSig.value.map((e) => e.id),
 				_selectedProjects.value.map((e) => e.id)
 			);
+
+			if (selectedProjects.value.length === 0) {
+				_selectedTasks.value = [];
+			}
 
 			parametersHandler(
 				'project',
