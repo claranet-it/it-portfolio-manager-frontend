@@ -4,6 +4,7 @@ import {
 	component$,
 	sync$,
 	useComputed$,
+	useContext,
 	useSignal,
 	useVisibleTask$,
 } from '@builder.io/qwik';
@@ -12,6 +13,7 @@ import { Project } from '@models/project';
 import { ReportTab } from '@models/report';
 import { Task } from '@models/task';
 import { UserProfile } from '@models/user';
+import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 import { getRouteParams } from 'src/router';
 import { getProjects } from 'src/services/projects';
@@ -40,6 +42,8 @@ export const ReportFilters = component$<{
 		afterHoursSig,
 		selectedTab,
 	}) => {
+		const appStore = useContext(AppContext);
+
 		const getUniqueValues = sync$((arr: Option[]): Option[] => {
 			return arr.filter(
 				(value, index, self) => self.findIndex((v) => v.id === value.id) === index
@@ -176,7 +180,9 @@ export const ReportFilters = component$<{
 				(value) => value.project.id === projectID
 			)?.customer;
 			if (customer) {
+				appStore.isLoading = true;
 				const customerProjectList = await getProjects(customer);
+				appStore.isLoading = false;
 				return customerProjectList.find((element) => element.id === projectID);
 			}
 		});
@@ -209,7 +215,9 @@ export const ReportFilters = component$<{
 			)?.customer;
 
 			if (customer && project) {
+				appStore.isLoading = true;
 				const projectTaskList = await getTasks(customer, project);
+				appStore.isLoading = false;
 				return projectTaskList.find((element) => element.id === taskID);
 			}
 		});
@@ -249,7 +257,7 @@ export const ReportFilters = component$<{
 
 			parametersHandler(
 				'task',
-				isAllSelected ? ['all'] : selectedTasks.value.map((task) => task.name)
+				isAllSelected ? ['all'] : selectedTasks.value.map((task) => task.id)
 			);
 		});
 
@@ -279,7 +287,7 @@ export const ReportFilters = component$<{
 
 			parametersHandler(
 				'customer',
-				isAllSelected ? ['all'] : selectedCustomers.value.map((cust) => cust.name)
+				isAllSelected ? ['all'] : selectedCustomers.value.map((cust) => cust.id)
 			);
 		});
 
@@ -323,7 +331,7 @@ export const ReportFilters = component$<{
 
 			parametersHandler(
 				'project',
-				isAllSelected ? ['all'] : selectedProjects.value.map((proj) => proj.name)
+				isAllSelected ? ['all'] : selectedProjects.value.map((proj) => proj.id)
 			);
 		});
 
@@ -416,9 +424,7 @@ export const ReportFilters = component$<{
 			) => {
 				if (!(params[paramKey] && params[paramKey][0] === 'all')) {
 					params[paramKey]?.forEach((item) => {
-						const matchedItem = optionsSig.value.find(
-							(option) => option.name.toLowerCase() === item.toLowerCase()
-						);
+						const matchedItem = optionsSig.value.find((option) => option.id === item);
 						if (matchedItem) selectedList.value = [...selectedList.value, matchedItem];
 					});
 				}
