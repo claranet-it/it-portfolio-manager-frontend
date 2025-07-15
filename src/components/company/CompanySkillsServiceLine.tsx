@@ -1,4 +1,4 @@
-import { component$, QRL, useComputed$, useContext } from '@builder.io/qwik';
+import { component$, QRL, useComputed$, useContext, useStore } from '@builder.io/qwik';
 import { CompanySkill } from '@models/company';
 import { AppContext } from 'src/app';
 import { ToggleSwitch } from 'src/components/form/ToggleSwitch';
@@ -13,7 +13,6 @@ export const CompanySkillsServiceLine = component$<Props>(
 		const appStore = useContext(AppContext);
 		const skillSig = useComputed$(() => {
 			const skillList = appStore.configuration.skills;
-
 			return _companySkills.reduce(
 				(acc, obj) => {
 					if (!acc[obj.serviceLine]) {
@@ -31,11 +30,17 @@ export const CompanySkillsServiceLine = component$<Props>(
 			);
 		});
 
+		const serviceCheckSig = useStore(() => {
+			const check = {} as Record<string, boolean>;
+			Object.entries(skillSig.value).map(([serviceLine, skills]) => {
+				check[serviceLine] = skills.some((skill) => skill.visible);
+			});
+			return check;
+		});
+
 		return (
 			<>
 				{Object.entries(skillSig.value).map(([serviceLine, skills]) => {
-					const serviceCheck = skills.some((skill) => skill.visible);
-
 					return (
 						<div key={`company-skill-${serviceLine}`} class='mb-4'>
 							<div class='mb-1 flex w-full flex-row items-center justify-between'>
@@ -44,8 +49,11 @@ export const CompanySkillsServiceLine = component$<Props>(
 								</h2>
 								<div class='mr-3'>
 									<ToggleSwitch
-										key={`company-skill-toggle-${serviceLine}`}
-										isChecked={serviceCheck}
+										key={
+											`company-skill-toggle-${serviceLine}` +
+											(serviceCheckSig[serviceLine] ? 'on' : 'off')
+										}
+										isChecked={serviceCheckSig[serviceLine]}
 										onChange$={(e: boolean) => {
 											skills.forEach((skill) => {
 												const found = _companySkills.find(
@@ -87,7 +95,11 @@ export const CompanySkillsServiceLine = component$<Props>(
 													key={'toogle-' + (skill.visible ? 'on' : 'off')}
 													isChecked={skill.visible}
 													onChange$={(e: boolean) => {
+														skill.visible = e;
 														updateSkillVisibility(skill.id, e);
+														serviceCheckSig[serviceLine] = skills.some(
+															(skill) => skill.visible
+														);
 													}}
 												/>
 											</div>
