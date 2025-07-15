@@ -33,7 +33,7 @@ interface multiSelectInterface {
 	allowSelectAll?: boolean;
 }
 
-export const MultiselectRefactor = component$<multiSelectInterface>(
+export const MultiselectCustom = component$<multiSelectInterface>(
 	({
 		id,
 		label,

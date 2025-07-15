@@ -20,8 +20,8 @@ import { getUserProfiles } from 'src/services/user';
 import { parametersHandler } from 'src/utils/report';
 import { UUID } from 'src/utils/uuid';
 import { Button } from '../Button';
+import { MultiselectCustom } from '../form/MultiselectCustom';
 import { GroupedOptions, Option } from '../form/MultiselectDropdownMenu';
-import { MultiselectRefactor } from '../form/MultiselectREfactor';
 import { RadioDropdown, ToggleState } from '../form/RadioDropdown';
 
 export const ReportFilters = component$<{
@@ -177,10 +177,6 @@ export const ReportFilters = component$<{
 			)?.customer;
 			if (customer) {
 				const customerProjectList = await getProjects(customer);
-				console.log(
-					'#### customerProjectList',
-					customerProjectList.find((element) => element.id === projectID)
-				);
 				return customerProjectList.find((element) => element.id === projectID);
 			}
 		});
@@ -214,10 +210,6 @@ export const ReportFilters = component$<{
 
 			if (customer && project) {
 				const projectTaskList = await getTasks(customer, project);
-				console.log(
-					'#### projectTaskList.find((element) => element.id === taskID)',
-					projectTaskList.find((element) => element.id === taskID)
-				);
 				return projectTaskList.find((element) => element.id === taskID);
 			}
 		});
@@ -457,7 +449,7 @@ export const ReportFilters = component$<{
 
 		return (
 			<div class='m-0 flex w-full grid-cols-6 flex-col gap-1 sm:space-y-2 md:space-y-2 lg:grid lg:items-end md:[&>form]:!mx-0'>
-				<MultiselectRefactor
+				<MultiselectCustom
 					key={_customerOptionsSig.value.length}
 					id={UUID() + '-filter-customer'}
 					label={t('CUSTOMER_LABEL')}
@@ -469,7 +461,7 @@ export const ReportFilters = component$<{
 					size='auto'
 				/>
 
-				<MultiselectRefactor
+				<MultiselectCustom
 					key={_projectOptionsSig.value.length}
 					id={UUID() + '-filter-project'}
 					label={t('PROJECT_LABEL')}
@@ -481,7 +473,7 @@ export const ReportFilters = component$<{
 					size='auto'
 				/>
 
-				<MultiselectRefactor
+				<MultiselectCustom
 					key={_taskOptionsSig.value.length}
 					id={UUID() + '-filter-task'}
 					label={t('TASK_LABEL')}
@@ -494,7 +486,7 @@ export const ReportFilters = component$<{
 					disabled={!_selectedProjects.value.length}
 				/>
 
-				<MultiselectRefactor
+				<MultiselectCustom
 					key={_usersOptionsSig.value.length}
 					id={UUID() + '-filter-user'}
 					label={t('USER_LABEL')}
