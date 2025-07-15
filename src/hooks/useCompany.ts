@@ -1,10 +1,8 @@
 import { $, useContext, useSignal } from '@builder.io/qwik';
 import { Company } from '@models/company';
-import { UserProfile } from '@models/user';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 import { editCompanyMineImage, editSkillVisibility, getCompanyMine } from 'src/services/company';
-import { getUserProfiles } from 'src/services/user';
 import { INIT_COMPANY_VALUE } from 'src/utils/constants';
 import { useNotification } from './useNotification';
 
@@ -13,8 +11,6 @@ export const useCompany = () => {
 	const { addEvent } = useNotification();
 
 	const company = useSignal<Company>(INIT_COMPANY_VALUE);
-
-	const userSig = useSignal<UserProfile[]>([]);
 
 	const fetchCompany = $(async () => {
 		appStore.isLoading = true;
@@ -28,12 +24,6 @@ export const useCompany = () => {
 				autoclose: true,
 			});
 		}
-		appStore.isLoading = false;
-	});
-
-	const fetchUsers = $(async () => {
-		appStore.isLoading = true;
-		userSig.value = (await getUserProfiles()).sort((a, b) => a.name.localeCompare(b.name));
 		appStore.isLoading = false;
 	});
 
