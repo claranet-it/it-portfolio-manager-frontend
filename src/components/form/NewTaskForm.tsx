@@ -8,7 +8,6 @@ import {
 	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
-import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { initFlowbite } from 'flowbite';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
@@ -89,9 +88,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 
 		const _onChangeCustomer = $(async (customerName: string) => {
 			const foundCustomer = dataCustomersSig.value.find((c) => c.name === customerName);
-			const customer: Customer = foundCustomer || { id: '', name: customerName };
-
-			await onChangeCustomer(customer);
+			if (foundCustomer) await onChangeCustomer(foundCustomer);
 		});
 
 		const _onChangeProject = $(async (value: string) => {
