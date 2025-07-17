@@ -4,6 +4,7 @@ import {
 	component$,
 	sync$,
 	useComputed$,
+	useContext,
 	useSignal,
 	useVisibleTask$,
 } from '@builder.io/qwik';
@@ -12,6 +13,7 @@ import { Project } from '@models/project';
 import { ReportTab } from '@models/report';
 import { Task } from '@models/task';
 import { UserProfile } from '@models/user';
+import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
 import { getRouteParams } from 'src/router';
 import { getProjects } from 'src/services/projects';
@@ -20,7 +22,8 @@ import { getUserProfiles } from 'src/services/user';
 import { parametersHandler } from 'src/utils/report';
 import { UUID } from 'src/utils/uuid';
 import { Button } from '../Button';
-import { GroupedValues, Multiselect } from '../form/Multiselect';
+import { MultiselectCustom } from '../form/MultiselectCustom';
+import { GroupedOptions, Option } from '../form/MultiselectDropdownMenu';
 import { RadioDropdown, ToggleState } from '../form/RadioDropdown';
 
 export const ReportFilters = component$<{
@@ -39,16 +42,35 @@ export const ReportFilters = component$<{
 		afterHoursSig,
 		selectedTab,
 	}) => {
-		const getUniqueValues = sync$((arr: string[]): string[] => {
-			return [...new Set(arr)];
+		const appStore = useContext(AppContext);
+
+		const getUniqueValues = sync$((arr: Option[]): Option[] => {
+			return arr.filter(
+				(value, index, self) => self.findIndex((v) => v.id === value.id) === index
+			);
 		});
 
-		const _selectedCustomers = useSignal(
-			selectedCustomers.value.map((customer) => customer.name)
+		const _selectedCustomers = useSignal<Option[]>(
+			selectedCustomers.value.map((customer) => {
+				return { id: customer.id, name: customer.name };
+			})
 		);
-		const _selectedProjects = useSignal(selectedProjects.value.map((project) => project.name));
-		const _selectedTasks = useSignal(selectedTasks.value.map((task) => task.name));
-		const _selectedUsers = useSignal(selectedUsers.value.map((user) => user.name));
+		const _selectedProjects = useSignal(
+			selectedProjects.value.map((project) => {
+				return { id: project.id, name: project.name };
+			})
+		);
+		const _selectedTasks = useSignal(
+			selectedTasks.value.map((task) => {
+				return { id: task.id, name: task.name };
+			})
+		);
+
+		const _selectedUsers = useSignal(
+			selectedUsers.value.map((user) => {
+				return { id: user.id, name: user.name };
+			})
+		);
 
 		const taskProjectCustomerSig = useComputed$(async () => {
 			return await getAllTasks();
@@ -59,35 +81,52 @@ export const ReportFilters = component$<{
 		});
 
 		const _usersOptionsSig = useComputed$(async () => {
-			return usersSig.value.map((user) => user.name);
+			return usersSig.value.map((user) => {
+				return { id: user.id, name: user.name };
+			});
 		});
 
 		const _customerOptionsSig = useComputed$(async () => {
 			return getUniqueValues(
 				taskProjectCustomerSig.value
-					.map((taskProjectCustomer) => taskProjectCustomer.customer.name)
-					.sort((a, b) => a.localeCompare(b))
+					.map((taskProjectCustomer) => {
+						return {
+							id: taskProjectCustomer.customer.id,
+							name: taskProjectCustomer.customer.name,
+						};
+					})
+					.sort((a, b) => a.name.localeCompare(b.name))
 			);
 		});
 
 		const _projectOptionsSig = useComputed$(async () => {
 			let customerProjects;
 
-			const customerNames = selectedCustomers.value.map((customer) => customer.name);
+			const customerIds = selectedCustomers.value.map((customer) => customer.id);
 			if (selectedCustomers.value.length !== 0) {
-				customerProjects = taskProjectCustomerSig.value.filter(
-					(element) =>
-						customerNames.includes(element.customer.name) &&
-						_customerOptionsSig.value.includes(element.customer.name)
-				);
+				customerProjects = taskProjectCustomerSig.value.filter((element) => {
+					return customerIds.includes(element.customer.id);
+				});
 			} else {
 				customerProjects = taskProjectCustomerSig.value;
 			}
 
 			return getUniqueValues(
 				customerProjects
-					.map((taskProjectCustomer) => taskProjectCustomer.project.name)
-					.sort((a, b) => a.localeCompare(b))
+					.map((taskProjectCustomer) => {
+						return {
+							group: taskProjectCustomer.customer.name,
+							id: taskProjectCustomer.project.id,
+							name: taskProjectCustomer.project.name,
+						};
+					})
+					.sort((a, b) => {
+						if (a.group === b.group) {
+							return a.name.localeCompare(b.name);
+						} else {
+							return a.group.localeCompare(b.group);
+						}
+					})
 			);
 		});
 
@@ -95,25 +134,37 @@ export const ReportFilters = component$<{
 			let taskProjects;
 
 			if (selectedProjects.value.length !== 0) {
-				const projectNames = selectedProjects.value.map((project) => project.name);
+				const projectIds = selectedProjects.value.map((project) => project.id);
 				taskProjects = taskProjectCustomerSig.value.filter(
 					(element) =>
-						projectNames.includes(element.project.name) &&
-						_projectOptionsSig.value.includes(element.project.name)
+						projectIds.includes(element.project.id) &&
+						_projectOptionsSig.value.map((e) => e.id).includes(element.project.id)
 				);
 			} else if (selectedCustomers.value.length !== 0) {
 				taskProjects = taskProjectCustomerSig.value.filter((element) =>
 					selectedCustomers.value
-						.map((customer) => customer.name)
-						.includes(element.customer.name)
+						.map((customer) => customer.id)
+						.includes(element.customer.id)
 				);
 			} else {
 				taskProjects = taskProjectCustomerSig.value;
 			}
 
 			return taskProjects
-				.map((taskProjectCustomer) => taskProjectCustomer.task.name)
-				.sort((a, b) => a.localeCompare(b));
+				.map((taskProjectCustomer) => {
+					return {
+						group: taskProjectCustomer.project.name,
+						id: taskProjectCustomer.task.id,
+						name: taskProjectCustomer.task.name,
+					};
+				})
+				.sort((a, b) => {
+					if (a.group === b.group) {
+						return a.name.localeCompare(b.name);
+					} else {
+						return a.group.localeCompare(b.group);
+					}
+				});
 		});
 
 		const isFullySelected = $(
@@ -124,132 +175,136 @@ export const ReportFilters = component$<{
 				original.every((element) => selected.includes(element))
 		);
 
-		const getCustomerSig = $(async (customerName: string) => {
-			return taskProjectCustomerSig.value.find(
-				(value) => value.customer.name === customerName
-			)?.customer;
-		});
-
-		const getProjectSig = $(async (project: string) => {
+		const getProjectSig = $(async (projectID: string) => {
 			const customer = taskProjectCustomerSig.value.find(
-				(value) => value.project.name === project
+				(value) => value.project.id === projectID
 			)?.customer;
 			if (customer) {
+				appStore.isLoading = true;
 				const customerProjectList = await getProjects(customer);
-				return customerProjectList.find((element) => element.name === project);
+				appStore.isLoading = false;
+				return customerProjectList.find((element) => element.id === projectID);
 			}
 		});
 
-		const getTaskSig = $(async (task: string) => {
+		const getTaskSig = $(async (taskID: string) => {
 			let taskProjects;
 
 			if (selectedProjects.value.length !== 0) {
-				const projectNames = selectedProjects.value.map((project) => project.name);
+				const projectIds = selectedProjects.value.map((project) => project.id);
 				taskProjects = taskProjectCustomerSig.value.filter(
 					(element) =>
-						projectNames.includes(element.project.name) &&
-						_projectOptionsSig.value.includes(element.project.name)
+						projectIds.includes(element.project.id) &&
+						_projectOptionsSig.value
+							.map((project) => project.id)
+							.includes(element.project.id)
 				);
 			} else if (selectedCustomers.value.length !== 0) {
 				taskProjects = taskProjectCustomerSig.value.filter((element) =>
 					selectedCustomers.value
-						.map((customer) => customer.name)
-						.includes(element.customer.name)
+						.map((customer) => customer.id)
+						.includes(element.customer.id)
 				);
 			} else {
 				taskProjects = taskProjectCustomerSig.value;
 			}
 
-			const project = taskProjects.find((value) => value.task.name === task)?.project;
-			const customer = taskProjects.find((value) => value.project === project)?.customer;
+			const project = taskProjects.find((value) => value.task.id === taskID)?.project;
+			const customer = taskProjects.find(
+				(value) => value.project.id === project?.id
+			)?.customer;
 
 			if (customer && project) {
+				appStore.isLoading = true;
 				const projectTaskList = await getTasks(customer, project);
-				return projectTaskList.find((element) => element.name === task);
+				appStore.isLoading = false;
+				return projectTaskList.find((element) => element.id === taskID);
 			}
 		});
 
 		const onChangeTask = $(async () => {
-			const selectedTaskNames = selectedTasks.value.map((task) => task.name);
+			const selectedTaskIds = selectedTasks.value.map((task) => task.id);
 			const tasksToAdd = _selectedTasks.value.filter(
-				(taskName) => !selectedTaskNames.includes(taskName)
+				(task) => !selectedTaskIds.includes(task.id)
 			);
 
 			if (tasksToAdd.length > 0) {
-				for (const taskName of tasksToAdd) {
-					const task = await getTaskSig(taskName);
+				for (const currentTask of tasksToAdd) {
+					const task = await getTaskSig(currentTask.id);
 					selectedTasks.value = [
 						...selectedTasks.value,
-						task ?? { id: '', name: taskName, completed: false, plannedHours: 0 },
+						task ?? {
+							id: currentTask.id,
+							name: currentTask.name,
+							completed: false,
+							plannedHours: 0,
+						},
 					];
 				}
 			} else {
-				const tasksToRemove = selectedTasks.value
-					.filter((task) => !_selectedTasks.value.includes(task.name))
-					.map((task) => task.name);
+				const tasksToRemove = selectedTasks.value.filter(
+					(task) => !_selectedTasks.value.map((e) => e.id).includes(task.id)
+				);
 
 				selectedTasks.value = selectedTasks.value.filter(
-					(task) => !tasksToRemove.includes(task.name)
+					(task) => !tasksToRemove.map((e) => e.id).includes(task.id)
 				);
 			}
 			const isAllSelected = await isFullySelected(
-				_taskOptionsSig.value,
-				_selectedTasks.value
+				_taskOptionsSig.value.map((e) => e.id),
+				_selectedTasks.value.map((e) => e.id)
 			);
 
 			parametersHandler(
 				'task',
-				isAllSelected ? ['all'] : selectedTasks.value.map((task) => task.name)
+				isAllSelected ? ['all'] : selectedTasks.value.map((task) => task.id)
 			);
 		});
 
 		const onChangeCustomer = $(async () => {
-			const selectedCustomerNames = selectedCustomers.value.map((cust) => cust.name);
+			const selectedCustomerIds = selectedCustomers.value.map((cust) => cust.id);
 			const customersToAdd = _selectedCustomers.value.filter(
-				(customerName) => !selectedCustomerNames.includes(customerName)
+				(customerOpt) => !selectedCustomerIds.includes(customerOpt.id)
 			);
 			if (customersToAdd.length > 0) {
-				for (const customerName of customersToAdd) {
-					const customer = await getCustomerSig(customerName);
-					selectedCustomers.value = [
-						...selectedCustomers.value,
-						customer ?? { name: customerName, id: '' },
-					];
+				for (const customer of customersToAdd) {
+					selectedCustomers.value = [...selectedCustomers.value, customer];
 				}
 			} else {
-				const customersToRemove = selectedCustomers.value
-					.filter((cust) => !_selectedCustomers.value.includes(cust.name))
-					.map((cust) => cust.name);
+				const customersToRemove = selectedCustomers.value.filter(
+					(cust) => !_selectedCustomers.value.map((e) => e.id).includes(cust.id)
+				);
+
 				selectedCustomers.value = selectedCustomers.value.filter(
-					(cust) => !customersToRemove.includes(cust.name)
+					(cust) => !customersToRemove.map((e) => e.id).includes(cust.id)
 				);
 			}
 
 			const isAllSelected = await isFullySelected(
-				_customerOptionsSig.value,
-				_selectedCustomers.value
+				_customerOptionsSig.value.map((e) => e.id),
+				_selectedCustomers.value.map((e) => e.id)
 			);
 
 			parametersHandler(
 				'customer',
-				isAllSelected ? ['all'] : selectedCustomers.value.map((cust) => cust.name)
+				isAllSelected ? ['all'] : selectedCustomers.value.map((cust) => cust.id)
 			);
 		});
 
 		const onChangeProject = $(async () => {
-			const selectedProjectNames = selectedProjects.value.map((proj) => proj.name);
+			const selectedProjectIds = selectedProjects.value.map((proj) => proj.id);
 			const projectsToAdd = _selectedProjects.value.filter(
-				(projName) => !selectedProjectNames.includes(projName)
+				(proj) => !selectedProjectIds.includes(proj.id)
 			);
 
 			if (projectsToAdd.length > 0) {
-				for (const projName of projectsToAdd) {
-					const project = await getProjectSig(projName);
+				for (const proj of projectsToAdd) {
+					const project = await getProjectSig(proj.id);
 					selectedProjects.value = [
 						...selectedProjects.value,
 						project ?? {
-							id: '',
-							name: projName,
+							id: proj.id,
+							name: proj.name,
 							type: '',
 							plannedHours: 0,
 							completed: false,
@@ -257,40 +312,44 @@ export const ReportFilters = component$<{
 					];
 				}
 			} else {
-				const projectsToRemove = selectedProjects.value
-					.filter((proj) => !_selectedProjects.value.includes(proj.name))
-					.map((proj) => proj.name);
+				const projectsToRemove = selectedProjects.value.filter(
+					(proj) => !_selectedProjects.value.map((e) => e.id).includes(proj.id)
+				);
 
 				selectedProjects.value = selectedProjects.value.filter(
-					(proj) => !projectsToRemove.includes(proj.name)
+					(proj) => !projectsToRemove.map((e) => e.id).includes(proj.id)
 				);
 			}
 			const isAllSelected = await isFullySelected(
-				_projectOptionsSig.value,
-				_selectedProjects.value
+				_projectOptionsSig.value.map((e) => e.id),
+				_selectedProjects.value.map((e) => e.id)
 			);
+
+			if (selectedProjects.value.length === 0) {
+				_selectedTasks.value = [];
+			}
 
 			parametersHandler(
 				'project',
-				isAllSelected ? ['all'] : selectedProjects.value.map((proj) => proj.name)
+				isAllSelected ? ['all'] : selectedProjects.value.map((proj) => proj.id)
 			);
 		});
 
 		const convertToGrouped = useComputed$(() => {
-			const teamsMap: Record<string, string[]> = usersSig.value.reduce(
+			const teamsMap: Record<string, Option[]> = usersSig.value.reduce(
 				(map, user) => {
 					if (!map[user.crew]) {
 						map[user.crew] = [];
 					}
-					map[user.crew].push(user.name);
+					map[user.crew].push({ id: user.id, name: user.name });
 					return map;
 				},
-				{} as Record<string, string[]>
+				{} as Record<string, Option[]>
 			);
 
-			const teams: GroupedValues[] = Object.keys(teamsMap).map((teamName) => ({
+			const teams: GroupedOptions[] = Object.keys(teamsMap).map((teamName) => ({
 				key: teamName,
-				values: teamsMap[teamName],
+				options: teamsMap[teamName],
 			}));
 
 			return teams;
@@ -308,11 +367,11 @@ export const ReportFilters = component$<{
 				const userCrew = user.crew;
 				const crewMembers = convertToGrouped.value.find(
 					(element) => element.key === userCrew
-				)?.values;
+				)?.options;
 
 				if (crewMembers) {
 					const allMembersSelected = crewMembers.every((member) =>
-						selectedUserNames.has(member)
+						selectedUserNames.has(member.name)
 					);
 
 					if (allMembersSelected) {
@@ -323,8 +382,8 @@ export const ReportFilters = component$<{
 				}
 			}
 			const isAllSelected = await isFullySelected(
-				usersSig.value.map((user) => user.name),
-				_selectedUsers.value
+				usersSig.value.map((user) => user.id),
+				_selectedUsers.value.map((user) => user.id)
 			);
 			parametersHandler('crew', isAllSelected ? [] : newParams.crew);
 			parametersHandler('users', isAllSelected ? ['all'] : newParams.users);
@@ -332,12 +391,12 @@ export const ReportFilters = component$<{
 
 		const onChangeUser = $(() => {
 			selectedUsers.value = _selectedUsers.value.map((user) => {
-				const value = usersSig.value.find((element) => element.name === user);
+				const value = usersSig.value.find((element) => element.name === user.name);
 				return (
 					value ?? {
-						name: user,
+						name: user.name,
 						email: '',
-						id: '',
+						id: user.id,
 						crew: '',
 					}
 				);
@@ -360,14 +419,12 @@ export const ReportFilters = component$<{
 			// Function to add matching items from params to the selected list
 			const addMatchingItems = (
 				paramKey: keyof typeof params,
-				optionsSig: Signal<string[]>,
-				selectedList: Signal<string[]>
+				optionsSig: Signal<Option[]>,
+				selectedList: Signal<Option[]>
 			) => {
 				if (!(params[paramKey] && params[paramKey][0] === 'all')) {
 					params[paramKey]?.forEach((item) => {
-						const matchedItem = optionsSig.value.find(
-							(option) => option.toLowerCase() === item.toLowerCase()
-						);
+						const matchedItem = optionsSig.value.find((option) => option.id === item);
 						if (matchedItem) selectedList.value = [...selectedList.value, matchedItem];
 					});
 				}
@@ -383,7 +440,9 @@ export const ReportFilters = component$<{
 			params['crew']?.forEach((item) => {
 				const matchedCrew = usersSig.value
 					.filter((user) => user.crew.toLowerCase() === item.toLowerCase())
-					.map((user) => user.name);
+					.map((user) => {
+						return { id: user.id, name: user.name };
+					});
 				if (matchedCrew) _selectedUsers.value = [..._selectedUsers.value, ...matchedCrew];
 			});
 
@@ -396,44 +455,49 @@ export const ReportFilters = component$<{
 
 		return (
 			<div class='m-0 flex w-full grid-cols-6 flex-col gap-1 sm:space-y-2 md:space-y-2 lg:grid lg:items-end md:[&>form]:!mx-0'>
-				<Multiselect
+				<MultiselectCustom
+					key={_customerOptionsSig.value.length}
 					id={UUID() + '-filter-customer'}
 					label={t('CUSTOMER_LABEL')}
 					placeholder={t('select_empty_label')}
-					value={_selectedCustomers}
+					selectedValues={_selectedCustomers}
 					options={_customerOptionsSig}
 					onChange$={onChangeCustomer}
 					allowSelectAll
 					size='auto'
 				/>
 
-				<Multiselect
+				<MultiselectCustom
+					key={_projectOptionsSig.value.length}
 					id={UUID() + '-filter-project'}
 					label={t('PROJECT_LABEL')}
 					placeholder={t('select_empty_label')}
-					value={_selectedProjects}
+					selectedValues={_selectedProjects}
 					options={_projectOptionsSig}
 					onChange$={onChangeProject}
 					allowSelectAll
 					size='auto'
 				/>
 
-				<Multiselect
+				<MultiselectCustom
+					key={_taskOptionsSig.value.length}
 					id={UUID() + '-filter-task'}
 					label={t('TASK_LABEL')}
 					placeholder={t('select_empty_label')}
-					value={_selectedTasks}
+					selectedValues={_selectedTasks}
 					options={_taskOptionsSig}
 					onChange$={onChangeTask}
 					allowSelectAll
 					size='auto'
+					disabled={!_selectedProjects.value.length}
 				/>
 
-				<Multiselect
+				<MultiselectCustom
+					key={_usersOptionsSig.value.length}
 					id={UUID() + '-filter-user'}
 					label={t('USER_LABEL')}
 					placeholder={t('select_empty_label')}
-					value={_selectedUsers}
+					selectedValues={_selectedUsers}
 					options={_usersOptionsSig}
 					multiLevel={[
 						{
