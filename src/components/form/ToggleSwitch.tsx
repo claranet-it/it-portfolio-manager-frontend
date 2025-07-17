@@ -1,11 +1,11 @@
 import { QRL, Signal, component$, useSignal } from '@builder.io/qwik';
 
-interface ToogleSwitchProps {
+type ToogleSwitchProps = {
 	isChecked: boolean | Signal<boolean>;
 	label?: string;
 	onChange$?: QRL;
 	id?: string;
-}
+};
 
 export const ToggleSwitch = component$<ToogleSwitchProps>(({ isChecked, label, onChange$, id }) => {
 	const checked = typeof isChecked === 'boolean' ? useSignal(isChecked) : isChecked;

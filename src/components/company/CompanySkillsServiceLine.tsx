@@ -4,11 +4,11 @@ import { AppContext } from 'src/app';
 import { ToggleSwitch } from 'src/components/form/ToggleSwitch';
 import { getSkillIcon } from 'src/utils/skill';
 
-type Props = {
+type CompanySkillsServiceLineProps = {
 	updateSkillVisibility: QRL;
 	_companySkills: CompanySkill[];
 };
-export const CompanySkillsServiceLine = component$<Props>(
+export const CompanySkillsServiceLine = component$<CompanySkillsServiceLineProps>(
 	({ _companySkills, updateSkillVisibility }) => {
 		const appStore = useContext(AppContext);
 		const skillSig = useComputed$(() => {
