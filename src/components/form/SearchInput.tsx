@@ -2,12 +2,12 @@ import { QRL, Signal, component$, useVisibleTask$ } from '@builder.io/qwik';
 import { initFlowbite } from 'flowbite';
 import { getIcon } from '../icons';
 
-interface props {
+type SearchInputProps = {
 	callback: QRL;
 	value: Signal<string | undefined>;
-}
+};
 
-export const SearchInput = component$<props>(({ value, callback }) => {
+export const SearchInput = component$<SearchInputProps>(({ value, callback }) => {
 	useVisibleTask$(() => {
 		initFlowbite();
 	});

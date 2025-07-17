@@ -15,7 +15,7 @@ export type Option = {
 	group?: string;
 };
 
-interface multiSelectInterface {
+type MultiselectCustomProps = {
 	id: string;
 	label?: string;
 	selectedValues: Signal<Option[]>;
@@ -31,9 +31,9 @@ interface multiSelectInterface {
 	invalid?: boolean;
 	hidden?: boolean;
 	allowSelectAll?: boolean;
-}
+};
 
-export const MultiselectCustom = component$<multiSelectInterface>(
+export const MultiselectCustom = component$<MultiselectCustomProps>(
 	({
 		id,
 		label,

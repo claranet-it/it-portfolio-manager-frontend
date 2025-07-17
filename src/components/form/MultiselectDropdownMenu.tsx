@@ -24,7 +24,7 @@ export type Option = {
 	group?: string;
 };
 
-interface multiSelectInterface {
+type MultiselectDropdownMenuProps = {
 	id: string;
 	label?: string;
 	selectedValues: Signal<Option[]>;
@@ -35,9 +35,9 @@ interface multiSelectInterface {
 	}[];
 	onChange$?: QRL;
 	allowSelectAll?: boolean;
-}
+};
 
-export const MultiselectDropdownMenu = component$<multiSelectInterface>(
+export const MultiselectDropdownMenu = component$<MultiselectDropdownMenuProps>(
 	({ id, label, selectedValues, options, multiLevel, onChange$, allowSelectAll }) => {
 		const optionsFiltered = useSignal(options.value);
 		const filterOptionString = useSignal<string>();
