@@ -69,8 +69,10 @@ export const useCompanyUsers = () => {
 	});
 
 	const updateUserVisibility = $(async (user: UserProfile, visible: boolean) => {
+		appStore.isLoading = true;
 		await updateUserActivation(user.id, visible);
 		await fetchUsers();
+		appStore.isLoading = false;
 	});
 
 	const updateUserValues = $(async (user: UserProfile, role: string, crew: string) => {
