@@ -9,8 +9,8 @@ import { t } from 'src/locale/labels';
 import { getCurrentRoute, navigateTo } from 'src/router';
 import { limitRoleAccess } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
-import { Button } from '../Button';
 import { EditTaskForm } from '../form/editTaskFrom';
+import { OptionDropdown } from '../form/OptionDropdown';
 import { getIcon } from '../icons';
 import { Modal } from '../modals/Modal';
 
@@ -85,41 +85,45 @@ export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project
 
 	return (
 		<>
-			<div class='flex w-full items-center justify-between gap-3 border border-gray-200 p-5 font-medium text-gray-500 focus:ring-4 focus:ring-gray-200 rtl:text-right'>
-				<div class='flex flex-row gap-3'>
-					<div class='flex flex-col gap-2'>
-						<div class='flex flex-row gap-2'>
-							<span>{task.name}</span>{' '}
-							{task.completed ? (
-								<span class='uppercase text-gray-400'>
-									({t('COMPLETED_LABEL')})
-								</span>
-							) : (
-								''
-							)}
+			<tr>
+				<td class='border border-surface-70 p-3 text-left'>
+					<span>{task.name}</span>{' '}
+					{task.completed ? (
+						<span class='uppercase text-gray-400'>({t('COMPLETED_LABEL')})</span>
+					) : (
+						''
+					)}
+				</td>
+				<td class='w-1/6 border border-surface-70 p-3 text-left'>
+					{task.plannedHours !== 0 ? (
+						<span class='text-sm text-gray-400'>({task.plannedHours}h)</span>
+					) : (
+						''
+					)}
+				</td>
+				<td class='w-1/12 border border-surface-70 p-3 text-left'>
+					{canAccess.value && (
+						<div class='flex flex-row gap-3'>
+							<OptionDropdown
+								id={`options-task-${task.id}`}
+								icon={getIcon('V3DotsBlack')}
+								label={''}
+								options={[
+									{
+										value: 'Edit task',
+										onChange: $(() => (taskModalState.isVisible = true)),
+									},
+									/* {
+										value: 'Delete task',
+										onChange: $(() => (taskDeleteModalState.isVisible = true)),
+										class: 'text-red-500',
+									}, */
+								]}
+							/>
 						</div>
-						{task.plannedHours !== 0 ? (
-							<span class='text-sm text-gray-400'>({task.plannedHours}h)</span>
-						) : (
-							''
-						)}
-					</div>
-				</div>
-				{canAccess.value && (
-					<div class='flex flex-row gap-3'>
-						{/* <Button variant={'outline'} onClick$={() => {}}>
-								{getIcon('Bin')}
-							</Button> */}
-
-						<Button
-							variant={'outline'}
-							onClick$={() => (taskModalState.isVisible = true)}
-						>
-							{getIcon('Edit')}
-						</Button>
-					</div>
-				)}
-			</div>
+					)}
+				</td>
+			</tr>
 
 			<Modal state={taskModalState}>
 				<EditTaskForm

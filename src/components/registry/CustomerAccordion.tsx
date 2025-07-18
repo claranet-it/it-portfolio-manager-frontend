@@ -17,8 +17,10 @@ import { useProjects } from 'src/hooks/useProjects';
 import { t, tt } from 'src/locale/labels';
 import { limitRoleAccess } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
-import { Button } from '../Button';
 import { EditCustomerForm } from '../form/editCustomerFrom';
+
+import { Button } from '../Button';
+import { OptionDropdown } from '../form/OptionDropdown';
 import { getIcon } from '../icons';
 import { LoadingSpinnerInline } from '../LoadingSpinnerInline';
 import { Modal } from '../modals/Modal';
@@ -120,10 +122,10 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 				<h2>
 					<div
 						class={
-							'flex w-full items-center justify-between gap-3 border-gray-200 p-5 font-medium text-gray-500 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 rtl:text-right ' +
+							'mt-3 flex w-full items-center justify-between gap-3 border-b-2 border-surface-90 p-5 font-medium text-gray-500 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 rtl:text-right ' +
 							(visibleBody.value && !isLoading.value
-								? 'border-2 bg-dark-gray-50'
-								: '')
+								? 'bg-surface-20'
+								: 'bg-surface-5')
 						}
 					>
 						<div class='flex flex-row gap-3'>
@@ -132,25 +134,26 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 						</div>
 						<div class='flex flex-row gap-3'>
 							{canAccess.value && (
-								<>
-									<Button
-										variant={'outline'}
-										onClick$={() => (customerDeleteModalState.isVisible = true)}
-									>
-										{getIcon('Bin')}
-									</Button>
-
-									<Button
-										variant={'outline'}
-										onClick$={() => (customerModalState.isVisible = true)}
-									>
-										{getIcon('Edit')}
-									</Button>
-
-									<Button variant={'outline'} onClick$={selectPreselected}>
-										{getIcon('Add')}
-									</Button>
-								</>
+								<OptionDropdown
+									id={`options-customer-${customer.id}`}
+									icon={getIcon('V3DotsBlack')}
+									label={''}
+									options={[
+										{
+											value: 'Edit customer',
+											onChange: $(
+												() => (customerModalState.isVisible = true)
+											),
+										},
+										{
+											value: 'Delete customer',
+											onChange: $(
+												() => (customerDeleteModalState.isVisible = true)
+											),
+											class: 'text-red-500',
+										},
+									]}
+								/>
 							)}
 
 							<AccordionOpenButton onClick$={openBody} accordionState={visibleBody} />
@@ -161,6 +164,18 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 				{/* accordion body */}
 				<div class={visibleBody.value && !isLoading.value ? '' : 'hidden'}>
 					<div class='border border-gray-200 p-5'>
+						<div class='mb-4 flex items-center sm:flex-col sm:space-y-3 md:flex-row md:justify-between lg:flex-row lg:justify-between'>
+							<div>
+								<h2 class='text-sm font-bold text-darkgray-900'>
+									Total projects {projects.value.length}
+								</h2>
+							</div>
+							<div>
+								<Button variant={'outline'} onClick$={selectPreselected}>
+									{getIcon('Add')}
+								</Button>
+							</div>
+						</div>
 						<div id='accordion-nested-collapse' data-accordion='collapse'>
 							{projects.value
 								.sort((projectA, projectB) =>

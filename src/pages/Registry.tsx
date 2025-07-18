@@ -12,8 +12,10 @@ import { TimeEntry } from '@models/timeEntry';
 import { AppContext } from 'src/app';
 import { Button } from 'src/components/Button';
 import { Input } from 'src/components/form/Input';
+import { NewProjectForm } from 'src/components/form/NewProjectForm';
 import { ToggleSwitch } from 'src/components/form/ToggleSwitch';
 import { Modal } from 'src/components/modals/Modal';
+import { NewTimeEntryModal } from 'src/components/modals/NewTimeEntryModal';
 import { CustomerAccordion } from 'src/components/registry/CustomerAccordion';
 import { useCustomers } from 'src/hooks/useCustomers';
 import { t } from 'src/locale/labels';
@@ -81,18 +83,6 @@ export const Registry = component$(() => {
 					{t('REGISTRY_PAGE_TITLE')}
 				</h1>
 
-				{/* <NewTimeEntryModal
-						q:slot='newProject'
-						preSelectedData={preselectedDataRegistry}
-					>
-						<NewProjectForm
-							timeEntry={update}
-							alertMessageState={alertMessageState}
-							onCancel$={newProjectCancelAction}
-							allowNewEntry={true}
-							preSelectedData={preselectedDataRegistry}
-						/>
-					</NewTimeEntryModal> */}
 				<div class='flex items-end sm:flex-col sm:space-y-3 md:flex-row md:justify-between lg:flex-row lg:justify-between'>
 					<div>
 						<div class='text-sm'>Search customer</div>
@@ -108,26 +98,43 @@ export const Registry = component$(() => {
 					<ToggleSwitch isChecked={hideCompleted} label='Hide completed' />
 				</div>
 
-				<div
-					class='border border-surface-70'
-					id='accordion-nested-parent'
-					data-accordion='collapse'
-				>
-					{(customers.value
-						? customers.value.sort((customerA, customerB) =>
-								customerA.name.localeCompare(customerB.name)
-							)
-						: []
-					).map((customer) => (
-						<CustomerAccordion
-							key={`customer-${customer.id}-${hideCompleted.value ? 'only-not-completed' : 'all'}`}
-							preOpenData={preOpenDataRegistry}
-							preSelectedData={preselectedDataRegistry}
-							customer={customer}
-							refresh={refresh}
-							hideCompleted={hideCompleted}
-						/>
-					))}
+				<div class='border border-surface-70 p-6'>
+					<div class='mb-4 flex items-center sm:flex-col sm:space-y-3 md:flex-row md:justify-between lg:flex-row lg:justify-between'>
+						<div>
+							<h2 class='text-sm font-bold text-darkgray-900'>Customers</h2>
+						</div>
+						<div>
+							<NewTimeEntryModal
+								q:slot='newProject'
+								preSelectedData={preselectedDataRegistry}
+							>
+								<NewProjectForm
+									timeEntry={update}
+									alertMessageState={alertMessageState}
+									onCancel$={newProjectCancelAction}
+									allowNewEntry={true}
+									preSelectedData={preselectedDataRegistry}
+								/>
+							</NewTimeEntryModal>
+						</div>
+					</div>
+					<div id='accordion-nested-parent' data-accordion='collapse'>
+						{(customers.value
+							? customers.value.sort((customerA, customerB) =>
+									customerA.name.localeCompare(customerB.name)
+								)
+							: []
+						).map((customer) => (
+							<CustomerAccordion
+								key={`customer-${customer.id}-${hideCompleted.value ? 'only-not-completed' : 'all'}`}
+								preOpenData={preOpenDataRegistry}
+								preSelectedData={preselectedDataRegistry}
+								customer={customer}
+								refresh={refresh}
+								hideCompleted={hideCompleted}
+							/>
+						))}
+					</div>
 				</div>
 			</div>
 

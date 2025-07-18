@@ -21,6 +21,7 @@ import { limitRoleAccess } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
 import { Button } from '../Button';
 import { EditProjectForm } from '../form/editProjectFrom';
+import { OptionDropdown } from '../form/OptionDropdown';
 import { getIcon } from '../icons';
 import { LoadingSpinnerInline } from '../LoadingSpinnerInline';
 import { Modal } from '../modals/Modal';
@@ -138,8 +139,8 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 						class={
 							'flex w-full items-center justify-between gap-3 border border-gray-200 p-5 font-medium text-gray-500 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 rtl:text-right ' +
 							(visibleBody.value && !isLoading.value
-								? 'border-2 bg-dark-gray-50'
-								: '')
+								? 'bg-surface-20'
+								: 'bg-surface-5')
 						}
 					>
 						<div class='flex flex-row gap-3'>
@@ -168,24 +169,24 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 
 						<div class='flex flex-row gap-3'>
 							{canAccess.value && (
-								<>
-									<Button
-										variant={'outline'}
-										onClick$={() => (projectDeleteModalState.isVisible = true)}
-									>
-										{getIcon('Bin')}
-									</Button>
-
-									<Button
-										variant={'outline'}
-										onClick$={() => (projectModalState.isVisible = true)}
-									>
-										{getIcon('Edit')}
-									</Button>
-									<Button variant={'outline'} onClick$={selectPreselected}>
-										{getIcon('Add')}
-									</Button>
-								</>
+								<OptionDropdown
+									id={`options-project-${project.id}`}
+									icon={getIcon('V3DotsBlack')}
+									label={''}
+									options={[
+										{
+											value: 'Edit project',
+											onChange: $(() => (projectModalState.isVisible = true)),
+										},
+										{
+											value: 'Delete project',
+											onChange: $(
+												() => (projectDeleteModalState.isVisible = true)
+											),
+											class: 'text-red-500',
+										},
+									]}
+								/>
 							)}
 
 							<AccordionOpenButton onClick$={openBody} accordionState={visibleBody} />
@@ -196,18 +197,46 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 				{/* accordion body */}
 				<div class={visibleBody.value && !isLoading.value ? '' : 'hidden'}>
 					<div class='border border-b-0 border-gray-200 p-5 dark:border-gray-700'>
-						{tasks.value
-							.sort((taskA, taskB) => taskA.name.localeCompare(taskB.name))
-							.map((task) => {
-								return (
-									<TaskAccordion
-										key={`task-${customer.id}-${project.name}-${task.name}`}
-										customer={customer}
-										project={project}
-										task={task}
-									/>
-								);
-							})}
+						<div class='mb-4 flex items-center sm:flex-col sm:space-y-3 md:flex-row md:justify-between lg:flex-row lg:justify-between'>
+							<div>
+								<h2 class='text-sm font-bold text-darkgray-900'>
+									Total tasks {tasks.value.length}
+								</h2>
+							</div>
+							<div>
+								<Button variant={'outline'} onClick$={selectPreselected}>
+									{getIcon('Add')}
+								</Button>
+							</div>
+						</div>
+						<table class='w-full'>
+							<thead>
+								<tr class='text-sm font-medium text-gray-700'>
+									<th class='flex-1 border-r border-surface-70 bg-surface-20 p-3 text-left'>
+										Tasks
+									</th>
+
+									<th class='w-1/6 border-r border-surface-70 bg-surface-20 p-3 text-left'>
+										Planned hours
+									</th>
+									<th class='w-1/12 bg-surface-20'></th>
+								</tr>
+							</thead>
+							<tbody>
+								{tasks.value
+									.sort((taskA, taskB) => taskA.name.localeCompare(taskB.name))
+									.map((task) => {
+										return (
+											<TaskAccordion
+												key={`task-${customer.id}-${project.name}-${task.name}`}
+												customer={customer}
+												project={project}
+												task={task}
+											/>
+										);
+									})}
+							</tbody>
+						</table>
 					</div>
 				</div>
 
