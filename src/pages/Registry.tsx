@@ -7,10 +7,10 @@ import {
 	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
+import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { TimeEntry } from '@models/timeEntry';
 import { AppContext } from 'src/app';
-import { Button } from 'src/components/Button';
 import { Input } from 'src/components/form/Input';
 import { NewProjectForm } from 'src/components/form/NewProjectForm';
 import { ToggleSwitch } from 'src/components/form/ToggleSwitch';
@@ -27,8 +27,13 @@ export const Registry = component$(() => {
 	const hideCompleted = useSignal(true);
 	const { customers, isLoading, fetchCustomers } = useCustomers(hideCompleted);
 	const searchInput = useSignal('');
+	const filteredCustomer = useSignal<Customer[]>([]);
 
-	const search = $(() => {});
+	const search = $((searchString: string) => {
+		filteredCustomer.value = customers.value.filter((customer) =>
+			customer.name.toLowerCase().includes(searchString.toLowerCase())
+		);
+	});
 
 	const newProjectCancelAction = $(() => {
 		const button = document.getElementById('open-new-project-bt');
@@ -54,6 +59,13 @@ export const Registry = component$(() => {
 	useVisibleTask$(({ track }) => {
 		track(() => isLoading.value);
 		appStore.isLoading = isLoading.value;
+	});
+
+	useTask$(async ({ track }) => {
+		track(() => customers.value);
+
+		filteredCustomer.value = customers.value;
+		console.log('### filteredCustomer ', filteredCustomer.value);
 	});
 
 	useTask$(async ({ track }) => {
@@ -88,11 +100,14 @@ export const Registry = component$(() => {
 						<div class='text-sm'>Search customer</div>
 						<div class='flex flex-row gap-2'>
 							<Input
-								bindValue={searchInput}
+								value={searchInput.value}
 								placeholder='Insert customer name...'
 								styleClass='w-[240px]'
+								onInput$={(_, el) => search(el.value)}
 							/>
-							<Button variant={'primary'}>Search</Button>
+							{/* <Button variant={'primary'} onClick$={search}>
+								Search
+							</Button> */}
 						</div>
 					</div>
 					<ToggleSwitch isChecked={hideCompleted} label='Hide completed' />
@@ -120,8 +135,8 @@ export const Registry = component$(() => {
 						</div>
 					</div>
 					<div id='accordion-nested-parent' data-accordion='collapse'>
-						{(customers.value
-							? customers.value.sort((customerA, customerB) =>
+						{(filteredCustomer.value
+							? filteredCustomer.value.sort((customerA, customerB) =>
 									customerA.name.localeCompare(customerB.name)
 								)
 							: []

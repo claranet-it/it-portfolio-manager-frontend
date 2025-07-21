@@ -19,7 +19,6 @@ import { limitRoleAccess } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
 import { EditCustomerForm } from '../form/editCustomerFrom';
 
-import { Button } from '../Button';
 import { OptionDropdown } from '../form/OptionDropdown';
 import { getIcon } from '../icons';
 import { LoadingSpinnerInline } from '../LoadingSpinnerInline';
@@ -171,9 +170,18 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 								</h2>
 							</div>
 							<div>
-								<Button variant={'outline'} onClick$={selectPreselected}>
-									{getIcon('Add')}
-								</Button>
+								<button
+									id='open-new-education-bt'
+									onClick$={selectPreselected}
+									type='button'
+								>
+									<div class='content flex flex-row space-x-1 text-clara-red'>
+										<span class='content-center text-xl'>{getIcon('Add')}</span>
+										<span class='content-center text-base font-bold'>
+											{'New project'}
+										</span>
+									</div>
+								</button>
 							</div>
 						</div>
 						<div id='accordion-nested-collapse' data-accordion='collapse'>
