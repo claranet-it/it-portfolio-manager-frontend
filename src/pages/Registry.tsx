@@ -63,9 +63,7 @@ export const Registry = component$(() => {
 
 	useTask$(async ({ track }) => {
 		track(() => customers.value);
-
 		filteredCustomer.value = customers.value;
-		console.log('### filteredCustomer ', filteredCustomer.value);
 	});
 
 	useTask$(async ({ track }) => {
@@ -120,7 +118,7 @@ export const Registry = component$(() => {
 						</div>
 						<div>
 							<NewTimeEntryModal
-								label={'New customer'}
+								label={'Add new customer'}
 								q:slot='newProject'
 								preSelectedData={preselectedDataRegistry}
 							>
@@ -159,6 +157,10 @@ export const Registry = component$(() => {
 					{alertMessageState.message}
 				</p>
 			</Modal>
+
+			{/* <Modal state={formModalState}>
+							<WorkForm formID={formModalState.workIdToEdit || 'new'} formGroup={formGroup} />
+						</Modal> */}
 		</>
 	);
 });

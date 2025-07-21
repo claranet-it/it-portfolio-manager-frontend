@@ -98,7 +98,7 @@ export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project
 						''
 					)}
 				</td>
-				<td class='w-1/12 border border-surface-70 p-3 text-left'>
+				<td class='w-[24px] border border-surface-70 p-3 text-left'>
 					{canAccess.value && (
 						<div class='flex flex-row gap-3'>
 							<OptionDropdown

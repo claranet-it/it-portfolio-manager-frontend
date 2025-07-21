@@ -222,7 +222,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 									<th class='w-1/6 border-r border-surface-70 bg-surface-20 p-3 text-left'>
 										Planned hours
 									</th>
-									<th class='w-1/12 bg-surface-20'></th>
+									<th class='w-[24px] bg-surface-20'></th>
 								</tr>
 							</thead>
 							<tbody>
