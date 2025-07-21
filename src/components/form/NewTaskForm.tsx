@@ -65,17 +65,21 @@ export const NewTaskForm = component$<NewTaskForm>(
 		const _dataTasksSign = useComputed$(() => {
 			return dataTasksSign.value
 				.filter((dataTasks) => dataTasks.completed === false)
-				.map((dataTasks) => dataTasks.name);
+				.map((dataTasks) => dataTasks.name)
+				.sort((a, b) => a.localeCompare(b));
 		});
 
 		const _customerOptions = useComputed$(() => {
-			return dataCustomersSig.value.map((customer) => customer.name);
+			return dataCustomersSig.value
+				.map((customer) => customer.name)
+				.sort((a, b) => a.localeCompare(b));
 		});
 
 		const _projectOptions = useComputed$(() => {
 			return dataProjectsSig.value
 				.filter((dataProject) => dataProject.completed === false)
-				.map((project) => project.name);
+				.map((project) => project.name)
+				.sort((a, b) => a.localeCompare(b));
 		});
 
 		const _onCancel = $(() => {
