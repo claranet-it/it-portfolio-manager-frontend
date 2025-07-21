@@ -9,6 +9,7 @@ import { t } from 'src/locale/labels';
 import { getCurrentRoute, navigateTo } from 'src/router';
 import { limitRoleAccess } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
+import { Badge } from '../Badge';
 import { EditTaskForm } from '../form/editTaskFrom';
 import { OptionDropdown } from '../form/OptionDropdown';
 import { getIcon } from '../icons';
@@ -87,16 +88,12 @@ export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project
 		<>
 			<tr>
 				<td class='border border-surface-70 p-3 text-left'>
-					<span>{task.name}</span>{' '}
-					{task.completed ? (
-						<span class='uppercase text-gray-400'>({t('COMPLETED_LABEL')})</span>
-					) : (
-						''
-					)}
+					<span class='mr-2'>{task.name}</span>
+					{task.completed && <Badge label={t('COMPLETED_LABEL')} />}
 				</td>
 				<td class='w-1/6 border border-surface-70 p-3 text-left'>
 					{task.plannedHours !== 0 ? (
-						<span class='text-sm text-gray-400'>({task.plannedHours}h)</span>
+						<span class='text-sm'>{task.plannedHours}h</span>
 					) : (
 						''
 					)}

@@ -105,6 +105,7 @@ export const Registry = component$(() => {
 						</div>
 						<div>
 							<NewTimeEntryModal
+								label={'New customer'}
 								q:slot='newProject'
 								preSelectedData={preselectedDataRegistry}
 							>

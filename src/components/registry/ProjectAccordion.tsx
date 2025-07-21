@@ -19,6 +19,7 @@ import { t, tt } from 'src/locale/labels';
 import { getCurrentRoute, navigateTo } from 'src/router';
 import { limitRoleAccess } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
+import { Badge } from '../Badge';
 import { Button } from '../Button';
 import { EditProjectForm } from '../form/editProjectFrom';
 import { OptionDropdown } from '../form/OptionDropdown';
@@ -147,13 +148,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 							<div class='flex flex-col gap-2'>
 								<div class='flex flex-row gap-2'>
 									<span>{project.name}</span>{' '}
-									{project.completed ? (
-										<span class='uppercase text-gray-400'>
-											({t('COMPLETED_LABEL')})
-										</span>
-									) : (
-										''
-									)}
+									{project.completed && <Badge label={t('COMPLETED_LABEL')} />}
 								</div>
 								{project.plannedHours !== 0 ? (
 									<span class='text-sm text-gray-400'>
