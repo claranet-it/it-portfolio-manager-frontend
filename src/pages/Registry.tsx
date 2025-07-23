@@ -11,6 +11,7 @@ import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { TimeEntry } from '@models/timeEntry';
 import { AppContext } from 'src/app';
+import { Button } from 'src/components/Button';
 import { Input } from 'src/components/form/Input';
 import { NewProjectForm } from 'src/components/form/NewProjectForm';
 import { ToggleSwitch } from 'src/components/form/ToggleSwitch';
@@ -29,9 +30,10 @@ export const Registry = component$(() => {
 	const searchInput = useSignal('');
 	const filteredCustomer = useSignal<Customer[]>([]);
 
-	const search = $((searchString: string) => {
+	const search = $(() => {
+		console.log('#### searchInput', searchInput.value);
 		filteredCustomer.value = customers.value.filter((customer) =>
-			customer.name.toLowerCase().includes(searchString.toLowerCase())
+			customer.name.toLowerCase().includes(searchInput.value.toLowerCase())
 		);
 	});
 
@@ -101,11 +103,11 @@ export const Registry = component$(() => {
 								value={searchInput.value}
 								placeholder='Insert customer name...'
 								styleClass='w-[240px]'
-								onInput$={(_, el) => search(el.value)}
+								onInput$={(_, el) => (searchInput.value = el.value)}
 							/>
-							{/* <Button variant={'primary'} onClick$={search}>
+							<Button variant={'primary'} onClick$={search}>
 								Search
-							</Button> */}
+							</Button>
 						</div>
 					</div>
 					<ToggleSwitch isChecked={hideCompleted} label='Hide completed' />
