@@ -143,45 +143,43 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 								: 'bg-surface-5')
 						}
 					>
-						<div class='flex flex-row gap-3'>
-							<div class='flex flex-col gap-2'>
-								<div class='flex flex-row gap-2'>
-									<span>{project.name}</span>{' '}
-									{project.completed && <Badge label={t('COMPLETED_LABEL')} />}
-								</div>
-								{project.plannedHours !== 0 ? (
-									<span class='text-sm text-gray-400'>
-										({project.plannedHours}h)
-									</span>
-								) : (
-									''
-								)}
-							</div>
+						<div class='flex flex-row items-center gap-3'>
+							<div>{project.name}</div>
+							{project.completed && <Badge label={t('COMPLETED_LABEL')} />}
 
 							{isLoading.value && <LoadingSpinnerInline />}
 						</div>
 
-						<div class='flex flex-row gap-3'>
-							{canAccess.value && (
-								<OptionDropdown
-									id={`options-project-${project.id}`}
-									icon={getIcon('V3DotsBlack')}
-									label={''}
-									options={[
-										{
-											value: 'Edit project',
-											onChange: $(() => (projectModalState.isVisible = true)),
-										},
-										{
-											value: 'Delete project',
-											onChange: $(
-												() => (projectDeleteModalState.isVisible = true)
-											),
-											class: 'text-red-500',
-										},
-									]}
-								/>
+						<div class='flex flex-row items-center gap-3'>
+							{project.plannedHours !== 0 && (
+								<div class='text-sm text-gray-400'>
+									Planned hours: {project.plannedHours}h
+								</div>
 							)}
+							<div>
+								{canAccess.value && (
+									<OptionDropdown
+										id={`options-project-${project.id}`}
+										icon={getIcon('V3DotsBlack')}
+										label={''}
+										options={[
+											{
+												value: 'Edit project',
+												onChange: $(
+													() => (projectModalState.isVisible = true)
+												),
+											},
+											{
+												value: 'Delete project',
+												onChange: $(
+													() => (projectDeleteModalState.isVisible = true)
+												),
+												class: 'text-red-500',
+											},
+										]}
+									/>
+								)}
+							</div>
 
 							<AccordionOpenButton onClick$={openBody} accordionState={visibleBody} />
 						</div>
