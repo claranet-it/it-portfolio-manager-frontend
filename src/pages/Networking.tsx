@@ -2,7 +2,9 @@ import { $, component$, useComputed$, useSignal, useStore, useTask$ } from '@bui
 import { ModalState } from '@models/modalState';
 import { NetworkCompany } from '@models/networking';
 import { Button } from 'src/components/Button';
+import { CompanyCard } from 'src/components/CompanyCard';
 import { Autocomplete } from 'src/components/form/Autocomplete';
+import { SearchInput } from 'src/components/form/SearchInput';
 import { getIcon } from 'src/components/icons';
 import { Modal } from 'src/components/modals/Modal';
 import { Tab } from 'src/components/tabs/Tab';
@@ -22,6 +24,9 @@ export const Networking = component$(() => {
 		removeCompanyConnections,
 	} = useNetworking();
 	const { company, fetchCompany } = useCompany();
+	const searchString = useSignal('');
+	const search = $(() => {});
+
 	const isUserSuperadmin = useComputed$(async () => await limitRoleAccess(Roles.SUPERADMIN));
 
 	const availableOptions = useSignal<string[]>([]);
@@ -142,17 +147,23 @@ export const Networking = component$(() => {
 								{t('MANAGE_LABEL')}
 							</Button>
 						)}
-						<Button
+						{/* 	<Button
 							variant={'primary'}
 							onClick$={() => (newConnectionModalState.isVisible = true)}
 						>
 							{t('NETWORKING_ADD_CONNECTION_LABEL')}
-						</Button>
+						</Button> */}
 					</div>
 				</div>
 
 				<div class='flex flex-col sm:space-y-4 md:flex-row md:space-x-5 lg:flex-row lg:space-x-5'>
 					<div class='flex-1'>
+						<div class='flex flex-row'>
+							<SearchInput value={searchString} callback={search} />
+							<div>Skill select</div>
+						</div>
+
+						<CompanyCard />
 						<div class='mb-2 flex w-2/3 flex-row items-center justify-between'>
 							<span class='text-2xl font-bold text-dark-grey sm:mt-2'>
 								{t('NETWORKING_CONNECTIONS_LABEL')}
