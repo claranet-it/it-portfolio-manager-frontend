@@ -204,7 +204,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 									<div class='content flex flex-row space-x-1 text-clara-red'>
 										<span class='content-center text-xl'>{getIcon('Add')}</span>
 										<span class='content-center text-base font-bold'>
-											{'New task'}
+											{'Add new task'}
 										</span>
 									</div>
 								</button>

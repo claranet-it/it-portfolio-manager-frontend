@@ -183,6 +183,10 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 		return (
 			<>
 				<div class='w-96 rounded-md bg-white-100 p-4 shadow'>
+					<div class='mb-2 flex items-center justify-between border-b border-gray-200 py-2'>
+						<h3 class='text-2xl font-bold text-dark-grey'>{'Add new entry'}</h3>
+					</div>
+
 					<form class='space-y-3' onSubmit$={handleSubmit}>
 						<div>
 							<Autocomplete
@@ -190,7 +194,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								label={t('CUSTOMER_LABEL')}
 								selected={_customerSelected}
 								data={_customerNames}
-								placeholder='Search...'
+								placeholder='Insert customer...'
 								required
 								onChange$={_onChangeCustomer}
 							/>
@@ -212,7 +216,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								label={t('PROJECT_LABEL')}
 								selected={_projectSelected}
 								data={_projectOptions}
-								placeholder='Search...'
+								placeholder='Insert project...'
 								required
 								disabled={!projectEnableSig.value}
 								onChange$={_onChangeProject}
@@ -268,7 +272,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 							label={t('TASK_LABEL')}
 							selected={_taskSelected}
 							data={_dataTasksSign}
-							placeholder='Search...'
+							placeholder='Insert task...'
 							required
 							disabled={!taskEnableSig.value}
 							onChange$={_onChangeTask}
