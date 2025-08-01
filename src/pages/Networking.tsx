@@ -1,6 +1,7 @@
 import { $, component$, useComputed$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { NetworkCompany } from '@models/networking';
+import { SkillMatrix } from '@models/skill';
 import { Button } from 'src/components/Button';
 import { CompanyCard } from 'src/components/CompanyCard';
 import { Autocomplete } from 'src/components/form/Autocomplete';
@@ -11,6 +12,7 @@ import { Tab } from 'src/components/tabs/Tab';
 import { useCompany } from 'src/hooks/useCompany';
 import { useNetworking } from 'src/hooks/useNetworking';
 import { t } from 'src/locale/labels';
+import { getNetworkingSkills } from 'src/services/skillMatrix';
 import { limitRoleAccess } from 'src/utils/acl';
 import { INIT_NETWORK_COMPANY_VALUE, Roles } from 'src/utils/constants';
 import { generateIcon } from 'src/utils/image';
@@ -25,7 +27,12 @@ export const Networking = component$(() => {
 	} = useNetworking();
 	const { company, fetchCompany } = useCompany();
 	const searchString = useSignal('');
-	const search = $(() => {});
+	const filteredCompanies = useSignal<NetworkCompany[]>([]);
+	const search = $(() => {
+		filteredCompanies.value = companies.value.filter((el) =>
+			el.name.includes(searchString.value)
+		);
+	});
 
 	const isUserSuperadmin = useComputed$(async () => await limitRoleAccess(Roles.SUPERADMIN));
 
@@ -38,6 +45,8 @@ export const Networking = component$(() => {
 	const secondConnectionName = useSignal('');
 	const secondConnection = useSignal<NetworkCompany>();
 	const allCompaniesNames = useSignal<string[]>([]);
+
+	const skillMatrices = useSignal<SkillMatrix>();
 
 	const handleMailto = $(async (type: 'add' | 'remove', correspondent: NetworkCompany) => {
 		const email = 'IT-Brickly-Dev@claranet.com';
@@ -121,6 +130,9 @@ export const Networking = component$(() => {
 	useTask$(async () => {
 		await fetchCompany();
 		await fetchAllCompanies();
+		const skills = await getNetworkingSkills();
+		skillMatrices.value = skills;
+		filteredCompanies.value = companies.value;
 	});
 
 	useTask$(({ track }) => {
@@ -158,12 +170,31 @@ export const Networking = component$(() => {
 
 				<div class='flex flex-col sm:space-y-4 md:flex-row md:space-x-5 lg:flex-row lg:space-x-5'>
 					<div class='flex-1'>
-						<div class='flex flex-row'>
-							<SearchInput value={searchString} callback={search} />
+						<div class='flex flex-row justify-center'>
+							<div>
+								<div class='text-xs'>Search for company</div>
+								<SearchInput value={searchString} callback={search} />
+							</div>
 							<div>Skill select</div>
 						</div>
 
-						<CompanyCard />
+						<div class='flex flex-row flex-wrap justify-center gap-2'>
+							{filteredCompanies.value.map((comp: NetworkCompany) => {
+								const ItemSkillCompany = skillMatrices.value?.find((item) => {
+									return item.hasOwnProperty(comp.name);
+								});
+								if (ItemSkillCompany) {
+									const skillMatrixCompany = ItemSkillCompany[comp.name];
+									return (
+										<CompanyCard
+											company={comp}
+											skillMatrix={skillMatrixCompany}
+										/>
+									);
+								}
+							})}
+						</div>
+
 						<div class='mb-2 flex w-2/3 flex-row items-center justify-between'>
 							<span class='text-2xl font-bold text-dark-grey sm:mt-2'>
 								{t('NETWORKING_CONNECTIONS_LABEL')}
