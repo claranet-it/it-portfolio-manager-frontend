@@ -3,7 +3,7 @@ import { NetworkCompany } from '@models/networking';
 import { companySkill, ItemSkill } from '@models/skill';
 import { AppContext } from '../app';
 import { Button } from './Button';
-import { getIcon } from './icons';
+import { getIcon, getIconSkill } from './icons';
 import { SfRating } from './SfRating';
 
 type Props = {
@@ -32,13 +32,14 @@ export const CompanyCard = component$<Props>(({ company, skillMatrix }) => {
 						return (
 							<div key={key} class='flex justify-between align-middle'>
 								<div class='flex flex-row items-center gap-2'>
-									<div>{getIcon(key)}</div>
+									<div>{getIconSkill(key, 12)}</div>
 
 									<div class='flex flex-row gap-0.5 text-sm font-normal'>
 										{key}
 									</div>
 								</div>
 								<SfRating
+									variant='dark'
 									max={appStore.configuration.scoreRange.max}
 									value={(skillMatrix.skills[key] as companySkill).averageScore}
 								/>

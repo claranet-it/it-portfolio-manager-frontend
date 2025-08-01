@@ -6,7 +6,6 @@ import { Button } from 'src/components/Button';
 import { CompanyCard } from 'src/components/CompanyCard';
 import { Autocomplete } from 'src/components/form/Autocomplete';
 import { SearchInput } from 'src/components/form/SearchInput';
-import { getIcon } from 'src/components/icons';
 import { Modal } from 'src/components/modals/Modal';
 import { Tab } from 'src/components/tabs/Tab';
 import { useCompany } from 'src/hooks/useCompany';
@@ -28,10 +27,9 @@ export const Networking = component$(() => {
 	const { company, fetchCompany } = useCompany();
 	const searchString = useSignal('');
 	const filteredCompanies = useSignal<NetworkCompany[]>([]);
-	const search = $(() => {
-		filteredCompanies.value = companies.value.filter((el) =>
-			el.name.includes(searchString.value)
-		);
+
+	const search = $((searchString: string) => {
+		filteredCompanies.value = companies.value.filter((el) => el.name.includes(searchString));
 	});
 
 	const isUserSuperadmin = useComputed$(async () => await limitRoleAccess(Roles.SUPERADMIN));
@@ -137,6 +135,7 @@ export const Networking = component$(() => {
 
 	useTask$(({ track }) => {
 		track(() => connections.value);
+		console.log('#### conne', connections.value.existing);
 		availableOptions.value = connections.value.available.map((connection) => connection.name);
 	});
 
@@ -171,11 +170,14 @@ export const Networking = component$(() => {
 				<div class='flex flex-col sm:space-y-4 md:flex-row md:space-x-5 lg:flex-row lg:space-x-5'>
 					<div class='flex-1'>
 						<div class='flex flex-row justify-center'>
-							<div>
+							<div class='w-[400px]'>
 								<div class='text-xs'>Search for company</div>
 								<SearchInput value={searchString} callback={search} />
 							</div>
-							<div>Skill select</div>
+							<div class='w-[200px]'>
+								<div class='text-xs'>Skills</div>
+								{/* <Multiselect  /> */}
+							</div>
 						</div>
 
 						<div class='flex flex-row flex-wrap justify-center gap-2'>
@@ -195,7 +197,7 @@ export const Networking = component$(() => {
 							})}
 						</div>
 
-						<div class='mb-2 flex w-2/3 flex-row items-center justify-between'>
+						{/* <div class='mb-2 flex w-2/3 flex-row items-center justify-between'>
 							<span class='text-2xl font-bold text-dark-grey sm:mt-2'>
 								{t('NETWORKING_CONNECTIONS_LABEL')}
 							</span>
@@ -249,7 +251,7 @@ export const Networking = component$(() => {
 									);
 								})
 							)}
-						</div>
+						</div> */}
 					</div>
 				</div>
 			</div>
