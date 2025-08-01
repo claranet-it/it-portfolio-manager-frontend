@@ -11,9 +11,8 @@ import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { TimeEntry } from '@models/timeEntry';
 import { AppContext } from 'src/app';
-import { Button } from 'src/components/Button';
-import { Input } from 'src/components/form/Input';
 import { NewProjectForm } from 'src/components/form/NewProjectForm';
+import { SearchInput } from 'src/components/form/SearchInput';
 import { ToggleSwitch } from 'src/components/form/ToggleSwitch';
 import { Modal } from 'src/components/modals/Modal';
 import { NewTimeEntryModal } from 'src/components/modals/NewTimeEntryModal';
@@ -30,10 +29,9 @@ export const Registry = component$(() => {
 	const searchInput = useSignal('');
 	const filteredCustomer = useSignal<Customer[]>([]);
 
-	const search = $(() => {
-		console.log('#### searchInput', searchInput.value);
+	const search = $((searchString: string) => {
 		filteredCustomer.value = customers.value.filter((customer) =>
-			customer.name.toLowerCase().includes(searchInput.value.toLowerCase())
+			customer.name.toLowerCase().includes(searchString.toLowerCase())
 		);
 	});
 
@@ -98,17 +96,8 @@ export const Registry = component$(() => {
 				<div class='flex items-end sm:flex-col sm:space-y-3 md:flex-row md:justify-between lg:flex-row lg:justify-between'>
 					<div>
 						<div class='text-sm'>Search customer</div>
-						<div class='flex flex-row gap-2'>
-							<Input
-								value={searchInput.value}
-								placeholder='Insert customer name...'
-								styleClass='w-[240px]'
-								onInput$={(_, el) => (searchInput.value = el.value)}
-							/>
-							<Button variant={'primary'} onClick$={search}>
-								Search
-							</Button>
-						</div>
+
+						<SearchInput value={searchInput} callback={search} />
 					</div>
 					<ToggleSwitch isChecked={hideCompleted} label='Hide completed' />
 				</div>
