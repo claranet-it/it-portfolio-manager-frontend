@@ -135,7 +135,6 @@ export const Networking = component$(() => {
 
 	useTask$(({ track }) => {
 		track(() => connections.value);
-		console.log('#### conne', connections.value.existing);
 		availableOptions.value = connections.value.available.map((connection) => connection.name);
 	});
 
@@ -191,6 +190,7 @@ export const Networking = component$(() => {
 										<CompanyCard
 											company={comp}
 											skillMatrix={skillMatrixCompany}
+											onConnection={handleConnectionAction}
 										/>
 									);
 								}

@@ -1,4 +1,4 @@
-import { component$, useContext } from '@builder.io/qwik';
+import { component$, QRL, useContext } from '@builder.io/qwik';
 import { NetworkCompany } from '@models/networking';
 import { companySkill, ItemSkill } from '@models/skill';
 import { AppContext } from '../app';
@@ -9,11 +9,40 @@ import { SfRating } from './SfRating';
 type Props = {
 	company: NetworkCompany;
 	skillMatrix: ItemSkill;
+	onConnection: QRL;
+	status: 'connected' | 'unconnected' | 'pending';
 };
 
-export const CompanyCard = component$<Props>(({ company, skillMatrix }) => {
+export const CompanyCard = component$<Props>(({ company, skillMatrix, onConnection, status }) => {
 	const appStore = useContext(AppContext);
 
+	const getButtonCTA = () => {
+		if (status === 'connected') {
+			return (
+				<Button
+					size={'small'}
+					variant={'outline'}
+					onClick$={() => onConnection('disconnect')}
+				>
+					Unconnect
+				</Button>
+			);
+		}
+
+		if (status === 'pending') {
+			return (
+				<Button size={'small'} disabled>
+					Pending ...
+				</Button>
+			);
+		}
+
+		return (
+			<Button size={'small'} onClick$={() => onConnection('connect')}>
+				Connect
+			</Button>
+		);
+	};
 	return (
 		<div class='m-1 flex w-[288px] flex-col space-y-3 rounded-md border border-darkgray-200 px-4 py-3'>
 			<div class='flex flex-row items-center gap-2'>
@@ -50,10 +79,7 @@ export const CompanyCard = component$<Props>(({ company, skillMatrix }) => {
 			<hr class='my-8 h-px border-0 bg-gray-200 dark:bg-gray-700' />
 			<div class='flex flex-row justify-between'>
 				<Button variant={'link'}>More info</Button>
-				<Button size={'small'}>Connect</Button>
-				{/* <Button size={'small'} variant={'outline'}>
-					Unconnect
-				</Button> */}
+				{getButtonCTA()}
 			</div>
 		</div>
 	);
