@@ -13,12 +13,15 @@ export const SearchInput = component$<SearchInputProps>(({ value, callback }) =>
 	});
 
 	return (
-		<div class='flex w-full flex-row items-center gap-2 px-4 py-2 hover:bg-gray-100'>
-			{getIcon('Search')}
+		<div class='relative w-full py-2'>
+			<div class='pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3 text-gray-500'>
+				{getIcon('Search')}
+			</div>
 			<input
-				class='w-full'
+				class={`block h-[36px] w-full truncate rounded-md border border-darkgray-500 p-2 pr-5 ps-10 text-sm`}
 				type='text'
 				value={value.value}
+				placeholder='Search for ...'
 				onInput$={(_, el) => callback(el.value)}
 			/>
 		</div>
