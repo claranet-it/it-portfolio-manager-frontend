@@ -22,7 +22,7 @@ export const CompanyCard = component$<Props>(({ company, skillMatrix, onConnecti
 				<Button
 					size={'small'}
 					variant={'outline'}
-					onClick$={() => onConnection('disconnect')}
+					onClick$={() => onConnection('disconnect', company)}
 				>
 					Unconnect
 				</Button>
@@ -38,7 +38,7 @@ export const CompanyCard = component$<Props>(({ company, skillMatrix, onConnecti
 		}
 
 		return (
-			<Button size={'small'} onClick$={() => onConnection('connect')}>
+			<Button size={'small'} onClick$={() => onConnection('connect', company)}>
 				Connect
 			</Button>
 		);
