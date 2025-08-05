@@ -53,8 +53,8 @@ export const CompanyCard = component$<Props>(({ company, skillMatrix, onConnecti
 				{Object.keys(skillMatrix.skills)
 					.sort(
 						(a, b) =>
-							(skillMatrix.skills[a] as companySkill).averageScore -
-							(skillMatrix.skills[b] as companySkill).averageScore
+							(skillMatrix.skills[b] as companySkill).averageScore -
+							(skillMatrix.skills[a] as companySkill).averageScore
 					)
 					.slice(0, 4)
 					.map((key) => {

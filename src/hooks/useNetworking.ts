@@ -27,7 +27,6 @@ export const useNetworking = () => {
 		appStore.isLoading = true;
 		try {
 			const existingNetwork = await getExistingConnections();
-			console.log('@@@', existingNetwork);
 
 			const existing: NetworkCompany[] = existingNetwork.map(
 				({ requester, correspondent }) => {
@@ -35,7 +34,7 @@ export const useNetworking = () => {
 						requester.name === appStore.configuration.company
 							? correspondent
 							: requester;
-					console.log('@@@ companu', requester.name, appStore);
+
 					return {
 						...company,
 						image_url: company.image_url?.trim()

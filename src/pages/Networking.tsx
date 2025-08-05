@@ -1,10 +1,20 @@
-import { $, component$, useComputed$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
+import {
+	$,
+	component$,
+	useComputed$,
+	useContext,
+	useSignal,
+	useStore,
+	useTask$,
+} from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { NetworkCompany } from '@models/networking';
-import { SkillMatrix } from '@models/skill';
+import { companySkill, SkillMatrix } from '@models/skill';
+import { AppContext } from 'src/app';
 import { Button } from 'src/components/Button';
 import { CompanyCard } from 'src/components/CompanyCard';
 import { Autocomplete } from 'src/components/form/Autocomplete';
+import { MultiselectCustom } from 'src/components/form/MultiselectCustom';
 import { SearchInput } from 'src/components/form/SearchInput';
 import { Modal } from 'src/components/modals/Modal';
 import { Tab } from 'src/components/tabs/Tab';
@@ -15,7 +25,8 @@ import { getNetworkingSkills } from 'src/services/skillMatrix';
 import { limitRoleAccess } from 'src/utils/acl';
 import { INIT_NETWORK_COMPANY_VALUE, Roles } from 'src/utils/constants';
 import { generateIcon } from 'src/utils/image';
-
+import { UUID } from 'src/utils/uuid';
+import { Option } from '../components/form/MultiselectCustom';
 export const Networking = component$(() => {
 	const {
 		connections,
@@ -143,6 +154,49 @@ export const Networking = component$(() => {
 		allCompaniesNames.value = companies.value.map((c) => c.name);
 	});
 
+	const appStore = useContext(AppContext);
+
+	const _skillsOptionsSig = useComputed$(() => {
+		const skillList = appStore.configuration.skills;
+		const options = [] as Option[];
+		Object.keys(skillList).forEach((key) => {
+			skillList[key].forEach((skill) => {
+				options.push({
+					group: key,
+					id: UUID(),
+					name: skill.name,
+				});
+			});
+		});
+		return options;
+	});
+
+	const _selectedSkills = useSignal<Option[]>([]);
+
+	const onChangeSkill = $(async () => {
+		filteredCompanies.value = companies.value.filter((el) => {
+			const ItemSkillCompany = skillMatrices.value?.find((item) => {
+				return item.hasOwnProperty(el.name);
+			});
+			if (ItemSkillCompany) {
+				const skillMatrixCompany = ItemSkillCompany[el.name];
+
+				_selectedSkills.value.forEach((skill) => {
+					if (
+						skillMatrixCompany.skills.hasOwnProperty(skill.name) &&
+						(skillMatrixCompany.skills[skill.name] as companySkill).averageScore === 0
+					) {
+						return false;
+					}
+				});
+
+				return true;
+			}
+			return true;
+		});
+
+		console.log('### filter', filteredCompanies.value);
+	});
 	return (
 		<>
 			<div class='w-full space-y-6 px-6 py-2.5'>
@@ -168,14 +222,24 @@ export const Networking = component$(() => {
 
 				<div class='flex flex-col sm:space-y-4 md:flex-row md:space-x-5 lg:flex-row lg:space-x-5'>
 					<div class='flex-1'>
-						<div class='flex flex-row justify-center'>
+						<div class='flex flex-row justify-center gap-4'>
 							<div class='w-[400px]'>
 								<div class='text-xs'>Search for company</div>
 								<SearchInput value={searchString} callback={search} />
 							</div>
-							<div class='w-[200px]'>
+							<div class='w-[300px]'>
 								<div class='text-xs'>Skills</div>
-								{/* <Multiselect  /> */}
+								<div class='py-2'>
+									<MultiselectCustom
+										id={UUID() + '-skills-filter'}
+										placeholder={t('select_empty_label')}
+										selectedValues={_selectedSkills}
+										options={_skillsOptionsSig}
+										onChange$={onChangeSkill}
+										allowSelectAll
+										size='auto'
+									/>
+								</div>
 							</div>
 						</div>
 
@@ -191,6 +255,7 @@ export const Networking = component$(() => {
 											company={comp}
 											skillMatrix={skillMatrixCompany}
 											onConnection={handleConnectionAction}
+											status='unconnected'
 										/>
 									);
 								}

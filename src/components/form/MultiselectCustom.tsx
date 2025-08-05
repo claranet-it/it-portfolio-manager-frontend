@@ -95,7 +95,7 @@ export const MultiselectCustom = component$<MultiselectCustomProps>(
 					disabled={disabled}
 					data-dropdown-toggle={'select-dropdown_multiple_' + id}
 					class={[
-						'inline-flex w-full flex-row justify-between rounded-md border p-2.5 align-middle text-sm font-normal',
+						'inline-flex h-[36px] w-full flex-row justify-between rounded-md border p-2 align-middle text-sm font-normal',
 						buttonStyle.value,
 					]}
 					type='button'
