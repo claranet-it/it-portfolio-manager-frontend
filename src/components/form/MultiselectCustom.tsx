@@ -88,7 +88,7 @@ export const MultiselectCustom = component$<MultiselectCustomProps>(
 
 		return (
 			<form id={id} class={['relative w-full', sizeStyle.value, hidden ? 'hidden' : 'block']}>
-				<label class={`block text-sm font-normal ${labelStyle.value}`}>{label}</label>
+				<label class={`block text-sm ${labelStyle.value} py-1`}>{label}</label>
 
 				<button
 					id={'select-button_multiple_' + id}

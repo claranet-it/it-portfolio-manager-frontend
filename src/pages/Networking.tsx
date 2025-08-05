@@ -1,16 +1,6 @@
-import {
-	$,
-	component$,
-	useComputed$,
-	useContext,
-	useSignal,
-	useStore,
-	useTask$,
-} from '@builder.io/qwik';
+import { $, component$, useComputed$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { NetworkCompany } from '@models/networking';
-import { companySkill, SkillMatrix } from '@models/skill';
-import { AppContext } from 'src/app';
 import { Button } from 'src/components/Button';
 import { CompanyCard } from 'src/components/CompanyCard';
 import { Autocomplete } from 'src/components/form/Autocomplete';
@@ -20,27 +10,29 @@ import { Modal } from 'src/components/modals/Modal';
 import { useCompany } from 'src/hooks/useCompany';
 import { useNetworking } from 'src/hooks/useNetworking';
 import { t } from 'src/locale/labels';
-import { getNetworkingSkills } from 'src/services/skillMatrix';
 import { limitRoleAccess } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
 import { UUID } from 'src/utils/uuid';
-import { Option } from '../components/form/MultiselectCustom';
 export const Networking = component$(() => {
-	const appStore = useContext(AppContext);
+	const { company, fetchCompany } = useCompany();
 
 	const {
 		connections,
 		companies,
+		searchString,
+		skillsOptionsSig,
 		fetchAllCompanies,
 		setCompanyConnections,
 		removeCompanyConnections,
-	} = useNetworking();
-	const { company, fetchCompany } = useCompany();
+		skillMatrices,
+		filteredCompanies,
+		fetchAllSkillsCompany,
+		selectedSkills,
+		onChangeSkill,
+		search,
+		handleNewConnection,
+	} = useNetworking(company.value);
 
-	const searchString = useSignal('');
-	const filteredCompanies = useSignal<NetworkCompany[]>([]);
-	const selectedSkills = useSignal<Option[]>([]);
-	const skillMatrices = useSignal<SkillMatrix>();
 	const firstConnectionName = useSignal('');
 	const firstConnection = useSignal<NetworkCompany>();
 	const secondConnectionName = useSignal('');
@@ -48,34 +40,15 @@ export const Networking = component$(() => {
 	const allCompaniesNames = useSignal<string[]>([]);
 
 	const isUserSuperadmin = useComputed$(async () => await limitRoleAccess(Roles.SUPERADMIN));
-
-	const skillsOptionsSig = useComputed$(() => {
-		const skillList = appStore.configuration.skills;
-		const options = [] as Option[];
-		Object.keys(skillList).forEach((key) => {
-			skillList[key].forEach((skill) => {
-				options.push({
-					group: key,
-					id: UUID(),
-					name: skill.name,
-				});
-			});
-		});
-		return options;
-	});
-
-	const handleMailto = $(async (type: 'add' | 'remove', correspondent: NetworkCompany) => {
-		const email = 'IT-Brickly-Dev@claranet.com';
-		const subject = type === 'add' ? '[Brickly] New Connection' : '[Brickly] Remove Connection';
-		const body =
-			type === 'add'
-				? `Company ${company.value.domain} requested a connection with ${correspondent.domain}`
-				: `Company ${company.value.domain} requested the removal of the connection with ${correspondent.domain}`;
-
-		const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-		window.location.href = mailtoLink;
-	});
+	const getStatus = (companyName: string): 'connected' | 'pending' | 'unconnected' => {
+		if (connections.value.existing.some((el) => el.name === companyName)) {
+			return 'connected';
+		}
+		if (connections.value.available.some((el) => el.name === companyName)) {
+			return 'unconnected';
+		}
+		return 'pending';
+	};
 
 	const resetSelected = $(() => {
 		firstConnection.value = undefined;
@@ -108,62 +81,10 @@ export const Networking = component$(() => {
 		}
 	});
 
-	const handleNewConnection = $(
-		async (action: 'connect' | 'disconnect', company: NetworkCompany) => {
-			if (action === 'connect') {
-				await handleMailto('add', company);
-			} else {
-				await handleMailto('remove', company);
-			}
-		}
-	);
-
-	const search = $((searchString: string) => {
-		filteredCompanies.value = companies.value.filter((el) => el.name.includes(searchString));
-	});
-
-	const onChangeSkill = $(async () => {
-		filteredCompanies.value = companies.value.filter((el) => {
-			if (selectedSkills.value.length) {
-				const ItemSkillCompany = skillMatrices.value?.find((item) => {
-					return item.hasOwnProperty(el.name);
-				});
-				if (ItemSkillCompany) {
-					const skillMatrixCompany = ItemSkillCompany[el.name];
-
-					const mapSkill = selectedSkills.value.map((skill) => {
-						if (
-							skillMatrixCompany.skills.hasOwnProperty(skill.name) &&
-							(skillMatrixCompany.skills[skill.name] as companySkill).averageScore !==
-								0
-						) {
-							return true;
-						}
-						return false;
-					});
-
-					return mapSkill.some((el) => el === true);
-				}
-			}
-			return true;
-		});
-	});
-
-	const getStatus = (companyName: string): 'connected' | 'pending' | 'unconnected' => {
-		if (connections.value.existing.some((el) => el.name === companyName)) {
-			return 'connected';
-		}
-		if (connections.value.available.some((el) => el.name === companyName)) {
-			return 'unconnected';
-		}
-		return 'pending';
-	};
-
 	useTask$(async () => {
 		await fetchCompany();
 		await fetchAllCompanies();
-		const skills = await getNetworkingSkills();
-		skillMatrices.value = skills;
+		await fetchAllSkillsCompany();
 		filteredCompanies.value = companies.value;
 	});
 
@@ -176,7 +97,7 @@ export const Networking = component$(() => {
 		<>
 			<div class='w-full space-y-6 px-6 py-2.5'>
 				<div class='flex justify-between gap-2 sm:flex-col md:flex-row lg:flex-row'>
-					<h1 class='me-4 text-2xl font-bold text-darkgray-900'>Networking</h1>
+					<h1 class='me-4 text-2xl font-bold text-darkgray-900'>{t('networking')}</h1>
 					<div class='flex flex-row gap-4'>
 						{isUserSuperadmin.value && (
 							<Button
@@ -191,24 +112,26 @@ export const Networking = component$(() => {
 
 				<div class='flex flex-col sm:space-y-4 md:flex-row md:space-x-5 lg:flex-row lg:space-x-5'>
 					<div class='flex-1'>
-						<div class='flex flex-row justify-center gap-4'>
-							<div class='w-[400px]'>
-								<div class='text-xs'>Search for company</div>
-								<SearchInput value={searchString} callback={search} />
+						<div class='flex flex-row justify-center gap-4 py-2 sm:flex-col'>
+							<div class='w-[400px] sm:w-full'>
+								<SearchInput
+									value={searchString}
+									callback={search}
+									label='Search for company'
+								/>
 							</div>
-							<div class='w-[300px]'>
-								<div class='text-xs'>Skills</div>
-								<div class='py-2'>
-									<MultiselectCustom
-										id={UUID() + '-skills-filter'}
-										placeholder={t('select_empty_label')}
-										selectedValues={selectedSkills}
-										options={skillsOptionsSig}
-										onChange$={onChangeSkill}
-										allowSelectAll
-										size='auto'
-									/>
-								</div>
+
+							<div class='w-[300px] sm:w-full'>
+								<MultiselectCustom
+									label='Skills'
+									id={UUID() + '-skills-filter'}
+									placeholder={t('select_empty_label')}
+									selectedValues={selectedSkills}
+									options={skillsOptionsSig}
+									onChange$={onChangeSkill}
+									allowSelectAll
+									size='auto'
+								/>
 							</div>
 						</div>
 
