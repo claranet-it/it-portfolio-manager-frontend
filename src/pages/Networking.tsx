@@ -227,15 +227,18 @@ export const Networking = component$(() => {
 									);
 								})
 								.map((comp: NetworkCompany) => {
-									const ItemSkillCompany = skillMatrices.value?.find((item) => {
-										return item.hasOwnProperty(comp.name);
-									});
-									if (ItemSkillCompany) {
-										const skillMatrixCompany = ItemSkillCompany[comp.name];
+									const companyConfiguration = skillMatrices.value?.find(
+										(item) => {
+											return item.hasOwnProperty(comp.name);
+										}
+									);
+									if (companyConfiguration) {
+										const currentSkillMatrix = companyConfiguration[comp.name];
 										return (
 											<CompanyCard
+												key={`${comp.name}-${getStatus(comp.name)}`}
 												company={comp}
-												skillMatrix={skillMatrixCompany}
+												skillMatrix={currentSkillMatrix}
 												onConnection={handleNewConnection}
 												status={getStatus(comp.name)}
 											/>
