@@ -10,11 +10,12 @@ type CompanyCardProps = {
 	company: NetworkCompany;
 	skillMatrix: ItemSkill;
 	onConnection: QRL;
+	onMoreInfo: QRL;
 	status: 'connected' | 'unconnected' | 'pending';
 };
 
 export const CompanyCard = component$<CompanyCardProps>(
-	({ company, skillMatrix, onConnection, status }) => {
+	({ company, skillMatrix, onConnection, onMoreInfo, status }) => {
 		const appStore = useContext(AppContext);
 
 		const getButtonCTA = () => {
@@ -81,7 +82,9 @@ export const CompanyCard = component$<CompanyCardProps>(
 				</div>
 				<hr class='my-8 h-px border-0 bg-gray-200 dark:bg-gray-700' />
 				<div class='flex flex-row justify-between'>
-					<Button variant={'link'}>More info</Button>
+					<Button variant={'link'} onClick$={() => onMoreInfo(company)}>
+						More info
+					</Button>
 					{getButtonCTA()}
 				</div>
 			</div>
