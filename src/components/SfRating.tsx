@@ -6,7 +6,8 @@ export const SfRating = component$<{
 	max: number;
 	value: number;
 	onClick$?: QRL<(value: number) => void>;
-}>(({ max = 5, value = 0, onClick$ }) => {
+	variant?: 'dark' | 'light';
+}>(({ max = 5, value = 0, onClick$, variant }) => {
 	const uniqueId = useId();
 
 	return (
@@ -23,6 +24,7 @@ export const SfRating = component$<{
 						{currentValue > value ? (
 							<SfIconStar
 								key={`${uniqueId}-${i}`}
+								variant={variant}
 								onClick$={() =>
 									onClick$ && onClick$(value !== currentValue ? currentValue : 0)
 								}
@@ -30,6 +32,7 @@ export const SfRating = component$<{
 						) : (
 							<SfIconStarFilled
 								key={`${uniqueId}-filled-${i}`}
+								variant={variant}
 								onClick$={() =>
 									onClick$ && onClick$(value !== currentValue ? currentValue : 0)
 								}
