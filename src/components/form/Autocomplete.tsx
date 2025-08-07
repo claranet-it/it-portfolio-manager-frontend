@@ -27,6 +27,7 @@ export const Autocomplete = component$<AutocompleteInterface>(
 		const AUTOCOMPLETE_FIELD_ID = `autocomplete-field-${id}`;
 		const AUTOCOMPLETE_RESULTS_ID = `autocomplete-results-${id}`;
 		const autocompleteData = Array.isArray(data) ? useSignal(data) : data;
+		const inputRef = useSignal<HTMLInputElement>();
 
 		const results = useSignal<string[]>([]);
 		const debounced = useDebounce(selected, 300);
@@ -52,6 +53,18 @@ export const Autocomplete = component$<AutocompleteInterface>(
 			debounced.value = value;
 			selected.value = value;
 			results.value = [];
+			inputRef.value?.focus();
+		});
+
+		const handleKeyUp = $((event: KeyboardEvent) => {
+			if (event.key === 'Enter') {
+				return;
+			}
+			if (event.key === 'Escape') {
+				results.value = [];
+				return;
+			}
+			showResults();
 		});
 
 		const resultsStyle = {
@@ -87,13 +100,14 @@ export const Autocomplete = component$<AutocompleteInterface>(
 					</div>
 
 					<input
+						ref={inputRef}
 						type='text'
 						id={AUTOCOMPLETE_FIELD_ID}
 						class={`block w-full p-2 ps-10 text-sm ${textColor.value} rounded-md border ${borderBgColor.value} truncate pr-5`}
 						placeholder={placeholder}
 						autoComplete='off'
 						bind:value={selected}
-						onKeyUp$={showResults}
+						onKeyUp$={handleKeyUp}
 						disabled={disabled}
 						required={required}
 						onMouseUp$={showAll ? showResults : undefined}
