@@ -60,6 +60,10 @@ export const Autocomplete = component$<AutocompleteInterface>(
 			if (event.key === 'Enter') {
 				return;
 			}
+			if (event.key === 'Escape') {
+				results.value = [];
+				return;
+			}
 			showResults();
 		});
 
