@@ -1,12 +1,13 @@
 import { $, component$, useComputed$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { NetworkCompany } from '@models/networking';
+import { ItemSkill } from '@models/skill';
 import { Button } from 'src/components/Button';
 import { CompanyCard } from 'src/components/CompanyCard';
+import { CompanyCardDetails } from 'src/components/CompanyCardDetails';
 import { Autocomplete } from 'src/components/form/Autocomplete';
 import { MultiselectCustom } from 'src/components/form/MultiselectCustom';
 import { SearchInput } from 'src/components/form/SearchInput';
-import { getIcon } from 'src/components/icons';
 import { Modal } from 'src/components/modals/Modal';
 import { useCompany } from 'src/hooks/useCompany';
 import { useNetworking } from 'src/hooks/useNetworking';
@@ -94,12 +95,19 @@ export const Networking = component$(() => {
 		allCompaniesNames.value = companies.value.map((c) => c.name);
 	});
 	const currentCompanyDetails = useSignal<NetworkCompany>({} as NetworkCompany);
+	const currentSkillMatrix = useSignal<ItemSkill>({} as ItemSkill);
 
 	const showDetails = useSignal(false);
 
 	const handleMoreInfo = $(async (company: NetworkCompany) => {
 		showDetails.value = true;
 		currentCompanyDetails.value = company;
+		const companyConfiguration = skillMatrices.value?.find((item) => {
+			return item.hasOwnProperty(company.name);
+		});
+		if (companyConfiguration) {
+			currentSkillMatrix.value = companyConfiguration[company.name];
+		}
 	});
 
 	const handleGoBack = $(() => {
@@ -109,22 +117,13 @@ export const Networking = component$(() => {
 	return (
 		<>
 			{showDetails.value ? (
-				<div class='w-full space-y-6 px-6 py-2.5'>
-					<h1 class='text-2xl font-bold text-darkgray-900'>
-						<button
-							class='inline-flex items-center gap-2 rounded border-0 bg-transparent'
-							onClick$={handleGoBack}
-						>
-							{getIcon('ArrowBack')} {currentCompanyDetails.value.domain}
-						</button>
-
-						<div class='flex flex-row justify-center'>
-							<div class='w-[80%] rounded-md border-2 border-darkgray-200 px-8 py-6'>
-								<h1 class='text-5xl'>{currentCompanyDetails.value.domain}</h1>
-							</div>
-						</div>
-					</h1>
-				</div>
+				<CompanyCardDetails
+					company={currentCompanyDetails.value}
+					onConnection={handleNewConnection}
+					status={getStatus(currentCompanyDetails.value.name)}
+					onGoBack={handleGoBack}
+					skillMatrix={currentSkillMatrix.value}
+				/>
 			) : (
 				<div class='w-full space-y-6 px-6 py-2.5'>
 					<div class='flex justify-between gap-2 sm:flex-col md:flex-row lg:flex-row'>
