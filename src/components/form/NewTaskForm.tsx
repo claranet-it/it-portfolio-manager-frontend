@@ -8,7 +8,6 @@ import {
 	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
-import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { initFlowbite } from 'flowbite';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
@@ -66,17 +65,21 @@ export const NewTaskForm = component$<NewTaskForm>(
 		const _dataTasksSign = useComputed$(() => {
 			return dataTasksSign.value
 				.filter((dataTasks) => dataTasks.completed === false)
-				.map((dataTasks) => dataTasks.name);
+				.map((dataTasks) => dataTasks.name)
+				.sort((a, b) => a.localeCompare(b));
 		});
 
 		const _customerOptions = useComputed$(() => {
-			return dataCustomersSig.value.map((customer) => customer.name);
+			return dataCustomersSig.value
+				.map((customer) => customer.name)
+				.sort((a, b) => a.localeCompare(b));
 		});
 
 		const _projectOptions = useComputed$(() => {
 			return dataProjectsSig.value
 				.filter((dataProject) => dataProject.completed === false)
-				.map((project) => project.name);
+				.map((project) => project.name)
+				.sort((a, b) => a.localeCompare(b));
 		});
 
 		const _onCancel = $(() => {
@@ -89,9 +92,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 
 		const _onChangeCustomer = $(async (customerName: string) => {
 			const foundCustomer = dataCustomersSig.value.find((c) => c.name === customerName);
-			const customer: Customer = foundCustomer || { id: '', name: customerName };
-
-			await onChangeCustomer(customer);
+			if (foundCustomer) await onChangeCustomer(foundCustomer);
 		});
 
 		const _onChangeProject = $(async (value: string) => {
