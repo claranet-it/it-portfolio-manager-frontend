@@ -8,16 +8,15 @@ import {
 	useTask$,
 	useVisibleTask$,
 } from '@builder.io/qwik';
-import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { initFlowbite } from 'flowbite';
+import { INIT_TASK_VALUE } from 'src/utils/constants';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
 import { t } from '../../locale/labels';
 import { TimeEntry } from '../../models/timeEntry';
 import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
 import { Autocomplete } from './Autocomplete';
-import { Select } from './Select';
 import { TemplateForm } from './TemplateForm';
 
 interface NewTaskForm {
@@ -66,17 +65,21 @@ export const NewTaskForm = component$<NewTaskForm>(
 		const _dataTasksSign = useComputed$(() => {
 			return dataTasksSign.value
 				.filter((dataTasks) => dataTasks.completed === false)
-				.map((dataTasks) => dataTasks.name);
+				.map((dataTasks) => dataTasks.name)
+				.sort((a, b) => a.localeCompare(b));
 		});
 
 		const _customerOptions = useComputed$(() => {
-			return dataCustomersSig.value.map((customer) => customer.name);
+			return dataCustomersSig.value
+				.map((customer) => customer.name)
+				.sort((a, b) => a.localeCompare(b));
 		});
 
 		const _projectOptions = useComputed$(() => {
 			return dataProjectsSig.value
 				.filter((dataProject) => dataProject.completed === false)
-				.map((project) => project.name);
+				.map((project) => project.name)
+				.sort((a, b) => a.localeCompare(b));
 		});
 
 		const _onCancel = $(() => {
@@ -89,9 +92,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 
 		const _onChangeCustomer = $(async (customerName: string) => {
 			const foundCustomer = dataCustomersSig.value.find((c) => c.name === customerName);
-			const customer: Customer = foundCustomer || { id: '', name: customerName };
-
-			await onChangeCustomer(customer);
+			if (foundCustomer) await onChangeCustomer(foundCustomer);
 		});
 
 		const _onChangeProject = $(async (value: string) => {
@@ -118,7 +119,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 			if (task) {
 				taskSelected.value = task;
 			} else {
-				taskSelected.value.name = value;
+				taskSelected.value = INIT_TASK_VALUE;
 			}
 		});
 
@@ -175,9 +176,10 @@ export const NewTaskForm = component$<NewTaskForm>(
 							placeholder={t('SEARCH')}
 							required
 							onChange$={_onChangeCustomer}
+							showAll
 						/>
 
-						<Select
+						<Autocomplete
 							id={UUID()}
 							label={t('PROJECT_LABEL') + '*'}
 							placeholder={
@@ -185,14 +187,15 @@ export const NewTaskForm = component$<NewTaskForm>(
 									? t('NO_ACTIVE_PROJECT_PLACEHOLDER')
 									: t('SELECT_PROJECT_PLACEHOLDER')
 							}
-							value={_projectSelected}
-							options={_projectOptions}
+							selected={_projectSelected}
+							data={_projectOptions}
 							disabled={!projectEnableSig.value}
+							required
 							onChange$={_onChangeProject}
-							size='auto'
+							showAll
 						/>
 
-						<Select
+						<Autocomplete
 							id={UUID()}
 							disabled={!taskEnableSig.value}
 							label={t('TASK_LABEL') + (isTemplating.value ? '' : '*')}
@@ -201,10 +204,11 @@ export const NewTaskForm = component$<NewTaskForm>(
 									? t('NO_ACTIVE_TASK_PLACEHOLDER')
 									: t('SELECT_TASK_PLACEHOLDER')
 							}
-							value={_taskSelected}
-							options={_dataTasksSign}
+							selected={_taskSelected}
+							data={_dataTasksSign}
+							required
 							onChange$={_onChangeTask}
-							size='auto'
+							showAll
 						/>
 
 						{isTemplating.value && (

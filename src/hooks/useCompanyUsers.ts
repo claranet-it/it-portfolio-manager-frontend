@@ -21,7 +21,8 @@ export const useCompanyUsers = () => {
 		appStore.isLoading = true;
 
 		try {
-			await editUserProfile(userId, crew, role);
+			const actualRole = role === Roles.USER ? '' : role;
+			await editUserProfile(userId, crew, actualRole);
 		} catch (error) {
 			const { message } = error as Error;
 			addEvent({
@@ -69,8 +70,10 @@ export const useCompanyUsers = () => {
 	});
 
 	const updateUserVisibility = $(async (user: UserProfile, visible: boolean) => {
+		appStore.isLoading = true;
 		await updateUserActivation(user.id, visible);
 		await fetchUsers();
+		appStore.isLoading = false;
 	});
 
 	const updateUserValues = $(async (user: UserProfile, role: string, crew: string) => {
