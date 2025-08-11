@@ -155,3 +155,52 @@ export const getIcon = (skill: string) => {
 			return <AWS />;
 	}
 };
+
+export const getIconSkill = (skill: string, size?: number) => {
+	switch (skill) {
+		case 'C#':
+			return <CSharp size={size} />;
+		case 'Elixir':
+			return <Elixir size={size} />;
+		case 'IaC':
+			return <Ansible size={size} />;
+		case 'Java/Kotlin':
+			return <Kotlin size={size} />;
+		case 'NodeJS (JS/TS)':
+			return <TypeScript size={size} />;
+		case 'Frontend (JS/TS)':
+			return <JavaScript size={size} />;
+		case 'ML':
+			return <AWS size={size} />;
+		case 'Multiplatform Mobile (ionic, react-native, flutter)':
+			return <Flutter size={size} />;
+		case 'Native Android':
+			return <Android size={size} />;
+		case 'Native iOS':
+			return <IOS size={size} />;
+		case 'PHP':
+			return <PHP size={size} />;
+		case 'Python':
+			return <Python size={size} />;
+		case 'Ruby (Rails)':
+			return <Ruby size={size} />;
+		case 'Rust':
+			return <Rust size={size} />;
+		case 'Container':
+			return <Kubernetes size={size} />;
+		case 'Data':
+			return <QuickSight size={size} />;
+		case 'Networking':
+			return <AWS size={size} />;
+		case 'Security':
+			return <AWS size={size} />;
+		case 'Serverless':
+			return <Lambda size={size} />;
+		case 'UI Development (HTML/CSS/SCSS)':
+			return <Design size={size} />;
+		case 'Design':
+			return <Design size={size} />;
+		default:
+			return <AWS size={size} />;
+	}
+};

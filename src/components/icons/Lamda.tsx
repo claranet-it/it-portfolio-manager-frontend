@@ -1,11 +1,13 @@
 import { component$ } from '@builder.io/qwik';
-
-export const Lambda = component$(() => {
+type Props = {
+	size?: number;
+};
+export const Lambda = component$(({ size = 32 }: Props) => {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
-			width='32'
-			height='32'
+			width={size}
+			height={size}
 			viewBox='-3.02291033 -.22032094 420.92291033 433.54032094'
 		>
 			<path

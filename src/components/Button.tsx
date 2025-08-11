@@ -5,10 +5,10 @@ const buttonVariants = cva('py-2 px-4 rounded-md font-bold text-base text-nowrap
 	variants: {
 		variant: {
 			primary:
-				'bg-clara-red text-white-100 disabled:bg-disabled disabled:text-disabled disabled:bg-clara-red-200',
+				'bg-clara-red text-white-100 disabled:bg-disabled disabled:text-darkgray-400 disabled:bg-dark-gray-50 hover:bg-red-800',
 			outline:
-				'border border-clara-red text-clara-red bg-transparent disabled:text-disabled disabled:border-disabled disabled:text-clara-red-200',
-			link: 'text-clara-red disabled:text-disabled disabled:text-clara-red-200',
+				'border border-2 border-clara-red text-clara-red bg-transparent disabled:text-darkgray-400 disabled:border-darkgray-400 hover:text-red-800 hover:border-red-800',
+			link: 'text-clara-red disabled:text-darkgray-400 hover:text-red-800',
 		},
 		size: {
 			default: 'h-11 px-6 py-2',
