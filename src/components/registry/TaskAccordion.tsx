@@ -1,8 +1,18 @@
-import { $, component$, QRL, useComputed$, useSignal, useStore } from '@builder.io/qwik';
+import {
+	$,
+	component$,
+	QRL,
+	useComputed$,
+	useContext,
+	useSignal,
+	useStore,
+	useTask$,
+} from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { ModalState } from '@models/modalState';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
+import { AppContext } from 'src/app';
 import { useNotification } from 'src/hooks/useNotification';
 import { useTasks } from 'src/hooks/useTasks';
 import { t } from 'src/locale/labels';
@@ -23,9 +33,9 @@ interface TaskAccordionProps {
 }
 
 export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project, task }) => {
-	const { renameTask, updateTask } = useTasks();
+	const appStore = useContext(AppContext);
+	const { renameTask, updateTask, removeTask } = useTasks();
 	const { addEvent } = useNotification();
-
 	const newTaskName = useSignal(task.name);
 	const newCompleted = useSignal(task.completed);
 	const newPlannedHours = useSignal(task.plannedHours);
@@ -34,6 +44,30 @@ export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project
 
 	const initFormSignals = $(() => {
 		newTaskName.value = task.name;
+	});
+
+	const taskDeleteModalState = useStore<ModalState & { idToDelete?: string }>({
+		title: t('TASK_DELETE_TITLE'),
+		isVisible: false,
+		idToDelete: undefined,
+		message: t('TASK_DELETE_MESSAGE'),
+		cancelLabel: t('ACTION_CANCEL'),
+		confirmLabel: t('ACTION_CONFIRM'),
+	});
+
+	useTask$(() => {
+		taskDeleteModalState.onCancel$ = $(() => {
+			taskDeleteModalState.idToDelete = undefined;
+		});
+
+		taskDeleteModalState.onConfirm$ = $(async () => {
+			if (taskDeleteModalState.idToDelete) {
+				appStore.isLoading = true;
+				await removeTask(taskDeleteModalState.idToDelete);
+				appStore.isLoading = false;
+				taskDeleteModalState.idToDelete = undefined;
+			}
+		});
 	});
 
 	const taskModalState = useStore<ModalState>({
@@ -84,6 +118,11 @@ export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project
 		confirmLabel: t('ACTION_CONFIRM'),
 	});
 
+	const openDeleteDialog = $((id: string) => {
+		taskDeleteModalState.idToDelete = id;
+		taskDeleteModalState.isVisible = true;
+	});
+
 	return (
 		<>
 			<tr>
@@ -110,11 +149,11 @@ export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project
 										value: 'Edit task',
 										onChange: $(() => (taskModalState.isVisible = true)),
 									},
-									/* {
+									{
 										value: 'Delete task',
-										onChange: $(() => (taskDeleteModalState.isVisible = true)),
+										onChange: $(() => openDeleteDialog(task.id)),
 										class: 'text-red-500',
-									}, */
+									},
 								]}
 							/>
 						</div>
@@ -123,6 +162,14 @@ export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project
 			</tr>
 
 			<Modal state={taskModalState}>
+				<EditTaskForm
+					name={newTaskName}
+					completed={newCompleted}
+					plannedHours={newPlannedHours}
+				/>
+			</Modal>
+
+			<Modal state={taskDeleteModalState}>
 				<EditTaskForm
 					name={newTaskName}
 					completed={newCompleted}

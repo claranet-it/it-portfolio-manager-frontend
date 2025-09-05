@@ -137,6 +137,8 @@
 	"NAME_LABEL": "Name",
 	"PROEJCT_DELETE_TITLE": "Delete project",
 	"PROJECT_DELETE_MESSAGE": "Are you sure you want to delete #name?",
+	"TASK_DELETE_TITLE": "Delete task",
+	"TASK_DELETE_MESSAGE": "Are you sure you want to delete this task?",
 	"TASK_EDIT_TITLE": "Edit task",
 	"EDIT_CUSTOMER": "Edit customer",
 	"CUSTOMER_DELETE_TITLE": "Delete customer",

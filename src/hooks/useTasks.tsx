@@ -3,10 +3,12 @@ import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
 import { AppContext } from 'src/app';
-import { editTask, editTaskName, getTasks } from 'src/services/tasks';
+import { deleteTask, editTask, editTaskName, getTasks } from 'src/services/tasks';
+import { useNotification } from './useNotification';
 
 export const useTasks = (hideCompleted?: Signal<boolean>) => {
 	const appStore = useContext(AppContext);
+	const { addEvent } = useNotification();
 	const isLoading = useSignal<boolean>(false);
 	const tasks = useSignal<Task[]>([]);
 
@@ -41,5 +43,20 @@ export const useTasks = (hideCompleted?: Signal<boolean>) => {
 		}
 	);
 
-	return { tasks, fetchTasks, isLoading, renameTask, updateTask };
+	const removeTask = $(async (id: string) => {
+		appStore.isLoading = true;
+		try {
+			await deleteTask(id);
+		} catch (error) {
+			const { message } = error as Error;
+			addEvent({
+				message,
+				type: 'danger',
+				autoclose: true,
+			});
+		}
+		appStore.isLoading = false;
+	});
+
+	return { tasks, fetchTasks, isLoading, renameTask, updateTask, removeTask };
 };

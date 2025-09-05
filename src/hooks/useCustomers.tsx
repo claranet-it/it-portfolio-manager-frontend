@@ -8,14 +8,13 @@ import { getProjects } from 'src/services/projects';
 export const useCustomers = (hideCompleted?: Signal<boolean>) => {
 	const appStore = useContext(AppContext);
 
-	const isLoading = useSignal<boolean>(false);
 	const customers = useSignal<Customer[]>([]);
 
 	const fetchCustomers = $(async () => {
 		customers.value = [];
-		isLoading.value = true;
+		appStore.isLoading = true;
 		customers.value = await getCustomers(hideCompleted?.value);
-		isLoading.value = false;
+		appStore.isLoading = false;
 	});
 
 	const updateProjectCustomer = $(
@@ -57,5 +56,5 @@ export const useCustomers = (hideCompleted?: Signal<boolean>) => {
 		return results.includes(Promise.resolve(false));
 	});
 
-	return { customers, isLoading, fetchCustomers, updateCustomer, removeCustomer };
+	return { customers, fetchCustomers, updateCustomer, removeCustomer };
 };
