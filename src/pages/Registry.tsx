@@ -70,6 +70,9 @@ export const Registry = component$(() => {
 			project: getParams['project'][0] ?? undefined,
 			beenOpened: false,
 		};
+
+		searchInput.value = getParams['customer'][0] ?? '';
+		search(searchInput.value);
 	});
 
 	return (
@@ -140,10 +143,6 @@ export const Registry = component$(() => {
 					{alertMessageState.message}
 				</p>
 			</Modal>
-
-			{/* <Modal state={formModalState}>
-							<WorkForm formID={formModalState.workIdToEdit || 'new'} formGroup={formGroup} />
-						</Modal> */}
 		</>
 	);
 });
