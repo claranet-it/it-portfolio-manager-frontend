@@ -34,11 +34,13 @@ export const useCustomers = (hideCompleted?: Signal<boolean>) => {
 	const updateCustomer = $(async (customer: Customer, editedCustomerName: string) => {
 		appStore.isLoading = true;
 		const projectList = await getProjects(customer);
-		const results = projectList.map(async (project) => {
-			return await updateProjectCustomer(customer, editedCustomerName, project);
-		});
+		const results = await Promise.all(
+			projectList.map(async (project) => {
+				return await updateProjectCustomer(customer, editedCustomerName, project);
+			})
+		);
 		appStore.isLoading = false;
-		return results.includes(Promise.resolve(false));
+		return results.every((x) => x === true);
 	});
 
 	const removeProjectCustomer = $(async (customer: Customer, project: Project) => {

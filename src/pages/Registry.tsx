@@ -31,6 +31,7 @@ export const Registry = component$(() => {
 	});
 
 	const update = useSignal<TimeEntry>();
+
 	const refresh = $(async () => {
 		await fetchCustomers();
 	});
@@ -50,6 +51,7 @@ export const Registry = component$(() => {
 		track(() => update.value);
 		track(() => hideCompleted.value);
 		await fetchCustomers();
+		search(searchInput.value);
 	});
 
 	useVisibleTask$(async () => {
@@ -66,7 +68,6 @@ export const Registry = component$(() => {
 		};
 
 		searchInput.value = getParams['customer'][0] ?? '';
-		search(searchInput.value);
 	});
 
 	useTask$(({ track }) => {
