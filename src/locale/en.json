@@ -259,7 +259,7 @@
 	"NOTES_LABEL": "Notes",
 	"NOTES_INSERT_LABEL": "Insert notes...",
 	"PRESENT": "Present",
-	"NO_DATA": "No data inserted",
+	"NO_DATA": "No data available",
 	"YOUR_COMPANY_CODE": "Your Company code",
 	"CREATE_COMPANY_CODE_DESCRIPTION": "Create a Company Code for the encryption of sensitive company data. Once the Company Code is created, it cannot be changed.<br /><br /> The Company Code must be shared with other members of the company and, if lost, it cannot be recovered.",
 	"COMPANY_CODE_LABEL": "Company code",

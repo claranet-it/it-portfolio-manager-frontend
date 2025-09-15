@@ -5,7 +5,6 @@ import { TimeEntry } from '@models/timeEntry';
 import { NewProjectForm } from 'src/components/form/NewProjectForm';
 import { SearchInput } from 'src/components/form/SearchInput';
 import { ToggleSwitch } from 'src/components/form/ToggleSwitch';
-import { LoadingSpinnerInline } from 'src/components/LoadingSpinnerInline';
 import { Modal } from 'src/components/modals/Modal';
 import { NewTimeEntryModal } from 'src/components/modals/NewTimeEntryModal';
 import { CustomerAccordion } from 'src/components/registry/CustomerAccordion';
@@ -47,12 +46,7 @@ export const Registry = component$(() => {
 		beenOpened?: boolean;
 	}>({});
 
-	useVisibleTask$(({ track }) => {
-		track(() => customers.value);
-		filteredCustomer.value = customers.value;
-	});
-
-	useTask$(async ({ track }) => {
+	useVisibleTask$(async ({ track }) => {
 		track(() => update.value);
 		track(() => hideCompleted.value);
 		await fetchCustomers();
@@ -73,6 +67,11 @@ export const Registry = component$(() => {
 
 		searchInput.value = getParams['customer'][0] ?? '';
 		search(searchInput.value);
+	});
+
+	useTask$(({ track }) => {
+		track(() => customers.value);
+		filteredCustomer.value = customers.value;
 	});
 
 	return (
@@ -112,29 +111,29 @@ export const Registry = component$(() => {
 							</NewTimeEntryModal>
 						</div>
 					</div>
-					{filteredCustomer.value.length ? (
-						<div id='accordion-nested-parent' data-accordion='collapse'>
-							{(filteredCustomer.value
-								? filteredCustomer.value.sort((customerA, customerB) =>
-										customerA.name.localeCompare(customerB.name)
-									)
-								: []
-							).map((customer) => (
-								<CustomerAccordion
-									key={`customer-${customer.id}-${hideCompleted.value ? 'only-not-completed' : 'all'}`}
-									preOpenData={preOpenDataRegistry}
-									preSelectedData={preselectedDataRegistry}
-									customer={customer}
-									refresh={refresh}
-									hideCompleted={hideCompleted}
-								/>
-							))}
-						</div>
-					) : (
-						<div class='flex justify-center'>
-							<LoadingSpinnerInline />
-						</div>
-					)}
+					{customers.value.length ? (
+						filteredCustomer.value.length ? (
+							<div id='accordion-nested-parent' data-accordion='collapse'>
+								{(filteredCustomer.value
+									? filteredCustomer.value.sort((customerA, customerB) =>
+											customerA.name.localeCompare(customerB.name)
+										)
+									: []
+								).map((customer) => (
+									<CustomerAccordion
+										key={`customer-${customer.id}-${hideCompleted.value ? 'only-not-completed' : 'all'}`}
+										preOpenData={preOpenDataRegistry}
+										preSelectedData={preselectedDataRegistry}
+										customer={customer}
+										refresh={refresh}
+										hideCompleted={hideCompleted}
+									/>
+								))}
+							</div>
+						) : (
+							<div class='flex justify-center'>{t('NO_DATA')}</div>
+						)
+					) : null}
 				</div>
 			</div>
 
