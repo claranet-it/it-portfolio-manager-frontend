@@ -28,7 +28,7 @@ import { Modal } from '../modals/Modal';
 import { AccordionOpenButton } from './AccordionOpenButton';
 import { TaskAccordion } from './TaskAccordion';
 
-interface ProjectAccordionProps {
+type ProjectAccordionProps = {
 	customer: Customer;
 	project: Project;
 	refresh?: QRL;
@@ -42,7 +42,7 @@ interface ProjectAccordionProps {
 		beenOpened?: boolean;
 	}>;
 	hideCompleted: Signal<boolean>;
-}
+};
 
 export const ProjectAccordion = component$<ProjectAccordionProps>(
 	({ customer, project, refresh, preSelectedData, preOpenData, hideCompleted }) => {
@@ -210,34 +210,38 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 								</button>
 							</div>
 						</div>
-						<table class='w-full'>
-							<thead>
-								<tr class='text-sm font-medium text-gray-700'>
-									<th class='flex-1 border-r border-surface-70 bg-surface-20 p-3 text-left'>
-										Tasks
-									</th>
+						{tasks.value.length ? (
+							<table class='w-full'>
+								<thead>
+									<tr class='text-sm font-medium text-gray-700'>
+										<th class='flex-1 border-r border-surface-70 bg-surface-20 p-3 text-left'>
+											Tasks
+										</th>
 
-									<th class='w-1/6 border-r border-surface-70 bg-surface-20 p-3 text-left'>
-										Planned hours
-									</th>
-									<th class='w-[24px] bg-surface-20'></th>
-								</tr>
-							</thead>
-							<tbody>
-								{tasks.value
-									.sort((taskA, taskB) => taskA.name.localeCompare(taskB.name))
-									.map((task) => {
-										return (
-											<TaskAccordion
-												key={`task-${customer.id}-${project.name}-${task.name}`}
-												customer={customer}
-												project={project}
-												task={task}
-											/>
-										);
-									})}
-							</tbody>
-						</table>
+										<th class='w-1/6 border-r border-surface-70 bg-surface-20 p-3 text-left'>
+											Planned hours
+										</th>
+										<th class='w-[24px] bg-surface-20'></th>
+									</tr>
+								</thead>
+								<tbody>
+									{tasks.value
+										.sort((taskA, taskB) =>
+											taskA.name.localeCompare(taskB.name)
+										)
+										.map((task) => {
+											return (
+												<TaskAccordion
+													key={`task-${customer.id}-${project.name}-${task.name}`}
+													customer={customer}
+													project={project}
+													task={task}
+												/>
+											);
+										})}
+								</tbody>
+							</table>
+						) : null}
 					</div>
 				</div>
 

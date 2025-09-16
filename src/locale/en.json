@@ -108,6 +108,7 @@
 	"EDIT_CUSTOMER_SUCCESS_MESSAGE": "Customer has been updated successfully",
 	"DELETE_PROJECT_SUCCESS_MESSAGE": "Project has been removed successfully",
 	"DELETE_CUSTOMER_SUCCESS_MESSAGE": "Customer has been removed successfully",
+	"DELETE_TASK_SUCCESS_MESSAGE": "Task has been removed successfully",
 	"DELETE_REGISTRY_ELEMENT_SUCCESS_MESSAGE": "#type has been removed successfully",
 	"EXISTING_REGISTRY_ELEMENT_LABEL": "The value you have entered is the same as the current one.",
 	"EXISTING_ENTITY_TITLE": "Entity already exists",

@@ -26,7 +26,7 @@ import { Modal } from '../modals/Modal';
 import { AccordionOpenButton } from './AccordionOpenButton';
 import { ProjectAccordion } from './ProjectAccordion';
 
-interface CustomerAccordionProps {
+type CustomerAccordionProps = {
 	customer: Customer;
 	refresh?: QRL;
 	preSelectedData: Signal<{
@@ -39,7 +39,7 @@ interface CustomerAccordionProps {
 		beenOpened?: boolean;
 	}>;
 	hideCompleted: Signal<boolean>;
-}
+};
 
 export const CustomerAccordion = component$<CustomerAccordionProps>(
 	({ customer, refresh, preSelectedData, preOpenData, hideCompleted }) => {

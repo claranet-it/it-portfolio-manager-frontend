@@ -45,8 +45,9 @@ export const useTasks = (hideCompleted?: Signal<boolean>) => {
 
 	const removeTask = $(async (id: string) => {
 		appStore.isLoading = true;
+		let response = false;
 		try {
-			await deleteTask(id);
+			response = await deleteTask(id);
 		} catch (error) {
 			const { message } = error as Error;
 			addEvent({
@@ -56,6 +57,7 @@ export const useTasks = (hideCompleted?: Signal<boolean>) => {
 			});
 		}
 		appStore.isLoading = false;
+		return response;
 	});
 
 	return { tasks, fetchTasks, isLoading, renameTask, updateTask, removeTask };

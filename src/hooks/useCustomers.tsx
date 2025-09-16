@@ -51,11 +51,13 @@ export const useCustomers = (hideCompleted?: Signal<boolean>) => {
 	const removeCustomer = $(async (customer: Customer) => {
 		appStore.isLoading = true;
 		const projectList = await getProjects(customer);
-		const results = projectList.map(async (project) => {
-			return await removeProjectCustomer(customer, project);
-		});
+		const results = await Promise.all(
+			projectList.map(async (project) => {
+				return await removeProjectCustomer(customer, project);
+			})
+		);
 		appStore.isLoading = false;
-		return results.includes(Promise.resolve(false));
+		return results.every((x) => x === true);
 	});
 
 	return { customers, fetchCustomers, updateCustomer, removeCustomer };

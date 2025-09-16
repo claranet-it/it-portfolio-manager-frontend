@@ -25,12 +25,12 @@ import { OptionDropdown } from '../form/OptionDropdown';
 import { getIcon } from '../icons';
 import { Modal } from '../modals/Modal';
 
-interface TaskAccordionProps {
+type TaskAccordionProps = {
 	customer: Customer;
 	project: Project;
 	task: Task;
 	refresh?: QRL;
-}
+};
 
 export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project, task }) => {
 	const appStore = useContext(AppContext);
@@ -63,9 +63,22 @@ export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project
 		taskDeleteModalState.onConfirm$ = $(async () => {
 			if (taskDeleteModalState.idToDelete) {
 				appStore.isLoading = true;
-				await removeTask(taskDeleteModalState.idToDelete);
-				appStore.isLoading = false;
+
+				if (await removeTask(taskDeleteModalState.idToDelete)) {
+					addEvent({
+						type: 'success',
+						message: t('DELETE_TASK_SUCCESS_MESSAGE'),
+						autoclose: true,
+					});
+					if (getCurrentRoute() === 'registry') {
+						navigateTo('registry', {
+							customer: customer.name,
+							project: project.name,
+						});
+					}
+				}
 				taskDeleteModalState.idToDelete = undefined;
+				appStore.isLoading = false;
 			}
 		});
 	});
@@ -169,13 +182,7 @@ export const TaskAccordion = component$<TaskAccordionProps>(({ customer, project
 				/>
 			</Modal>
 
-			<Modal state={taskDeleteModalState}>
-				<EditTaskForm
-					name={newTaskName}
-					completed={newCompleted}
-					plannedHours={newPlannedHours}
-				/>
-			</Modal>
+			<Modal state={taskDeleteModalState}></Modal>
 		</>
 	);
 });
