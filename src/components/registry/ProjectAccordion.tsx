@@ -86,7 +86,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 					if (getCurrentRoute() === 'registry') {
 						navigateTo('registry', {
 							customer: customer.name,
-							project: project.name,
+							project: name.value,
 						});
 					}
 				}
