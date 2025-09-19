@@ -169,10 +169,12 @@ export const useNetworking = (company: Company) => {
 	);
 
 	const search = $((searchString: string) => {
-		filteredCompanies.value = companies.value.filter((el) => el.name.includes(searchString));
+		filteredCompanies.value = companies.value.filter((el) =>
+			el.company_fullname.toLowerCase().includes(searchString.toLowerCase())
+		);
 	});
 
-	const onChangeSkill = $(async () => {
+	const onChangeSkill = $(() => {
 		filteredCompanies.value = companies.value.filter((el) => {
 			if (selectedSkills.value.length) {
 				const ItemSkillCompany = skillMatrices.value?.find((item) => {

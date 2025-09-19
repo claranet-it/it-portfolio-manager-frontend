@@ -49,7 +49,7 @@ export const CompanyCard = component$<CompanyCardProps>(
 			<div class='m-1 flex w-[288px] flex-col space-y-3 rounded-md border border-darkgray-200 px-4 py-3'>
 				<div class='flex flex-row items-center gap-2'>
 					{getIcon('UserGroup')}
-					<div class='text-xl font-bold text-dark-grey'>{company.domain}</div>
+					<div class='text-xl font-bold text-dark-grey'>{company.company_fullname}</div>
 				</div>
 				<div class='flex w-full flex-col space-y-0'>
 					{Object.keys(skillMatrix.skills)
