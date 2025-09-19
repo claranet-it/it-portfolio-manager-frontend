@@ -76,4 +76,5 @@ export const INIT_NETWORK_COMPANY_VALUE: NetworkCompany = {
 	id: '',
 	image_url: 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==',
 	name: '',
+	company_fullname: '',
 };
