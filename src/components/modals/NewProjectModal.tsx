@@ -1,10 +1,10 @@
 import { component$, Slot, useComputed$ } from '@builder.io/qwik';
 
-interface NewTimeEntryModalProps {
+type NewProjectModalProps = {
 	show: boolean;
-}
+};
 
-export const NewProjectModal = component$<NewTimeEntryModalProps>(({ show }) => {
+export const NewProjectModal = component$<NewProjectModalProps>(({ show }) => {
 	const modalStyle = useComputed$(() => {
 		return {
 			display: show ? 'block' : 'none',

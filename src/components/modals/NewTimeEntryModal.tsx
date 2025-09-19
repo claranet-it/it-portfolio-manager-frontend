@@ -9,13 +9,13 @@ import {
 } from '@builder.io/qwik';
 import { getIcon } from '../icons';
 
-interface NewTimeEntryModalProp {
+type NewTimeEntryModalProp = {
 	label: string;
 	preSelectedData?: Signal<{
 		customer?: string;
 		project?: string;
 	}>;
-}
+};
 
 export const NewTimeEntryModal = component$<NewTimeEntryModalProp>(({ label, preSelectedData }) => {
 	const modalVisible = useSignal(false);
