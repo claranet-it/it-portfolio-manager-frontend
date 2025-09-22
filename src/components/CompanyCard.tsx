@@ -1,6 +1,7 @@
 import { component$, QRL, useContext } from '@builder.io/qwik';
 import { NetworkCompany } from '@models/networking';
 import { companySkill, ItemSkill } from '@models/skill';
+import { t } from 'src/locale/labels';
 import { AppContext } from '../app';
 import { Button } from './Button';
 import { getIcon, getIconSkill } from './icons';
@@ -26,7 +27,7 @@ export const CompanyCard = component$<CompanyCardProps>(
 						variant={'outline'}
 						onClick$={() => onConnection('disconnect', company)}
 					>
-						Unconnect
+						{t('unconnect')}
 					</Button>
 				);
 			}
@@ -34,14 +35,14 @@ export const CompanyCard = component$<CompanyCardProps>(
 			if (status === 'pending') {
 				return (
 					<Button size={'small'} disabled>
-						Pending ...
+						{t('pending')}
 					</Button>
 				);
 			}
 
 			return (
 				<Button size={'small'} onClick$={() => onConnection('connect', company)}>
-					Connect
+					{t('connect')}
 				</Button>
 			);
 		};
@@ -81,10 +82,10 @@ export const CompanyCard = component$<CompanyCardProps>(
 						})}
 				</div>
 				<hr class='my-8 h-px border-0 bg-gray-200 dark:bg-gray-700' />
-				<div class='flex flex-row justify-between'>
-					<Button variant={'link'} onClick$={() => onMoreInfo(company)}>
+				<div class='flex flex-row justify-end'>
+					{/* <Button variant={'link'} onClick$={() => onMoreInfo(company)}>
 						More info
-					</Button>
+					</Button> */}
 					{getButtonCTA()}
 				</div>
 			</div>

@@ -317,5 +317,8 @@
 	"CANCEL_PROCESS_ACTION": "Cancel process",
 	"UNSUBSCRIBED_TITLE": "You're unsubscribed",
 	"UNSUBSCRIBED_MESSAGE": "We're so sorry to lose you",
-	"BACK_TO_HOMEPAGE": "Back to Brickly Homepage!"
+	"BACK_TO_HOMEPAGE": "Back to Brickly Homepage!",
+	"unconnect": "Unconnect",
+	"connect": "Connect",
+	"pending": "Pending..."
 }

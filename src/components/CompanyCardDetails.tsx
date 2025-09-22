@@ -1,8 +1,11 @@
-import { component$, QRL } from '@builder.io/qwik';
+import { component$, QRL, useContext } from '@builder.io/qwik';
 import { NetworkCompany } from '@models/networking';
-import { ItemSkill } from '@models/skill';
+import { companySkill, ItemSkill } from '@models/skill';
+import { AppContext } from 'src/app';
+import { t } from 'src/locale/labels';
 import { Button } from './Button';
 import { getIcon } from './icons';
+import { SfRating } from './SfRating';
 
 type CompanyCardDetailsProps = {
 	company: NetworkCompany;
@@ -14,6 +17,8 @@ type CompanyCardDetailsProps = {
 
 export const CompanyCardDetails = component$<CompanyCardDetailsProps>(
 	({ company, skillMatrix, onConnection, onGoBack, status }) => {
+		const appStore = useContext(AppContext);
+
 		const getButtonCTA = () => {
 			if (status === 'connected') {
 				return (
@@ -22,7 +27,7 @@ export const CompanyCardDetails = component$<CompanyCardDetailsProps>(
 						variant={'outline'}
 						onClick$={() => onConnection('disconnect', company)}
 					>
-						Unconnect
+						{t('unconnect')}
 					</Button>
 				);
 			}
@@ -30,14 +35,14 @@ export const CompanyCardDetails = component$<CompanyCardDetailsProps>(
 			if (status === 'pending') {
 				return (
 					<Button size={'small'} disabled>
-						Pending ...
+						{t('pending')}
 					</Button>
 				);
 			}
 
 			return (
 				<Button size={'small'} onClick$={() => onConnection('connect', company)}>
-					Connect
+					{t('connect')}
 				</Button>
 			);
 		};
@@ -125,16 +130,39 @@ export const CompanyCardDetails = component$<CompanyCardDetailsProps>(
 										</tr>
 									</thead>
 									<tbody>
-										{Object.keys(skillMatrix.skills).map((key) => (
-											<tr key={key}>
-												<td class='border border-surface-70 px-4 py-2 text-left text-sm text-dark-grey'>
-													{key}
-												</td>
-												<td class='border border-surface-70 px-4 py-2 text-left text-sm text-dark-grey'>
-													{key}
-												</td>
-											</tr>
-										))}
+										{Object.keys(skillMatrix.skills)
+											.sort(
+												(a, b) =>
+													(skillMatrix.skills[b] as companySkill)
+														.averageScore -
+													(skillMatrix.skills[a] as companySkill)
+														.averageScore
+											)
+											.slice(0, 10)
+											.map((key) => (
+												<tr key={key}>
+													<td class='border border-surface-70 px-4 py-2 text-left text-sm text-dark-grey'>
+														<span style='float: left;'>{key}</span>
+														<span style='float: right;'>
+															<SfRating
+																variant='dark'
+																max={
+																	appStore.configuration
+																		.scoreRange.max
+																}
+																value={
+																	(
+																		skillMatrix.skills[
+																			key
+																		] as companySkill
+																	).averageScore
+																}
+															/>
+														</span>
+													</td>
+													<td class='border border-surface-70 px-4 py-2 text-left text-sm text-dark-grey'></td>
+												</tr>
+											))}
 									</tbody>
 								</table>
 							</div>
