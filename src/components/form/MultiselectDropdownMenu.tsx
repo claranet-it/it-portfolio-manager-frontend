@@ -149,7 +149,9 @@ export const MultiselectDropdownMenu = component$<MultiselectDropdownMenuProps>(
 				id={'select-dropdown_multiple_' + id}
 				class={'z-10 hidden w-full divide-y divide-gray-100 rounded-md bg-white shadow'}
 			>
-				<SearchInput value={filterOptionString} callback={filterSearch} />
+				<div class='px-4'>
+					<SearchInput value={filterOptionString} callback={filterSearch} />
+				</div>
 
 				{options.value.length !== 0 && allowSelectAll && (
 					<div class='block px-4 py-2 hover:bg-gray-100' onClick$={() => selectAll()}>
