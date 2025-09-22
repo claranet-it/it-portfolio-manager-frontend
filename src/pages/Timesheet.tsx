@@ -132,7 +132,10 @@ export const Timesheet = component$(() => {
 							to={to}
 							userImpersonationId={userIdSelected}
 						>
-							<NewTimeEntryModal q:slot='newProject'>
+							<NewTimeEntryModal
+								label={t('ADD_NEW_ELEMENT_TIMESHEET')}
+								q:slot='newProject'
+							>
 								<NewTaskForm
 									timeEntry={newTimeEntry}
 									alertMessageState={alertMessageState}

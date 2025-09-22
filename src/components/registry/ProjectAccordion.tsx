@@ -19,15 +19,16 @@ import { t, tt } from 'src/locale/labels';
 import { getCurrentRoute, navigateTo } from 'src/router';
 import { limitRoleAccess } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
-import { Button } from '../Button';
+import { Badge } from '../Badge';
 import { EditProjectForm } from '../form/editProjectFrom';
+import { OptionDropdown } from '../form/OptionDropdown';
 import { getIcon } from '../icons';
 import { LoadingSpinnerInline } from '../LoadingSpinnerInline';
 import { Modal } from '../modals/Modal';
 import { AccordionOpenButton } from './AccordionOpenButton';
 import { TaskAccordion } from './TaskAccordion';
 
-interface ProjectAccordionProps {
+type ProjectAccordionProps = {
 	customer: Customer;
 	project: Project;
 	refresh?: QRL;
@@ -41,7 +42,7 @@ interface ProjectAccordionProps {
 		beenOpened?: boolean;
 	}>;
 	hideCompleted: Signal<boolean>;
-}
+};
 
 export const ProjectAccordion = component$<ProjectAccordionProps>(
 	({ customer, project, refresh, preSelectedData, preOpenData, hideCompleted }) => {
@@ -85,7 +86,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 					if (getCurrentRoute() === 'registry') {
 						navigateTo('registry', {
 							customer: customer.name,
-							project: project.name,
+							project: name.value,
 						});
 					}
 				}
@@ -138,55 +139,47 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 						class={
 							'flex w-full items-center justify-between gap-3 border border-gray-200 p-5 font-medium text-gray-500 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 rtl:text-right ' +
 							(visibleBody.value && !isLoading.value
-								? 'border-2 bg-dark-gray-50'
-								: '')
+								? 'bg-surface-20'
+								: 'bg-surface-5')
 						}
 					>
-						<div class='flex flex-row gap-3'>
-							<div class='flex flex-col gap-2'>
-								<div class='flex flex-row gap-2'>
-									<span>{project.name}</span>{' '}
-									{project.completed ? (
-										<span class='uppercase text-gray-400'>
-											({t('COMPLETED_LABEL')})
-										</span>
-									) : (
-										''
-									)}
-								</div>
-								{project.plannedHours !== 0 ? (
-									<span class='text-sm text-gray-400'>
-										({project.plannedHours}h)
-									</span>
-								) : (
-									''
-								)}
-							</div>
+						<div class='flex flex-row items-center gap-3'>
+							<div>{project.name}</div>
+							{project.completed && <Badge label={t('COMPLETED_LABEL')} />}
 
 							{isLoading.value && <LoadingSpinnerInline />}
 						</div>
 
-						<div class='flex flex-row gap-3'>
-							{canAccess.value && (
-								<>
-									<Button
-										variant={'outline'}
-										onClick$={() => (projectDeleteModalState.isVisible = true)}
-									>
-										{getIcon('Bin')}
-									</Button>
-
-									<Button
-										variant={'outline'}
-										onClick$={() => (projectModalState.isVisible = true)}
-									>
-										{getIcon('Edit')}
-									</Button>
-									<Button variant={'outline'} onClick$={selectPreselected}>
-										{getIcon('Add')}
-									</Button>
-								</>
+						<div class='flex flex-row items-center gap-3'>
+							{project.plannedHours !== 0 && (
+								<div class='text-sm text-gray-400'>
+									{tt('PLANNED_HOURS', { hours: String(project.plannedHours) })}
+								</div>
 							)}
+							<div>
+								{canAccess.value && (
+									<OptionDropdown
+										id={`options-project-${project.id}`}
+										icon={getIcon('V3DotsBlack')}
+										label={''}
+										options={[
+											{
+												value: 'Edit project',
+												onChange: $(
+													() => (projectModalState.isVisible = true)
+												),
+											},
+											{
+												value: 'Delete project',
+												onChange: $(
+													() => (projectDeleteModalState.isVisible = true)
+												),
+												class: 'text-red-500',
+											},
+										]}
+									/>
+								)}
+							</div>
 
 							<AccordionOpenButton onClick$={openBody} accordionState={visibleBody} />
 						</div>
@@ -196,18 +189,59 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 				{/* accordion body */}
 				<div class={visibleBody.value && !isLoading.value ? '' : 'hidden'}>
 					<div class='border border-b-0 border-gray-200 p-5 dark:border-gray-700'>
-						{tasks.value
-							.sort((taskA, taskB) => taskA.name.localeCompare(taskB.name))
-							.map((task) => {
-								return (
-									<TaskAccordion
-										key={`task-${customer.id}-${project.name}-${task.name}`}
-										customer={customer}
-										project={project}
-										task={task}
-									/>
-								);
-							})}
+						<div class='mb-4 flex items-center sm:flex-col sm:space-y-3 md:flex-row md:justify-between lg:flex-row lg:justify-between'>
+							<div>
+								<h2 class='text-sm font-bold text-darkgray-900'>
+									Total tasks {tasks.value.length}
+								</h2>
+							</div>
+							<div>
+								<button
+									id='open-new-education-bt'
+									onClick$={selectPreselected}
+									type='button'
+								>
+									<div class='content flex flex-row space-x-1 text-clara-red'>
+										<span class='content-center text-xl'>{getIcon('Add')}</span>
+										<span class='content-center text-base font-bold'>
+											{t('add_new_task_label')}
+										</span>
+									</div>
+								</button>
+							</div>
+						</div>
+						{tasks.value.length ? (
+							<table class='w-full'>
+								<thead>
+									<tr class='text-sm font-medium text-gray-700'>
+										<th class='flex-1 border-r border-surface-70 bg-surface-20 p-3 text-left'>
+											Tasks
+										</th>
+
+										<th class='w-1/6 border-r border-surface-70 bg-surface-20 p-3 text-left'>
+											Planned hours
+										</th>
+										<th class='w-[24px] bg-surface-20'></th>
+									</tr>
+								</thead>
+								<tbody>
+									{tasks.value
+										.sort((taskA, taskB) =>
+											taskA.name.localeCompare(taskB.name)
+										)
+										.map((task) => {
+											return (
+												<TaskAccordion
+													key={`task-${customer.id}-${project.name}-${task.name}`}
+													customer={customer}
+													project={project}
+													task={task}
+												/>
+											);
+										})}
+								</tbody>
+							</table>
+						) : null}
 					</div>
 				</div>
 

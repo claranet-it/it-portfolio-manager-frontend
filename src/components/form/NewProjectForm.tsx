@@ -22,7 +22,7 @@ import { Autocomplete } from './Autocomplete';
 import { Input } from './Input';
 import { Select } from './Select';
 
-interface NewProjectFormProp {
+type NewProjectFormProps = {
 	timeEntry: Signal<TimeEntry | undefined>;
 	alertMessageState: ModalState;
 	onCancel$?: QRL;
@@ -31,9 +31,9 @@ interface NewProjectFormProp {
 		customer?: string;
 		project?: string;
 	}>;
-}
+};
 
-export const NewProjectForm = component$<NewProjectFormProp>(
+export const NewProjectForm = component$<NewProjectFormProps>(
 	({ timeEntry, alertMessageState, onCancel$, allowNewEntry, preSelectedData }) => {
 		const {
 			dataCustomersSig,
@@ -183,6 +183,12 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 		return (
 			<>
 				<div class='w-96 rounded-md bg-white-100 p-4 shadow'>
+					<div class='mb-2 flex items-center justify-between border-b border-gray-200 py-2'>
+						<h3 class='text-2xl font-bold text-dark-grey'>
+							{t('add_new_entry_label')}
+						</h3>
+					</div>
+
 					<form class='space-y-3' onSubmit$={handleSubmit}>
 						<div>
 							<Autocomplete
@@ -190,7 +196,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								label={t('CUSTOMER_LABEL')}
 								selected={_customerSelected}
 								data={_customerNames}
-								placeholder='Search...'
+								placeholder={t('PLACEHOLDER_INSERT_CUSTOMER')}
 								required
 								onChange$={_onChangeCustomer}
 							/>
@@ -212,7 +218,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 								label={t('PROJECT_LABEL')}
 								selected={_projectSelected}
 								data={_projectOptions}
-								placeholder='Search...'
+								placeholder={t('PLACEHOLDER_INSERT_PROJECT')}
 								required
 								disabled={!projectEnableSig.value}
 								onChange$={_onChangeProject}
@@ -268,7 +274,7 @@ export const NewProjectForm = component$<NewProjectFormProp>(
 							label={t('TASK_LABEL')}
 							selected={_taskSelected}
 							data={_dataTasksSign}
-							placeholder='Search...'
+							placeholder={t('PLACEHOLDER_INSERT_TASK')}
 							required
 							disabled={!taskEnableSig.value}
 							onChange$={_onChangeTask}

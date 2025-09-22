@@ -8,14 +8,13 @@ import { getProjects } from 'src/services/projects';
 export const useCustomers = (hideCompleted?: Signal<boolean>) => {
 	const appStore = useContext(AppContext);
 
-	const isLoading = useSignal<boolean>(false);
 	const customers = useSignal<Customer[]>([]);
 
 	const fetchCustomers = $(async () => {
 		customers.value = [];
-		isLoading.value = true;
+		appStore.isLoading = true;
 		customers.value = await getCustomers(hideCompleted?.value);
-		isLoading.value = false;
+		appStore.isLoading = false;
 	});
 
 	const updateProjectCustomer = $(
@@ -35,11 +34,13 @@ export const useCustomers = (hideCompleted?: Signal<boolean>) => {
 	const updateCustomer = $(async (customer: Customer, editedCustomerName: string) => {
 		appStore.isLoading = true;
 		const projectList = await getProjects(customer);
-		const results = projectList.map(async (project) => {
-			return await updateProjectCustomer(customer, editedCustomerName, project);
-		});
+		const results = await Promise.all(
+			projectList.map(async (project) => {
+				return await updateProjectCustomer(customer, editedCustomerName, project);
+			})
+		);
 		appStore.isLoading = false;
-		return results.includes(Promise.resolve(false));
+		return results.every((x) => x === true);
 	});
 
 	const removeProjectCustomer = $(async (customer: Customer, project: Project) => {
@@ -50,12 +51,14 @@ export const useCustomers = (hideCompleted?: Signal<boolean>) => {
 	const removeCustomer = $(async (customer: Customer) => {
 		appStore.isLoading = true;
 		const projectList = await getProjects(customer);
-		const results = projectList.map(async (project) => {
-			return await removeProjectCustomer(customer, project);
-		});
+		const results = await Promise.all(
+			projectList.map(async (project) => {
+				return await removeProjectCustomer(customer, project);
+			})
+		);
 		appStore.isLoading = false;
-		return results.includes(Promise.resolve(false));
+		return results.every((x) => x === true);
 	});
 
-	return { customers, isLoading, fetchCustomers, updateCustomer, removeCustomer };
+	return { customers, fetchCustomers, updateCustomer, removeCustomer };
 };
