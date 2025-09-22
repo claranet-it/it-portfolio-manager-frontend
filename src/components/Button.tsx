@@ -8,7 +8,7 @@ const buttonVariants = cva('py-2 px-4 rounded-md font-bold text-base text-nowrap
 				'bg-clara-red text-white-100 disabled:bg-disabled disabled:text-disabled disabled:bg-clara-red-200',
 			outline:
 				'border border-clara-red text-clara-red bg-transparent disabled:text-disabled disabled:border-disabled disabled:text-clara-red-200',
-			link: 'text-clara-red disabled:text-disabled disabled:text-clara-red-200',
+			link: 'text-clara-red disabled:text-disabled disabled:text-clara-red-200 hover:text-red-800',
 		},
 		size: {
 			default: 'h-11 px-6 py-2',

@@ -13,7 +13,7 @@
 	"networking": "Networking",
 	"name": "Name",
 	"effort": "Effort",
-	"registry": "Registry",
+	"registry": "Clients & Projects",
 	"confirmedEffort": "Confirmed",
 	"tentativeEffort": "Tentative",
 	"EFFORT_SUCCESSFULLY_UPDATED": "Effort successfully updated",

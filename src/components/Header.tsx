@@ -8,6 +8,7 @@ import { navigateTo, Route } from '../router';
 import { CHATBOT_COOKIE_KEY, COMPANY_PASSWORD_KEY, Roles } from '../utils/constants';
 import { removeCookie } from '../utils/cookie';
 import { removeAuthToken } from '../utils/token';
+import { Button } from './Button';
 import { getIcon } from './icons';
 
 type MenuRoutes = Exclude<Route, 'auth'>;
@@ -28,35 +29,35 @@ export const MENU = [
 
 const roleBasedMenu: Array<{ route: (typeof MENU)[number]; role?: Roles }> = [
 	{
-		route: 'effort',
+		route: 'timesheet',
 	},
 	{
-		route: 'profile',
-	},
-	{
-		route: 'company',
+		route: 'registry',
 		role: Roles.ADMIN,
+	},
+	{
+		route: 'report',
 	},
 	{
 		route: 'networking',
 		role: Roles.ADMIN,
 	},
 	{
-		route: 'skills',
-	},
-	{
-		route: 'timesheet',
-	},
-	{
-		route: 'report',
-	},
-	{
 		route: 'search',
 		role: Roles.ADMIN,
 	},
 	{
-		route: 'registry',
+		route: 'effort',
+	},
+	{
+		route: 'company',
 		role: Roles.ADMIN,
+	},
+	{
+		route: 'skills',
+	},
+	{
+		route: 'profile',
 	},
 ];
 
@@ -106,21 +107,19 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 						menu.value
 							.filter((item) => item !== '')
 							.map((section, key) => {
-								const textColor =
-									section === currentRoute
-										? 'text-darkgray-500'
-										: 'text-clara-red';
-
+								const textColor = section === currentRoute ? 'text-red-800' : '';
 								return (
-									<button
-										key={key}
-										class={`bg-transparent ${textColor} m-2 rounded border-0 p-2 font-semibold hover:text-red-500`}
+									<Button
+										key={key + textColor}
+										variant={'link'}
+										class={`m-2 ${textColor}`}
+										size={'small'}
 										onClick$={() => {
 											navigateTo(section as Route);
 										}}
 									>
 										{t(section as Labels)}
-									</button>
+									</Button>
 								);
 							})}
 
