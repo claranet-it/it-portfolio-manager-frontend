@@ -178,7 +178,7 @@ export const CustomerAccordion = component$<CustomerAccordionProps>(
 									<div class='content flex flex-row space-x-1 text-clara-red'>
 										<span class='content-center text-xl'>{getIcon('Add')}</span>
 										<span class='content-center text-base font-bold'>
-											{'Add new project'}
+											{t('add_new_project_label')}
 										</span>
 									</div>
 								</button>

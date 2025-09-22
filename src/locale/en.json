@@ -53,6 +53,8 @@
 	"skill_level_label2+": "skill level (2+)",
 	"how_can_help": "How can I help you today?",
 	"add_new_project_label": "Add new project",
+	"add_new_task_label": "Add new task",
+	"add_new_entry_label": "Add new entry",
 	"TIMESHEET_TABLE_PROJECT_COL_LABEL": "Projects",
 	"TIMESHEET_TABLE_TOTAL_COL_LABEL": "Total on project",
 	"TIMESHEET_TABLE_ACTIONS_COL_LABEL": "Actions",
@@ -320,5 +322,9 @@
 	"CANCEL_PROCESS_ACTION": "Cancel process",
 	"UNSUBSCRIBED_TITLE": "You're unsubscribed",
 	"UNSUBSCRIBED_MESSAGE": "We're so sorry to lose you",
-	"BACK_TO_HOMEPAGE": "Back to Brickly Homepage!"
+	"BACK_TO_HOMEPAGE": "Back to Brickly Homepage!",
+	"PLACEHOLDER_INSERT_CUSTOMER": "Insert customer...",
+	"PLACEHOLDER_INSERT_PROJECT": "Insert project...",
+	"PLACEHOLDER_INSERT_TASK": "Insert task...",
+	"PLANNED_HOURS": "Planned hours: #hours h"
 }

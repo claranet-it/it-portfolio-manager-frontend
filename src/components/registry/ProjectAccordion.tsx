@@ -153,7 +153,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 						<div class='flex flex-row items-center gap-3'>
 							{project.plannedHours !== 0 && (
 								<div class='text-sm text-gray-400'>
-									Planned hours: {project.plannedHours}h
+									{tt('PLANNED_HOURS', { hours: String(project.plannedHours) })}
 								</div>
 							)}
 							<div>
@@ -204,7 +204,7 @@ export const ProjectAccordion = component$<ProjectAccordionProps>(
 									<div class='content flex flex-row space-x-1 text-clara-red'>
 										<span class='content-center text-xl'>{getIcon('Add')}</span>
 										<span class='content-center text-base font-bold'>
-											{'Add new task'}
+											{t('add_new_task_label')}
 										</span>
 									</div>
 								</button>
