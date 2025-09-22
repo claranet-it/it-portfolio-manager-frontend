@@ -82,10 +82,10 @@ export const CompanyCard = component$<CompanyCardProps>(
 						})}
 				</div>
 				<hr class='my-8 h-px border-0 bg-gray-200 dark:bg-gray-700' />
-				<div class='flex flex-row justify-end'>
-					{/* <Button variant={'link'} onClick$={() => onMoreInfo(company)}>
-						More info
-					</Button> */}
+				<div class='flex flex-row justify-between'>
+					<Button variant={'link'} onClick$={() => onMoreInfo(company)} disabled>
+						{/* More info */}
+					</Button>
 					{getButtonCTA()}
 				</div>
 			</div>
