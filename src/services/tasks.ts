@@ -85,3 +85,6 @@ export const getAllTasks = async (): Promise<TaskProjectCustomer[]> => {
 		}))
 	);
 };
+
+export const deleteTask = async (id: string) =>
+	checkHttpResponseStatus(`task/task/${id}`, 204, 'DELETE');

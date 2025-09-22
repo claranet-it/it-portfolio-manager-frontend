@@ -7,17 +7,17 @@ import {
 	useSignal,
 	useVisibleTask$,
 } from '@builder.io/qwik';
-import { t } from 'src/locale/labels';
 import { getIcon } from '../icons';
 
-interface NewTimeEntryModalProp {
+type NewTimeEntryModalProp = {
+	label: string;
 	preSelectedData?: Signal<{
 		customer?: string;
 		project?: string;
 	}>;
-}
+};
 
-export const NewTimeEntryModal = component$<NewTimeEntryModalProp>(({ preSelectedData }) => {
+export const NewTimeEntryModal = component$<NewTimeEntryModalProp>(({ label, preSelectedData }) => {
 	const modalVisible = useSignal(false);
 
 	const modalToggle = $(() => {
@@ -48,9 +48,7 @@ export const NewTimeEntryModal = component$<NewTimeEntryModalProp>(({ preSelecte
 				<button id='open-new-project-bt' onClick$={modalToggle} type='button'>
 					<div class='content flex flex-row space-x-1 text-clara-red'>
 						<span class='content-center text-xl'>{getIcon('Add')}</span>
-						<span class='content-center text-base font-bold'>
-							{t('ADD_NEW_ELEMENT_TIMESHEET')}
-						</span>
+						<span class='content-center text-base font-bold'>{label}</span>
 					</div>
 				</button>
 			</div>
