@@ -1,8 +1,10 @@
 import { component$ } from '@builder.io/qwik';
-
-export const Elixir = component$(() => {
+type Props = {
+	size?: number;
+};
+export const Elixir = component$(({ size = 36 }: Props) => {
 	return (
-		<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'>
+		<svg xmlns='http://www.w3.org/2000/svg' width={size} height={size} viewBox='0 0 16 16'>
 			<path
 				fill='currentColor'
 				fill-rule='evenodd'

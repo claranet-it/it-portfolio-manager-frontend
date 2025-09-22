@@ -4,9 +4,10 @@ module.exports = {
 	theme: {
 		colors: {
 			'clara-red': '#DA0812',
+			'clara-red-50': '#FDD1D3',
 			'clara-red-200': '#FFC0C0',
 			'red-500': '#B6070F',
-			'clara-red-50': '#FDD1D3',
+			'red-800': '#A90B13',
 			'dark-grey': '#464650',
 			'dark-gray-50': '#F7F7F8',
 			'darkgray-200': '#CBCBD1',

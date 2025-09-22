@@ -3,6 +3,7 @@ export type NetworkCompany = {
 	domain: string;
 	name: string;
 	image_url: string;
+	company_fullname: string;
 };
 
 export type NetworkingCompanies = {

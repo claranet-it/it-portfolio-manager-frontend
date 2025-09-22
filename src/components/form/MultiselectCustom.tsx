@@ -88,14 +88,14 @@ export const MultiselectCustom = component$<MultiselectCustomProps>(
 
 		return (
 			<form id={id} class={['relative w-full', sizeStyle.value, hidden ? 'hidden' : 'block']}>
-				<label class={`block text-sm font-normal ${labelStyle.value}`}>{label}</label>
+				<label class={`block text-sm ${labelStyle.value} py-1`}>{label}</label>
 
 				<button
 					id={'select-button_multiple_' + id}
 					disabled={disabled}
 					data-dropdown-toggle={'select-dropdown_multiple_' + id}
 					class={[
-						'inline-flex w-full flex-row justify-between rounded-md border p-2.5 align-middle text-sm font-normal',
+						'inline-flex h-[36px] w-full flex-row justify-between rounded-md border p-2 align-middle text-sm font-normal',
 						buttonStyle.value,
 					]}
 					type='button'
