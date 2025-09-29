@@ -15,7 +15,6 @@ import { Button } from 'src/components/Button';
 import { NewTaskForm } from 'src/components/form/NewTaskForm';
 import { Select } from 'src/components/form/Select';
 import { WeekSelector } from 'src/components/form/WeekSelector';
-import { InfoCard } from 'src/components/InfoCard';
 import { NewTimeEntryModal } from 'src/components/modals/NewTimeEntryModal';
 import { ProjectCategoryLegend } from 'src/components/timesheet/ProjectCategoryLegend';
 import { TemplateList } from 'src/components/timesheet/TemplateList';
@@ -151,15 +150,6 @@ export const Timesheet = component$(() => {
 								{t('VIEW_TEMPLATE_LIST')}
 							</Button>
 						)}
-
-						<InfoCard
-							title={t('INFOCARD_TITLE_TIMESHEET')}
-							body={
-								<>
-									<p>{t('INFOCARD_BODY_TIMESHEET')}</p>
-								</>
-							}
-						/>
 					</>
 				)}
 			</div>

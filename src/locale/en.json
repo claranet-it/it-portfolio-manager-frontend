@@ -341,5 +341,7 @@
 	"INFOCARD_TITLE_NO_USERS": "No users in this company",
 	"INFOCARD_BODY_NO_USERS": "Invite your team members to collaborate on projects and tasks.",
 	"INFOCARD_TITLE_CHATBOT": "Welcome to the Brickly Chatbot",
-	"INFOCARD_BODY_CHATBOT": "Ask me anything about Brickly. I'm here to help you!"
+	"INFOCARD_BODY_CHATBOT": "Ask me anything about Brickly. I'm here to help you!",
+	"INFOCARD_TITLE_INSERT_ENTRY": "How to insert a new time entry?",
+	"INFOCARD_BODY_INSERT_ENTRY": "Select the project and task from the dropdown menus."
 }
