@@ -7,7 +7,6 @@ import { ToggleSwitch } from '../form/ToggleSwitch';
 import { CustomerAccordion } from './CustomerAccordion';
 
 type RegistryPageProps = {
-	customers: Signal<Customer[]>;
 	searchInput: Signal<string>;
 	search: QRL;
 	hideCompleted: Signal<boolean>;
@@ -15,11 +14,11 @@ type RegistryPageProps = {
 	preOpenDataRegistry: Signal<{ customer?: string; project?: string; beenOpened?: boolean }>;
 	preselectedDataRegistry: Signal<{ customer?: string; project?: string }>;
 	refresh: QRL;
+	isEmptyRegistry: boolean;
 };
 
 export const RegistryPage = component$<RegistryPageProps>(
 	({
-		customers,
 		searchInput,
 		search,
 		hideCompleted,
@@ -27,8 +26,9 @@ export const RegistryPage = component$<RegistryPageProps>(
 		preOpenDataRegistry,
 		preselectedDataRegistry,
 		refresh,
+		isEmptyRegistry,
 	}) => {
-		if (!customers.value.length) {
+		if (isEmptyRegistry) {
 			return (
 				<div class='mb-32 w-full space-y-3 px-6 pb-10 pt-2.5'>
 					<InfoCard

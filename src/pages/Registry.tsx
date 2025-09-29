@@ -17,6 +17,8 @@ export const Registry = component$(() => {
 	const searchInput = useSignal('');
 	const filteredCustomer = useSignal<Customer[]>([]);
 
+	const isEmptyRegistry = useSignal(true);
+
 	const search = $((searchString: string) => {
 		filteredCustomer.value = customers.value.filter((customer) =>
 			customer.name.toLowerCase().includes(searchString.toLowerCase())
@@ -71,6 +73,9 @@ export const Registry = component$(() => {
 	useTask$(({ track }) => {
 		track(() => customers.value);
 		filteredCustomer.value = customers.value;
+		if (customers.value.length) {
+			isEmptyRegistry.value = false;
+		}
 	});
 
 	return (
@@ -99,7 +104,6 @@ export const Registry = component$(() => {
 					</div>
 				</div>
 				<RegistryPage
-					customers={customers}
 					searchInput={searchInput}
 					search={search}
 					hideCompleted={hideCompleted}
@@ -107,6 +111,7 @@ export const Registry = component$(() => {
 					preOpenDataRegistry={preOpenDataRegistry}
 					preselectedDataRegistry={preselectedDataRegistry}
 					refresh={refresh}
+					isEmptyRegistry={isEmptyRegistry.value}
 				/>
 			</div>
 
