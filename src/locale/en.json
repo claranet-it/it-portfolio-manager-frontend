@@ -90,7 +90,7 @@
 	"SKILLS_PAGE_TITLE": "Skills",
 	"TIMESHEET_PAGE_TITLE": "My timesheet",
 	"REPORT_PAGE_TITLE": "Report",
-	"REGISTRY_PAGE_TITLE": "Registry",
+	"REGISTRY_PAGE_TITLE": "Clients & Projects",
 	"WORK_HOURS_LABEL": "Work Hours",
 	"TOTAL_TRACKER_LABEL": "Total tracker",
 	"PRODUCTIVITY_LABEL": "Productivity",
@@ -329,5 +329,17 @@
 	"PLACEHOLDER_INSERT_CUSTOMER": "Insert customer...",
 	"PLACEHOLDER_INSERT_PROJECT": "Insert project...",
 	"PLACEHOLDER_INSERT_TASK": "Insert task...",
-	"PLANNED_HOURS": "Planned hours: #hours h"
+	"PLANNED_HOURS": "Planned hours: #hours h",
+	"INFOCARD_TITLE_TIMESHEET": "How to fill in your timesheet?",
+	"INFOCARD_BODY_TIMESHEET": "To ensure accurate tracking of your work hours, please make sure to fill in your timesheet by the end of each week.",
+	"INFOCARD_TITLE_REGISTRY": "No clients or projects found?",
+	"INFOCARD_BODY_REGISTRY": "Get started by adding your first client and project to the registry.",
+	"INFOCARD_TITLE_PROJECTS": "No report?",
+	"INFOCARD_BODY_PROJECTS": "It looks like there are no time entries available in this period. Please make sure to fill in your timesheet.",
+	"INFOCARD_TITLE_NETWORKING": "No connections yet?",
+	"INFOCARD_BODY_NETWORKING": "Expand your professional network by connecting with colleagues. Start building your connections today!",
+	"INFOCARD_TITLE_NO_USERS": "No users in this company",
+	"INFOCARD_BODY_NO_USERS": "Invite your team members to collaborate on projects and tasks.",
+	"INFOCARD_TITLE_CHATBOT": "Welcome to the Brickly Chatbot",
+	"INFOCARD_BODY_CHATBOT": "Ask me anything about Brickly. I'm here to help you!"
 }

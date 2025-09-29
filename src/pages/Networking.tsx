@@ -8,6 +8,7 @@ import { CompanyCardDetails } from 'src/components/CompanyCardDetails';
 import { Autocomplete } from 'src/components/form/Autocomplete';
 import { MultiselectCustom } from 'src/components/form/MultiselectCustom';
 import { SearchInput } from 'src/components/form/SearchInput';
+import { InfoCard } from 'src/components/InfoCard';
 import { Modal } from 'src/components/modals/Modal';
 import { useCompany } from 'src/hooks/useCompany';
 import { useNetworking } from 'src/hooks/useNetworking';
@@ -115,6 +116,15 @@ export const Networking = component$(() => {
 	});
 
 	const renderSortedCompanyCards = () => {
+		if (companies.value.length === 1) {
+			return (
+				<InfoCard
+					title={t('INFOCARD_TITLE_NETWORKING')}
+					body={t('INFOCARD_BODY_NETWORKING')}
+				/>
+			);
+		}
+
 		return filteredCompanies.value
 			.sort((a, b) => {
 				const statusOrder = {
@@ -126,9 +136,12 @@ export const Networking = component$(() => {
 				return statusOrder[getStatus(a.name)] - statusOrder[getStatus(b.name)];
 			})
 			.map((comp: NetworkCompany) => {
+				console.log('company', comp);
+				console.log('skillMatrices', skillMatrices.value);
 				const companyConfiguration = skillMatrices.value?.find((item) => {
 					return item.hasOwnProperty(comp.name);
 				});
+				console.log('companyConfiguration', companyConfiguration);
 				if (companyConfiguration) {
 					const currentSkillMatrix = companyConfiguration[comp.name];
 					return (

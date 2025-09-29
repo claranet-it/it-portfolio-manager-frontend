@@ -8,6 +8,8 @@ import {
 	useTask$,
 } from '@builder.io/qwik';
 import { AppContext } from 'src/app';
+import { Badge } from 'src/components/Badge';
+import { InfoCard } from 'src/components/InfoCard';
 import { getConfiguration } from 'src/services/configuration';
 import { getUserMe } from 'src/services/user';
 import { getIcon } from '../components/icons';
@@ -80,11 +82,10 @@ export const Search = component$(() => {
 			{/* <!-- Chat Messages --> */}
 			<div class='h-1 flex-grow overflow-y-auto py-2 sm:px-8 md:px-36 lg:px-56'>
 				{chatStore.length === 0 && (
-					<div class='h-full flex-grow content-center'>
-						<h1 class='text-center text-2xl font-bold text-darkgray-900'>
-							{t('how_can_help')}
-						</h1>
-					</div>
+					<InfoCard
+						title={t('INFOCARD_TITLE_CHATBOT')}
+						body={t('INFOCARD_BODY_CHATBOT')}
+					/>
 				)}
 
 				{chatStore.map(({ answer, question }, index) => (
@@ -109,6 +110,10 @@ export const Search = component$(() => {
 			</div>
 
 			{/* Chat Input */}
+			<div class='mx-6 my-4 flex w-full justify-center gap-2 bg-white'>
+				<Badge label='Chi è libero per lavorare in C#?' />
+				<Badge label='Chi è disponibile per lavorare ad un nuovo progetto di design?' />
+			</div>
 			<div class='item-center bg-gray-200 py-2 sm:px-8 md:px-36 lg:px-56'>
 				<form
 					onSubmit$={() => {

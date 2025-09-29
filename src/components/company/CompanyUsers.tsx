@@ -8,6 +8,7 @@ import { t } from 'src/locale/labels';
 import { getUserMe } from 'src/services/user';
 import { getACLValues, roleHierarchy } from 'src/utils/acl';
 import { Roles } from 'src/utils/constants';
+import { InfoCard } from '../InfoCard';
 
 const roles: Record<Roles, string> = {
 	USER: t('ROLE_USER'),
@@ -23,6 +24,7 @@ type Props = {
 };
 export const CompanyUsers = component$<Props>(
 	({ userSig, updateUserValues, updateUserVisibility }) => {
+		console.log('Rendering CompanyUsers with users:', userSig.value);
 		const appStore = useContext(AppContext);
 		const userAcl = useComputed$(async () => getACLValues());
 
@@ -136,6 +138,12 @@ export const CompanyUsers = component$<Props>(
 							);
 						})}
 				</div>
+				{userSig.value.length === 1 && (
+					<InfoCard
+						title={t('INFOCARD_TITLE_NO_USERS')}
+						body={t('INFOCARD_BODY_NO_USERS')}
+					/>
+				)}
 			</>
 		);
 	}

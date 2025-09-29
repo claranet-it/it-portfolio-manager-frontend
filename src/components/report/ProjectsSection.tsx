@@ -5,8 +5,10 @@ import { ReportTab } from '@models/report';
 import { Task } from '@models/task';
 import { UserProfile } from '@models/user';
 import { useReportProject } from 'src/hooks/report/useReportProject';
+import { t } from 'src/locale/labels';
 import { ToggleState } from '../form/RadioDropdown';
 import { getIcon } from '../icons';
+import { InfoCard } from '../InfoCard';
 import { GroupByList } from './GropuByList';
 import { ProjectReportDetails } from './ProjectReportDetails';
 import { ProjectReportPreview } from './ProjectReportPreview';
@@ -56,6 +58,12 @@ export const ProjectsSection = component$<ReportProps>(
 				selectedUsersSig.value.length !== 0
 			);
 		});
+
+		if (!projectResults.value.length) {
+			return (
+				<InfoCard title={t('INFOCARD_TITLE_PROJECTS')} body={t('INFOCARD_BODY_PROJECTS')} />
+			);
+		}
 
 		return (
 			<>
