@@ -115,6 +115,7 @@ export const Networking = component$(() => {
 	});
 
 	const renderSortedCompanyCards = () => {
+		console.log('Rendering company cards', filteredCompanies.value);
 		return filteredCompanies.value
 			.sort((a, b) => {
 				const statusOrder = {

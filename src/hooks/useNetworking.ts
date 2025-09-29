@@ -177,11 +177,11 @@ export const useNetworking = (company: Company) => {
 	const onChangeSkill = $(() => {
 		filteredCompanies.value = companies.value.filter((el) => {
 			if (selectedSkills.value.length) {
-				const ItemSkillCompany = skillMatrices.value?.find((item) => {
+				const itemSkillCompany = skillMatrices.value?.find((item) => {
 					return item.hasOwnProperty(el.name);
 				});
-				if (ItemSkillCompany) {
-					const skillMatrixCompany = ItemSkillCompany[el.name];
+				if (itemSkillCompany) {
+					const skillMatrixCompany = itemSkillCompany[el.name];
 
 					const mapSkill = selectedSkills.value.map((skill) => {
 						if (
