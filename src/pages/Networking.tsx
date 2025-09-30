@@ -102,6 +102,7 @@ export const Networking = component$(() => {
 	});
 
 	useVisibleTask$(async () => {
+		await fetchAllSkillsCompany();
 		await fetchCompany();
 		await fetchAllCompanies();
 		filteredCompanies.value = companies.value;
@@ -110,10 +111,6 @@ export const Networking = component$(() => {
 	useTask$(({ track }) => {
 		track(() => companies.value);
 		allCompaniesNames.value = companies.value.map((c) => c.name);
-	});
-
-	useTask$(async () => {
-		await fetchAllSkillsCompany();
 	});
 
 	const renderSortedCompanyCards = () => {
