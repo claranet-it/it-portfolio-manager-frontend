@@ -1,5 +1,5 @@
 import { component$, QRL, useContext } from '@builder.io/qwik';
-import { NetworkCompany } from '@models/networking';
+import { ConnectionStatus, NetworkCompany } from '@models/networking';
 import { companySkill, ItemSkill } from '@models/skill';
 import { AppContext } from 'src/app';
 import { t } from 'src/locale/labels';
@@ -12,7 +12,7 @@ type CompanyCardDetailsProps = {
 	skillMatrix: ItemSkill;
 	onConnection: QRL;
 	onGoBack: QRL;
-	status: 'connected' | 'unconnected' | 'pending';
+	status: ConnectionStatus;
 };
 
 export const CompanyCardDetails = component$<CompanyCardDetailsProps>(
@@ -20,7 +20,7 @@ export const CompanyCardDetails = component$<CompanyCardDetailsProps>(
 		const appStore = useContext(AppContext);
 
 		const getButtonCTA = () => {
-			if (status === 'connected') {
+			if (status === ConnectionStatus.connected) {
 				return (
 					<Button
 						size={'small'}
@@ -32,7 +32,7 @@ export const CompanyCardDetails = component$<CompanyCardDetailsProps>(
 				);
 			}
 
-			if (status === 'pending') {
+			if (status === ConnectionStatus.pending) {
 				return (
 					<Button size={'small'} disabled>
 						{t('pending')}

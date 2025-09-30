@@ -1,4 +1,4 @@
-import { $, useComputed$, useContext, useSignal, useVisibleTask$ } from '@builder.io/qwik';
+import { $, useComputed$, useContext, useSignal } from '@builder.io/qwik';
 import { Company } from '@models/company';
 import { NetworkCompany } from '@models/networking';
 import { companySkill, SkillMatrix } from '@models/skill';
@@ -6,13 +6,10 @@ import { AppContext } from 'src/app';
 import { Option } from 'src/components/form/MultiselectCustom';
 import {
 	getAllCompanies,
-	getAvailableConnections,
-	getExistingConnections,
+	getNetworkingSkills,
 	removeCompaniesConnection,
 	setCompaniesConnection,
 } from 'src/services/networking';
-import { getNetworkingSkills } from 'src/services/skillMatrix';
-import { generateIcon } from 'src/utils/image';
 import { UUID } from 'src/utils/uuid';
 import { useNotification } from './useNotification';
 
@@ -25,52 +22,11 @@ export const useNetworking = (company: Company) => {
 	const appStore = useContext(AppContext);
 	const { addEvent } = useNotification();
 
-	const connections = useSignal<NetworkConnections>({ existing: [], available: [] });
 	const companies = useSignal<NetworkCompany[]>([]);
 	const searchString = useSignal('');
 	const filteredCompanies = useSignal<NetworkCompany[]>([]);
 	const selectedSkills = useSignal<Option[]>([]);
 	const skillMatrices = useSignal<SkillMatrix>();
-
-	const fetchConnections = $(async () => {
-		appStore.isLoading = true;
-		try {
-			const existingNetwork = await getExistingConnections();
-
-			const existing: NetworkCompany[] = existingNetwork.map(
-				({ requester, correspondent }) => {
-					const company =
-						requester.name === appStore.configuration.company
-							? correspondent
-							: requester;
-
-					return {
-						...company,
-						image_url: company.image_url?.trim()
-							? company.image_url
-							: generateIcon(company.domain),
-					};
-				}
-			);
-			const available = (await getAvailableConnections()).map((company) => ({
-				...company,
-				image_url:
-					company.image_url && company.image_url !== ''
-						? company.image_url
-						: generateIcon(company.domain),
-			}));
-
-			connections.value = { existing, available };
-		} catch (error) {
-			const { message } = error as Error;
-			addEvent({
-				message,
-				type: 'danger',
-				autoclose: true,
-			});
-		}
-		appStore.isLoading = false;
-	});
 
 	const fetchAllCompanies = $(async () => {
 		appStore.isLoading = true;
@@ -84,6 +40,7 @@ export const useNetworking = (company: Company) => {
 				autoclose: true,
 			});
 		}
+		appStore.isLoading = false;
 	});
 
 	const fetchAllSkillsCompany = $(async () => {
@@ -98,6 +55,7 @@ export const useNetworking = (company: Company) => {
 				autoclose: true,
 			});
 		}
+		appStore.isLoading = false;
 	});
 
 	const setCompanyConnections = $(async (requesterId: string, correspondentId: string) => {
@@ -177,11 +135,11 @@ export const useNetworking = (company: Company) => {
 	const onChangeSkill = $(() => {
 		filteredCompanies.value = companies.value.filter((el) => {
 			if (selectedSkills.value.length) {
-				const ItemSkillCompany = skillMatrices.value?.find((item) => {
+				const itemSkillCompany = skillMatrices.value?.find((item) => {
 					return item.hasOwnProperty(el.name);
 				});
-				if (ItemSkillCompany) {
-					const skillMatrixCompany = ItemSkillCompany[el.name];
+				if (itemSkillCompany) {
+					const skillMatrixCompany = itemSkillCompany[el.name];
 
 					const mapSkill = selectedSkills.value.map((skill) => {
 						if (
@@ -201,12 +159,7 @@ export const useNetworking = (company: Company) => {
 		});
 	});
 
-	useVisibleTask$(async () => {
-		await fetchConnections();
-	});
-
 	return {
-		connections,
 		companies,
 		searchString,
 		skillsOptionsSig,

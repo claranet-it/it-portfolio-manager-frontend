@@ -1,6 +1,6 @@
 import { Company } from '@models/company';
 import { Customer } from '@models/customer';
-import { NetworkCompany } from '@models/networking';
+import { ConnectionStatus, NetworkCompany } from '@models/networking';
 import { Project } from '@models/project';
 import { Task } from '@models/task';
 import { Route } from 'src/router';
@@ -77,4 +77,5 @@ export const INIT_NETWORK_COMPANY_VALUE: NetworkCompany = {
 	image_url: 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==',
 	name: '',
 	company_fullname: '',
+	connectionStatus: ConnectionStatus.unconnected,
 };

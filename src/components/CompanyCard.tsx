@@ -1,5 +1,5 @@
 import { component$, QRL, useContext } from '@builder.io/qwik';
-import { NetworkCompany } from '@models/networking';
+import { ConnectionStatus, NetworkCompany } from '@models/networking';
 import { companySkill, ItemSkill } from '@models/skill';
 import { t } from 'src/locale/labels';
 import { AppContext } from '../app';
@@ -12,7 +12,7 @@ type CompanyCardProps = {
 	skillMatrix: ItemSkill;
 	onConnection: QRL;
 	onMoreInfo: QRL;
-	status: 'connected' | 'unconnected' | 'pending';
+	status: ConnectionStatus;
 };
 
 export const CompanyCard = component$<CompanyCardProps>(
@@ -20,7 +20,7 @@ export const CompanyCard = component$<CompanyCardProps>(
 		const appStore = useContext(AppContext);
 
 		const getButtonCTA = () => {
-			if (status === 'connected') {
+			if (status === ConnectionStatus.connected) {
 				return (
 					<Button
 						size={'small'}
@@ -32,7 +32,7 @@ export const CompanyCard = component$<CompanyCardProps>(
 				);
 			}
 
-			if (status === 'pending') {
+			if (status === ConnectionStatus.pending) {
 				return (
 					<Button size={'small'} disabled>
 						{t('pending')}
@@ -66,11 +66,15 @@ export const CompanyCard = component$<CompanyCardProps>(
 									<div class='flex flex-row items-center gap-2'>
 										<div>{getIconSkill(key, 12)}</div>
 
-										<div class='flex flex-row gap-0.5 text-sm font-normal'>
+										<div class='w-[160px] overflow-hidden text-ellipsis text-nowrap text-sm font-normal'>
 											{key}
 										</div>
 									</div>
 									<SfRating
+										key={
+											'star-' +
+											(skillMatrix.skills[key] as companySkill).averageScore
+										}
 										variant='dark'
 										max={appStore.configuration.scoreRange.max}
 										value={
