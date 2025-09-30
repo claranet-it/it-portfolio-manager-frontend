@@ -1,6 +1,14 @@
-import { $, component$, useComputed$, useSignal, useStore, useTask$ } from '@builder.io/qwik';
+import {
+	$,
+	component$,
+	useComputed$,
+	useSignal,
+	useStore,
+	useTask$,
+	useVisibleTask$,
+} from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
-import { NetworkCompany } from '@models/networking';
+import { ConnectionStatus, NetworkCompany } from '@models/networking';
 import { ItemSkill } from '@models/skill';
 import { Button } from 'src/components/Button';
 import { CompanyCard } from 'src/components/CompanyCard';
@@ -19,7 +27,6 @@ export const Networking = component$(() => {
 	const { company, fetchCompany } = useCompany();
 
 	const {
-		connections,
 		companies,
 		searchString,
 		skillsOptionsSig,
@@ -42,15 +49,6 @@ export const Networking = component$(() => {
 	const allCompaniesNames = useSignal<string[]>([]);
 
 	const isUserSuperadmin = useComputed$(async () => await limitRoleAccess(Roles.SUPERADMIN));
-	const getStatus = (companyName: string): 'connected' | 'pending' | 'unconnected' => {
-		if (connections.value.existing.some((el) => el.name === companyName)) {
-			return 'connected';
-		}
-		if (connections.value.available.some((el) => el.name === companyName)) {
-			return 'unconnected';
-		}
-		return 'pending';
-	};
 
 	const resetSelected = $(() => {
 		firstConnection.value = undefined;
@@ -83,17 +81,6 @@ export const Networking = component$(() => {
 		}
 	});
 
-	useTask$(async () => {
-		await fetchCompany();
-		await fetchAllCompanies();
-		await fetchAllSkillsCompany();
-		filteredCompanies.value = companies.value;
-	});
-
-	useTask$(({ track }) => {
-		track(() => companies.value);
-		allCompaniesNames.value = companies.value.map((c) => c.name);
-	});
 	const currentCompanyDetails = useSignal<NetworkCompany>({} as NetworkCompany);
 	const currentSkillMatrix = useSignal<ItemSkill>({} as ItemSkill);
 
@@ -114,17 +101,31 @@ export const Networking = component$(() => {
 		showDetails.value = false;
 	});
 
+	useVisibleTask$(async () => {
+		await fetchCompany();
+		await fetchAllCompanies();
+		filteredCompanies.value = companies.value;
+	});
+
+	useTask$(({ track }) => {
+		track(() => companies.value);
+		allCompaniesNames.value = companies.value.map((c) => c.name);
+	});
+
+	useTask$(async () => {
+		await fetchAllSkillsCompany();
+	});
+
 	const renderSortedCompanyCards = () => {
-		console.log('Rendering company cards', filteredCompanies.value);
 		return filteredCompanies.value
 			.sort((a, b) => {
 				const statusOrder = {
-					connected: 1,
-					pending: 2,
-					unconnected: 3,
+					[ConnectionStatus.connected]: 1,
+					[ConnectionStatus.pending]: 2,
+					[ConnectionStatus.unconnected]: 3,
 				};
 
-				return statusOrder[getStatus(a.name)] - statusOrder[getStatus(b.name)];
+				return statusOrder[a.connectionStatus] - statusOrder[b.connectionStatus];
 			})
 			.map((comp: NetworkCompany) => {
 				const companyConfiguration = skillMatrices.value?.find((item) => {
@@ -134,11 +135,11 @@ export const Networking = component$(() => {
 					const currentSkillMatrix = companyConfiguration[comp.name];
 					return (
 						<CompanyCard
-							key={`${comp.name}-${getStatus(comp.name)}`}
+							key={`${comp.name}-${comp.connectionStatus}`}
 							company={comp}
 							skillMatrix={currentSkillMatrix}
 							onConnection={handleNewConnection}
-							status={getStatus(comp.name)}
+							status={comp.connectionStatus}
 							onMoreInfo={handleMoreInfo}
 						/>
 					);
@@ -151,7 +152,7 @@ export const Networking = component$(() => {
 			<CompanyCardDetails
 				company={currentCompanyDetails.value}
 				onConnection={handleNewConnection}
-				status={getStatus(currentCompanyDetails.value.name)}
+				status={currentCompanyDetails.value.connectionStatus}
 				onGoBack={handleGoBack}
 				skillMatrix={currentSkillMatrix.value}
 			/>
