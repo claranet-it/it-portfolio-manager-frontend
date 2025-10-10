@@ -24,7 +24,6 @@ type Props = {
 };
 export const CompanyUsers = component$<Props>(
 	({ userSig, updateUserValues, updateUserVisibility }) => {
-		console.log('Rendering CompanyUsers with users:', userSig.value);
 		const appStore = useContext(AppContext);
 		const userAcl = useComputed$(async () => getACLValues());
 

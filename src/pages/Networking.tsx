@@ -140,12 +140,9 @@ export const Networking = component$(() => {
 				return statusOrder[a.connectionStatus] - statusOrder[b.connectionStatus];
 			})
 			.map((comp: NetworkCompany) => {
-				console.log('company', comp);
-				console.log('skillMatrices', skillMatrices.value);
 				const companyConfiguration = skillMatrices.value?.find((item) => {
 					return item.hasOwnProperty(comp.name);
 				});
-				console.log('companyConfiguration', companyConfiguration);
 				if (companyConfiguration) {
 					const currentSkillMatrix = companyConfiguration[comp.name];
 					return (

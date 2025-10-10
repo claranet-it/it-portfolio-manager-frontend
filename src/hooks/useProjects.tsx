@@ -14,9 +14,6 @@ export const useProjects = (hideCompleted?: Signal<boolean>) => {
 		projects.value = [];
 		isLoading.value = true;
 		projects.value = await getProjects(customer, hideCompleted?.value);
-		for (const project of projects.value) {
-			console.log('project id: ', project.id, ' project name: ', project.name);
-		}
 		isLoading.value = false;
 	});
 
