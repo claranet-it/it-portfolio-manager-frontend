@@ -9,7 +9,7 @@ import { LoadingSpinner } from './LoadingSpinner';
 import { Toast } from './Toast';
 
 export const Layout = component$<{ currentRoute: PrivateRoutes }>(({ currentRoute }) => {
-	const { eventsList, removeEvent, addEvent } = useNotification();
+	const { removeEvent, addEvent } = useNotification();
 	const appStore = useContext(AppContext);
 
 	useTask$(() => {
@@ -33,7 +33,7 @@ export const Layout = component$<{ currentRoute: PrivateRoutes }>(({ currentRout
 
 				{/* Toast message area  */}
 				<div class='t-0 l-0 fixed flex flex-col items-end justify-end space-y-2 pr-2 pt-2'>
-					{eventsList.map((event: ToastEvent, key) => {
+					{appStore.events.map((event: ToastEvent, key) => {
 						return (
 							<Toast
 								key={key}
