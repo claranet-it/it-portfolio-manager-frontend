@@ -76,10 +76,10 @@ export const Search = component$(() => {
 		}
 	});
 
-	const onSendTip = $((label: string) => {
+	/* 	const onSendTip = $((label: string) => {
 		searchValueSig.value = label;
 		onSubmit();
-	});
+	}); */
 
 	return (
 		<div class='flex w-full flex-col'>
