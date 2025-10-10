@@ -142,7 +142,12 @@ export const CompanyUsers = component$<Props>(
 					<div class='mt-6'>
 						<InfoCard
 							title={t('INFOCARD_TITLE_NO_USERS')}
-							body={t('INFOCARD_BODY_NO_USERS')}
+							body={
+								<div>
+									<p>{t('INFOCARD_BODY_NO_USERS_1')}</p>
+									<p class='mt-2 text-xs'>{t('INFOCARD_BODY_NO_USERS_2')}</p>
+								</div>
+							}
 						/>
 					</div>
 				)}

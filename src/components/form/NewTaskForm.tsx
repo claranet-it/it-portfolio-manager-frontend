@@ -11,7 +11,8 @@ import {
 import { ModalState } from '@models/modalState';
 import { initFlowbite } from 'flowbite';
 import { navigateTo } from 'src/router';
-import { INIT_TASK_VALUE } from 'src/utils/constants';
+import { limitRoleAccess } from 'src/utils/acl';
+import { INIT_TASK_VALUE, Roles } from 'src/utils/constants';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
 import { t } from '../../locale/labels';
 import { TimeEntry } from '../../models/timeEntry';
@@ -57,6 +58,8 @@ export const NewTaskForm = component$<NewTaskForm>(
 		useVisibleTask$(() => {
 			initFlowbite();
 		});
+
+		const isAdmin = useComputed$(async () => await limitRoleAccess(Roles.ADMIN));
 
 		const _customerSelected = useSignal(customerSelected.value.name);
 
@@ -238,12 +241,19 @@ export const NewTaskForm = component$<NewTaskForm>(
 							<Button type='submit'>{t('ACTION_INSERT')}</Button>
 						</div>
 						<div class='text-xs text-darkgray-500'>{t('LEGEND_REQUIRED')}</div>
-
-						<InfoCard
-							body={<p>{t('INFOCARD_BODY_INSERT_ENTRY')}</p>}
-							cta_label='Create new project'
-							cta={openRegistry}
-						/>
+						{isAdmin ? (
+							<InfoCard
+								body={<p>{t('INFOCARD_BODY_INSERT_ENTRY_ADMIN')}</p>}
+								cta_label={t('CREATE_PROJECT')}
+								cta={openRegistry}
+								size={'small'}
+							/>
+						) : (
+							<InfoCard
+								body={<p>{t('INFOCARD_BODY_INSERT_ENTRY_USER')}</p>}
+								size={'small'}
+							/>
+						)}
 					</form>
 				</div>
 			</>

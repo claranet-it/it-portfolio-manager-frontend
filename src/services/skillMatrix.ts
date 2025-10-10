@@ -29,7 +29,6 @@ export const getCompanySkills = async (): Promise<SkillMatrix> =>
 
 export const getNetworkingSkills = async (): Promise<SkillMatrix> => {
 	try {
-		debugger;
 		let response = await getHttpResponse<SkillMatrix>({
 			path: `networking/skills`,
 		});

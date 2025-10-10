@@ -1,4 +1,4 @@
-import { component$, Signal, useComputed$, useSignal } from '@builder.io/qwik';
+import { $, component$, Signal, useComputed$, useSignal } from '@builder.io/qwik';
 import { Customer } from '@models/customer';
 import { Project } from '@models/project';
 import { ReportTab } from '@models/report';
@@ -6,6 +6,7 @@ import { Task } from '@models/task';
 import { UserProfile } from '@models/user';
 import { useReportProject } from 'src/hooks/report/useReportProject';
 import { t } from 'src/locale/labels';
+import { navigateTo } from 'src/router';
 import { ToggleState } from '../form/RadioDropdown';
 import { getIcon } from '../icons';
 import { InfoCard } from '../InfoCard';
@@ -59,9 +60,18 @@ export const ProjectsSection = component$<ReportProps>(
 			);
 		});
 
+		const openTimesheet = $(() => {
+			navigateTo('timesheet');
+		});
+
 		if (!projectResults.value.length) {
 			return (
-				<InfoCard title={t('INFOCARD_TITLE_PROJECTS')} body={t('INFOCARD_BODY_PROJECTS')} />
+				<InfoCard
+					title={t('INFOCARD_TITLE_REPORT')}
+					body={t('INFOCARD_BODY_REPORT')}
+					cta_label={t('OPEN_TIMESHEET')}
+					cta={openTimesheet}
+				/>
 			);
 		}
 
