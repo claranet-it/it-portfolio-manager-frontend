@@ -38,6 +38,7 @@ module.exports = {
 			'warning-dark': '#E3A008',
 			'danger-light': '#FED0CA',
 			'danger-dark': '#992A1B',
+			'info': '#E1F3FD',
 			'info-light': '#C3DDFD',
 			'info-dark': '#1E429F',
 		},

@@ -13,11 +13,8 @@ export const useNotification = () => {
 		appStore.events.push(event);
 	});
 
-	const eventsList = appStore.events;
-
 	return {
 		removeEvent,
 		addEvent,
-		eventsList,
 	};
 };

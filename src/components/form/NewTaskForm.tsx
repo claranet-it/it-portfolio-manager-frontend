@@ -10,12 +10,15 @@ import {
 } from '@builder.io/qwik';
 import { ModalState } from '@models/modalState';
 import { initFlowbite } from 'flowbite';
-import { INIT_TASK_VALUE } from 'src/utils/constants';
+import { navigateTo } from 'src/router';
+import { limitRoleAccess } from 'src/utils/acl';
+import { INIT_TASK_VALUE, Roles } from 'src/utils/constants';
 import { useNewTimeEntry } from '../../hooks/timesheet/useNewTimeEntry';
 import { t } from '../../locale/labels';
 import { TimeEntry } from '../../models/timeEntry';
 import { UUID } from '../../utils/uuid';
 import { Button } from '../Button';
+import { InfoCard } from '../InfoCard';
 import { Autocomplete } from './Autocomplete';
 import { TemplateForm } from './TemplateForm';
 
@@ -55,6 +58,8 @@ export const NewTaskForm = component$<NewTaskForm>(
 		useVisibleTask$(() => {
 			initFlowbite();
 		});
+
+		const isAdmin = useComputed$(async () => await limitRoleAccess(Roles.ADMIN));
 
 		const _customerSelected = useSignal(customerSelected.value.name);
 
@@ -112,6 +117,10 @@ export const NewTaskForm = component$<NewTaskForm>(
 			} else {
 				handleSubmit(event, _);
 			}
+		});
+
+		const openRegistry = $(() => {
+			navigateTo('registry');
 		});
 
 		const _onChangeTask = $(async (value: string) => {
@@ -232,6 +241,19 @@ export const NewTaskForm = component$<NewTaskForm>(
 							<Button type='submit'>{t('ACTION_INSERT')}</Button>
 						</div>
 						<div class='text-xs text-darkgray-500'>{t('LEGEND_REQUIRED')}</div>
+						{isAdmin ? (
+							<InfoCard
+								body={<p>{t('INFOCARD_BODY_INSERT_ENTRY_ADMIN')}</p>}
+								cta_label={t('CREATE_PROJECT')}
+								cta={openRegistry}
+								size={'small'}
+							/>
+						) : (
+							<InfoCard
+								body={<p>{t('INFOCARD_BODY_INSERT_ENTRY_USER')}</p>}
+								size={'small'}
+							/>
+						)}
 					</form>
 				</div>
 			</>

@@ -24,6 +24,7 @@ import { INIT_CUSTOMER_VALUE, INIT_PROJECT_VALUE, INIT_TASK_VALUE } from 'src/ut
 import { Button } from '../Button';
 import { ApplyingTemplateForm } from '../form/applyingTemplateForm';
 import { getIcon } from '../icons';
+import { InfoCard } from '../InfoCard';
 import { Modal } from '../modals/Modal';
 import { TemplateRow } from './TemplateRow';
 import { TimeEntryElement } from './TimeEntryElement';
@@ -416,6 +417,20 @@ export const TimeSheetTable = component$<TimeSheetTableProps>(
 						</tr>
 					</tfoot>
 				</table>
+
+				{Object.entries(groupedByProject.value).length === 0 && (
+					<div class='mt-6'>
+						<InfoCard
+							title={t('INFOCARD_TITLE_TIMESHEET')}
+							body={
+								<>
+									<p>{t('INFOCARD_BODY_TIMESHEET')}</p>
+								</>
+							}
+						/>
+					</div>
+				)}
+
 				<Modal state={deleteTimeEntriesRowModalState} />
 				<Modal state={approvalModalState}>
 					<ApplyingTemplateForm formGroup={formGroup} />

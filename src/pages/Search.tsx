@@ -8,6 +8,7 @@ import {
 	useTask$,
 } from '@builder.io/qwik';
 import { AppContext } from 'src/app';
+import { InfoCard } from 'src/components/InfoCard';
 import { getConfiguration } from 'src/services/configuration';
 import { getUserMe } from 'src/services/user';
 import { getIcon } from '../components/icons';
@@ -75,16 +76,25 @@ export const Search = component$(() => {
 		}
 	});
 
+	/* 	const onSendTip = $((label: string) => {
+		searchValueSig.value = label;
+		onSubmit();
+	}); */
+
 	return (
 		<div class='flex w-full flex-col'>
 			{/* <!-- Chat Messages --> */}
 			<div class='h-1 flex-grow overflow-y-auto py-2 sm:px-8 md:px-36 lg:px-56'>
 				{chatStore.length === 0 && (
-					<div class='h-full flex-grow content-center'>
-						<h1 class='text-center text-2xl font-bold text-darkgray-900'>
-							{t('how_can_help')}
-						</h1>
-					</div>
+					<InfoCard
+						title={t('INFOCARD_TITLE_CHATBOT')}
+						body={
+							<div>
+								<p>{t('INFOCARD_BODY_CHATBOT_1')}</p>
+								<p class='mt-2'>{t('INFOCARD_BODY_CHATBOT_2')}</p>
+							</div>
+						}
+					/>
 				)}
 
 				{chatStore.map(({ answer, question }, index) => (
@@ -109,6 +119,24 @@ export const Search = component$(() => {
 			</div>
 
 			{/* Chat Input */}
+			{/* 	<div class='mx-6 my-4 flex justify-center gap-2 bg-white'>
+				<Badge
+					label={t('CHATBOT_TIP_1')}
+					onClick={$(() => onSendTip(t('CHATBOT_TIP_1')))}
+				/>
+				<Badge
+					label={t('CHATBOT_TIP_2')}
+					onClick={$(() => onSendTip(t('CHATBOT_TIP_2')))}
+				/>
+				<Badge
+					label={t('CHATBOT_TIP_3')}
+					onClick={$(() => onSendTip(t('CHATBOT_TIP_3')))}
+				/>
+				<Badge
+					label={t('CHATBOT_TIP_4')}
+					onClick={$(() => onSendTip(t('CHATBOT_TIP_4')))}
+				/>
+			</div> */}
 			<div class='item-center bg-gray-200 py-2 sm:px-8 md:px-36 lg:px-56'>
 				<form
 					onSubmit$={() => {
