@@ -352,5 +352,8 @@
 	"CHATBOT_TIP_1": "Domanda 1",
 	"CHATBOT_TIP_2": "Domanda 2",
 	"CHATBOT_TIP_3": "Domanda 3",
-	"CHATBOT_TIP_4": "Domanda 4"
+	"CHATBOT_TIP_4": "Domanda 4",
+	"ERROR_PAGE_TITLE": "Something went wrong",
+	"ERROR_PAGE_MESSAGE_1": "We're working to fix the problem. Please try again later.",
+	"ERROR_PAGE_MESSAGE_2": "If the problem persists, contact support."
 }

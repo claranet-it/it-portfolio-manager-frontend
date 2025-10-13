@@ -13,6 +13,7 @@ import { ItemSkill } from '@models/skill';
 import { Button } from 'src/components/Button';
 import { CompanyCard } from 'src/components/CompanyCard';
 import { CompanyCardDetails } from 'src/components/CompanyCardDetails';
+import { ErrorPage } from 'src/components/ErrorPage';
 import { Autocomplete } from 'src/components/form/Autocomplete';
 import { MultiselectCustom } from 'src/components/form/MultiselectCustom';
 import { SearchInput } from 'src/components/form/SearchInput';
@@ -158,13 +159,7 @@ export const Networking = component$(() => {
 	};
 
 	if (!companies.value) {
-		return (
-			<div class='w-full space-y-6 px-6 py-2.5'>
-				<div class='flex justify-center gap-2 sm:flex-col md:flex-row lg:flex-row'>
-					{t('NO_DATA')}
-				</div>
-			</div>
-		);
+		return <ErrorPage />;
 	}
 
 	if (showDetails.value) {
