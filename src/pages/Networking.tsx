@@ -103,15 +103,13 @@ export const Networking = component$(() => {
 	});
 
 	useVisibleTask$(async () => {
-		await fetchAllSkillsCompany();
-		await fetchCompany();
-		await fetchAllCompanies();
-		filteredCompanies.value = companies.value;
+		await Promise.all([fetchAllSkillsCompany(), fetchCompany(), fetchAllCompanies()]);
+		filteredCompanies.value = companies?.value;
 	});
 
 	useTask$(({ track }) => {
 		track(() => companies.value);
-		allCompaniesNames.value = companies.value.map((c) => c.name);
+		allCompaniesNames.value = companies?.value?.map((c) => c.name);
 	});
 
 	const renderSortedCompanyCards = () => {
@@ -158,6 +156,16 @@ export const Networking = component$(() => {
 				}
 			});
 	};
+
+	if (!companies.value) {
+		return (
+			<div class='w-full space-y-6 px-6 py-2.5'>
+				<div class='flex justify-center gap-2 sm:flex-col md:flex-row lg:flex-row'>
+					{t('NO_DATA')}
+				</div>
+			</div>
+		);
+	}
 
 	if (showDetails.value) {
 		return (

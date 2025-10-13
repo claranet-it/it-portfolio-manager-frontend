@@ -241,7 +241,7 @@ export const NewTaskForm = component$<NewTaskForm>(
 							<Button type='submit'>{t('ACTION_INSERT')}</Button>
 						</div>
 						<div class='text-xs text-darkgray-500'>{t('LEGEND_REQUIRED')}</div>
-						{isAdmin ? (
+						{isAdmin.value ? (
 							<InfoCard
 								body={<p>{t('INFOCARD_BODY_INSERT_ENTRY_ADMIN')}</p>}
 								cta_label={t('CREATE_PROJECT')}
