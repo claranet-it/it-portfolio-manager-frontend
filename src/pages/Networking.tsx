@@ -13,9 +13,11 @@ import { ItemSkill } from '@models/skill';
 import { Button } from 'src/components/Button';
 import { CompanyCard } from 'src/components/CompanyCard';
 import { CompanyCardDetails } from 'src/components/CompanyCardDetails';
+import { ErrorPage } from 'src/components/ErrorPage';
 import { Autocomplete } from 'src/components/form/Autocomplete';
 import { MultiselectCustom } from 'src/components/form/MultiselectCustom';
 import { SearchInput } from 'src/components/form/SearchInput';
+import { InfoCard } from 'src/components/InfoCard';
 import { Modal } from 'src/components/modals/Modal';
 import { useCompany } from 'src/hooks/useCompany';
 import { useNetworking } from 'src/hooks/useNetworking';
@@ -102,18 +104,30 @@ export const Networking = component$(() => {
 	});
 
 	useVisibleTask$(async () => {
-		await fetchAllSkillsCompany();
-		await fetchCompany();
-		await fetchAllCompanies();
-		filteredCompanies.value = companies.value;
+		await Promise.all([fetchAllSkillsCompany(), fetchCompany(), fetchAllCompanies()]);
+		filteredCompanies.value = companies?.value;
 	});
 
 	useTask$(({ track }) => {
 		track(() => companies.value);
-		allCompaniesNames.value = companies.value.map((c) => c.name);
+		allCompaniesNames.value = companies?.value?.map((c) => c.name);
 	});
 
 	const renderSortedCompanyCards = () => {
+		if (companies.value.length === 1) {
+			return (
+				<InfoCard
+					title={t('INFOCARD_TITLE_NETWORKING')}
+					body={
+						<div>
+							<p>{t('INFOCARD_BODY_NETWORKING_1')}</p>
+							<p class='mt-2'>{t('INFOCARD_BODY_NETWORKING_2')}</p>
+						</div>
+					}
+				/>
+			);
+		}
+
 		return filteredCompanies.value
 			.sort((a, b) => {
 				const statusOrder = {
@@ -143,6 +157,10 @@ export const Networking = component$(() => {
 				}
 			});
 	};
+
+	if (!companies.value) {
+		return <ErrorPage />;
+	}
 
 	if (showDetails.value) {
 		return (
@@ -175,28 +193,30 @@ export const Networking = component$(() => {
 
 				<div class='flex flex-col sm:space-y-4 md:flex-row md:space-x-5 lg:flex-row lg:space-x-5'>
 					<div class='flex-1'>
-						<div class='flex flex-row justify-center gap-4 py-2 sm:flex-col'>
-							<div class='w-[400px] sm:w-full'>
-								<SearchInput
-									value={searchString}
-									callback={search}
-									label='Search for company'
-								/>
-							</div>
+						{companies.value.length > 1 && (
+							<div class='flex flex-row justify-center gap-4 py-2 sm:flex-col'>
+								<div class='w-[400px] sm:w-full'>
+									<SearchInput
+										value={searchString}
+										callback={search}
+										label='Search for company'
+									/>
+								</div>
 
-							<div class='w-[300px] sm:w-full'>
-								<MultiselectCustom
-									label='Skills'
-									id={UUID() + '-skills-filter'}
-									placeholder={t('select_empty_label')}
-									selectedValues={selectedSkills}
-									options={skillsOptionsSig}
-									onChange$={onChangeSkill}
-									allowSelectAll
-									size='auto'
-								/>
+								<div class='w-[300px] sm:w-full'>
+									<MultiselectCustom
+										label='Skills'
+										id={UUID() + '-skills-filter'}
+										placeholder={t('select_empty_label')}
+										selectedValues={selectedSkills}
+										options={skillsOptionsSig}
+										onChange$={onChangeSkill}
+										allowSelectAll
+										size='auto'
+									/>
+								</div>
 							</div>
-						</div>
+						)}
 
 						<div class='flex flex-row flex-wrap justify-center gap-2'>
 							{renderSortedCompanyCards()}
