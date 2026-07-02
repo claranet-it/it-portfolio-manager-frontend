@@ -25,7 +25,7 @@ export const useAuth = () => {
 
 	const refreshPage = $(() => navigateTo('auth'));
 	const goToCompanyCodeManager = $(() => navigateTo('company-code'));
-	const goToTimesheet = $(() => navigateTo('timesheet'));
+	const goToReport = $(() => navigateTo('report'));
 
 	const authProviders: AuthProviderButton[] = [
 		{
@@ -62,7 +62,7 @@ export const useAuth = () => {
 
 			const status = await initCipher();
 			if (status === 'initialized') {
-				goToTimesheet();
+				goToReport();
 			} else {
 				goToCompanyCodeManager();
 			}
@@ -192,7 +192,7 @@ export const useAuth = () => {
 
 				const status = await initCipher();
 				if (status === 'initialized') {
-					goToTimesheet();
+					goToReport();
 				} else {
 					goToCompanyCodeManager();
 				}

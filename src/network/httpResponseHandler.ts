@@ -17,7 +17,7 @@ export const addHttpErrorListener = (listener: (payload: ErrorListenerPayload) =
 	};
 };
 
-const goToTimesheet = $(() => navigateTo('timesheet'));
+const goToReport = $(() => navigateTo('report'));
 
 export const httpResponseHandler = async (response: Response) => {
 	if (response.ok) return response;
@@ -40,7 +40,7 @@ export const httpResponseHandler = async (response: Response) => {
 	);
 
 	if (isUnauthorized) {
-		await goToTimesheet();
+		await goToReport();
 		return response;
 	}
 };

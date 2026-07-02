@@ -105,8 +105,8 @@ export const App = component$(() => {
 		const res = getRoleBasedMenu().find(hasAccess);
 
 		if (!res) {
-			currentRouteSignal.value = 'timesheet';
-			window.history.pushState({}, '', '/timesheet');
+			currentRouteSignal.value = 'report';
+			window.history.pushState({}, '', '/report');
 		}
 	});
 

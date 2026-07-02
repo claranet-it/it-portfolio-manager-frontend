@@ -15,7 +15,7 @@ export const PrivacyPolicy = component$(() => {
 						<button
 							class={`m-2 rounded border-0 bg-transparent p-2 font-semibold text-clara-red hover:text-red-500`}
 							onClick$={() => {
-								navigateTo('timesheet');
+								navigateTo('report');
 							}}
 						>
 							Go to Brickly

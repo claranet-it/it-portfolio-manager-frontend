@@ -34,13 +34,13 @@ export const CompanyCodeManager = component$(() => {
 
 	const { initCipher, setCipher } = useCipher();
 
-	const goToTimesheet = $(() => navigateTo('timesheet'));
+	const goToReport = $(() => navigateTo('report'));
 
 	useTask$(async () => {
 		const status = await initCipher();
 
 		if (status === 'initialized') {
-			goToTimesheet();
+			goToReport();
 		}
 	});
 
@@ -164,7 +164,7 @@ export const CompanyCodeManager = component$(() => {
 				await encryptDbFields();
 			}
 
-			goToTimesheet();
+			goToReport();
 		} catch (e) {
 			error.value = t('UNABLE_TO_ENCRYPT_DATA');
 			confirmDisabled.value = false;

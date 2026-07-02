@@ -105,7 +105,7 @@ export const Header = component$<{ currentRoute: MenuRoutes }>(({ currentRoute }
 				<div class='justify-end pr-6 sm:w-[100%] sm:text-center md:flex lg:flex'>
 					{showMenu(currentRoute) &&
 						menu.value
-							.filter((item) => item !== '')
+							.filter((item) => item === 'report')
 							.map((section, key) => {
 								const textColor = section === currentRoute ? 'text-red-800' : '';
 								return (
