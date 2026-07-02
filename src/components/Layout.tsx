@@ -46,7 +46,7 @@ export const Layout = component$<{ currentRoute: PrivateRoutes }>(({ currentRout
 						<b>July 1</b>, Brickly has moved. Please track all time entries from July
 						onward at{' '}
 						<a
-							href='https://d1qwftj73ri427.cloudfront.net/'
+							href='https://dashboard.brickly.me/'
 							target='_blank'
 							rel='noopener noreferrer'
 							class='inline-flex items-center gap-1 rounded bg-white/15 px-2 py-0.5 font-semibold underline decoration-white/60 underline-offset-2 transition-colors hover:bg-white/25'
